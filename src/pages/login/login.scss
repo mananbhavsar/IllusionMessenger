@@ -1,0 +1,43 @@
+page-login {
+    .slide_header {
+        p {
+            color: #8a949d;
+            float: right;
+            margin-right: -2rem;
+            margin-top: 1rem;
+        }
+        img {
+            display: block;
+            margin: 1em auto;
+        }
+        .logo{
+            width: 20em;
+            height: 10em;
+            padding: $logo-padding;
+        }
+        #login-box{
+            width: 80%;
+            margin: 0 auto;
+            form{
+                width: 100%;
+            }
+        }
+    }
+    a {
+        color: #303a46;
+        text-decoration: none;
+        margin-top: 1rem;
+        display: block;
+    }
+    .button {
+        text-transform: uppercase;
+        border-radius: 3rem;
+        width: 100%;
+        height: 5rem;
+        font-size: 1.4rem;
+        margin-bottom: 1rem;
+    }
+    .register-now{
+        color: color($colors, primary);
+    }
+}

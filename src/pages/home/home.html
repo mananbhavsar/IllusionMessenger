@@ -1,0 +1,14 @@
+<ion-header no-border>
+    <header title="Home"></header>
+</ion-header>
+<ion-content padding>
+    <ion-refresher (ionRefresh)="initData($event, true)">
+        <ion-refresher-content
+            pullingIcon="arrow-round-down"
+            pullingText="Pull to refresh"
+            refreshingSpinner="crescent"
+            refreshingText="Refreshing...">
+        </ion-refresher-content>
+    </ion-refresher>
+    <empty *ngIf="data === -1" title=""></empty>
+</ion-content>

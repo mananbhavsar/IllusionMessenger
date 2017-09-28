@@ -1,0 +1,10 @@
+page-welcome {
+    ion-content{
+        div{
+            background-color: color($colors, primary);
+            img{
+                max-width: 50%;
+            }
+        }
+    }
+}

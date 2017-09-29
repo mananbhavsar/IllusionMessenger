@@ -21,6 +21,7 @@ import { LoginPage } from '../pages/login/login';
 import { LogoutPage } from '../pages/logout/logout';
 import { OfflinePage } from '../pages/offline/offline';
 import { RegisterPage } from '../pages/register/register';
+import { SetupPage } from '../pages/setup/setup';
 import { TutorialPage } from '../pages/tutorial/tutorial';
 import { WelcomePage } from '../pages/welcome/welcome';
 
@@ -133,11 +134,11 @@ export class MyApp {
 
         }
     }
-    
-    openTutorial(){
+
+    openTutorial() {
         this.nav.push(TutorialPage);
     }
-    
+
     isActive(page: PageInterface) {
         let childNav = this.nav.getActiveChildNavs()[0];
 
@@ -364,7 +365,12 @@ export class MyApp {
         this.events.subscribe('user:login', (user) => {
             this.loggedIn = true;
             this.enableMenu(true);
-            this.nav.setRoot(HomePage);
+            //checking if first timer
+            if (user.first_time_login) {
+                this.nav.setRoot(SetupPage);
+            } else {
+                this.nav.setRoot(HomePage);
+            }
             setTimeout(() => {
                 var full_name = user ? user.full_name : '';
                 this.events.publish('loading:close');

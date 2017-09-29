@@ -4,17 +4,20 @@ import { ReachUsComponent } from './reach-us/reach-us';
 import { CenterSpinnerComponent } from './center-spinner/center-spinner';
 import { HeaderComponent } from './header/header';
 import { RefreshComponent } from './refresh/refresh';
+import { IonSimpleWizardComponent } from './ion-simple-wizard/ion-simple-wizard';
 @NgModule({
     declarations: [EmptyComponent,
         ReachUsComponent,
         CenterSpinnerComponent,
         HeaderComponent,
-        RefreshComponent],
+        RefreshComponent,
+    IonSimpleWizardComponent],
     imports: [],
     exports: [EmptyComponent,
         ReachUsComponent,
         CenterSpinnerComponent,
         HeaderComponent,
-        RefreshComponent]
+        RefreshComponent,
+    IonSimpleWizardComponent]
 })
 export class ComponentsModule { }

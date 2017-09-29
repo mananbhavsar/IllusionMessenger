@@ -1,6 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 
 import { Network } from '@ionic-native/network';
 import { StatusBar } from '@ionic-native/status-bar';
@@ -14,6 +16,9 @@ import { CallNumber } from '@ionic-native/call-number';
 import { EmailComposer } from '@ionic-native/email-composer';
 import { OneSignal } from '@ionic-native/onesignal';
 import { SocialSharing } from '@ionic-native/social-sharing';
+import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer';
+import { FileChooser } from '@ionic-native/file-chooser';
+import { File } from '@ionic-native/file';
 
 import { HttpModule } from '@angular/http';
 import { IonicStorageModule } from '@ionic/storage';
@@ -25,11 +30,12 @@ import { AccountPage } from '../pages/account/account';
 import { ContactUsPage } from '../pages/contact-us/contact-us';
 import { HelpPage } from '../pages/help/help';
 import { HomePage } from '../pages/home/home';
+import { JobsPage } from "../pages/jobs/jobs";
 import { LoginPage } from '../pages/login/login';
-import { LogoutPage } from '../pages/logout/logout';
 import { OfflinePage } from '../pages/offline/offline';
-import { RegisterPage } from '../pages/register/register';
+import { RegisterPageModule } from '../pages/register/register.module';
 import { SearchPage } from '../pages/search/search';
+import { SetupPage } from '../pages/setup/setup';
 import { TutorialPage } from '../pages/tutorial/tutorial';
 import { WelcomePage } from '../pages/welcome/welcome';
 
@@ -40,7 +46,10 @@ import { HeaderComponent } from '../components/header/header';
 import { EmptyComponent } from '../components/empty/empty';
 import { ReachUsComponent } from '../components/reach-us/reach-us';
 import { CenterSpinnerComponent } from '../components/center-spinner/center-spinner';
+import { IonSimpleWizardComponent } from '../components/ion-simple-wizard/ion-simple-wizard';
+import { IonSimpleWizardStep } from '../components/ion-simple-wizard/ion-simple-wizard.step';
 
+import { KeysPipe } from "../pipes/keys/keys";
 @NgModule({
     declarations: [
         MyApp,
@@ -49,17 +58,21 @@ import { CenterSpinnerComponent } from '../components/center-spinner/center-spin
         ContactUsPage,
         HelpPage,
         HomePage,
+        JobsPage,
         LoginPage,
         OfflinePage,
-        RegisterPage,
         SearchPage,
+        SetupPage,
         WelcomePage,
         TutorialPage,
         LoginPage,
         HeaderComponent,
         EmptyComponent,
         ReachUsComponent,
-        CenterSpinnerComponent
+        CenterSpinnerComponent,
+        IonSimpleWizardComponent,
+        IonSimpleWizardStep,
+        KeysPipe,
     ],
     imports: [
         BrowserModule,
@@ -69,6 +82,8 @@ import { CenterSpinnerComponent } from '../components/center-spinner/center-spin
             name: '__prompt_jobs_db',
             driverOrder: ['indexeddb', 'sqlite', 'websql']
         }),
+        BrowserAnimationsModule,
+        RegisterPageModule,
     ],
     bootstrap: [IonicApp],
     entryComponents: [
@@ -78,10 +93,11 @@ import { CenterSpinnerComponent } from '../components/center-spinner/center-spin
         ContactUsPage,
         HelpPage,
         HomePage,
+        JobsPage,
         LoginPage,
         OfflinePage,
-        RegisterPage,
         SearchPage,
+        SetupPage,
         TutorialPage,
         WelcomePage,
     ],
@@ -103,6 +119,10 @@ import { CenterSpinnerComponent } from '../components/center-spinner/center-spin
         EmailComposer,
         OneSignal,
         SocialSharing,
+        FileTransfer,
+        FileChooser,
+        FileTransferObject,
+        File,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

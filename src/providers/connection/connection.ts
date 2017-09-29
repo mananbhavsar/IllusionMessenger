@@ -8,25 +8,25 @@ import { Global } from '../../app/global';
 
 @Injectable()
 export class ConnectionProvider {
-  user: any;
+    user: any;
     constructor(
         public http: Http,
         public storage: Storage,
         public events: Events,
     ) {
-      this.events.subscribe('user:changed', (user) => {
-        this.storage.get('User').then((user) => {
-            this.user = user;
+        this.events.subscribe('user:changed', (user) => {
+            this.storage.get('User').then((user) => {
+                this.user = user;
+            });
         });
-      });
-      this.events.publish('user:changed');
+        this.events.publish('user:changed');
     }
 
     doPost(url, data: any) {
         //adding user info
         if (this.user) {
             data = Object.assign({}, data, {
-                user_id: this.user.id,
+                job_seeker_id: this.user.id,
             });
         }
         let headers = new Headers({ 'Content-Type': 'application/json' });
@@ -34,4 +34,9 @@ export class ConnectionProvider {
 
     }
 
+    doGet(url, data: any) {
+        let headers = new Headers({ 'Content-Type': 'application/json' });
+        return this.http.get(Global.SERVER_URL + url, headers).map((response: Response) => response.json());
+
+    }
 }

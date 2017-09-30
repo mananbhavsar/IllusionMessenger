@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { ModalController, NavController, ViewController } from 'ionic-angular';
+import { ModalController, NavController, ViewController, Events } from 'ionic-angular';
 
 import { ContactUsPage } from '../../pages/contact-us/contact-us';
 
@@ -26,6 +26,7 @@ export class ReachUsComponent {
         private _callNumber: CallNumber,
         public modalCtrl: ModalController,
         public user: UserProvider,
+        public events: Events
     ) {
         this.viewConrtoller.willEnter.subscribe(() => {
             //checking if page is Contact us or Enquiry Add
@@ -48,6 +49,11 @@ export class ReachUsComponent {
 
     onContactUs() {
         let modal = this.modalCtrl.create(this.user.isLoggedIn() ? null : ContactUsPage);
+        modal.onDidDismiss(data=>{
+            if(data){
+                this.events.publish('alert:basic', data.title, data.message);
+            }
+        });
         modal.present();
     }
 

@@ -199,7 +199,13 @@ export class MyApp {
         });
 
         this.events.subscribe('toast:error', (error) => {
-            this.events.publish('toast:create', 'Error occurred! Try again', 'danger');
+            this.events.publish('loading:close');
+            if (error._body) {
+                let body = JSON.parse(error._body);
+                this.events.publish('alert:basic', body.title, body.message);
+            } else {
+                this.events.publish('toast:create', 'Error occurred! Try again', 'danger');
+            }
         });
 
         this.events.subscribe('push:send', (id, message) => {

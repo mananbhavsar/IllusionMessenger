@@ -16,6 +16,6 @@ export var Global = {
         ios: '',
         android: ''
     },
-    SERVER_URL: 'http://192.168.5.62/prompt_personnel/mobile/',
+    SERVER_URL: 'http://192.168.5.61/prompt_personnel/mobile/',
     CDN: 'https://d3nwpy9993ruf3.cloudfront.net/',
 }

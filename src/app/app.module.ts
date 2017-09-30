@@ -28,6 +28,7 @@ import { MyApp } from './app.component';
 import { AboutPage } from '../pages/about/about';
 import { AccountPage } from '../pages/account/account';
 import { ContactUsPage } from '../pages/contact-us/contact-us';
+import { ForgotPasswordPage } from '../pages/forgot-password/forgot-password';
 import { HelpPage } from '../pages/help/help';
 import { HomePage } from '../pages/home/home';
 import { JobsPage } from "../pages/jobs/jobs";
@@ -56,6 +57,7 @@ import { KeysPipe } from "../pipes/keys/keys";
         AboutPage,
         AccountPage,
         ContactUsPage,
+        ForgotPasswordPage,
         HelpPage,
         HomePage,
         JobsPage,
@@ -91,6 +93,7 @@ import { KeysPipe } from "../pipes/keys/keys";
         AboutPage,
         AccountPage,
         ContactUsPage,
+        ForgotPasswordPage,
         HelpPage,
         HomePage,
         JobsPage,

@@ -35,10 +35,10 @@ export class RegisterPage {
     this.events.publish('loading:create', 'registering you!');
     this.connection.doPost('JobSeekers/register', this.register).subscribe(response => {
       this.events.publish('loading:close');
-      this.events.publish('alert:basic', 'Sent!', response.message);
+      this.events.publish('alert:basic', response.title, response.message);
       this.navCtrl.push(LoginPage);
     }, error => {
-      this.events.publish('loading:close');
+      this.events.publish('toast:error', error);
     });
   }
 

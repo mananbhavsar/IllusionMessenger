@@ -14,7 +14,7 @@ import { Global } from '../../app/global';
     templateUrl: 'login.html',
 })
 export class LoginPage {
-    login: { email_address?: string, password?: string } = {};
+    login: { username?: string, password?: string } = {};
     submitted = false;
     global: any = {};
     constructor(
@@ -35,7 +35,6 @@ export class LoginPage {
     }
 
     doLogin() {
-        this.events.publish('loading:create', 'Logging you in!');
-        this.user.login(this.login.email_address, this.login.password);
+        this.user.login(this.login.username, this.login.password);
     }
 }

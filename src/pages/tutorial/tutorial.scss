@@ -1,11 +1,11 @@
 page-tutorial {
     .toolbar-background {
-        background: #f4d86a;
+        background: color($colors, primary);
         border-color: transparent;
         border-bottom: none;
     }
     .slide_header {
-        background: #f4d86a;
+        background: color($colors, primary);
         height: 60vh;
         overflow: hidden;
     }

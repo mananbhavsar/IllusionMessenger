@@ -1,0 +1,47 @@
+page-communication {
+    .office {
+        padding: 5px;
+        text-transform: uppercase;
+        background: gray;
+        color: white;
+        text-align: center;
+    }
+    ion-list.communications-list {
+        ion-label {
+            width: 100%;
+            padding: 0;
+            h2 {
+                display: block;
+                width: 100%;
+                font-size: 1em;
+            }
+        }
+        p {
+            display: block;
+            width: 100%;
+            ion-grid {
+                padding: 0;
+                ion-row {
+                    padding: 0;
+                    ion-col {
+                        padding: 0;
+                        margin: 0;
+                        font-size: 0.8em;
+                        &[ion-note] {
+                            text-align: end;
+                            &.danger {
+                                color: color($colors, danger);
+                            }
+                            &.secondary {
+                                color: color($colors, secondary);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        ion-icon {
+            color: #999;
+        }
+    }
+}

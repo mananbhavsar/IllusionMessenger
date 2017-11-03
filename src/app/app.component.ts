@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, enableProdMode } from '@angular/core';
 import { Nav, MenuController, Platform, Events, LoadingController, ModalController, AlertController, ToastController } from 'ionic-angular';
 
 import { Network } from '@ionic-native/network';
@@ -9,24 +9,33 @@ import { Diagnostic } from '@ionic-native/diagnostic';
 import { LocationAccuracy } from '@ionic-native/location-accuracy';
 import { OneSignal } from '@ionic-native/onesignal';
 import { Keyboard } from '@ionic-native/keyboard';
+import { Badge } from '@ionic-native/badge';
 
 import { Storage } from '@ionic/storage';
 
 import { AboutPage } from '../pages/about/about';
 import { AccountPage } from '../pages/account/account';
+import { CaseStatusPage } from '../pages/case-status/case-status';
+import { ChatPage } from '../pages/chat/chat';
+import { CommunicationPage } from "../pages/communication/communication";
 import { ContactUsPage } from '../pages/contact-us/contact-us';
+import { DashboardPage } from "../pages/dashboard/dashboard";
 import { HelpPage } from '../pages/help/help';
 import { HomePage } from '../pages/home/home';
 import { LoginPage } from '../pages/login/login';
 import { LogoutPage } from '../pages/logout/logout';
 import { OfflinePage } from '../pages/offline/offline';
-import { RegisterPage } from '../pages/register/register';
-import { SetupPage } from '../pages/setup/setup';
+import { PickupPage } from "../pages/pickup/pickup";
+import { ForgotPasswordPage } from '../pages/forgot-password/forgot-password';
 import { TutorialPage } from '../pages/tutorial/tutorial';
 import { WelcomePage } from '../pages/welcome/welcome';
 
 import { UserProvider } from '../providers/user/user';
 import { Global } from './global';
+
+import { AngularFireDatabase } from 'angularfire2/database';
+
+enableProdMode();
 
 export interface PageInterface {
     title: string;
@@ -52,22 +61,28 @@ export class MyApp {
     latitude: number = 0.0;
     longitude: number = 0.0;
     locationSubscription: any;
-
     // List of pages that can be navigated to from the left menu
     // the left menu only works after login
     // the login page disables the left menu
     appPages: PageInterface[] = [
-        { title: 'About', name: 'AboutPage', component: AboutPage, icon: 'information-circle' },
-        { title: 'Contact', name: 'ContactUsPage', component: ContactUsPage, icon: 'information-circle' }
+        { title: 'About', name: 'AboutPage', component: AboutPage, icon: 'info-circle' },
+        { title: 'Contact', name: 'ContactUsPage', component: ContactUsPage, icon: 'envelope' },
+        { title: 'Help', name: 'HelpPage', component: HelpPage, icon: 'question-circle' },
     ];
     loggedInPages: PageInterface[] = [
-        { title: 'Account', name: 'AccountPage', component: AccountPage, icon: 'person' },
-        { title: 'Logout', name: 'LogoutPage', component: LogoutPage, icon: 'log-out', logsOut: true }
+        { title: 'Home', name: 'HomePage', component: HomePage, icon: 'home' },
+        { title: 'Dashboard', name: 'DashboardPage', component: DashboardPage, icon: '' },
+        { title: 'Pickup', name: 'PickupPage', component: PickupPage, icon: '' },
+        { title: 'Case Status', name: 'CaseStatusPage', component: CaseStatusPage, icon: '' },
+        { title: 'Communication', name: 'CommunicationPage', component: CommunicationPage, icon: '' },
+    ];
+    accountPages: PageInterface[] = [
+        // { title: 'Account', name: 'AccountPage', component: AccountPage, icon: 'user' },
+        { title: 'Logout', name: 'LogoutPage', component: LogoutPage, icon: 'sign-out', logsOut: true }
     ];
     loggedOutPages: PageInterface[] = [
-        { title: 'Login', name: 'LoginPage', component: LoginPage, icon: 'log-in' },
-        { title: 'Register', name: 'RegisterPage', component: RegisterPage, icon: 'person-add' },
-        { title: 'Help', name: 'SupportPage', component: HelpPage, icon: 'help' },
+        { title: 'Login', name: 'LoginPage', component: LoginPage, icon: 'sign-in' },
+        { title: 'Forgot Password', name: 'ForgotPassword', component: ForgotPasswordPage, icon: 'key' },
     ];
 
     constructor(
@@ -87,12 +102,14 @@ export class MyApp {
         private _diagnostic: Diagnostic,
         private _locationAccuracy: LocationAccuracy,
         private _geolocation: Geolocation,
-        private _keyboard: Keyboard) {
+        private _keyboard: Keyboard,
+        private _badge: Badge,
+        private angularFireDatabase: AngularFireDatabase,
+    ) {
 
         platform.ready().then(() => {
             this._statusBar.overlaysWebView(false); // let status bar overlay webview
-            //            this._statusBar.backgroundColorByHexString(Global.color.primary);
-            this._statusBar.styleDefault();
+            this._statusBar.backgroundColorByHexString(Global.color.primary);
             splashScreen.hide();
 
             this.enableMenu(true);
@@ -100,7 +117,10 @@ export class MyApp {
             this.listenToLoginEvents();
             this._keyboard.hideKeyboardAccessoryBar(true);
 
-            //this.initPreLoginPlugins();
+            setTimeout(() => {
+                this.initPreLoginPlugins();
+                // this.connectSocket();
+            }, 500);
         });
     }
 
@@ -156,6 +176,22 @@ export class MyApp {
         return;
     }
 
+    /**
+     * checking post login if user is Authorized to access this page
+     * @param page 
+     */
+    isAuthorized(page: PageInterface) {
+        if (this.user && this.user._user) {
+            //for LoginTypeID 3
+            if (this.user._user.LoginTypeID === 3) {
+                //for dashboard
+                return ['DashboardPage', 'PickupPage'].indexOf(page.name) === -1;
+            }
+            return true;
+        }
+        return false;
+    }
+
     listenToGobalEvents() {
         this.events.subscribe('loading:create', (content) => {
             content = content || 'Please wait';
@@ -199,9 +235,15 @@ export class MyApp {
         });
 
         this.events.subscribe('toast:error', (error) => {
-            this.events.publish('loading:close');
-            if (error._body) {
-                let body = JSON.parse(error._body);
+            if (error === null) {
+                return;
+            }
+            if (typeof error === 'string') {
+                this.events.publish('toast:create', error, 'danger');
+            } else if ([404].indexOf(error.status) > -1) {
+                this.events.publish('toast:create', error.status + ': ' + error.statusText, 'danger');
+            } else if (error._body) {
+                let body = error._body ? error._body : JSON.parse(error._body);
                 this.events.publish('alert:basic', body.title, body.message);
             } else {
                 this.events.publish('toast:create', 'Error occurred! Try again', 'danger');
@@ -217,16 +259,17 @@ export class MyApp {
             //sending to offline page only if not in offline 
             var currentPage = this.nav.getActive().component.name;
             if (currentPage !== 'OfflinePage') {
-                this.events.publish('toast:create', 'you are seems to be offline!');
+                this.events.publish('toast:create', 'you seems to be offline!');
                 this.nav.setRoot(OfflinePage);
             }
         });
         this.events.subscribe('network:online', () => {
+            console.log('on online');
+            console.log(this.nav.getActive());
             //sending to home page only in offline page
-            var currentPage = this.nav.getActive().component.name;
-            if (currentPage === 'OfflinePage') {
+            if (this.nav.getActive().component.name === 'OfflinePage') {
                 this.events.publish('toast:create', 'Hola, you are online');
-                this.nav.setRoot(WelcomePage);
+                this.nav.setRoot(HomePage);
             }
         });
 
@@ -236,6 +279,17 @@ export class MyApp {
     initPreLoginPlugins() {
         //working on network
         this.doNetworking();
+
+        //On app Resume & Pause
+        this.platform.resume.subscribe(() => {
+            this.events.publish('platform:onResumed');
+        });
+        this.platform.pause.subscribe(() => {
+            this.events.publish('platform:onPause');
+        });
+
+        //working on OS Version
+        this.doVersionCheck();
     }
 
     initPostLoginPlugins() {
@@ -244,6 +298,9 @@ export class MyApp {
 
         //OneSignal
         this.initOneSignal();
+
+        //Badge
+        this.initBadge();
     }
 
     doNetworking() {
@@ -260,6 +317,10 @@ export class MyApp {
         this._network.onConnect().subscribe(() => {
             this.events.publish('network:online');
         });
+    }
+
+    doVersionCheck() {
+        this.user.doVersionCheck();
     }
 
     initWatchLocation() {
@@ -316,13 +377,17 @@ export class MyApp {
         this._oneSignal.startInit(Global.OneSignal.key, Global.OneSignal.android);
         this._oneSignal.inFocusDisplaying(this._oneSignal.OSInFocusDisplayOption.None);
         this._oneSignal.getIds().then((id) => {
+            //registering user
+            this._oneSignal.setSubscription(true);
             //updating user ID
-            this.user.registerPushID(id.userId);
+            this.events.subscribe('user:ready', (response) => {
+                this.user.registerPushID(id.userId);
+            });
             //setting tags for this user
             this.user.getUser().then(user => {
                 this._oneSignal.sendTags({
                     user_id: user.id,
-                    full_name: user.full_name
+                    name: user.Customer
                 });
             });
         });
@@ -340,66 +405,124 @@ export class MyApp {
 
         this.events.subscribe('notification:process', (notification) => {
             let payload = 'payload' in notification ? notification.payload : notification.notification.payload;
-            let notificationAlert = this.alertCtrl.create({
-                title: payload.title,
-                message: payload.body,
-                buttons: [
-                    {
-                        text: 'Ok',
-                        handler: () => {
-                            //do we need to open page
-                            if ('extra' in payload) {
-                                let page: any = null;
-                                switch (page) {
-                                    default:
-                                        page = HomePage;
-                                        break;
-                                }
-                                if (page) {
-                                    this.nav.push(page, payload.extra.params);
+            console.log(payload);
+            //showing notification  alert if not chatting else giving control to Caht module to handle it
+            if (this.nav.getActive().name === 'ChatPage') {
+                this.events.publish('notification:chat', payload);
+            } else {
+                let notificationAlert = this.alertCtrl.create({
+                    title: payload.title,
+                    message: payload.body,
+                    buttons: [
+                        {
+                            text: 'Open',
+                            handler: () => {
+                                //do we need to open page
+                                if (payload.additionalData && payload.additionalData.page) {
+                                    let page: any = null;
+                                    switch (payload.additionalData.page) {
+                                        case 'ChatPage':
+                                            page = ChatPage;
+                                            break;
+
+                                        default:
+                                            page = HomePage;
+                                            break;
+                                    }
+                                    if (page) {
+                                        this.nav.push(page, payload.additionalData.params);
+                                    }
                                 }
                             }
+                        },
+                        {
+                            text: 'Cancel',
+                            role: 'cancel',
                         }
-                    },
-                ]
+                    ]
+                });
+                notificationAlert.present();
+            }
+        });
+    }
+
+    initBadge() {
+        this.user.getUser().then(user => {
+            this.angularFireDatabase.object('Badge/' + user.id + '/Total').snapshotChanges().subscribe(snapshot => {
+                let total = snapshot.payload.val();
+                if (total) {
+                    this._badge.set(total);
+                } else {
+                    this._badge.clear();
+                }
             });
-            notificationAlert.present();
         });
     }
 
     listenToLoginEvents() {
         this.events.subscribe('user:login', (user) => {
+            console.log(user);
             this.loggedIn = true;
             this.enableMenu(true);
-            //checking if first timer
-            if (user.first_time_login) {
-                this.nav.setRoot(SetupPage);
-            } else {
-                this.nav.setRoot(HomePage);
-            }
+
+            this.nav.setRoot(HomePage);
+
             setTimeout(() => {
-                var full_name = user ? user.full_name : '';
-                this.events.publish('loading:close');
+                var full_name = user ? user.Customer : '';
                 this.events.publish('toast:create', 'Welcome ' + full_name);
                 this.initPostLoginPlugins();
+                this.events.publish('user:changed');
                 this.events.publish('user:postLogin', true);
             });
         });
 
-        this.events.subscribe('user:logout', () => {
+        this.events.subscribe('user:logout', (logoutMessage) => {
             this.loggedIn = false;
             this.enableMenu(false);
             this.nav.setRoot(LoginPage);
             setTimeout(() => {
-                this.events.publish('loading:close');
-                this.events.publish('toast:create', 'Bye bye! See you soon');
+                this.events.publish('toast:create', logoutMessage);
                 this.events.publish('user:changed');
+                this.events.publish('user:postLogout', true);
             });
             if (this.locationSubscription) {
                 this.locationSubscription.unsubscribe();
                 this.locationSubscription = null;
             }
+            this._badge.clear();
+        });
+
+
+        this.events.subscribe('user:unautharized', () => {
+            this.events.publish('user:logout', 'You are unauthorized user');
+            //degistering device
+            this._oneSignal.setSubscription(false);
+        });
+
+        //checking if user already logged in
+        this.user.hasLoggedIn().then((user) => {
+            if (user) {
+                this.events.publish('user:login', user);
+            }
         });
     }
+
+    //remove in next version
+    connectSocket() {
+        // this.socket = io("https://illusion-chat-server.herokuapp.com/");
+        // this.socket.on('connect', () => {
+        //     console.log('Connected');
+        // });
+        // this.socket.on('disconnect', () => {
+        //     console.log('Disconnected');
+        // });
+
+        // //listening to events
+        // this.socket.on('updateCount', (response) => {
+        //     this.events.publish('socket:updateCount', response);
+        // });
+    }
+
+
 }
 

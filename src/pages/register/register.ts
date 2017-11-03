@@ -32,13 +32,8 @@ export class RegisterPage {
 
 
   doRegister() {
-    this.events.publish('loading:create', 'registering you!');
-    this.connection.doPost('JobSeekers/register', this.register).subscribe(response => {
-      this.events.publish('loading:close');
-      this.events.publish('alert:basic', response.title, response.message);
+    this.connection.doPost('JobSeekers/register', this.register).then(response => {
       this.navCtrl.push(LoginPage);
-    }, error => {
-      this.events.publish('toast:error', error);
     });
   }
 

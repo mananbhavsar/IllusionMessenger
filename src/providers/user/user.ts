@@ -1,47 +1,80 @@
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/map';
-import { Events } from 'ionic-angular';
+import { Events, Platform, AlertController } from 'ionic-angular';
 
 import { Storage } from '@ionic/storage';
 import { ConnectionProvider } from '../connection/connection';
+import { OfficeServiceProvider } from '../office-service/office-service';
+
+import { Global } from "../../app/global";
+
+import { OneSignal } from '@ionic-native/onesignal';
+import { Badge } from '@ionic-native/badge';
 
 @Injectable()
 export class UserProvider {
-
+    _user: any = {};
     HAS_SEEN_TUTORIAL: string = 'hasSeenTutorial';
     HAS_LOGGED_IN: boolean = false;
+    global: any = {};
     constructor(
         public events: Events,
         public storage: Storage,
         public connection: ConnectionProvider,
+        public platform: Platform,
+        public alertCtrl: AlertController,
+        public officeList: OfficeServiceProvider,
+        private oneSignal: OneSignal,
+        private badge: Badge
     ) {
+        this.global = Global;
 
+        this.events.subscribe('user:changed', (user) => {
+            this.storage.get('User').then((user) => {
+                this._user = user;
+            });
+        });
     }
 
-    login(email, password) {
-        this.connection.doPost('JobSeekers/login', { email_address: email, password: password }).subscribe(
+    login(username, password) {
+        this.connection.doPost('Account/login', { UserCode: username, Password: password }, 'Logging you in!').then(
             response => {
-                if (response.flash === 'success') {
-                    this.setUser(response.JobSeeker).then(() => {
-                        this.HAS_LOGGED_IN = true;
-                        this.events.publish('user:login', response.JobSeeker);
-                    });
-                } else {
-                    this.events.publish('loading:close');
-                    this.events.publish('alert:basic', 'Login Failed', response.message);
-                }
-            },
-            error => {
-                console.log(error);
-            }
-        );
+                this._user = response;
+                this.setUser(this._user).then(() => {
+                    this.HAS_LOGGED_IN = true;
+                    this.events.publish('user:login', this._user);
+                });
+            }).catch(error => {
+                this.events.publish('alert:basic', 'Login Failed!', error);
+            });
     };
 
     logout() {
-        this.HAS_LOGGED_IN = false;
-        this.storage.remove('User');
-        this.events.publish('user:logout');
-        this.connection.doPost('ClientsUsers/logout', {});
+        return new Promise((resolve, reject) => {
+            let name = this._user.Customer;
+            this.registerPushID('').then(response => {
+                //removing from Storage
+                this.storage.remove('User').then(response => {
+                    this.HAS_LOGGED_IN = false;
+                    this._user = null;
+
+                    //one signal deregister
+                    this.oneSignal.setSubscription(false);
+
+                    //clear badge
+                    this.badge.clear();
+
+                    this.events.publish('user:logout', 'Bye Bye ' + name + '. See you soon!');
+
+
+                    resolve('Logged out');
+                }).catch(error => {
+                    reject(error);
+                });
+            }).catch(error => {
+                reject(error);
+            });
+        });
     };
 
     getUser() {
@@ -51,9 +84,11 @@ export class UserProvider {
     };
 
     setUser(User) {
+        //setting
+        User.id = User.CustomerPortalID + '-' + User.LoginTypeID;
         return this.storage.set('User', User).then((user) => {
-            this.events.publish('user:changed');
-            return user;
+            this._user = user;
+            return this._user;
         });
     };
 
@@ -86,7 +121,50 @@ export class UserProvider {
     };
 
     registerPushID(push_id) {
-        this.connection.doPost('ClientsUsers/registerPush', { push_id: push_id });
+        return new Promise((resolve, reject) => {
+            this.connection.doPost('Account/RegisterDevice', {
+                DeviceID: push_id,
+                IsLogin: push_id !== '',
+            }, false).then(response => {
+                resolve(response);
+            }).catch(error => {
+                reject(error);
+            });
+        });
+    }
+
+    doVersionCheck() {
+        if (!this.platform.is('cordova')) {
+            return;
+        }
+        let OSName = 'ios';
+        if (this.platform.is('android')) {
+            OSName = 'android';
+        }
+        this.connection.doPost('Account/GetMobileOSVersion', { OSName: OSName }, false).then(AppVersion => {
+            if (this.global.AppVersion !== AppVersion) {
+                let alert = this.alertCtrl.create({
+                    title: 'Version Update Available',
+                    message: 'There is a version update please update your application',
+                    buttons: [
+                        {
+                            text: 'NO',
+                        },
+                        {
+                            text: 'YES',
+                            handler: () => {
+                                window.open(this.global.APP_URL[OSName]);
+                            }
+                        }
+                    ]
+                });
+                alert.present();
+            }
+        });
+    }
+
+    isMultipleOffice() {
+        console.log(this._user);
     }
 
 }

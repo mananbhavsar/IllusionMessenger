@@ -1,0 +1,29 @@
+<div class="message" [ngClass]="message.UserID === userID ? 'message-mine' : 'message-other'" on-hold="showRead(message)">
+  <div class="message-header" *ngIf="LoginTypeID !== 1">
+    <div class="message-user">{{message.From}}</div>
+  </div>
+  <div class="message-body">
+    <div class="downloading" *ngIf="!message.downloaded">
+      <ion-spinner name="crescent"></ion-spinner>
+    </div>
+    <ng-container [ngSwitch]="message.MessageType">
+      <div *ngSwitchCase="'Text'" class="text" [innerHTML]="message.Message"></div>
+      <div *ngSwitchCase="'Image'" class="picture" [ngClass]="{'done':message.downloaded}" (click)="openImage(message.URL)">
+        <ion-img *ngIf="message.downloaded" [src]="message.nativeURL" width="160" height="160"></ion-img>
+      </div>
+      <div *ngSwitchCase="'Audio'" class="audio" [ngClass]="{'done':message.downloaded}" (click)="openAudio(message.URL)">
+        <ion-img *ngIf="message.downloaded" src="assets/img/audio.png" width="160" height="160"></ion-img>
+      </div>
+    </ng-container>
+  </div>
+  <div class="message-footer">
+    <div class="message-timestamp">{{ getTime(message.CreateAt)}}</div>
+    <div class="message-status" [ngClass]="'status-' + message.Status" [hidden]="message.UserID !== userID">
+      <ng-container [ngSwitch]="message.Status">
+        <ion-icon *ngSwitchCase="0" name="md-checkmark"></ion-icon>
+        <ion-icon *ngSwitchCase="1" name="md-done-all"></ion-icon>
+        <ion-icon *ngSwitchCase="2" name="md-done-all"></ion-icon>
+      </ng-container>
+    </div>
+  </div>
+</div>

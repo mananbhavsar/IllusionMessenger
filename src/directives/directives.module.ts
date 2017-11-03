@@ -1,10 +1,14 @@
 import { NgModule } from '@angular/core';
-import { PlacesCompleteDirective } from './places-complete/places-complete';
+import { KeyboardAttachDirective } from './keyboard-attach/keyboard-attach';
 @NgModule({
-	declarations: [PlacesCompleteDirective,
-    PlacesCompleteDirective],
-	imports: [],
-	exports: [PlacesCompleteDirective,
-    PlacesCompleteDirective]
+    declarations: [
+        KeyboardAttachDirective,
+    ],
+    imports: [
+        
+    ],
+    exports: [
+        KeyboardAttachDirective,
+    ]
 })
-export class DirectivesModule {}
+export class DirectivesModule { }

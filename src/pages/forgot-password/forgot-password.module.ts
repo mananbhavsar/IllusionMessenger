@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
 import { ForgotPasswordPage } from './forgot-password';
-import { ReachUsComponent } from '../../components/reach-us/reach-us';
+import { ComponentsModule } from '../../components/components.module';
 
 @NgModule({
   declarations: [
@@ -9,7 +9,7 @@ import { ReachUsComponent } from '../../components/reach-us/reach-us';
   ],
   imports: [
     IonicPageModule.forChild(ForgotPasswordPage),
-    ReachUsComponent
+    ComponentsModule,
   ],
 })
 export class ForgotPasswordPageModule {}

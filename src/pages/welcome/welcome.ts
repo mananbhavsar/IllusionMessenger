@@ -26,7 +26,7 @@ export class WelcomePage {
         //checking if logged already
         this.user.hasLoggedIn().then((user) => {
             if (user) {
-                this.events.publish('user:login', user);
+                
             } else {
                 //checking if Tutorial required
                 if (Global.tutorial) {

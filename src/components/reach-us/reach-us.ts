@@ -18,7 +18,7 @@ import { CallNumber } from '@ionic-native/call-number';
 export class ReachUsComponent {
     _address: boolean = false;
     global: any = {};
-    hideContactUsLink: boolean = true;
+    hideContactUsLink: boolean = false;//true
     constructor(
         public nav: NavController,
         public viewConrtoller: ViewController,

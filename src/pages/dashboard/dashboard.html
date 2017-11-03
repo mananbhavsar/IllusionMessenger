@@ -1,0 +1,146 @@
+<ion-header no-border>
+  <header title="Dashboard"></header>
+</ion-header>
+<ion-content no-padding>
+  <ion-refresher (ionRefresh)="initData($event)">
+    <ion-refresher-content pullingIcon="arrow-round-down" pullingText="Pull to refresh" refreshingSpinner="crescent" refreshingText="Refreshing...">
+    </ion-refresher-content>
+  </ion-refresher>
+  <!-- Payment -->
+  <ion-list>
+    <ion-list-header class="list_header">
+      PAYMENT
+    </ion-list-header>
+    <ion-item>
+      <ion-icon name='cash' item-left color="dashboardColor"></ion-icon>
+      OUTSTANDING AMOUNT
+      <ion-note item-right>
+        &#8377; {{roundUp(dashboardData.OutstandingAmount)}}
+      </ion-note>
+    </ion-item>
+    <ion-item>
+      <ion-icon name='cash' item-left color="dashboardColor"></ion-icon>
+      UNBILLED AMOUNT
+      <ion-note item-right>
+        &#8377; {{roundUp(dashboardData.UnbilledAmount)}}
+      </ion-note>
+    </ion-item>
+    <ion-item>
+      <ion-icon name='cash' item-left color="dashboardColor"></ion-icon>
+      LAST BILL AMOUNT
+      <ion-note item-right>
+        &#8377; {{roundUp(dashboardData.LastMonthBillAmount)}}
+      </ion-note>
+    </ion-item>
+  </ion-list>
+
+  <!-- Case -->
+  <ion-list>
+    <ion-list-header class="list_header">
+      CASE
+    </ion-list-header>
+    <ion-item>
+      <ion-icon name='document' item-left color="dashboardColor"></ion-icon>
+      IN PROCESS
+      <ion-note item-right>
+        {{roundUp(dashboardData.InProgress)}}
+      </ion-note>
+    </ion-item>
+    <!-- <ion-item>
+      <ion-icon name='jet' item-left color="dashboardColor"></ion-icon>
+        IN TRANSIT
+      <ion-note item-right>
+       {{roundUp(dashboardData.InTransit)}}
+      </ion-note>
+    </ion-item> -->
+    <ion-item>
+      <ion-icon name='bus' item-left color="dashboardColor"></ion-icon>
+      COMPLETED
+      <ion-note item-right>
+        {{roundUp(dashboardData.JobDelivered)}}
+      </ion-note>
+    </ion-item>
+    <ion-item>
+      <ion-icon name='document' item-left color="dashboardColor"></ion-icon>
+      ALL CASES
+      <ion-note item-right>
+        {{roundUp(dashboardData.Allcases)}}
+      </ion-note>
+    </ion-item>
+  </ion-list>
+
+
+  <!-- QUERY -->
+  <ion-list>
+    <ion-list-header class="list_header">
+      QUERY
+    </ion-list-header>
+    <ion-item>
+      <ion-icon name='md-help-circle' item-left color="dashboardColor"></ion-icon>
+      TODAY'S QUERIES
+      <ion-note item-right>
+        {{roundUp(dashboardData.TodayQueries)}}
+      </ion-note>
+    </ion-item>
+    <ion-item>
+      <ion-icon name='md-help-circle' item-left color="dashboardColor"></ion-icon>
+      PENDING QUERIES
+      <ion-note item-right>
+        {{roundUp(dashboardData.PendingQueries)}}
+      </ion-note>
+    </ion-item>
+    <ion-item>
+      <ion-icon name='md-help-circle' item-left color="dashboardColor"></ion-icon>
+      RESOLVED QUERIES
+      <ion-note item-right>
+        {{roundUp(dashboardData.ClosedQueries)}}
+      </ion-note>
+    </ion-item>
+    <ion-item>
+      <ion-icon name='md-help-circle' item-left color="dashboardColor"></ion-icon>
+      ALL QUERIES
+      <ion-note item-right>
+        {{roundUp(dashboardData.AllQueries)}}
+      </ion-note>
+    </ion-item>
+  </ion-list>
+
+
+
+  <!-- REDO -->
+  <ion-list>
+    <ion-list-header class="list_header">
+      REDO
+    </ion-list-header>
+    <ion-item>
+      <ion-icon name='ios-redo' item-left color="dashboardColor"></ion-icon>
+      IN LAST 12 MONTHS
+      <ion-note item-right>
+        {{roundUp(dashboardData.RedoP_12Months)}}%
+      </ion-note>
+    </ion-item>
+    <ion-item>
+      <ion-icon name='ios-redo' item-left color="dashboardColor"></ion-icon>
+      IN LAST 6 MONTHS
+      <ion-note item-right>
+        {{roundUp(dashboardData.RedoP_6Months)}}%
+      </ion-note>
+    </ion-item>
+    <ion-item>
+      <ion-icon name='ios-redo' item-left color="dashboardColor"></ion-icon>
+      IN LAST 3 MONTHS
+      <ion-note item-right>
+        {{roundUp(dashboardData.RedoP_3Months)}}%
+      </ion-note>
+    </ion-item>
+    <ion-item>
+      <ion-icon name='ios-redo' item-left color="dashboardColor"></ion-icon>
+      IN LAST 30 DAYS
+      <ion-note item-right>
+        {{roundUp(dashboardData.RedoP_30Days)}}%
+      </ion-note>
+    </ion-item>
+  </ion-list>
+
+
+</ion-content>

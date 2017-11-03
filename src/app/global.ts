@@ -1,21 +1,27 @@
 export var Global = {
-    APP_NAME: 'PromptJobs',
+    APP_NAME: 'Illusion Dental',
     tutorial: true,
+    color: { primary: 'D5232F' },
+    AppVersion: '4.0',
     support: {
-        landline: '+91-22-4054 9797',
-        mobile: '+91-8693865830',
-        email: 'hr@promptpersonnel.com',
-        address: '612/613,Palm Spring Centre, Mind Space, New Link Road, Malad (w), Mumbai - 400064',
+        landline: '+91-22-61366301',
+        mobile: '+91-8879522544',
+        email: 'labtech@illusiondentallab.com',
+        address: '402, Akruti Arcade J. P. Road,Opp. A. H. Wadia School, Near Andheri Sport Complex, Andheri (W), Mumbai- 400053.',
     },
     OneSignal: {
-        key: 'cd693ab4-a4ab-4841-b2d3-db2ea758b216',//f246d028-d100-4b72-89d7-5c92c6982061
-        android: '498489911417',
+        key: '4e6dcad0-792d-4897-b4cb-1a7a40540d14',
+        android: '7402421237',
     },
     Rate: {
         show: false,
         ios: '',
         android: ''
     },
-    SERVER_URL: 'http://192.168.5.61/prompt_personnel/mobile/',
+    APP_URL: {
+        android: 'https://play.google.com/store/apps/details?id=com.betterlife.illusionDental',
+        ios: 'https://play.google.com/store/apps/details?id=com.betterlife.illusionDental',
+    },
+    SERVER_URL: 'https://mobileapi.illusiondentallab.com/api/',
     CDN: 'https://d3nwpy9993ruf3.cloudfront.net/',
 }

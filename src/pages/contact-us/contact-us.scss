@@ -6,15 +6,6 @@ page-contact-us {
             margin-right: -2rem;
             margin-top: 1rem;
         }
-        img {
-            display: block;
-            margin: 1em auto;
-        }
-        .logo {
-            width: 20em;
-            height: 10em;
-            padding: $logo-padding;
-        }
         #login-box {
             width: 80%;
             margin: 0 auto;
@@ -28,13 +19,5 @@ page-contact-us {
         text-decoration: none;
         margin-top: 1rem;
         display: block;
-    }
-    .button {
-        text-transform: uppercase;
-        border-radius: 3rem;
-        width: 100%;
-        height: 5rem;
-        font-size: 1.4rem;
-        margin-bottom: 1rem;
     }
 }

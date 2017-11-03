@@ -1,36 +1,35 @@
 <ion-content class="login">
     <ion-grid class="slide_header">
 
-        <ion-row>
-            <img class="logo" src="assets/img/logo.png">
-        </ion-row>
+        <logo></logo>
         <ion-row>
             <div id="login-box">
                 <form>
                     <ion-list>
                         <ion-item>
-                            <ion-label ion-text color="primary" floating>Email Address</ion-label>
-                            <ion-input autofocus required [(ngModel)]="login.email_address" #email_address="ngModel" type="email" placeholder="Email Address" name="email_address"></ion-input>
-                        </ion-item> 
+                            <ion-label ion-text color="primary" floating>Username</ion-label>
+                            <ion-input autofocus required [(ngModel)]="login.username" #username="ngModel" type="text" placeholder="Username"
+                                name="username"></ion-input>
+                        </ion-item>
                         <ion-item>
                             <ion-label ion-text color="primary" floating>Password</ion-label>
                             <ion-input required [(ngModel)]="login.password" #password="ngModel" type="password" placeholder="Password" name="password"></ion-input>
                         </ion-item>
                     </ion-list>
-                    <button ion-button block (click)="doLogin()">Log in</button>
+                    <button ion-button block color="button" (click)="doLogin()">Log in</button>
                 </form>
             </div>
+
         </ion-row>
 
         <ion-row>
-            <ion-col text-center>
+            <ion-col text-center class="inline-links">
                 <a class="display-inline" (click)="onForgotPassword()">Forgot Password?</a>
-                <span [hidden]="!global.showRegisterNow">&nbsp; | &nbsp; </span>
-                <a class="display-inline register-now" (click)="onRegister()" [hidden]="!global.showRegisterNow">Register Now</a>
             </ion-col>
         </ion-row>
 
-        <img src="assets/img/or.png">
+        <or></or>
+
         <reach-us></reach-us>
     </ion-grid>
 

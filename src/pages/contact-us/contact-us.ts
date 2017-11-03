@@ -11,7 +11,7 @@ import { ConnectionProvider } from '../../providers/connection/connection';
   templateUrl: 'contact-us.html',
 })
 export class ContactUsPage {
-  contact: { full_name?: string, mobile_number?: string, email_address?: string, message?: string} = {};
+  contact: { full_name?: string, mobile_number?: string, email_address?: string, message?: string } = {};
   contactForm: FormGroup;
   global: any = {};
 
@@ -32,16 +32,13 @@ export class ContactUsPage {
 
 
   saveContactUs() {
-    this.events.publish('loading:create', 'sending details!');
-    this.connection.doPost('Contacts/save', this.contact).subscribe(response => {
+    this.connection.doPost('Contacts/save', this.contact, 'sending details!').then(response => {
       this.events.publish('loading:close');
       this.dismiss(response);
-    }, error => {
-      this.events.publish('toast:error', error);
     });
   }
 
-  dismiss(data:any){
+  dismiss(data: any) {
     this.viewCtrl.dismiss(data);
   }
 

@@ -1,0 +1,75 @@
+<ion-header no-border (touchstart)="closeKeyboard()">
+  <header [title]="title"></header>
+  <ion-toolbar *ngIf="subTitle" class="sub-header">
+    <ion-title>{{subTitle}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="chat" delegate-handle="chatScroll" (touchstart)="closeKeyboard()">
+  <div class="message-list">
+    <div class="no-more" *ngIf="showNoMoreMessages">no more to show</div>
+    <chat-bubble *ngFor="let message of messages | async" class="message-wrapper" [message]="message" [userID]="userID" [ticket]="ticket" [users]="chatUsers" [LoginTypeID]="user.LoginTypeID"></chat-bubble>
+  </div>
+  <div class="typing-container">
+      <div class="typing" *ngFor="let typingUserId of userTyping | keys" [hidden]="userTyping[typingUserId] === false || typingUserId === userID">{{chatUsers[typingUserId] | json}} typing</div>
+  </div>
+
+</ion-content>
+<ion-footer class="bar-stable footer-chat item-input-inset">
+  <ng-container *ngIf="aboutToRecord === false">
+    <button ion-button clear icon-only (click)="openUploadOptions()">
+      <ion-icon name="ios-add-outline"></ion-icon>
+    </button>
+
+    <label class="item-input-wrapper" [ngClass]="{'send': message.length > 0}">
+      <ion-textarea rows="1" #messageInput  fz-elastic [(ngModel)]="message" dir="auto" (keyup)="keyup($event)" (focus)="onFocus($event)" (blur)="onBlur($event)"></ion-textarea>
+    </label>
+
+    <span *ngIf="message.length > 0">
+      <button (click)="sendTextMessage()" class="send-button" round ion-button small>
+        send
+      </button>
+    </span>
+    <span *ngIf="!message || message.length === 0">
+      <button (click)="captureImage()" clear ion-button icon-only>
+        <ion-icon name="ios-camera-outline"></ion-icon>
+      </button>
+      <button class="buttons-seperator" ion-button clear icon-only>
+        <ion-icon name="md-more"></ion-icon>
+      </button>
+      <button (click)="captureAudio()" ion-button clear icon-only>
+        <ion-icon name="ios-mic-outline"></ion-icon>
+      </button>
+    </span>
+  </ng-container>
+  <ng-container *ngIf="aboutToRecord === true">
+    <ion-grid no-padding class="recording">
+      <ion-row no-padding align-items-center>
+        <ion-col text-start align-self-center no-padding>
+          <button ion-button clear icon-only [color]="recordingInProgress?'primary':'dark'">
+            <ion-icon name="ios-mic"></ion-icon>
+          </button>
+          <span class="timer">&nbsp;&nbsp;{{getRecordTime()}}</span>
+        </ion-col>
+        <ion-col text-end align-self-center no-padding>
+          <button ion-button small [hidden]="recordingInProgress" (click)="startRecording()" color="secondary">
+            record
+          </button>
+          <button ion-button small [hidden]="recordingInProgress" (click)="closeRecording()">
+            close
+          </button>
+          <button ion-button small [hidden]="!recordingInProgress" (click)="stopRecording()">
+            stop
+          </button>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </ng-container>
+</ion-footer>
+
+<div class="file-uploader-progress" *ngIf="progressPercent > 0">
+  <div class="progress-outer">
+    <div class="progress-inner" [style.width]="progressPercent + '%'">
+      {{progressPercent}}%
+    </div>
+  </div>
+</div>

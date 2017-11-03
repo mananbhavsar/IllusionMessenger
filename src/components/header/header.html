@@ -1,11 +1,11 @@
-<ion-navbar color="primary">
+<ion-navbar [color]="getColor()">
     <button ion-button menuToggle>
         <ion-icon name="menu"></ion-icon>
     </button>
     <ion-title>{{_title}}</ion-title>
-    <ion-buttons end>
-        <button ion-button (click)="openSearch()">
-                <ion-icon name="ios-search"></ion-icon>
+    <ion-buttons end *ngIf="buttons">
+        <button ion-button (click)="sendButtonClicked(button, $event)" clear icon-only color="light" *ngFor="let button of buttons">
+            <ion-icon [name]="button.icon"></ion-icon>
         </button>
     </ion-buttons>
 </ion-navbar>

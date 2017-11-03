@@ -19,7 +19,11 @@ export class LogoutPage {
     }
 
     ionViewDidLoad() {
-        this.user.logout();
+        this.user.logout().then(response => {
+            console.log(response);
+        }).catch(error => {
+            console.log(error);
+        });
     }
 
 }

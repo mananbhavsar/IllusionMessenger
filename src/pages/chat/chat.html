@@ -1,16 +1,17 @@
-<ion-header no-border (touchstart)="closeKeyboard()">
+<ion-header no-border (touchstart)="closeKeyboard($event)">
   <header [title]="title"></header>
   <ion-toolbar *ngIf="subTitle" class="sub-header">
     <ion-title>{{subTitle}}</ion-title>
   </ion-toolbar>
 </ion-header>
-<ion-content class="chat" delegate-handle="chatScroll" (touchstart)="closeKeyboard()">
+<ion-content class="chat" delegate-handle="chatScroll" (touchstart)="closeKeyboard($event)">
   <div class="message-list">
     <div class="no-more" *ngIf="showNoMoreMessages">no more to show</div>
-    <chat-bubble *ngFor="let message of messages | async" class="message-wrapper" [message]="message" [userID]="userID" [ticket]="ticket" [users]="chatUsers" [LoginTypeID]="user.LoginTypeID"></chat-bubble>
+    <chat-bubble *ngFor="let message of messages | async" class="message-wrapper" [message]="message" [userID]="userID" [ticket]="ticket"
+      [users]="chatUsers" [LoginTypeID]="user.LoginTypeID"></chat-bubble>
   </div>
   <div class="typing-container">
-      <div class="typing" *ngFor="let typingUserId of userTyping | keys" [hidden]="userTyping[typingUserId] === false || typingUserId === userID">{{chatUsers[typingUserId] | json}} typing</div>
+    <div class="typing" *ngFor="let typingUserId of userTyping | keys" [hidden]="userTyping[typingUserId] === false || typingUserId === userID">{{chatUsers[typingUserId]['Name']}} typing</div>
   </div>
 
 </ion-content>
@@ -21,11 +22,13 @@
     </button>
 
     <label class="item-input-wrapper" [ngClass]="{'send': message.length > 0}">
-      <ion-textarea rows="1" #messageInput  fz-elastic [(ngModel)]="message" dir="auto" (keyup)="keyup($event)" (focus)="onFocus($event)" (blur)="onBlur($event)"></ion-textarea>
+      <!-- fz-elastic -->
+      <ion-textarea rows="1" #messageInput [(ngModel)]="message" dir="auto" (keyup)="keyup($event)" (focus)="onFocus($event)"
+        (blur)="onBlur($event)"></ion-textarea>
     </label>
 
     <span *ngIf="message.length > 0">
-      <button (click)="sendTextMessage()" class="send-button" round ion-button small>
+      <button (click)="sendTextMessage($event)" class="send-button" round ion-button small>
         send
       </button>
     </span>

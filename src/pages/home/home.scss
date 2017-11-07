@@ -1,5 +1,13 @@
 page-home {
-    .homescreenDivision, .homescreenDivision1 {
-        min-height: 100px;
+    .homescreenDivision,
+    .homescreenDivision1 {
+        display: flex;
+        justify-content: center;
+    }
+    .homescreenDivision {
+        min-height: 25%;
+    }
+    .homescreenDivision1 {
+        min-height: 50%;
     }
 }

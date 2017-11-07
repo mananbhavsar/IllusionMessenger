@@ -11,7 +11,7 @@ import { OrComponent } from "./or/or";
 import { ProgressBarComponent } from "./progress-bar/progress-bar";
 import { CallFabComponent } from './call-fab/call-fab';
 import { ChatBubbleComponent } from './chat-bubble/chat-bubble';
-
+import { IonicAudioModule } from 'ionic-audio';
 import { IonicImageLoader } from 'ionic-image-loader';
 @NgModule({
     declarations: [EmptyComponent,
@@ -28,6 +28,7 @@ import { IonicImageLoader } from 'ionic-image-loader';
     imports: [
         MomentModule,
         IonicImageLoader,
+        IonicAudioModule,
         IonicPageModule.forChild(EmptyComponent),
         IonicPageModule.forChild(ReachUsComponent),
         IonicPageModule.forChild(CenterSpinnerComponent),

@@ -65,6 +65,7 @@ import { ElasticModule } from 'ng-elastic';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabaseModule, AngularFireDatabase } from 'angularfire2/database';
 import { AngularFireAuthModule } from 'angularfire2/auth';
+import { IonicAudioModule, WebAudioProvider, CordovaMediaProvider, defaultAudioProviderFactory } from 'ionic-audio';
 
 export const firebaseConfig = {
     apiKey: "AIzaSyAeAsx1UOrRVQ9m9zlwvmHiTsCuvLtO-J4",
@@ -93,6 +94,7 @@ export const firebaseConfig = {
         AngularFireModule.initializeApp(firebaseConfig),
         AngularFireDatabaseModule,
         AngularFireAuthModule,
+        IonicAudioModule.forRoot(defaultAudioProviderFactory),
         AboutPageModule,
         AccountPageModule,
         CaseStatusPageModule,

@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { Platform, Events, normalizeURL } from 'ionic-angular';
+import { Platform, NavController, Events, normalizeURL } from 'ionic-angular';
 import { Observable } from 'rxjs/Observable';
 import * as firebase from 'firebase';
 import { AngularFireDatabase } from 'angularfire2/database';
@@ -10,6 +10,7 @@ import { File } from '@ionic-native/file';
 import { FileOpener } from '@ionic-native/file-opener';
 import * as moment from 'moment';
 
+import { AudioProvider } from 'ionic-audio';
 
 @Component({
   selector: 'chat-bubble',
@@ -24,8 +25,9 @@ export class ChatBubbleComponent {
 
   basePath: string = '';
   messagePath: string = '';
-  messageRef = null;
+  statusRef = null;
   dataDirectory: string = null;
+  selectedTrack: number;
   constructor(
     public angularFireDB: AngularFireDatabase,
     private file: File,
@@ -33,9 +35,18 @@ export class ChatBubbleComponent {
     private platform: Platform,
     private events: Events,
     private fileOpener: FileOpener,
+    private _audioProvider: AudioProvider,
+    private navCtlr: NavController,
   ) {
     this.dataDirectory = this.platform.is('android') ? this.file.externalDataDirectory : this.file.dataDirectory;
 
+    //listening to page change event to pause audio
+    this.navCtlr.viewWillLeave.subscribe(event => {
+      this.pauseSelectedTrack();
+    });
+    this.events.subscribe('platform:onPause', (event) => {
+      this.pauseSelectedTrack();
+    });
   }
 
   ngOnInit() {
@@ -45,12 +56,16 @@ export class ChatBubbleComponent {
     this.doReading();
 
     this.processFile();
+
+    this.processBadgeCount();
   }
 
   doReading() {
     //adding myself to read list
-    if (this.message.Read && this.userID in this.message.Read && this.message.Status !== 2) { //already read by me & not 2 already
-      this.updateStatus();
+    if (this.message.Read && this.userID in this.message.Read) {//already read by me
+      if (this.message.Status !== 2) { // & not 2 already
+        this.updateStatus();
+      }
     } else {
       //now making it read by me
       this.angularFireDB.object(this.messagePath + '/Read/' + this.userID).set(firebase.database.ServerValue.TIMESTAMP);
@@ -86,38 +101,42 @@ export class ChatBubbleComponent {
         }
       }
       if (status > 0) {
-        this.messageRef = this.angularFireDB.object(this.messagePath + '/Status').set(status);
+        this.angularFireDB.object(this.messagePath + '/Status').set(status);
       }
     }
   }
 
   openImage(url) {
     //checking if file exist
-    this.openFile(url);
+    this.check(url).then((entry: any) => {
+      this.openFileInApp(entry.nativeURL);
+    });
   }
 
-  openAudio(url) {
-    this.openFile(url);
+  openAudio(message) {
+
   }
 
-  openFile(file) {
-    this.isFileDownloaded(file).then(status => {
-      this.openFileInApp(file);
-    }).catch(error => {
-      this.events.publish('loading:create', 'downloading');
-      this.downloadFile(file).then((entry: any) => {
-        this.events.publish('loading:close');
-        this.openFileInApp(entry.nativeURL);
+  check(file) {
+    return new Promise((resolve, reject) => {
+      this.isFileDownloaded(file).then(status => {
+        resolve(status);
       }).catch(error => {
-        this.events.publish('loading:close');
-        this.events.publish('toast:error', error);
-      })
+        this.events.publish('loading:create', 'downloading');
+        this.downloadFile(file).then((entry: any) => {
+          this.events.publish('loading:close');
+          resolve(entry);
+        }).catch(error => {
+          this.events.publish('loading:close');
+          this.events.publish('toast:error', error);
+          reject(error);
+        })
+      });
     });
   }
 
   openFileInApp(file) {
     //opening
-
     this.fileOpener.open(this.getNativeURL(file), mime.lookup(file)).then(status => {
     }).catch(error => {
       this.events.publish('toast:error', error);
@@ -128,17 +147,37 @@ export class ChatBubbleComponent {
     //downloading file
     if (this.message.URL) {
       //if cordova
+      if (this.platform.is('cordovaaa')) {
+
+      } else {
+        this.message.downloaded = true;
+        this.message.nativeURL = this.message.URL;
+        this.makeTrackForAudio();
+      }
+    } else {
+      this.message['downloaded'] = true;
+    }
+  }
+
+  _processFile() {
+    //downloading file
+    if (this.message.URL) {
+      //if cordova
       if (this.platform.is('cordova')) {
         let file = this.message.URL;
 
         this.isFileDownloaded(file).then(status => {
           this.message['downloaded'] = true;
           this.message.nativeURL = this.getNativeURL(file);
+
+          this.makeTrackForAudio();
         }).catch(error => {
           this.message['downloaded'] = false;
-          this.downloadFile(file).then(entry => {
+          this.downloadFile(file).then((entry: any) => {
             this.message.downloaded = true;
-            this.message.nativeURL = this.getNativeURL(file);
+            this.message.nativeURL = this.getNativeURL(entry.nativeURL);
+
+            this.makeTrackForAudio();
           }).catch(error => {
             this.message.downloaded = false;
             this.message['error'] = error;
@@ -148,6 +187,7 @@ export class ChatBubbleComponent {
       } else {
         this.message.downloaded = true;
         this.message.nativeURL = this.message.URL;
+        this.makeTrackForAudio();
       }
     } else {
       this.message['downloaded'] = true;
@@ -214,6 +254,73 @@ export class ChatBubbleComponent {
   }
 
   showRead(message) {
-    console.log(message.Read);
+    if (this.LoginTypeID === 3) {
+      console.log(message.Read);
+    }
+  }
+
+  /**
+   * This will reduce badge count if message is newly sent & read first time
+   */
+  processBadgeCount() {
+    if (this.message.BadgeCount) {
+      //checking if not already reduced
+      if (this.userID in this.message.BadgeCount && this.message.BadgeCount[this.userID]) {//in list && not yet made false
+        //making it false first
+        this.message.BadgeCount[this.userID] = false;
+        this.angularFireDB.object(this.messagePath + '/BadgeCount/' + this.userID).set(false);
+
+        //not reducing badge count from communication & total
+        this.reduceCount('CommunicationCount');
+        this.reduceCount('Total');
+
+      }
+    }
+  }
+
+  reduceCount(path) {
+    let ref = firebase.database().ref('Badge/' + this.userID + '/' + path);
+    ref.transaction(function (count) {
+      count = count || 0;
+      if (count === 0) {
+        return count;
+      }
+      return count - 1;
+    });
+  }
+
+  makeTrackForAudio() {
+    this.message.audioTrack = {
+      src: this.message.nativeURL
+    };
+  }
+
+  playSelectedTrack(trackId) {
+    // use AudioProvider to control selected track 
+    this._audioProvider.play(this.selectedTrack);
+  }
+
+  pauseSelectedTrack() {
+    // use AudioProvider to control selected track 
+    this._audioProvider.pause(this.selectedTrack);
+  }
+
+  togglePlay(audioTrack) {
+    if (audioTrack.isPlaying) {
+      audioTrack.pause()
+    } else {
+      //pause other playing video
+      if (this.selectedTrack !== audioTrack.id) {
+        this._audioProvider.pause();
+        // this.selectedTrack = audioTrack.id;
+        audioTrack.play();
+      } else {
+        audioTrack.play()
+      }
+    }
+  }
+
+  onTrackFinished(track: any) {
+
   }
 }

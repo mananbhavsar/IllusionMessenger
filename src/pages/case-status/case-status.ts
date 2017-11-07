@@ -17,8 +17,8 @@ export class CaseStatusPage {
   status = {
     'All': { label: 'All', color: 'danger' },
     'In Process': { label: 'In Process', color: 'danger' },
-    'Job Delivered': { label: 'READY TO DELIVERY', color: 'danger' },
-    'Job Dispatched': { label: 'DISPATCHED', color: 'secondary' }
+    'Job Delivered': { label: 'Reay To Deliver', color: 'danger' },
+    'Job Dispatched': { label: 'Dispatched', color: 'secondary' }
   };
   selectedOffice: any = {};
   selectedTab = 'All';
@@ -26,6 +26,7 @@ export class CaseStatusPage {
   items: any = [];
   itemsSearchCopy: any = [];
   showSearchBar: boolean = true;
+  loginType: number = 0;
   constructor(
     public navCtrl: NavController,
     public offliceList: OfficeServiceProvider,
@@ -33,7 +34,7 @@ export class CaseStatusPage {
     public connection: ConnectionProvider,
     public modalCtrl: ModalController,
   ) {
-
+    this.loginType = this.connection.user.LoginTypeID;
   }
 
   ionViewDidLoad() {
@@ -131,6 +132,9 @@ export class CaseStatusPage {
     //only for Dispatched
     if (item.Status === 'Job Dispatched') {
       let modal = this.modalCtrl.create(CaseStatusModalPage, item);
+      modal.onDidDismiss(data => {
+        item.IsNew = 0;
+      });
       modal.present();
     }
   }
@@ -158,7 +162,8 @@ export class CaseStatusPage {
   headerButtonClicked(event) {
     if (event.icon === 'search') {
       this.showSearchBar = !this.showSearchBar;
-      this.content.resize();
+      this.scrollToTop();
+      this.selectedTab = 'All';
     }
   }
 }

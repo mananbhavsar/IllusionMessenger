@@ -65,9 +65,9 @@ export class MyApp {
     // the left menu only works after login
     // the login page disables the left menu
     appPages: PageInterface[] = [
-        { title: 'About', name: 'AboutPage', component: AboutPage, icon: 'info-circle' },
-        { title: 'Contact', name: 'ContactUsPage', component: ContactUsPage, icon: 'envelope' },
-        { title: 'Help', name: 'HelpPage', component: HelpPage, icon: 'question-circle' },
+        { title: 'About', name: 'AboutPage', component: AboutPage, icon: 'information-circle' },
+        // { title: 'Contact', name: 'ContactUsPage', component: ContactUsPage, icon: 'mail' },
+        { title: 'Help', name: 'HelpPage', component: HelpPage, icon: 'help-circle' },
     ];
     loggedInPages: PageInterface[] = [
         { title: 'Home', name: 'HomePage', component: HomePage, icon: 'home' },
@@ -78,11 +78,11 @@ export class MyApp {
     ];
     accountPages: PageInterface[] = [
         // { title: 'Account', name: 'AccountPage', component: AccountPage, icon: 'user' },
-        { title: 'Logout', name: 'LogoutPage', component: LogoutPage, icon: 'sign-out', logsOut: true }
+        { title: 'Logout', name: 'LogoutPage', component: LogoutPage, icon: 'log-out', logsOut: true }
     ];
     loggedOutPages: PageInterface[] = [
-        { title: 'Login', name: 'LoginPage', component: LoginPage, icon: 'sign-in' },
-        { title: 'Forgot Password', name: 'ForgotPassword', component: ForgotPasswordPage, icon: 'key' },
+        { title: 'Login', name: 'LoginPage', component: LoginPage, icon: 'log-in' },
+        { title: 'Forgot Password', name: 'ForgotPasswordPage', component: ForgotPasswordPage, icon: 'key' },
     ];
 
     constructor(
@@ -112,10 +112,10 @@ export class MyApp {
             this._statusBar.backgroundColorByHexString(Global.color.primary);
             splashScreen.hide();
 
-            this.enableMenu(true);
+            this.enableMenu(false);
             this.listenToGobalEvents();
             this.listenToLoginEvents();
-            this._keyboard.hideKeyboardAccessoryBar(true);
+            this._keyboard.hideKeyboardAccessoryBar(false);
 
             setTimeout(() => {
                 this.initPreLoginPlugins();
@@ -294,7 +294,7 @@ export class MyApp {
 
     initPostLoginPlugins() {
         //Location
-        this.initLocation();
+        //this.initLocation();
 
         //OneSignal
         this.initOneSignal();
@@ -370,6 +370,53 @@ export class MyApp {
         });
     }
 
+    openNotificationPage(payload) {
+        //do we need to open page
+        if (payload.additionalData && payload.additionalData.page) {
+            let page: any = null;
+            switch (payload.additionalData.page) {
+                case 'ChatPage':
+                    page = ChatPage;
+                    break;
+
+                default:
+                    page = HomePage;
+                    break;
+            }
+            if (page) {
+                this.nav.push(page, payload.additionalData.params);
+            }
+        }
+    }
+
+    processNotification(notification, directOpenPage) {
+        let payload = 'payload' in notification ? notification.payload : notification.notification.payload;
+        console.log(payload, directOpenPage);
+        //showing notification  alert if not chatting else giving control to Caht module to handle it
+        if (this.nav.getActive().component.name === 'ChatPage') {
+            this.events.publish('notification:chat', payload);
+        }else if (directOpenPage && payload.additionalData && payload.additionalData.page) {//direct open & has data pages
+            this.openNotificationPage(payload);
+        } else {
+            let notificationAlert = this.alertCtrl.create({
+                title: payload.title,
+                message: payload.body,
+                buttons: [
+                    {
+                        text: 'Open',
+                        handler: () => {
+                            this.openNotificationPage(payload);
+                        }
+                    },
+                    {
+                        text: 'Cancel',
+                        role: 'cancel',
+                    }
+                ]
+            });
+            notificationAlert.present();
+        }
+    }
     initOneSignal() {
         if (!this.platform.is('cordova')) {
             return;
@@ -393,56 +440,18 @@ export class MyApp {
         });
         this._oneSignal.handleNotificationReceived().subscribe((notification) => {
             // do something when notification is received
-            this.events.publish('notification:process', notification);
+            this.processNotification(notification, false);
         });
 
         this._oneSignal.handleNotificationOpened().subscribe((notification) => {
             // do something when a notification is opened
-            this.events.publish('notification:process', notification);
+            this.processNotification(notification, true)
         });
 
         this._oneSignal.endInit();
 
-        this.events.subscribe('notification:process', (notification) => {
-            let payload = 'payload' in notification ? notification.payload : notification.notification.payload;
-            console.log(payload);
-            //showing notification  alert if not chatting else giving control to Caht module to handle it
-            if (this.nav.getActive().name === 'ChatPage') {
-                this.events.publish('notification:chat', payload);
-            } else {
-                let notificationAlert = this.alertCtrl.create({
-                    title: payload.title,
-                    message: payload.body,
-                    buttons: [
-                        {
-                            text: 'Open',
-                            handler: () => {
-                                //do we need to open page
-                                if (payload.additionalData && payload.additionalData.page) {
-                                    let page: any = null;
-                                    switch (payload.additionalData.page) {
-                                        case 'ChatPage':
-                                            page = ChatPage;
-                                            break;
+        this.events.subscribe('notification:process', (notification, directOpenPage) => {
 
-                                        default:
-                                            page = HomePage;
-                                            break;
-                                    }
-                                    if (page) {
-                                        this.nav.push(page, payload.additionalData.params);
-                                    }
-                                }
-                            }
-                        },
-                        {
-                            text: 'Cancel',
-                            role: 'cancel',
-                        }
-                    ]
-                });
-                notificationAlert.present();
-            }
         });
     }
 

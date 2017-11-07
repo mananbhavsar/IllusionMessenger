@@ -10,6 +10,7 @@ import { Storage } from '@ionic/storage';
 })
 export class OfficeListPage {
   officeList: any = [];
+  officeListCopy: any = [];
   searchText: String = "";
   modelFlagName: String = "";
 
@@ -20,12 +21,13 @@ export class OfficeListPage {
     public storage: Storage,
     public platform: Platform,
   ) {
-    
+
   }
 
   ionViewDidLoad() {
     this.storage.get('OfficeList').then((officeList) => {
       this.officeList = officeList;
+      this.officeListCopy = officeList;
     });
   }
 
@@ -34,6 +36,10 @@ export class OfficeListPage {
   }
 
   getItems(searchText) {
+    //init
+    this.officeList = this.officeListCopy;
+
+    //search
     if (searchText && searchText.trim() != '') {
       this.officeList = this.officeList.filter((item) => {
         return (item.Description.toLowerCase().indexOf(searchText.toLowerCase()) > -1);

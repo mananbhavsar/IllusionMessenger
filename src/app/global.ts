@@ -19,9 +19,9 @@ export var Global = {
         android: ''
     },
     APP_URL: {
-        android: 'https://play.google.com/store/apps/details?id=com.betterlife.illusionDental',
-        ios: 'https://play.google.com/store/apps/details?id=com.betterlife.illusionDental',
-    },
+        android: 'https://play.google.com/store/apps/details?id=com.com.illusiondental.app',
+	ios: 'https://itunes.apple.com/us/app/illusion-dental/id1307823684?mt=8'   
+ },
     SERVER_URL: 'https://mobileapi.illusiondentallab.com/api/',
     CDN: 'https://d3nwpy9993ruf3.cloudfront.net/',
 }

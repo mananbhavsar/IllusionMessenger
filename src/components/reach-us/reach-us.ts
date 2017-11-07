@@ -18,7 +18,7 @@ import { CallNumber } from '@ionic-native/call-number';
 export class ReachUsComponent {
     _address: boolean = false;
     global: any = {};
-    hideContactUsLink: boolean = false;//true
+    hideContactUsLink: boolean = true;
     constructor(
         public nav: NavController,
         public viewConrtoller: ViewController,
@@ -32,7 +32,7 @@ export class ReachUsComponent {
             //checking if page is Contact us or Enquiry Add
             let activeComponentName = this.nav.getActive().data.component ? this.nav.getActive().data.component.name : this.nav.getActive().component.name;
             if (['ContactUsPage', 'EnquiryAddPage'].indexOf(activeComponentName) === -1) {
-                this.hideContactUsLink = false;
+                this.hideContactUsLink = true;
             }
         })
         this.global = Global;

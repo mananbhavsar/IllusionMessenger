@@ -10,6 +10,7 @@ page-communication {
         ion-label {
             width: 100%;
             padding: 0;
+            margin: 5px 8px 5px 0;
             h2 {
                 display: block;
                 width: 100%;
@@ -42,6 +43,11 @@ page-communication {
         }
         ion-icon {
             color: #999;
+        }
+    }
+    ion-item-divider {
+        ion-label {
+            margin: 5px;
         }
     }
 }

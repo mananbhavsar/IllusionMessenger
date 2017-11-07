@@ -69,6 +69,7 @@ export class ConnectionProvider {
                         break;
                 }
             }, (error) => {
+                console.log(error);
                 if (loader) {
                     this.events.publish('loading:close');
                 }

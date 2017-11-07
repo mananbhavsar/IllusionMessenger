@@ -76,13 +76,37 @@ chat-bubble {
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    width: 160px;
-                    height: 160px;
+                    width: 100%;
+                    height: 50px;
                     ion-img {
                         background: transparent;
                         img {
                             display: block;
                             margin: 16px auto;
+                        }
+                    }
+                }
+                audio-track {
+                    ion-item {
+                        background: transparent;
+                        .item-inner {
+                            border: 0 none;
+                            ion-label {
+                                display: none;
+                            }
+                            ion-grid {
+                                padding: 0;
+                                ion-col {
+                                    padding: 5px 5px 0;
+                                    .control-button {}
+                                    audio-track-progress-bar {
+                                        margin-top: 7px;
+                                        time {
+                                            display: none;
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -107,7 +131,10 @@ chat-bubble {
                     color: grey
                 }
                 &.status-2 {
-                    color: blue;
+                    color: #4fc3f7;
+                }
+                ion-icon{
+                    font-size: 1.4em;
                 }
             }
         }

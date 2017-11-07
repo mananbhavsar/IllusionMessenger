@@ -13,47 +13,47 @@
     <ion-list>
       <ion-item>
         <ion-icon name="ios-medical" item-start></ion-icon>
-        {{item.Patient}}
-        <ion-note item-end>Patient</ion-note>
+        Patient
+        <ion-note item-end>{{item.Patient}}</ion-note>
       </ion-item>
       <ion-item>
         <ion-icon name="ios-calendar" item-start></ion-icon>
-        {{item.formatedDispatchDate}}
-        <ion-note item-end>Dispatch Date</ion-note>
+        Dispatch Date
+        <ion-note item-end>{{item.formatedDispatchDate}}</ion-note>
       </ion-item>
       <ion-item>
         <ion-icon name="ios-bus" item-start></ion-icon>
-        {{item.JobDeliveryMode}}
-        <ion-note item-end>Delivery Mode</ion-note>
+        Delivery Mode
+        <ion-note item-end>{{item.JobDeliveryMode}}</ion-note>
       </ion-item>
-      <ion-item-group>
-          <ion-item-divider *ngIf="item.JobDeliveryMode === 'Delivery Person'" color="light">
-            {{item.JobDeliveryMode}}
-          </ion-item-divider>
+      <ion-item-group *ngIf="item.JobDeliveryMode === 'Delivery Person'">
+        <ion-item-divider *ngIf="item.JobDeliveryMode === 'Delivery Person'" color="light">
+          {{item.JobDeliveryMode}} Details
+        </ion-item-divider>
         <ion-item>
           <ion-icon name="ios-person" item-start></ion-icon>
-          {{item.DeliveryBoyEmployee}}
-          <ion-note item-end>Person Name</ion-note>
+          Person Name
+          <ion-note item-end>{{item.DeliveryBoyEmployee}}</ion-note>
         </ion-item>
         <ion-item (click)="callNumber(item.MobileNo)">
           <ion-icon name="ios-call" item-start></ion-icon>
-          {{item.MobileNo}}
-          <ion-note item-end>Mobile Number</ion-note>
+          Mobile Number
+          <ion-note item-end>{{item.MobileNo}}</ion-note>
         </ion-item>
       </ion-item-group>
-      <ion-item-group>
+      <ion-item-group *ngIf="item.JobDeliveryMode == 'Courier'">
         <ion-item-divider *ngIf="item.JobDeliveryMode == 'Courier'" color="light">
-          {{item.JobDeliveryMode}}
+          {{item.JobDeliveryMode}} Details
         </ion-item-divider>
         <ion-item>
           <ion-icon name="ios-document" item-start></ion-icon>
-          {{item.Courier}}
-          <ion-note item-end>Courier</ion-note>
+          Courier
+          <ion-note item-end>{{item.Courier}}</ion-note>
         </ion-item>
         <ion-item (click)="openURL(item.TrackingURL)">
           <ion-icon name="logo-steam" item-start></ion-icon>
-          {{item.TrackingNo}}
-          <ion-note item-end>Tracking No</ion-note>
+          Tracking No
+          <ion-note item-end>{{item.TrackingNo}}</ion-note>
         </ion-item>
       </ion-item-group>
     </ion-list>

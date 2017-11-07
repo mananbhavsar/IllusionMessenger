@@ -5,6 +5,7 @@ import { OfficeServiceProvider } from "../../providers/office-service/office-ser
 import { ConnectionProvider } from "../../providers/connection/connection";
 
 import * as moment from 'moment';
+import * as firebase from 'firebase';
 import { TimeSlots } from "./timeSlots";
 
 import { HomePage } from "../home/home";
@@ -79,7 +80,7 @@ export class PickupPage {
   }
 
   isDisabled(time) {
-    if (this.selectedTab === '1') { //no disable to all
+    if (this.selectedTab === '1') { //no disable to all for tomorrow
       return false;
     } else {
       /**
@@ -110,10 +111,29 @@ export class PickupPage {
       CreatedByID: this.connection.user.CustomerPortalID,
     }).then(() => {
       this.events.publish('alert:basic', 'Request Sent!', 'Your request has been received. You will get confirmation once accepted along with pickup person contact detail.');
+
+      //Increment count
+      this.increaseCount('PickUpCount');
+      this.increaseCount('Total');
+
       this.navCtrl.setRoot(HomePage);
     });
 
     this.time = null;
     this.disablePickupButton = true;
+  }
+
+  /**
+   * This will increase badge count if pick set
+   */
+  increaseCount(path) {
+    let ref = firebase.database().ref('Badge/' + this.connection.user.id + '/' + path);
+    ref.transaction(function (count) {
+      count = count || 0;
+      if (count === 0) {
+        return count;
+      }
+      return count + 1;
+    });
   }
 }

@@ -31,10 +31,16 @@ page-case-status {
             }
         }
     }
+    ion-item-divider{
+        ion-label{
+            margin: 5px;
+        }
+    }
     ion-list.cases {
         ion-label {
             width: 100%;
             padding: 0;
+            margin: 5px 8px 5px 0;
             h2 {
                 display: block;
                 width: 100%;

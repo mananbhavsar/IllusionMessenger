@@ -21,12 +21,13 @@
 </ion-header>
 <ion-content padding>
     <center-spinner [hidden]="items"></center-spinner>
-    <ion-list  class="cases">
+    <ion-list class="cases">
         <ion-item *ngFor="let item of items" [hidden]="isHidden(item.Status)" (click)="openCase(item)">
             <h2>
                 {{item.Patient}}
-                <button *ngIf="item.IsNew === 1 && item.Status === 'Job Dispatched' && loginType !== 3" ion-button outline small item-end>new</button>
+                <ion-badge *ngIf="item.IsNew === 1 && item.Status === 'Job Dispatched' && loginType === 1" color="primary">new </ion-badge>
             </h2>
+
             <p>
                 <ion-grid>
                     <ion-row>
@@ -44,6 +45,10 @@
                     <ion-row>
                         <ion-col>Status</ion-col>
                         <ion-col ion-note [ngClass]="getStatusColor(item.Status)">{{getStatusLabel(item.Status)}}</ion-col>
+                    </ion-row>
+                    <ion-row *ngIf="item.Status == 'In Process' && item.ProgressDetail">
+                        <ion-col>Progress Detail</ion-col>
+                        <ion-col ion-note [ngClass]="getStatusColor(item.Status)">{{item.ProgressDetail}}</ion-col>
                     </ion-row>
                 </ion-grid>
             </p>

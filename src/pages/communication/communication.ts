@@ -155,7 +155,8 @@ export class CommunicationPage {
   headerButtonClicked(event) {
     if (event.icon === 'search') {
       this.showSearchBar = !this.showSearchBar;
-      this.content.resize();
+      this.scrollToTop();
+      this.selectedTab = 'All';
     }
   }
 }

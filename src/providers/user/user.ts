@@ -153,7 +153,7 @@ export class UserProvider {
                         {
                             text: 'YES',
                             handler: () => {
-                                window.open(this.global.APP_URL[OSName]);
+                                window.open(this.global.APP_URL[OSName], '_system');
                             }
                         }
                     ]

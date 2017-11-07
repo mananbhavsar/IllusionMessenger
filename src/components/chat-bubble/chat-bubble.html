@@ -9,10 +9,30 @@
     <ng-container [ngSwitch]="message.MessageType">
       <div *ngSwitchCase="'Text'" class="text" [innerHTML]="message.Message"></div>
       <div *ngSwitchCase="'Image'" class="picture" [ngClass]="{'done':message.downloaded}" (click)="openImage(message.URL)">
-        <ion-img *ngIf="message.downloaded" [src]="message.nativeURL" width="160" height="160"></ion-img>
+        <img *ngIf="message.downloaded" [src]="message.nativeURL +'_360.jpg'" width="160" height="160"/>
       </div>
-      <div *ngSwitchCase="'Audio'" class="audio" [ngClass]="{'done':message.downloaded}" (click)="openAudio(message.URL)">
-        <ion-img *ngIf="message.downloaded" src="assets/img/audio.png" width="160" height="160"></ion-img>
+      <div *ngSwitchCase="'Audio'" class="audio" [ngClass]="{'done':message.downloaded}" (click)="openAudio(message)">
+        <audio-track #audio [track]="message.audioTrack" (onFinish)="onTrackFinished($event)">
+          <ion-item no-padding>
+            <!-- <audio-track-play dark [audioTrack]="audio"></audio-track-play> -->
+            <div item-content>
+              <ion-grid>
+                <ion-row>
+                  <ion-col col-3>
+                    <button class="control-button" clear icon-only ion-button (click)="togglePlay(audio)" [disabled]="audio.error || audio.isLoading">
+                      <ion-icon name="pause" *ngIf="audio.isPlaying && !audio.isLoading"></ion-icon>
+                      <ion-spinner name="bubbles" *ngIf="audio.isLoading"></ion-spinner>
+                      <ion-icon name="play" *ngIf="!audio.isPlaying && !audio.isLoading"></ion-icon>
+                    </button>
+                  </ion-col>
+                  <ion-col>
+                    <audio-track-progress-bar duration progress [audioTrack]="audio"></audio-track-progress-bar>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+            </div>
+          </ion-item>
+        </audio-track>
       </div>
     </ng-container>
   </div>

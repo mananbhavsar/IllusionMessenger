@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { IonicPage, NavController, Content, NavParams, Platform, Events, normalizeURL, ToastController, ActionSheetController } from 'ionic-angular';
 
 import * as _ from 'underscore';
@@ -26,6 +26,7 @@ import { MediaCapture, MediaFile, CaptureError, CaptureImageOptions } from '@ion
 import { Media, MediaObject } from '@ionic-native/media';
 import { Vibration } from '@ionic-native/vibration';
 
+import { LogoutPage } from '../logout/logout';
 @IonicPage()
 @Component({
   selector: 'page-chat',
@@ -33,6 +34,7 @@ import { Vibration } from '@ionic-native/vibration';
 })
 export class ChatPage {
   @ViewChild(Content) content: Content;
+  @ViewChild('messageInput') messageInput: any;
 
   data: any = {};
   ticket: string = null;
@@ -57,21 +59,22 @@ export class ChatPage {
   //other users Register Device ID
   otherUserRegisterDeviceIDs: any = [];
   chatUsers: any = {};
+  badgeUsers: any = {};
 
   //camera
   private cameraOptions: CameraOptions = {
-    quality: 100,
+    quality: 80,
     destinationType: this.camera.DestinationType.FILE_URI,
     encodingType: this.camera.EncodingType.JPEG,
     mediaType: this.camera.MediaType.PICTURE,
     correctOrientation: true,
-    targetHeight: 768,
+    targetHeight: 1024,
     targetWidth: 1024
   }
   private galleryOptions: CameraOptions = {
-    quality: 100,
+    quality: 80,
     correctOrientation: true,
-    targetHeight: 768,
+    targetHeight: 1024,
     targetWidth: 1024,
     sourceType: this.camera.PictureSourceType.SAVEDPHOTOALBUM,
     destinationType: this.camera.DestinationType.FILE_URI,
@@ -120,18 +123,61 @@ export class ChatPage {
     this.ticket = this.navParams.data;
     this.basePath = 'Communications/' + this.ticket + '/';
 
+    this.keyboard.hideKeyboardAccessoryBar(true);
+
+  }
+
+  setFirebaseRef() {
+    //actual chat ref
+    this.messagesRef = this.angularFireDB.list(this.basePath + 'Chat', ref => (
+      ref.orderByKey()
+    ));
+
+    //for typying object
+    this.typingRef = this.angularFireDB.object(this.basePath + 'Typing/' + this.userID);
+
+    //for chatting: This will prevent notification from same chat
+    this.chattingRef = this.angularFireDB.object(this.basePath + 'Chatting/' + this.userID);
+  }
+
+  connectFireBase() {
+    this.setFirebaseRef();
+
+    //actual data/messages
+    this.messages = this.messagesRef.snapshotChanges().map(changes => {
+      return changes.map(c => ({ key: c.payload.key, ...c.payload.val() }));
+    });
+    //new message
+    this.messagesRef.snapshotChanges(['child_added']).map(changes => {
+      return changes.map(c => ({ key: c.payload.key, ...c.payload.val() }));
+    }).subscribe(data => {
+      console.log('snapshot');
+      this.scrollBottom();
+    });
+
+    //event to listed others typing
+    this.angularFireDB.object(this.basePath + 'Typing').snapshotChanges().subscribe(snapshot => {
+      this.userTyping = snapshot.payload.val();
+    });
+
+    this.setChatting(true);
+  }
+
+  initUser() {
     //setting current User
     this.user = this.connection.user;
-    console.log(this.user);
     this.userID = this.user.id;
+  }
 
-    //listening to events
-    this.events.subscribe('platform:onResumed', () => {
-      this.setChatting(true);
-    });
+  listenToEvents() {
+
+    //listening to platforms events
     this.events.subscribe('platform:onPause', () => {
-      this.setChatting(false);
-      this.setTyping(false);
+      this.doLeaving(false);
+    });
+    this.events.subscribe('platform:onResumed', () => {
+      this.setFirebaseRef();
+      this.setChatting(true);
     });
 
     //notification subs
@@ -158,55 +204,29 @@ export class ChatPage {
         chatToast.present();
       }
     });
-
-    this.keyboard.hideKeyboardAccessoryBar(true)
-
-  }
-
-
-  connectFireBase() {
-
-    //actual chat ref
-    this.messagesRef = this.angularFireDB.list(this.basePath + 'Chat', ref => (
-      ref.orderByKey()
-    ));
-
-    //actual data/messages
-    this.messages = this.messagesRef.snapshotChanges().map(changes => {
-      return changes.map(c => ({ key: c.payload.key, ...c.payload.val() }));
-    });
-    this.messages.subscribe(data => {
-      console.log('snapshot');
-      this.scrollBottom();
-    });
-
-    //for typying object
-    this.typingRef = this.angularFireDB.object(this.basePath + 'Typing/' + this.userID);
-    //event to listed others typing
-    this.angularFireDB.object(this.basePath + 'Typing').snapshotChanges().subscribe(snapshot => {
-      this.userTyping = snapshot.payload.val();
-      console.log('user typing go bottom');
-      this.scrollBottom();
-    });
-
-    //for chatting: This will prevent notification from same chat
-    this.chattingRef = this.angularFireDB.object(this.basePath + 'Chatting/' + this.userID);
-    this.setChatting(true);
   }
 
   ionViewDidLoad() {
-    //get Chat info before we load
-    this.initData();
+    //checking if user logged in
+    if (!_.isEmpty(this.connection.user)) {
+      this.initUser();
+      this.listenToEvents();
+      //get Chat info before we load
+      this.initData();
+    } else {
+      this.events.subscribe('user:ready', User => {
+        if (!_.isEmpty(User)) {
+          this.ionViewDidLoad();
+        } else {
+          this.events.publish('toast:create', 'Kindly login to access Query');
+          this.navCtrl.setRoot(LogoutPage);
+        }
+      })
+    }
   }
+
   ionViewWillLeave() {
-    this.setTyping(false);
-    this.setChatting(false);
-
-    this.messagesRef = null;
-    this.typingRef = null;
-    this.chattingRef = null;
-
-    this.messages = null;
+    this.doLeaving(true);
   }
 
   initData() {
@@ -219,7 +239,7 @@ export class ChatPage {
       this.setUsers().then((chatUsersList) => {
         this.connectFireBase();
       }).catch(error => {
-        alert(error);
+
       })
 
     }).catch(error => {
@@ -232,7 +252,7 @@ export class ChatPage {
    */
   setTitle() {
     this.title = this.data.Query[0].Patient;
-    this.subTitle = 'Doctor: ' + this.data.Query[0].Doctor + ', Impression No.: ' + this.data.Query[0].ImpNo;
+    this.subTitle = 'Doctor: ' + this.data.Query[0].Doctor + ', Imp No.: ' + this.data.Query[0].ImpNo;
   }
 
   /**
@@ -242,21 +262,35 @@ export class ChatPage {
     return new Promise((resolve, reject) => {
       if (!_.isEmpty(this.data)) {
         this.data.User[0].Dentist.forEach(user => {
+          //for typing
           this.userTyping[user.LoginUserID] = user.UserName;
+
+          //actual user
           this.chatUsers[user.LoginUserID] = { Name: user.UserName, LoginTypeID: user.LoginTypeID };
+
+          //badege user
+          this.badgeUsers[user.LoginUserID] = true;
+
+          //adding push notification device ID
           if (user.LoginUserID !== this.userID && user.RegisteredDeviceID.length === 36) {
             this.otherUserRegisterDeviceIDs.push(user.RegisteredDeviceID);
           }
         });
         this.data.User[0].GroupUser.forEach(user => {
+          //for typing
           this.userTyping[user.LoginUserID] = user.UserName;
+
+          //actual user
           this.chatUsers[user.LoginUserID] = { Name: user.UserName, LoginTypeID: user.LoginTypeID };
+
+          //badege user
+          this.badgeUsers[user.LoginUserID] = true;
+
+          //adding push notification device ID
           if (user.LoginUserID !== this.userID && user.RegisteredDeviceID.length === 36) {
             this.otherUserRegisterDeviceIDs.push(user.RegisteredDeviceID);
           }
         });
-        //test
-        this.otherUserRegisterDeviceIDs.push('0dbd7616-ec58-4ae9-9458-8be7dc2d4c49');
         resolve(this.chatUsers);
       } else {
         reject('No User');
@@ -304,8 +338,11 @@ export class ChatPage {
     actionSheet.present();
   }
 
-  sendTextMessage() {
-    console.log('send' + new Date().getTime());
+  sendTextMessage(event) {
+    if (this.keyboardOpen) {
+      event.preventDefault();
+      this.messageInput._elementRef.nativeElement.focus();
+    }
     if (_.isEmpty(this.message.trim())) {
       return false;
     }
@@ -313,7 +350,7 @@ export class ChatPage {
     this.message = '';
   }
 
-  sendToFirebase(message: string = null, type: string = 'Text', url: any = false) {
+  sendToFirebase(message: string = '', type: string = 'Text', url: any = false) {
     let readObject = {};
     readObject[this.userID] = firebase.database.ServerValue.TIMESTAMP;
 
@@ -328,7 +365,8 @@ export class ChatPage {
       Status: 0,
       URL: url,
       TicketNo: this.ticket,
-      Read: readObject
+      Read: readObject,
+      BadgeCount: this.badgeUsers,
     }).then((messageFromFirebase) => {
       this.scrollBottom();
       let data = {
@@ -355,7 +393,6 @@ export class ChatPage {
   }
 
   keyup(event) {
-    console.log(event);
     this.setTyping(true);
   }
 
@@ -364,9 +401,9 @@ export class ChatPage {
     this.setTyping(true);
   }
 
-  closeKeyboard() {
-    this.keyboardOpen = false
-    this.keyboard.close()
+  closeKeyboard(event) {
+    this.keyboardOpen = false;
+    this.keyboard.close();
   }
 
   setTyping(flag: boolean = true) {
@@ -388,15 +425,18 @@ export class ChatPage {
     }
   }
 
-  scrollBottom(animate: number = 300) {
-    setTimeout(() => {
-      if (this.content.resize) {
-        this.content.resize();
-      }
-      if (this.content.scrollToBottom) {
-        this.content.scrollToBottom(animate);
-      }
-    }, 100);
+  scrollBottom() {
+    if (this.content) {
+      let animate = 300;
+      setTimeout(() => {
+        if (typeof this.content.resize === 'function') {
+          this.content.resize();
+        }
+        if (this.content && typeof this.content.scrollToBottom === 'function' && this.content._scroll) {
+          this.content.scrollToBottom(animate);
+        }
+      }, 100);
+    }
   }
 
   captureImage(type: string = 'camera') {
@@ -409,8 +449,9 @@ export class ChatPage {
       this.uploadFile(url).then(data => {
         console.log(data);
         //sending to Firebase
-        this.sendToFirebase(null, 'Image', data);
+        this.sendToFirebase('', 'Image', data);
       }).catch(error => {
+        console.log(error);
         this.events.publish('toast:error', error);
       });
     }).catch(error => {
@@ -419,7 +460,6 @@ export class ChatPage {
   }
 
   captureAudio(duration: number = null) {
-
     if (duration) {
       this.vibration.vibrate(this.vibrateDuration);
     }
@@ -479,11 +519,10 @@ export class ChatPage {
       console.log(data);
 
       //sending to Firebase
-      this.sendToFirebase(null, 'Audio', data);
+      this.sendToFirebase('', 'Audio', data);
     }).catch(error => {
       //deleting file
       this.file.removeFile(this.dataDirectory, this.recordFileName);
-
       this.events.publish('toast:error', error);
     });
   }
@@ -513,6 +552,7 @@ export class ChatPage {
             console.log(data);
             resolve(data.response.substring(data.response.indexOf('>') + 1, data.response.lastIndexOf('<')));
           }, (err) => {
+            console.log(err);
             this.progressPercent = 0;
             reject(err);
           });
@@ -541,7 +581,7 @@ export class ChatPage {
       fileName: fileName,
       mimeType: mime.lookup(fileExtension),
       chunkedMode: false,
-      headers: new Headers({ 'Content-Type': 'application/json' }),
+      // headers: new Headers({ 'Content-Type': 'application/json' }),
       params: {
         TicketNo: this.ticket,
         CustomerID: this.user.CustomerID,
@@ -605,6 +645,22 @@ export class ChatPage {
 
   openFile(file) {
 
+  }
+
+  doLeaving(messageNull) {
+    this.setChatting(false);
+    this.setTyping(false);
+
+    this.messagesRef = null;
+    this.typingRef = null;
+    this.chattingRef = null;
+
+    if (messageNull) {
+      this.messages = null;
+    }
+
+    this.keyboard.hideKeyboardAccessoryBar(false);
+    this.events.unsubscribe('user:ready');
   }
 
 }

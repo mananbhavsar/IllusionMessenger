@@ -87,6 +87,9 @@
     <allow-navigation href="http://172.20.10.4:8101" />
     <allow-navigation href="http://169.254.110.127:8100" />
     <allow-navigation href="http://192.168.1.112:8100" />
+    <allow-navigation href="http://192.168.1.101:8100" />
+    <allow-navigation href="http://192.168.5.66:8101" />
+    <allow-navigation href="http://192.168.5.66:8100" />
     <engine name="android" spec="6.3.0" />
     <engine name="ios" spec="4.5.2" />
     <plugin name="cordova-sqlite-storage" spec="^2.0.4" />
@@ -121,5 +124,4 @@
     <plugin name="cordova-plugin-vibration" spec="^2.1.5" />
     <plugin name="cordova-plugin-file-opener2" spec="^2.0.19" />
     <plugin name="mx.ferreyra.callnumber" />
-    <allow-navigation href="http://192.168.1.101:8100" />
 </widget>

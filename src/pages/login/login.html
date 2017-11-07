@@ -1,0 +1,37 @@
+<ion-content class="login">
+    <ion-grid class="slide_header">
+
+        <logo></logo>
+        <ion-row>
+            <div id="login-box">
+                <form>
+                    <ion-list>
+                        <ion-item>
+                            <ion-label ion-text color="primary" floating>Username</ion-label>
+                            <ion-input autofocus required [(ngModel)]="login.username" #username="ngModel" type="text" placeholder="Username"
+                                name="username"></ion-input>
+                        </ion-item>
+                        <ion-item>
+                            <ion-label ion-text color="primary" floating>Password</ion-label>
+                            <ion-input required [(ngModel)]="login.password" #password="ngModel" type="password" placeholder="Password" name="password"></ion-input>
+                        </ion-item>
+                    </ion-list>
+                    <button ion-button block color="button" (click)="doLogin()">Log in</button>
+                </form>
+            </div>
+
+        </ion-row>
+
+        <ion-row>
+            <ion-col text-center class="inline-links">
+                <a class="display-inline" (click)="onForgotPassword()">Forgot Password?</a>
+            </ion-col>
+        </ion-row>
+
+        <or></or>
+
+        <reach-us></reach-us>
+    </ion-grid>
+
+
+</ion-content>

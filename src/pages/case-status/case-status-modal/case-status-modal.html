@@ -1,0 +1,61 @@
+<ion-header>
+  <ion-toolbar ion-text color="casestatus">
+    <ion-title>{{title}}</ion-title>
+    <ion-buttons end>
+      <button color="light" ion-button outline (click)="dismiss(null)">
+        close
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-card>
+    <ion-list>
+      <ion-item>
+        <ion-icon name="ios-medical" item-start></ion-icon>
+        Patient
+        <ion-note item-end>{{item.Patient}}</ion-note>
+      </ion-item>
+      <ion-item>
+        <ion-icon name="ios-calendar" item-start></ion-icon>
+        Dispatch Date
+        <ion-note item-end>{{item.formatedDispatchDate}}</ion-note>
+      </ion-item>
+      <ion-item>
+        <ion-icon name="ios-bus" item-start></ion-icon>
+        Delivery Mode
+        <ion-note item-end>{{item.JobDeliveryMode}}</ion-note>
+      </ion-item>
+      <ion-item-group *ngIf="item.JobDeliveryMode === 'Delivery Person'">
+        <ion-item-divider *ngIf="item.JobDeliveryMode === 'Delivery Person'" color="light">
+          {{item.JobDeliveryMode}} Details
+        </ion-item-divider>
+        <ion-item>
+          <ion-icon name="ios-person" item-start></ion-icon>
+          Person Name
+          <ion-note item-end>{{item.DeliveryBoyEmployee}}</ion-note>
+        </ion-item>
+        <ion-item (click)="callNumber(item.MobileNo)">
+          <ion-icon name="ios-call" item-start></ion-icon>
+          Mobile Number
+          <ion-note item-end>{{item.MobileNo}}</ion-note>
+        </ion-item>
+      </ion-item-group>
+      <ion-item-group *ngIf="item.JobDeliveryMode == 'Courier'">
+        <ion-item-divider *ngIf="item.JobDeliveryMode == 'Courier'" color="light">
+          {{item.JobDeliveryMode}} Details
+        </ion-item-divider>
+        <ion-item>
+          <ion-icon name="ios-document" item-start></ion-icon>
+          Courier
+          <ion-note item-end>{{item.Courier}}</ion-note>
+        </ion-item>
+        <ion-item (click)="openURL(item.TrackingURL)">
+          <ion-icon name="logo-steam" item-start></ion-icon>
+          Tracking No
+          <ion-note item-end>{{item.TrackingNo}}</ion-note>
+        </ion-item>
+      </ion-item-group>
+    </ion-list>
+  </ion-card>
+</ion-content>

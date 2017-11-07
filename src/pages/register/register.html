@@ -1,0 +1,43 @@
+<ion-content class="login">
+  <ion-grid class="slide_header">
+
+    <ion-row>
+      <img class="logo" src="assets/img/logo.png">
+    </ion-row>
+    <ion-row>
+      <div id="login-box">
+        <form [formGroup]="registerForm" (ngSubmit)="doRegister()">
+          <ion-list>
+            <ion-item>
+              <ion-label ion-text color="primary" floating>Full Name</ion-label>
+              <ion-input formControlName="full_name" required [(ngModel)]="register.full_name" name="full_name" type="text" placeholder="Full Name"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label ion-text color="primary" floating>Mobile Number</ion-label>
+              <ion-input formControlName="contact_number" required [(ngModel)]="register.contact_number" name="contact_number" type="tel"
+                placeholder="Mobile Number" name="contact_number"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label ion-text color="primary" floating>Email Address</ion-label>
+              <ion-input formControlName="email_address" [(ngModel)]="register.email_address" name="email_address" type="email" placeholder="Email Address"
+                name="email_address"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label ion-text color="primary" floating>Password</ion-label>
+              <ion-input formControlName="password" required [(ngModel)]="register.password" name="password" type="password" placeholder="Password"
+                name="password"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label ion-text color="primary" floating>Confirm Password</ion-label>
+              <ion-input formControlName="confirm_password" required [(ngModel)]="register.confirm_password" name="confirm_password" type="password"
+                placeholder="Confirm Password" name="confirm_password"></ion-input>
+            </ion-item>
+          </ion-list>
+          <button type="submit" [disabled]="!registerForm.valid" ion-button block>Register</button>
+        </form>
+      </div>
+    </ion-row>
+
+    <img src="assets/img/or.png" />
+  </ion-grid>
+</ion-content>

@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-toolbar ion-text color="primary">
+    <ion-title>
+      Select Office
+    </ion-title>
+    <ion-buttons end>
+      <button color="light" ion-button outline (click)="dismiss(null)">
+        close
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-searchbar [(ngModel)]="searchText" [showCancelButton]="shouldShowCancel" (ionInput)="getItems(searchText)" (ionCancel)="onCancel($event)">
+  </ion-searchbar>
+</ion-header>
+<ion-content>
+  <ion-list>
+    <ion-item class="list_wrap" *ngFor="let item of officeList" (click)="selectOffice(item)">
+      {{item.Description}}
+      <ion-badge item-right color="secondary" *ngIf="modelFlagName=='casesearch'&& item.CaseSearch_BranchCount">{{item.CaseSearch_BranchCount}}</ion-badge>
+      <ion-badge item-right color="secondary" *ngIf="modelFlagName=='communication' && item.Communication_BranchCount">{{item.Communication_BranchCount}}</ion-badge>
+    </ion-item>
+  </ion-list>
+</ion-content>

@@ -1,0 +1,77 @@
+<ion-header no-border>
+    <header title="Home"></header>
+</ion-header>
+<ion-content no-padding>
+    <ion-refresher (ionRefresh)="initData($event, true)">
+        <ion-refresher-content pullingIcon="arrow-round-down" pullingText="Pull to refresh" refreshingSpinner="crescent" refreshingText="Refreshing...">
+        </ion-refresher-content>
+    </ion-refresher>
+    <center-spinner [hidden]="loginType"></center-spinner>
+    <ng-container *ngIf="loginType">
+        <div style="background:#4ECDC4" class="homescreenDivision" *ngIf="loginType !== 3">
+            <ion-grid style="height: inherit;">
+                <ion-row style="height: 100%; align-items: center;" (click)="openDashboard()">
+                    <ion-col col-4 style="text-align:center;">
+                        <img src="assets/img/test7.png" height="70" width="80" style="padding-top: 10px;" />
+                    </ion-col>
+                    <ion-col style="color:white">
+                        <h5 style="margin-bottom:0px;"> DASHBOARD </h5>
+                        <p style="margin-bottom:0px;margin-top:0px; font-size: smaller;">Your dashboard summary</p>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+        </div>
+        <div style="background:#2574A9" class="homescreenDivision" *ngIf="loginType !== 3">
+            <ion-grid style="height: inherit;">
+                <ion-row style="height: 100%; align-items: center;" (click)="openPickup()">
+                    <ion-col col-4 style="text-align:center;">
+                        <img src="assets/img/test4.png" height="80" width="80" style="padding-top: 10px;" />
+                    </ion-col>
+                    <ion-col style="color:white">
+                        <h5 style="margin-bottom:0px;"> PICK UP
+                            <sup *ngIf="data.PickUpCount !== 0">
+                                <ion-badge style="background:gray">{{data.PickUpCount}}</ion-badge>
+                            </sup>
+                        </h5>
+                        <p style="margin-bottom:0px;margin-top:0px; font-size: smaller;">Easy pickup request</p>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+        </div>
+        <div style="background:#87D37C" [ngClass]="{'homescreenDivision': isNormalLogin, 'homescreenDivision1': isDentalLogin}" class="homescreenDivision">
+            <ion-grid style="height: inherit;">
+                <ion-row style="height: 100%; align-items: center;" (click)="openCaseSearch()">
+                    <ion-col col-4 style="text-align:center;">
+                        <img src="assets/img/test6.png" height="65" width="60" style="padding-top: 10px;" />
+                    </ion-col>
+                    <ion-col style="color:white">
+                        <h5 style="margin-bottom:0px;"> CASE STATUS
+                            <sup *ngIf="data.CaseSearchCount !== 0 && loginType !== 3">
+                                <ion-badge style="background:gray">{{data.CaseSearchCount}}</ion-badge>
+                            </sup>
+                        </h5>
+                        <p style="margin-bottom:0px;margin-top:0px; font-size: smaller;"> View your case status</p>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+        </div>
+        <div style="background:#00B16A" [ngClass]="{'homescreenDivision': isNormalLogin, 'homescreenDivision1': isDentalLogin}">
+            <ion-grid style="height: inherit;">
+                <ion-row style="height: 100%; align-items: center;" (click)="openCommunications()">
+                    <ion-col col-4 style="text-align:center;">
+                        <img src="assets/img/test5.png" height="70" width="65" style="padding-top: 10px;" />
+                    </ion-col>
+                    <ion-col style="color:white">
+                        <h5 style="margin-bottom:0px;"> COMMUNICATION
+                            <sup *ngIf="data.CommunicationCount !== 0">
+                                <ion-badge style="background:gray">{{data.CommunicationCount}}</ion-badge>
+                            </sup>
+                        </h5>
+                        <p style="margin-bottom:0px;margin-top:0px; font-size: smaller;"> View your communications</p>
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
+        </div>
+    </ng-container>
+    <!-- <button (click)="openChat()" full ion-button>Open Test Chat</button> -->
+</ion-content>

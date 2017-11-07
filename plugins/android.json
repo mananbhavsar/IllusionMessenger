@@ -1,0 +1,81 @@
+{
+  "prepare_queue": {
+    "installed": [],
+    "uninstalled": []
+  },
+  "config_munge": {
+    "files": {}
+  },
+  "installed_plugins": {
+    "cordova-plugin-app-version": {
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "cordova-sqlite-storage": {
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "cordova-plugin-device": {
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "cordova-plugin-splashscreen": {
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "cordova-plugin-statusbar": {
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "cordova-plugin-network-information": {
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "cordova-base64-to-gallery": {
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "cordova-plugin-file": {
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "cordova-plugin-add-swift-support": {
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "cordova-plugin-camera": {
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "cordova-plugin-media": {
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "cordova-plugin-badge": {
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "cordova-plugin-whitelist": {
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "cordova-plugin-inappbrowser": {
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "cordova-plugin-ionic-webview": {
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "cordova-plugin-file-transfer": {
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "cordova-plugin-media-capture": {
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "ionic-plugin-keyboard": {
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "cordova.plugins.diagnostic": {
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "onesignal-cordova-plugin": {
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "cordova-plugin-vibration": {
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "cordova-plugin-file-opener2": {
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "mx.ferreyra.callnumber": {
+      "PACKAGE_NAME": "com.illusiondental.app"
+    }
+  },
+  "dependent_plugins": {}
+}

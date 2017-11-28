@@ -1,0 +1,67 @@
+<ion-header no-border>
+        <header [title]="title" [buttons]="[{icon:'search'}]" (buttonClicked)="headerButtonClicked($event)"></header>
+        <div [hidden]="selectedOffice === {}" class="office">{{selectedOffice.CustomerName}}</div>
+        <ion-searchbar [hidden]="showSearchBar" [(ngModel)]="searchText" (ionInput)="getItems(searchText)" showCancelButton="true"
+            (ionCancel)="onCancel()">
+        </ion-searchbar>
+        <ion-segment padding mode="ios" [(ngModel)]="selectedTab" color="casestatus" (ionChange)="segmentChanged($event)">
+            <ion-segment-button value="In Process">
+                In Process
+            </ion-segment-button>
+            <ion-segment-button value="Job Delivered">
+                RTD
+            </ion-segment-button>
+            <ion-segment-button value="Job Dispatched">
+                Dispatched
+            </ion-segment-button>
+            <ion-segment-button value="All">
+                All
+            </ion-segment-button>
+        </ion-segment>
+    </ion-header>
+    <ion-content padding>
+        <center-spinner [hidden]="items"></center-spinner>
+        <ion-list no-lines class="cases">
+            <ion-item *ngFor="let item of items" no-padding [hidden]="isHidden(item.Status)" (click)="openCase(item)">
+                <ion-card no-padding>
+                    <ion-list>
+                        <ion-list-header color="primary">
+                            {{item.Patient}}
+                            <button *ngIf="item.IsNew === 1 && item.Status === 'Job Dispatched' && loginType !== 3" ion-button outline small item-end>new</button>
+                        </ion-list-header>
+                        <ion-item>
+                            <div ion-label>Doctor</div>
+                            <div item-content>
+                                {{item.Doctor}}
+                            </div>
+                        </ion-item>
+                        <ion-item>
+                            <div ion-label>Impression No</div>
+                            <div item-content>
+                                {{item.ImpressionNo}}
+                            </div>
+                        </ion-item>
+                        <ion-item>
+                            <div ion-label>Reference Entry No</div>
+                            <div item-content>
+                                {{item.ReferenceEntryNo}}
+                            </div>
+                        </ion-item>
+                        <ion-item>
+                            <div ion-label>Status</div>
+                            <div item-content>
+                                <button ion-button [outline]="item.Status !== 'Job Dispatched'" small [color]="getStatusColor(item.Status)">{{getStatusLabel(item.Status)}}</button>
+                            </div>
+                        </ion-item>
+                    </ion-list>
+                </ion-card>
+            </ion-item>
+        </ion-list>
+    
+        <ion-item-divider text-center color="light" *ngIf="page === -1">
+            Nothing more to show
+        </ion-item-divider>
+        <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+            <ion-infinite-scroll-content></ion-infinite-scroll-content>
+        </ion-infinite-scroll>
+    </ion-content>

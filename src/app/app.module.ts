@@ -56,6 +56,7 @@ import { WelcomePageModule } from '../pages/welcome/welcome.module';
 import { ConnectionProvider } from '../providers/connection/connection';
 import { UserProvider } from '../providers/user/user';
 import { OfficeServiceProvider } from '../providers/office-service/office-service';
+import { FirebaseTransactionProvider } from '../providers/firebase-transaction/firebase-transaction';
 
 import { ComponentsModule } from '../components/components.module';
 import { PipesModule } from "../pipes/pipes.module";
@@ -131,6 +132,7 @@ export const firebaseConfig = {
         ConnectionProvider,
         UserProvider,
         OfficeServiceProvider,
+        FirebaseTransactionProvider,
         AngularFireDatabase,
         Network,
         StatusBar,
@@ -154,6 +156,7 @@ export const firebaseConfig = {
         Vibration,
         FileOpener,
         FCM,
+    FirebaseTransactionProvider,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

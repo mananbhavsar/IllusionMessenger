@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, ViewController, Platform } from 'ionic-angular';
 
 import { Storage } from '@ionic/storage';
+import { AngularFireDatabase } from 'angularfire2/database';
+import { Observable } from 'rxjs/Observable';
 
 @IonicPage()
 @Component({
@@ -9,42 +11,35 @@ import { Storage } from '@ionic/storage';
   templateUrl: 'office-list.html',
 })
 export class OfficeListPage {
-  officeList: any = [];
-  officeListCopy: any = [];
+  officeList: Observable<any[]>;
+  officeListCopy: Observable<any[]>;
   searchText: String = "";
   modelFlagName: String = "";
 
+  path: string = '';
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     public viewCtrl: ViewController,
     public storage: Storage,
     public platform: Platform,
+    public angularFireDatabase: AngularFireDatabase,
   ) {
-
+    this.modelFlagName = this.navParams.data.modelFlagName;
   }
 
   ionViewDidLoad() {
-    this.storage.get('OfficeList').then((officeList) => {
-      this.officeList = officeList;
-      this.officeListCopy = officeList;
+    this.storage.get('User').then(User => {
+      if (User) {
+        this.path = 'OfficeList/' + User.id;
+        this.officeList = this.angularFireDatabase.list(this.path).valueChanges();
+        this.officeListCopy = this.officeList;
+      }
     });
   }
 
   dismiss(selectedOffice) {
     this.viewCtrl.dismiss(selectedOffice);
-  }
-
-  getItems(searchText) {
-    //init
-    this.officeList = this.officeListCopy;
-
-    //search
-    if (searchText && searchText.trim() != '') {
-      this.officeList = this.officeList.filter((item) => {
-        return (item.Description.toLowerCase().indexOf(searchText.toLowerCase()) > -1);
-      })
-    }
   }
 
   selectOffice(office) {

@@ -17,6 +17,19 @@ body {
     font-family: 'Open Sans', sans-serif !important;
 }
 
+.platform-mobile {
+    .item-label-floating {
+        .text-input-md {
+            margin-top: 4.5px !important;
+        }
+        &::last-child {
+            .text-input-md {
+                margin-top: 5px !important;
+            }
+        }
+    }
+}
+
 ion-menu {
     ion-header {
         ion-toolbar {
@@ -40,9 +53,11 @@ ion-card-header {
 .item-label-floating .text-input-md {
     margin-top: 6px;
 }
-.toast-md.danger .toast-wrapper{
+
+.toast-md.danger .toast-wrapper {
     background: color($colors, danger);
 }
+
 .card-md h2 {
     font-size: 1.4em;
     color: color($colors, primary);

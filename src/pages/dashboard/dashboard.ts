@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { Storage } from '@ionic/storage';
+import * as _ from 'underscore';
 
 import { ConnectionProvider } from "../../providers/connection/connection";
 
@@ -14,16 +16,30 @@ export class DashboardPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     private connection: ConnectionProvider,
+    private _storage: Storage,
   ) {
   }
 
-  ionViewDidLoad() {
-    this.initData(null);
+  ionViewDidEnter() {
+    this._storage.get('OfflineDashboard').then(dashboard => {
+      let loader = true;
+      if (!_.isEmpty(dashboard)) {
+        loader = false;
+        this.dashboardData = dashboard.data;
+      }
+      this.initData(null, loader);
+    });
   }
 
-  initData(refresher) {
-    this.connection.doPost('Dashboard/GetDashboardData').then(response => {
+  initData(refresher, loader: boolean = true) {
+    this.connection.doPost('Dashboard/GetDashboardData', {}, loader).then(response => {
       this.dashboardData = response;
+      //adding to offline
+
+      this._storage.set('OfflineDashboard', {
+        data: response,
+        timestamp: new Date().getTime()
+      });
       if (refresher) {
         refresher.complete();
       }
@@ -31,7 +47,7 @@ export class DashboardPage {
       if (refresher) {
         refresher.complete();
       }
-    })
+    });
   }
 
   roundUp(num, precision: number = 2) {

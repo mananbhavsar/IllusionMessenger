@@ -3,6 +3,8 @@ import { NavController, Events } from 'ionic-angular';
 
 import { SearchPage } from '../../pages/search/search';
 import { StatusBar } from '@ionic-native/status-bar';
+
+import { Global } from "../../app/global";
 @Component({
     selector: 'header',
     templateUrl: 'header.html'
@@ -35,6 +37,7 @@ export class HeaderComponent {
             if (this.prevPageColor !== currentPageColor) {
                 this.prevPageColor = currentPageColor;
                 //setting header color
+                //console.log(this.prevPageColor, this.colorHex[this.prevPageColor]);
                 this._statusBar.backgroundColorByHexString(this.colorHex[this.prevPageColor]);
             }
         });
@@ -58,7 +61,8 @@ export class HeaderComponent {
 
     getColor(name: string = null) {
         if (name === null) {
-            name = this.navCtrl.getActive().name;
+            name = Global.getActiveComponentName(this.navCtrl.getActive());
+            //console.log(name);
         }
         switch (name) {
             case 'DashboardPage':

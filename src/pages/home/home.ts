@@ -12,6 +12,7 @@ import { OfficeListPage } from "../office-list/office-list";
 import { PickupPage } from "../pickup/pickup";
 import { CaseStatusPage } from "../case-status/case-status";
 import { ChatPage } from "../chat/chat";
+import { Storage } from '@ionic/storage';
 
 import * as _ from 'underscore';
 import { AngularFireDatabase } from 'angularfire2/database';
@@ -32,13 +33,14 @@ export class HomePage {
     loginType: Number = 0;
     isDentalLogin: Boolean = false;
     isNormalLogin: Boolean = false;
-
+    Customer: string = null;
     constructor(
         public navCtrl: NavController,
         public connection: ConnectionProvider,
         public user: UserProvider,
         public events: Events,
         public angularFireDatabase: AngularFireDatabase,
+        private _storage: Storage,
     ) {
         this.global = Global;
         //listening to Resume & Pause events
@@ -62,8 +64,15 @@ export class HomePage {
     }
 
     initData(event, refresh) {
+        //getting it from offline
+        this._storage.get('OfflineHome').then(home => {
+            if (home) {
+                this.data = home;
+            }
+        });
         //user setting
         this.user.getUser().then(user => {
+            this.Customer = user.Customer;
             this.loginType = user.LoginTypeID;
             if (this.loginType === 3) {
                 this.isDentalLogin = true;
@@ -97,6 +106,7 @@ export class HomePage {
             snapshot = snapshot.payload.val();
             if (snapshot) {
                 this.data = snapshot;
+                this._storage.set('OfflineHome', this.data);
             }
         });
     }
@@ -121,7 +131,7 @@ export class HomePage {
 
     }
 
-    openChat(ticket: string = 'TR-24282-GJ') {
+    openChat(ticket: string = 'TR-25995-GJ') {
         this.navCtrl.push(ChatPage, ticket);
     }
 }

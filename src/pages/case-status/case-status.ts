@@ -5,7 +5,7 @@ import { OfficeServiceProvider } from "../../providers/office-service/office-ser
 import { ConnectionProvider } from "../../providers/connection/connection";
 
 import { CaseStatusModalPage } from "./case-status-modal/case-status-modal";
-
+import * as _ from 'underscore';
 @IonicPage()
 @Component({
   selector: 'page-case-status',
@@ -25,8 +25,10 @@ export class CaseStatusPage {
   page: number = 0;
   items: any = [];
   itemsSearchCopy: any = [];
+  searchText: string = '';
   showSearchBar: boolean = true;
   loginType: number = 0;
+  wasModalShown: boolean | -1 = false;
   constructor(
     public navCtrl: NavController,
     public offliceList: OfficeServiceProvider,
@@ -37,16 +39,21 @@ export class CaseStatusPage {
     this.loginType = this.connection.user.LoginTypeID;
   }
 
-  ionViewDidLoad() {
-    this.offliceList.getOffice('CaseStatus').then((selectedOffice) => {
-      this.selectedOffice = selectedOffice;
-      this.setTitle();
+  ionViewDidEnter() {
+    if (_.isEmpty(this.selectedOffice)) {
+      this.offliceList.getOffice('CaseStatus').then((selectedOffice) => {
+        this.selectedOffice = selectedOffice;
+        this.setTitle();
 
-      this.initData();
-    }).catch((error) => {
-      this.events.publish('toast:error', error);
-      this.navCtrl.popToRoot();
-    })
+        this.wasModalShown = this.offliceList.isMultiOffice();
+        this.initData().then(response => { }).catch(error => {
+          console.log(error);
+        });
+      }).catch((error) => {
+        this.events.publish('toast:error', error);
+        this.navCtrl.popToRoot();
+      })
+    }
   }
 
   initData() {
@@ -129,6 +136,7 @@ export class CaseStatusPage {
   }
 
   openCase(item) {
+    item.IsNew = 0;
     //only for Dispatched
     if (item.Status === 'Job Dispatched') {
       let modal = this.modalCtrl.create(CaseStatusModalPage, item);
@@ -164,6 +172,24 @@ export class CaseStatusPage {
       this.showSearchBar = !this.showSearchBar;
       this.scrollToTop();
       this.selectedTab = 'All';
+    }
+  }
+
+  ionViewvCanLeave(): boolean {
+    if (this.wasModalShown) {
+      //to prevent next close
+      this.wasModalShown = false;
+      //empty data to show
+      this.items = [];
+      this.page = 0;
+      this.selectedTab = 'All';
+      this.searchText = '';
+
+      this.ionViewDidEnter();
+
+      return false;
+    } else {
+      return true;
     }
   }
 }

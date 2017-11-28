@@ -36,7 +36,9 @@ export class CaseStatusModalPage {
   }
 
   openURL(url) {
-    const browser = this._inAppBrowser.create(url);
+    if (url.trim() !== '') {
+      const browser = this._inAppBrowser.create(url);
+    } 
   }
 
 }

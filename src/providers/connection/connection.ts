@@ -40,6 +40,7 @@ export class ConnectionProvider {
             //checking if Network availble
             if (this.network.type === 'none') {
                 reject('Please check your network connection');
+                return;
             }
             //if need to show loader
             if (loader) {
@@ -51,14 +52,19 @@ export class ConnectionProvider {
             //creating request
             let urlSearchParams = this.getURLSearchParams(params);
 
-            this.http.post(Global.SERVER_URL + url, urlSearchParams).map((response: Response) => response.json()).subscribe((data) => {
+            this.http.post(Global.SERVER_URL + url, urlSearchParams).timeout(60000).map((response: Response) => response.json()).subscribe((data) => {
                 if (loader) {
                     this.events.publish('loading:close');
                 }
                 //Checking for Error Code
                 switch (parseInt(data.ErrorCode)) {
                     case 0:
-                        resolve(JSON.parse(data.objData));
+                        if (data.objData.trim() === '') {
+                            data.objData = data.objData.trim();
+                        } else {
+                            data.objData = JSON.parse(data.objData);
+                        }
+                        resolve(data.objData);
                         break;
                     case 2:
                         this.events.publish("user:unautharized");
@@ -69,13 +75,17 @@ export class ConnectionProvider {
                         break;
                 }
             }, (error) => {
-                console.log(error);
                 if (loader) {
                     this.events.publish('loading:close');
                 }
+                console.log(error);
+                //checking for timeout
+                if(typeof error === 'object' && ('name' in error) && error.name === 'TimeoutError'){
+                    error = error.message;
+                }
                 this.events.publish('toast:error', error);
                 reject(error);
-            })
+            });
         });
 
 

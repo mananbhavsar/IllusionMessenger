@@ -1,5 +1,9 @@
 page-offline {
     .slide_header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
         p {
             color: #8a949d;
             float: right;
@@ -13,6 +17,8 @@ page-offline {
             }
             p {
                 width: 100%;
+                padding: 0 1em;
+                margin: 0;
             }
         }
     }

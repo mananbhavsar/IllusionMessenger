@@ -10,6 +10,7 @@ import { LocationAccuracy } from '@ionic-native/location-accuracy';
 import { OneSignal } from '@ionic-native/onesignal';
 import { Keyboard } from '@ionic-native/keyboard';
 import { Badge } from '@ionic-native/badge';
+import { FCM } from '@ionic-native/fcm';
 
 import { Storage } from '@ionic/storage';
 
@@ -34,6 +35,7 @@ import { UserProvider } from '../providers/user/user';
 import { Global } from './global';
 
 import { AngularFireDatabase } from 'angularfire2/database';
+import { not } from '@angular/compiler/src/output/output_ast';
 
 enableProdMode();
 
@@ -105,6 +107,7 @@ export class MyApp {
         private _keyboard: Keyboard,
         private _badge: Badge,
         private angularFireDatabase: AngularFireDatabase,
+        private _fcm: FCM,
     ) {
 
         platform.ready().then(() => {
@@ -170,7 +173,7 @@ export class MyApp {
             return;
         }
 
-        if (this.nav.getActive() && this.nav.getActive().name === page.name) {
+        if (Global.getActiveComponentName(this.nav.getActive()) === page.name) {
             return 'primary';
         }
         return;
@@ -257,19 +260,18 @@ export class MyApp {
         //Network events
         this.events.subscribe('network:offline', () => {
             //sending to offline page only if not in offline 
-            var currentPage = this.nav.getActive().component.name;
+            var currentPage = Global.getActiveComponentName(this.nav.getActive());
             if (currentPage !== 'OfflinePage') {
                 this.events.publish('toast:create', 'you seems to be offline!');
                 this.nav.setRoot(OfflinePage);
             }
         });
         this.events.subscribe('network:online', () => {
-            console.log('on online');
-            console.log(this.nav.getActive());
             //sending to home page only in offline page
-            if (this.nav.getActive().component.name === 'OfflinePage') {
-                this.events.publish('toast:create', 'Hola, you are online');
-                this.nav.setRoot(HomePage);
+            var currentPage = Global.getActiveComponentName(this.nav.getActive());
+            if (currentPage === 'OfflinePage') {
+                this.events.publish('toast:create', 'Hola, you are online now');
+                this.nav.setRoot(WelcomePage, true);
             }
         });
 
@@ -297,7 +299,14 @@ export class MyApp {
         //this.initLocation();
 
         //OneSignal
-        this.initOneSignal();
+        if (Global.Push.OneSignal) {
+            this.initOneSignal();
+        }
+
+        //init FCM
+        if (Global.Push.FCM) {
+            this.initFCM();
+        }
 
         //Badge
         this.initBadge();
@@ -393,17 +402,41 @@ export class MyApp {
         let payload = 'payload' in notification ? notification.payload : notification.notification.payload;
         console.log(payload, directOpenPage);
         //showing notification  alert if not chatting else giving control to Caht module to handle it
-        if (this.nav.getActive().component.name === 'ChatPage') {
+        let currentPage = Global.getActiveComponentName(this.nav.getActive());
+        if (currentPage === 'ChatPage') {
             this.events.publish('notification:chat', payload);
-        }else if (directOpenPage && payload.additionalData && payload.additionalData.page) {//direct open & has data pages
+        } else if (directOpenPage && payload.additionalData && payload.additionalData.page) {//direct open & has data pages
             this.openNotificationPage(payload);
         } else {
+            let closeText = 'x';
+            if (payload.additionalData && payload.additionalData.page) {
+                if (payload.additionalData.page === 'ChatPage') {
+                    closeText = 'open';
+                }
+            }
+
+            let notificationToast = this.toast.create({
+                message: payload.body,
+                duration: 5000,
+                position: 'top',
+                showCloseButton: true,
+                closeButtonText: closeText,
+                cssClass: ''
+            });
+            notificationToast.onDidDismiss((data, role) => {
+                if (role === 'close') {
+                    this.openNotificationPage(payload);
+                }
+            });
+            notificationToast.present();
+
+            /*
             let notificationAlert = this.alertCtrl.create({
                 title: payload.title,
                 message: payload.body,
                 buttons: [
                     {
-                        text: 'Open',
+                        text: 'Ok',
                         handler: () => {
                             this.openNotificationPage(payload);
                         }
@@ -415,8 +448,10 @@ export class MyApp {
                 ]
             });
             notificationAlert.present();
+            */
         }
     }
+
     initOneSignal() {
         if (!this.platform.is('cordova')) {
             return;
@@ -445,7 +480,7 @@ export class MyApp {
 
         this._oneSignal.handleNotificationOpened().subscribe((notification) => {
             // do something when a notification is opened
-            this.processNotification(notification, true)
+            this.processNotification(notification, true);
         });
 
         this._oneSignal.endInit();
@@ -455,10 +490,57 @@ export class MyApp {
         });
     }
 
+    initFCM() {
+        if (!this.platform.is('cordova')) {
+            return;
+        }
+        this.platform.ready().then(() => {
+            this._fcm.onNotification().subscribe(notification => {
+                if(!('wasTapped' in notification)){
+                    notification.wasTapped = false;
+                }
+                console.log(notification);
+                console.log((notification.wasTapped === false && notification.onlyData === 'false'), (notification.wasTapped === true && notification.onlyData === 'true'));
+                /*
+                 * showing message
+                 * 1. wasTapped=true & onlyData=true => when message was clicked from notification
+                 * 2. wasTapped=false & onlyData=false => when app was opened
+                 */
+                if ((notification.wasTapped === false && notification.onlyData === 'false')
+                    || (notification.wasTapped === true && notification.onlyData === 'true')) {
+                    let payload = {
+                        payload: {
+                            title: notification.title || notification.title,
+                            body: notification.text || notification.text,
+                            additionalData: {}
+                        },
+                    };
+                    //adding additional data if any
+                    if ('page' in notification) {
+                        payload.payload.additionalData['page'] = notification.page;
+                    }
+                    if ('params' in notification) {
+                        payload.payload.additionalData['params'] = notification.page;
+                    }
+                    this.processNotification(payload, notification.wasTapped);
+                }
+            });
+            this._fcm.getToken().then(token => {
+                this.user.registerPushID(token);
+            }).catch(error => {
+                
+            });
+            this._fcm.onTokenRefresh().subscribe(token => {
+                this.user.registerPushID(token);
+            });
+        });
+    }
+
     initBadge() {
         this.user.getUser().then(user => {
             this.angularFireDatabase.object('Badge/' + user.id + '/Total').snapshotChanges().subscribe(snapshot => {
                 let total = snapshot.payload.val();
+                console.log('total:' + total);
                 if (total) {
                     this._badge.set(total);
                 } else {
@@ -534,4 +616,3 @@ export class MyApp {
 
 
 }
-

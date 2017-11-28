@@ -30,7 +30,7 @@ export class ReachUsComponent {
     ) {
         this.viewConrtoller.willEnter.subscribe(() => {
             //checking if page is Contact us or Enquiry Add
-            let activeComponentName = this.nav.getActive().data.component ? this.nav.getActive().data.component.name : this.nav.getActive().component.name;
+            let activeComponentName = Global.getActiveComponentName(this.nav.getActive());
             if (['ContactUsPage', 'EnquiryAddPage'].indexOf(activeComponentName) === -1) {
                 this.hideContactUsLink = true;
             }
@@ -49,8 +49,8 @@ export class ReachUsComponent {
 
     onContactUs() {
         let modal = this.modalCtrl.create(this.user.isLoggedIn() ? null : ContactUsPage);
-        modal.onDidDismiss(data=>{
-            if(data){
+        modal.onDidDismiss(data => {
+            if (data) {
                 this.events.publish('alert:basic', data.title, data.message);
             }
         });

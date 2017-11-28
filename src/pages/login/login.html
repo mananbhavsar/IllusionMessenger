@@ -4,19 +4,18 @@
         <logo></logo>
         <ion-row>
             <div id="login-box">
-                <form>
+                <form [formGroup]="loginForm" (ngSubmit)="doLogin()">
                     <ion-list>
                         <ion-item>
-                            <ion-label ion-text color="primary" floating>Username</ion-label>
-                            <ion-input autofocus required [(ngModel)]="login.username" #username="ngModel" type="text" placeholder="Username"
-                                name="username"></ion-input>
+                            <ion-label ion-text color="primary" floating>Login Name</ion-label>
+                            <ion-input formControlName="login_name" autofocus required type="text" placeholder="Login Name" name="login_name"></ion-input>
                         </ion-item>
                         <ion-item>
                             <ion-label ion-text color="primary" floating>Password</ion-label>
-                            <ion-input required [(ngModel)]="login.password" #password="ngModel" type="password" placeholder="Password" name="password"></ion-input>
+                            <ion-input required formControlName="password" type="password" placeholder="Password" name="password"></ion-input>
                         </ion-item>
                     </ion-list>
-                    <button ion-button block color="button" (click)="doLogin()">Log in</button>
+                    <button ion-button block type="submit" [disabled]="!loginForm.valid">Log in</button>
                 </form>
             </div>
 

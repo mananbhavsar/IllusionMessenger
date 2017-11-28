@@ -18,9 +18,10 @@
 <ion-content padding>
   <center-spinner [hidden]="items"></center-spinner>
   <ion-list class="communications-list">
-    <ion-item *ngFor="let item of items" detail-push [hidden]="isHidden(item)" (click)="openChat(item)">
+    <ion-item *ngFor="let item of items;trackBy:item?.TicketNo; let i=index;" detail-push [hidden]="isHidden(item)" (click)="item.UnreadCount=0;openChat(item, i)">
       <h2>
         {{item.Patient}}
+        <ion-badge *ngIf="item.UnreadCount" color="primary">{{item.UnreadCount}} </ion-badge>
       </h2>
       <p>
         <ion-grid>

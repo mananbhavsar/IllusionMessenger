@@ -11,6 +11,8 @@ import { FileOpener } from '@ionic-native/file-opener';
 import * as moment from 'moment';
 
 import { AudioProvider } from 'ionic-audio';
+import { Global } from '../../app/global';
+import { retry } from 'rxjs/operator/retry';
 
 @Component({
   selector: 'chat-bubble',
@@ -27,6 +29,7 @@ export class ChatBubbleComponent {
   messagePath: string = '';
   statusRef = null;
   dataDirectory: string = null;
+  downloadDirectory: string = null;
   selectedTrack: number;
   constructor(
     public angularFireDB: AngularFireDatabase,
@@ -39,7 +42,6 @@ export class ChatBubbleComponent {
     private navCtlr: NavController,
   ) {
     this.dataDirectory = this.platform.is('android') ? this.file.externalDataDirectory : this.file.dataDirectory;
-
     //listening to page change event to pause audio
     this.navCtlr.viewWillLeave.subscribe(event => {
       this.pauseSelectedTrack();
@@ -55,20 +57,31 @@ export class ChatBubbleComponent {
 
     this.doReading();
 
+
+    this.downloadDirectory = this.dataDirectory + this.ticket + '/';
+    this.createIfNotExist();
+
     this.processFile();
 
-    this.processBadgeCount();
+    // this.processBadgeCount();
   }
 
   doReading() {
-    //adding myself to read list
-    if (this.message.Read && this.userID in this.message.Read) {//already read by me
-      if (this.message.Status !== 2) { // & not 2 already
-        this.updateStatus();
+    //only if active page is chat
+    if (Global.getActiveComponentName(this.navCtlr.getActive()) === 'ChatPage') {
+      //adding myself to read list
+      if (this.message.Read && this.userID in this.message.Read) {//already read by me
+        if (this.message.Status !== 2) { // & not 2 already
+          this.updateStatus();
+        }
+      } else {
+        //now making it read by me
+        this.angularFireDB.object(this.messagePath + '/Read/' + this.userID).set(firebase.database.ServerValue.TIMESTAMP).then(result => {
+          if (this.message.Status !== 2) { // & not 2 already
+            this.updateStatus();
+          }
+        });
       }
-    } else {
-      //now making it read by me
-      this.angularFireDB.object(this.messagePath + '/Read/' + this.userID).set(firebase.database.ServerValue.TIMESTAMP);
     }
   }
 
@@ -108,9 +121,9 @@ export class ChatBubbleComponent {
 
   openImage(url) {
     //checking if file exist
-    this.check(url).then((entry: any) => {
-      this.openFileInApp(entry.nativeURL);
-    });
+    //this.check(url).then((entry: any) => {
+    //  this.openFileInApp(entry.nativeURL);
+    //});
   }
 
   openAudio(message) {
@@ -143,7 +156,7 @@ export class ChatBubbleComponent {
     });
   }
 
-  processFile() {
+  _processFile() {
     //downloading file
     if (this.message.URL) {
       //if cordova
@@ -159,7 +172,7 @@ export class ChatBubbleComponent {
     }
   }
 
-  _processFile() {
+  processFile() {
     //downloading file
     if (this.message.URL) {
       //if cordova
@@ -167,9 +180,13 @@ export class ChatBubbleComponent {
         let file = this.message.URL;
 
         this.isFileDownloaded(file).then(status => {
-          this.message['downloaded'] = true;
-          this.message.nativeURL = this.getNativeURL(file);
-
+          if (status) {
+            this.message['downloaded'] = true;
+            this.message.nativeURL = this.getNativeURL(file);
+            console.log(this.message.nativeURL);
+            //download for thumbnail in case of image
+            //pending
+          }
           this.makeTrackForAudio();
         }).catch(error => {
           this.message['downloaded'] = false;
@@ -199,7 +216,7 @@ export class ChatBubbleComponent {
 
       let fileName = this.getFileName(file);
       //checking if file downloaded
-      this.file.checkFile(this.dataDirectory, fileName).then(status => {
+      this.file.checkFile(this.downloadDirectory, fileName).then(status => {
         resolve(status);
       }).catch(error => {
         reject(error);
@@ -212,7 +229,7 @@ export class ChatBubbleComponent {
       let fileName = this.getFileName(file);
 
       const fileTransfer: FileTransferObject = this.transfer.create();
-      fileTransfer.download(file, this.file.dataDirectory + fileName).then((entry) => {
+      fileTransfer.download(file, this.downloadDirectory + fileName).then((entry) => {
         resolve(entry);
       }, (error) => {
         this.message['failed'] = error;
@@ -228,24 +245,48 @@ export class ChatBubbleComponent {
 
     return file.substring(file.lastIndexOf('/') + 1);
   }
+
   getNativeURL(file) {
-    return normalizeURL(file);
+    if (file) {
+      //checking if still http
+      if (file.indexOf('https') === 0) {
+        let fileName = this.getFileName(file);
+        return normalizeURL(this.downloadDirectory + fileName);
+      }
+      return normalizeURL(file);
+    }
+    return file;
+  }
+
+  createIfNotExist() {
+    this.file.checkDir(this.downloadDirectory, this.ticket).then(status => {
+    }).catch(error => {
+      if (error.code === 1) {
+        this.file.createDir(this.downloadDirectory, this.ticket, false).catch(error => { });
+      }
+    });
   }
 
   getTime(time) {
     if (time) {
-      let momentTime = moment(time).utc().local();
+      let momentTime = null;
+
+      momentTime = moment(time).utc().local();
+      //checking if its dd-mm-yyy format
+      if (!momentTime.isValid() && moment(time, 'DD-MM-YYYY hh:mm:ss').isValid()) {
+        momentTime = moment(time, 'DD-MM-YYYY hh:mm:ss').utc().local();
+      }
       if (momentTime.isValid()) {
         var today = moment().startOf('day');
 
         if (momentTime.isSame(today, 'd')) {// today
-          return momentTime.format('hh:ss a');
+          return momentTime.format('hh:mm a');
         } else if (momentTime.isBetween(moment().subtract(7, 'days').startOf('day'), today)) { //within a week
-          return momentTime.format('ddd d, hh:ss a');
+          return momentTime.format('ddd D, hh:mm a');
         } else if (momentTime.isBetween(moment().startOf('month'), today)) { //within a month
-          return momentTime.format('ddd d, hh:ss a');
+          return momentTime.format('ddd D, hh:mm a');
         } else {
-          return momentTime.format('ddd, d MMM hh:ss a');
+          return momentTime.format('ddd, D MMM hh:mm a');
         }
       } else {
       }
@@ -255,7 +296,6 @@ export class ChatBubbleComponent {
 
   showRead(message) {
     if (this.LoginTypeID === 3) {
-      console.log(message.Read);
     }
   }
 
@@ -321,6 +361,13 @@ export class ChatBubbleComponent {
   }
 
   onTrackFinished(track: any) {
-
+    console.log('Track finished', track);
+    //re-adding this track
+    this.message.audioTrack = {
+      src: null,
+    };
+    setTimeout(() => {
+      this.makeTrackForAudio();
+    }, 150);
   }
 }

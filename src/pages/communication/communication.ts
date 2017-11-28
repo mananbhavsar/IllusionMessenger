@@ -1,10 +1,13 @@
 import { Component, ViewChild } from '@angular/core';
-import { IonicPage, NavController, NavParams, Events, Content } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, Events, Content, Platform } from 'ionic-angular';
 
 import { OfficeServiceProvider } from "../../providers/office-service/office-service";
 import { ConnectionProvider } from "../../providers/connection/connection";
 
 import { ChatPage } from "../chat/chat";
+import * as _ from 'underscore';
+import * as firebase from 'firebase';
+import { Item } from 'ionic-angular/components/item/item';
 
 @IonicPage()
 @Component({
@@ -23,28 +26,50 @@ export class CommunicationPage {
   selectedTab = 'All';
   page: number = 0;
   items: any = [];
+  itemsTicketNo: any = [];
   itemsSearchCopy: any = [];
   searchText: string = '';
   showSearchBar: boolean = true;
+  wasModalShown: boolean | -1 = false;
+  openingChat: boolean = false;
+
+  newChatEventRefs: Object = {};
+  newQueryEventRefs: Object = {};
+
   constructor(
     public navCtrl: NavController,
     public offliceList: OfficeServiceProvider,
     public events: Events,
     public connection: ConnectionProvider,
+    public platform: Platform,
   ) {
 
   }
 
-  ionViewDidLoad() {
-    this.offliceList.getOffice('Communication').then((selectedOffice) => {
-      this.selectedOffice = selectedOffice;
-      this.setTitle();
+  ionViewDidEnter() {
+    if (_.isEmpty(this.selectedOffice)) {
+      this.offliceList.getOffice('Communication').then((selectedOffice) => {
+        this.selectedOffice = selectedOffice;
+        console.log(this.selectedOffice);
+        
+        this.setTitle();
 
-      this.initData();
-    }).catch((error) => {
-      this.events.publish('toast:error', error);
-      this.navCtrl.popToRoot();
-    })
+        this.wasModalShown = this.offliceList.isMultiOffice();
+
+        this.initData().then(response => { }).catch(error => {
+         
+        });
+      }).catch((error) => {
+        console.log(error);
+        this.events.publish('toast:error', error);
+        this.navCtrl.popToRoot();
+      });
+    } else {
+      this.listenToFirebaseQueryEvent();
+      this.items.forEach(item => {
+        this.listenToFirebaseChatEvent(item);
+      });
+    }
   }
 
   initData(): Promise<any> {
@@ -58,8 +83,12 @@ export class CommunicationPage {
       }).then((response: any) => {
         for (let i = 0; i < response.length; i++) {
           this.items.push(response[i]);
+          this.itemsTicketNo.push(response[i].TicketNo);
+
           //making copy for search
           this.itemsSearchCopy.push(response[i]);
+          //listening to count event
+          this.listenToFirebaseChatEvent(response[i]);
         }
         this.page++;
         //checking if already searched
@@ -67,7 +96,7 @@ export class CommunicationPage {
         resolve();
       }).catch(error => {
         this.page = -1;
-        reject();
+        reject(error);
       });
     });
   }
@@ -128,7 +157,11 @@ export class CommunicationPage {
     return item.QueryStatus !== this.selectedTab
   }
 
-  openChat(item) {
+  openChat(item, index) {
+    if (this.items && typeof this.items[index] !== 'undefined') {
+      this.items[index].UnreadCount = 0;
+    }
+    item.UnreadCount = 0;
     this.navCtrl.push(ChatPage, item.TicketNo);
   }
 
@@ -157,6 +190,58 @@ export class CommunicationPage {
       this.showSearchBar = !this.showSearchBar;
       this.scrollToTop();
       this.selectedTab = 'All';
+    }
+  }
+
+  listenToFirebaseChatEvent(item) {
+    let ticketNo = item.TicketNo;
+    let path = 'NewChatEvent/' + ticketNo + '/' + this.connection.user.id;
+
+    if (!(path in this.newChatEventRefs)) {
+      let itemRef = firebase.database().ref(path)
+      this.newChatEventRefs[path] = itemRef;
+
+      //removing existing as we just got it from server
+      itemRef.remove();
+      //now listening to new
+      itemRef.on('child_added', (snapshot) => {
+        let count = snapshot.val();
+        item.UnreadCount += count;
+        itemRef.remove();
+      });
+    }
+  }
+
+  listenToFirebaseQueryEvent() {
+    let path = 'NewQueryEvent/' + this.selectedOffice.CustomerBranchID + '/' + this.connection.user.id;
+    //checking if not already listening
+    if (!(path in this.newQueryEventRefs)) {
+      let queryRef = firebase.database().ref(path)
+      this.newQueryEventRefs[path] = queryRef;
+
+      queryRef.on('child_added', (snapshot) => {
+        let item = snapshot.val();
+        if (typeof item.QueryStatus === 'undefined') {
+          item.QueryStatus = 'Pending';
+        }
+        //checking if already exist
+        if (this.itemsTicketNo.indexOf(item.TicketNo) === -1) {
+          this.items.unshift(item);
+          this.itemsTicketNo.push(item.TicketNo);
+        }
+        queryRef.remove();
+      });
+    }
+  }
+
+  ionViewWillLeave() {
+    for (let key in this.newChatEventRefs) {
+      this.newChatEventRefs[key].off('child_added');
+      delete this.newChatEventRefs[key];
+    }
+    for (let key in this.newQueryEventRefs) {
+      this.newQueryEventRefs[key].off('child_added');
+      delete this.newQueryEventRefs[key];
     }
   }
 }

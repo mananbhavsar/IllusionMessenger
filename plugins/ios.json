@@ -7,31 +7,16 @@
     "files": {}
   },
   "installed_plugins": {
-    "cordova-plugin-app-version": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-sqlite-storage": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-plugin-device": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-plugin-splashscreen": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-plugin-statusbar": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-plugin-network-information": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
     "cordova-base64-to-gallery": {
       "PACKAGE_NAME": "com.illusiondental.app"
     },
-    "cordova-plugin-file": {
+    "cordova-plugin-add-swift-support": {
       "PACKAGE_NAME": "com.illusiondental.app"
     },
-    "cordova-plugin-add-swift-support": {
+    "cordova-plugin-app-version": {
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "cordova-plugin-badge": {
       "PACKAGE_NAME": "com.illusiondental.app"
     },
     "cordova-plugin-camera": {
@@ -39,14 +24,22 @@
       "PHOTOLIBRARY_USAGE_DESCRIPTION": " ",
       "PACKAGE_NAME": "com.illusiondental.app"
     },
-    "cordova-plugin-media": {
-      "MICROPHONE_USAGE_DESCRIPTION": "To send voice message",
+    "cordova-plugin-compat": {
       "PACKAGE_NAME": "com.illusiondental.app"
     },
-    "cordova-plugin-badge": {
+    "cordova-plugin-device": {
       "PACKAGE_NAME": "com.illusiondental.app"
     },
-    "cordova-plugin-whitelist": {
+    "cordova-plugin-fcm": {
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "cordova-plugin-file": {
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "cordova-plugin-file-opener2": {
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "cordova-plugin-file-transfer": {
       "PACKAGE_NAME": "com.illusiondental.app"
     },
     "cordova-plugin-inappbrowser": {
@@ -55,10 +48,8 @@
     "cordova-plugin-ionic-webview": {
       "PACKAGE_NAME": "com.illusiondental.app"
     },
-    "cordova-plugin-compat": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-plugin-file-transfer": {
+    "cordova-plugin-media": {
+      "MICROPHONE_USAGE_DESCRIPTION": " ",
       "PACKAGE_NAME": "com.illusiondental.app"
     },
     "cordova-plugin-media-capture": {
@@ -67,19 +58,34 @@
       "PHOTOLIBRARY_USAGE_DESCRIPTION": " ",
       "PACKAGE_NAME": "com.illusiondental.app"
     },
-    "ionic-plugin-keyboard": {
+    "cordova-plugin-network-information": {
       "PACKAGE_NAME": "com.illusiondental.app"
     },
-    "cordova.plugins.diagnostic": {
+    "cordova-plugin-splashscreen": {
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "cordova-plugin-statusbar": {
       "PACKAGE_NAME": "com.illusiondental.app"
     },
     "cordova-plugin-vibration": {
       "PACKAGE_NAME": "com.illusiondental.app"
     },
-    "cordova-plugin-file-opener2": {
+    "cordova-plugin-whitelist": {
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "cordova-sqlite-storage": {
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "cordova.plugins.diagnostic": {
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "ionic-plugin-keyboard": {
       "PACKAGE_NAME": "com.illusiondental.app"
     },
     "mx.ferreyra.callnumber": {
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "onesignal-cordova-plugin": {
       "PACKAGE_NAME": "com.illusiondental.app"
     }
   },

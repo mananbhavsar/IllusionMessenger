@@ -1,4 +1,11 @@
 page-home {
+    .cutomer-name {
+        padding: 5px;
+        text-transform: uppercase;
+        background: gray;
+        color: white;
+        text-align: center;
+    }
     .homescreenDivision,
     .homescreenDivision1 {
         display: flex;

@@ -26,18 +26,31 @@ page-chat {
         background-color: #E0DAD6;
         background-repeat: repeat-y;
         background-size: 100%;
+        height: calc(100% - 0px);
     }
     .message-list {
         margin-top: 12px;
         padding: 0 5%;
         chat-bubble {
-            margin-bottom: 4px;
+            margin-bottom: 5px;
             display: inherit;
             &::after {
                 content: "";
                 display: table;
                 clear: both;
             }
+        }
+        .no-more {
+            text-align: center;
+            color: rgba(69, 90, 100, 0.95);
+            background: rgba(225, 245, 254, 0.92);
+            margin: 0 auto 10px;
+            display: block;
+            width: 150px;
+            padding: 5px;
+            border-radius: 5px;
+            font-size: 10px;
+            font-style: italic;
         }
     }
     .typing-container {
@@ -59,6 +72,7 @@ page-chat {
         display: flex;
         align-items: center;
         justify-content: center;
+        min-height: 44px;
         .button[icon-only]:not(.send-button) {
             max-width: 1.8em;
         }
@@ -74,8 +88,28 @@ page-chat {
                 display: inline-block;
                 width: 100%;
                 textarea {
+                    border-radius: 5px;
+                    padding: 5px;
+                    background-color: #FFF;
+                    border: 1px solid #ccc;
+                    display: inline-block;
+                    width: 100%;
                     margin: 0;
+                    max-height: 190px;
+                    overflow: auto;
                 }
+            }
+            textarea {
+                border-radius: 5px;
+                padding: 5px;
+                background-color: #FFF;
+                border: 1px solid #ccc;
+                display: inline-block;
+                width: 100%;
+                margin: 0;
+                max-height: 190px;
+                overflow: auto;
+                min-height: 30px;
             }
             &.send {
                 width: calc(100% - 73px);

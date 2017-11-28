@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, Events } from 'ionic-angular';
 import { TutorialPage } from '../tutorial/tutorial';
 import { LoginPage } from '../login/login';
+import { HomePage } from  '../home/home';
 
 import { UserProvider } from '../../providers/user/user';
 import { Global } from '../../app/global';
@@ -13,20 +14,23 @@ import { Global } from '../../app/global';
     templateUrl: 'welcome.html',
 })
 export class WelcomePage {
-
+    sendToHomeFlag: boolean = false;
     constructor(
         public navCtrl: NavController,
         public navParams: NavParams,
         public user: UserProvider,
         public events: Events,
     ) {
+        this.sendToHomeFlag = this.navParams.data === true;
     }
 
     ionViewDidLoad() {
         //checking if logged already
         this.user.hasLoggedIn().then((user) => {
             if (user) {
-                
+                if(this.sendToHomeFlag){
+                    this.navCtrl.setRoot(HomePage);
+                }
             } else {
                 //checking if Tutorial required
                 if (Global.tutorial) {

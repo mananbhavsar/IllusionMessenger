@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "7402421237",
+    "firebase_url": "https://illusion-dental-5d48c.firebaseio.com",
+    "project_id": "illusion-dental-5d48c",
+    "storage_bucket": "illusion-dental-5d48c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:7402421237:android:e2770e70a2fcd9f1",
+        "android_client_info": {
+          "package_name": "com.illusiondental.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "7402421237-lfcs2utfclmlgpar869l1699tjahugrb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBACF0E7Anz0weQuQv23vgjuS65009Q9yU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

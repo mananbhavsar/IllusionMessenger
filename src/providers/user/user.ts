@@ -8,8 +8,12 @@ import { OfficeServiceProvider } from '../office-service/office-service';
 
 import { Global } from "../../app/global";
 
+import * as _ from 'underscore';
 import { OneSignal } from '@ionic-native/onesignal';
+import { FCM } from '@ionic-native/fcm';
 import { Badge } from '@ionic-native/badge';
+import { AngularFireDatabase } from 'angularfire2/database';
+import { useAnimation } from '@angular/core/src/animation/dsl';
 
 @Injectable()
 export class UserProvider {
@@ -25,7 +29,9 @@ export class UserProvider {
         public alertCtrl: AlertController,
         public officeList: OfficeServiceProvider,
         private oneSignal: OneSignal,
-        private badge: Badge
+        private badge: Badge,
+        private angularFireDatabase: AngularFireDatabase,
+        private fcm: FCM,
     ) {
         this.global = Global;
 
@@ -58,11 +64,17 @@ export class UserProvider {
                     this.HAS_LOGGED_IN = false;
                     this._user = null;
 
-                    //one signal deregister
-                    this.oneSignal.setSubscription(false);
+                    //deregister push
+                    if (Global.Push.OneSignal) {
+                        //one signal deregister
+                        this.oneSignal.setSubscription(false);
+                    }
 
                     //clear badge
                     this.badge.clear();
+
+                    //Removing Offline Data
+                    this.storage.remove('OfflineDashboard');
 
                     this.events.publish('user:logout', 'Bye Bye ' + name + '. See you soon!');
 
@@ -122,14 +134,25 @@ export class UserProvider {
 
     registerPushID(push_id) {
         return new Promise((resolve, reject) => {
-            this.connection.doPost('Account/RegisterDevice', {
-                DeviceID: push_id,
-                IsLogin: push_id !== '',
-            }, false).then(response => {
-                resolve(response);
-            }).catch(error => {
-                reject(error);
-            });
+            //checking if logged in
+            if (!_.isEmpty(this.connection.user)) {
+                this.connection.doPost('Account/RegisterDevice', {
+                    DeviceID: push_id,
+                    IsLogin: push_id !== '',
+                }, false).then(response => {
+                    resolve(response);
+                }).catch(error => {
+                    reject(error);
+                });
+
+            } else {
+                //waiting to logged in
+                this.events.subscribe('user:ready', (user) => {
+                    if (user) {
+                        this.registerPushID(push_id);
+                    }
+                });
+            }
         });
     }
 
@@ -141,8 +164,9 @@ export class UserProvider {
         if (this.platform.is('android')) {
             OSName = 'android';
         }
-        this.connection.doPost('Account/GetMobileOSVersion', { OSName: OSName }, false).then(AppVersion => {
-            if (this.global.AppVersion !== AppVersion) {
+        this.angularFireDatabase.object('Version/' + OSName).snapshotChanges().subscribe(snapshot => {
+            let AppVersion = snapshot.payload.val();
+            if (AppVersion && this.global.AppVersion !== AppVersion) {
                 let alert = this.alertCtrl.create({
                     title: 'Version Update Available',
                     message: 'There is a version update please update your application',

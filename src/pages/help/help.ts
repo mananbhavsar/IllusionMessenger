@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
+import { Global } from '../../app/global';
 /**
  * Generated class for the HelpPage page.
  *
@@ -14,12 +15,16 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
   templateUrl: 'help.html',
 })
 export class HelpPage {
-
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  global: any = {};
+  constructor(
+    public navCtrl: NavController,
+    public navParams: NavParams,
+  ) {
+    this.global = Global;
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad HelpPage');
+    
   }
 
 }

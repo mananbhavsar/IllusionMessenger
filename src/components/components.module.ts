@@ -13,6 +13,8 @@ import { CallFabComponent } from './call-fab/call-fab';
 import { ChatBubbleComponent } from './chat-bubble/chat-bubble';
 import { IonicAudioModule } from 'ionic-audio';
 import { IonicImageLoader } from 'ionic-image-loader';
+import { IonicImageViewerModule } from 'ionic-img-viewer';
+
 @NgModule({
     declarations: [EmptyComponent,
         ReachUsComponent,
@@ -29,6 +31,7 @@ import { IonicImageLoader } from 'ionic-image-loader';
         MomentModule,
         IonicImageLoader,
         IonicAudioModule,
+        IonicImageViewerModule,
         IonicPageModule.forChild(EmptyComponent),
         IonicPageModule.forChild(ReachUsComponent),
         IonicPageModule.forChild(CenterSpinnerComponent),

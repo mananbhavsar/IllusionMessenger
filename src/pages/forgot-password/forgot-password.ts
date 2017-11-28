@@ -11,7 +11,7 @@ import { ConnectionProvider } from '../../providers/connection/connection';
   templateUrl: 'forgot-password.html',
 })
 export class ForgotPasswordPage {
-  ForgotPassword: { full_name?: string } = {};
+  ForgotPassword: { login_name?: string } = {};
   forgotPasswordForm: FormGroup;
   global: any = {};
 
@@ -22,16 +22,24 @@ export class ForgotPasswordPage {
     public connection: ConnectionProvider,
   ) {
     this.forgotPasswordForm = this.formBuilder.group({
-      email_address: ['', Validators.required],
+      login_name: ['', Validators.required],
     });
   }
 
 
   doForgotPassword() {
-    this.connection.doPost('Account/Validate_ForgotPassword', this.ForgotPassword, 'resetting password').then(response => {
-      this.events.publish('loading:close');
+    this.connection.doPost('Account/Validate_ForgotPassword', {
+      UserCode: this.ForgotPassword.login_name,
+    }, 'resetting password').then(response => {
+      this.events.publish('alert:basic', 'Password sent!', response);
       this.navCtrl.push(LoginPage);
+    }).catch(error=>{
+      this.events.publish('toast:create', error);
     });
+  }
+
+  goBack(){
+    this.navCtrl.pop();
   }
 
 }

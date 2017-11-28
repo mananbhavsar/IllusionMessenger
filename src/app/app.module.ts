@@ -25,6 +25,7 @@ import { MediaCapture } from '@ionic-native/media-capture';
 import { Media } from '@ionic-native/media';
 import { Vibration } from '@ionic-native/vibration';
 import { FileOpener } from '@ionic-native/file-opener';
+import { FCM } from '@ionic-native/fcm';
 
 import { HttpModule } from '@angular/http';
 import { IonicStorageModule } from '@ionic/storage';
@@ -66,6 +67,7 @@ import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabaseModule, AngularFireDatabase } from 'angularfire2/database';
 import { AngularFireAuthModule } from 'angularfire2/auth';
 import { IonicAudioModule, WebAudioProvider, CordovaMediaProvider, defaultAudioProviderFactory } from 'ionic-audio';
+import { IonicImageViewerModule } from 'ionic-img-viewer';
 
 export const firebaseConfig = {
     apiKey: "AIzaSyAeAsx1UOrRVQ9m9zlwvmHiTsCuvLtO-J4",
@@ -95,6 +97,7 @@ export const firebaseConfig = {
         AngularFireDatabaseModule,
         AngularFireAuthModule,
         IonicAudioModule.forRoot(defaultAudioProviderFactory),
+        IonicImageViewerModule,        
         AboutPageModule,
         AccountPageModule,
         CaseStatusPageModule,
@@ -150,6 +153,7 @@ export const firebaseConfig = {
         Media,
         Vibration,
         FileOpener,
+        FCM,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

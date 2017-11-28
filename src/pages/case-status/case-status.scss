@@ -45,6 +45,9 @@ page-case-status {
                 display: block;
                 width: 100%;
                 font-size: 1em;
+                ion-badge{
+                    float: right;
+                }
             }
         }
         p {

@@ -3,10 +3,10 @@
     <div [hidden]="selectedOffice === {}" class="office">{{selectedOffice.CustomerName}}</div>
     <ion-segment padding mode="ios" [(ngModel)]="selectedTab" color="pickup" (ionChange)="segmentChanged($event)">
         <ion-segment-button value="0">
-            Today
+            {{titles[0]}}
         </ion-segment-button>
         <ion-segment-button value="1">
-            Tomorrow
+            {{titles[1]}}
         </ion-segment-button>
     </ion-segment>
 </ion-header>

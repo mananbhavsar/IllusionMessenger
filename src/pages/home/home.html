@@ -1,5 +1,6 @@
 <ion-header no-border>
     <header title="Home"></header>
+    <!-- <div [hidden]="Customer === null" class="cutomer-name">{{Customer}}</div> -->
 </ion-header>
 <ion-content no-padding>
     <ion-refresher (ionRefresh)="initData($event, true)">
@@ -73,5 +74,5 @@
             </ion-grid>
         </div>
     </ng-container>
-    <!-- <button (click)="openChat()" full ion-button>Open Test Chat</button> -->
+    <button (click)="openChat()" full ion-button>Open Test Chat</button>
 </ion-content>

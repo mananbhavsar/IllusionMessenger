@@ -75,6 +75,9 @@
     },
     "mx.ferreyra.callnumber": {
       "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "cordova-plugin-fcm": {
+      "PACKAGE_NAME": "com.illusiondental.app"
     }
   },
   "dependent_plugins": {}

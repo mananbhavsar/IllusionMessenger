@@ -196,8 +196,8 @@ export class ChatPage {
         this.messagesLoaded = true;
         setTimeout(() => {
           this.scrollBottom('first time message load');
-        });
-      }, 100);
+        }, 100);
+      });
 
 
       //for new message
@@ -275,6 +275,7 @@ export class ChatPage {
       this.showNoMoreMessages = true;
     }
 
+    console.log('paginate');
     //paging prev 10 messages
     if (this.messagesRef) {
       if (typeof this.messages[0] !== 'undefined') {

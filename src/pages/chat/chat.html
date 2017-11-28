@@ -18,10 +18,10 @@
   </div>
 </ion-content>
 <ion-footer class="bar-stable footer-chat item-input-inset">
-  <!-- <ng-container *ngIf="messagesLoaded === false">
+  <ng-container *ngIf="messagesLoaded === false">
     <ion-spinner name="dots"></ion-spinner>
-  </ng-container> messagesLoaded && -->
-  <ng-container *ngIf="aboutToRecord === false">
+  </ng-container>
+  <ng-container *ngIf="messagesLoaded && aboutToRecord === false">
     <button ion-button clear icon-only (click)="openUploadOptions()">
       <ion-icon name="ios-add-outline"></ion-icon>
     </button>

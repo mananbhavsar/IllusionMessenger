@@ -3,6 +3,7 @@ import { IonicPageModule } from 'ionic-angular';
 import { CommunicationPage } from './communication';
 
 import { ComponentsModule } from "../../components/components.module";
+import { OrderModule } from 'ngx-order-pipe';
 
 @NgModule({
   declarations: [
@@ -11,6 +12,7 @@ import { ComponentsModule } from "../../components/components.module";
   imports: [
     IonicPageModule.forChild(CommunicationPage),
     ComponentsModule,
+    OrderModule,
   ],
 })
 export class CommunicationPageModule {}

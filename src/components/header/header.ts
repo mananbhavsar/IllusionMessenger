@@ -32,14 +32,15 @@ export class HeaderComponent {
         private _statusBar: StatusBar,
     ) {
         this.ionViewDidEnter();
-        this.navCtrl.viewWillEnter.subscribe(page => {
-            let currentPageColor = this.getColor(page.name);
-            if (this.prevPageColor !== currentPageColor) {
-                this.prevPageColor = currentPageColor;
-                //setting header color
-                //console.log(this.prevPageColor, this.colorHex[this.prevPageColor]);
-                this._statusBar.backgroundColorByHexString(this.colorHex[this.prevPageColor]);
-            }
+        this.navCtrl.viewDidEnter.subscribe(page => {
+            setTimeout(() => {
+                let currentPageColor = this.getColor(page.name);
+                if (true || this.prevPageColor !== currentPageColor) {
+                    this.prevPageColor = currentPageColor;
+                    //setting header color
+                    this._statusBar.backgroundColorByHexString(this.colorHex[this.prevPageColor]);
+                }
+            });
         });
     }
 
@@ -60,9 +61,8 @@ export class HeaderComponent {
     }
 
     getColor(name: string = null) {
-        if (name === null) {
+        if (true || name === null) {
             name = Global.getActiveComponentName(this.navCtrl.getActive());
-            //console.log(name);
         }
         switch (name) {
             case 'DashboardPage':

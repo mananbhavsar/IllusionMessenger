@@ -1,35 +1,46 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
-import { IonicPage, NavController, Content, NavParams, Platform, Events, normalizeURL, ToastController, ActionSheetController } from 'ionic-angular';
+import { IonicPage, NavController, Content, NavParams, Platform, ModalController, Events, normalizeURL, ToastController, ActionSheetController } from 'ionic-angular';
 
 import * as _ from 'underscore';
 import * as mime from 'mime-types';
 
 import * as firebase from 'firebase';
 import * as moment from 'moment';
-import { Observable } from 'rxjs/Observable';
+
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Subscription } from 'rxjs/Subscription';
+import { Http, Headers, Response, URLSearchParams } from '@angular/http';
 import 'rxjs/add/operator/switchMap';
 
 import { ConnectionProvider } from '../../providers/connection/connection';
 import { UserProvider } from '../../providers/user/user';
+import { FirebaseTransactionProvider } from '../../providers/firebase-transaction/firebase-transaction';
+import { CommonProvider } from "../../providers/common/common";
+import { TranslateService } from "@ngx-translate/core";
+
 import { Global } from '../../app/global';
 
 import { Storage } from '@ionic/storage';
 
 import { Camera, CameraOptions } from '@ionic-native/camera';
 import { Keyboard } from '@ionic-native/keyboard';
-import { OneSignal } from '@ionic-native/onesignal';
 import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer';
 import { File } from '@ionic-native/file';
-import { MediaCapture, MediaFile, CaptureError, CaptureImageOptions } from '@ionic-native/media-capture';
 import { Media, MediaObject } from '@ionic-native/media';
 import { Vibration } from '@ionic-native/vibration';
 import { Network } from '@ionic-native/network';
+import { VideoCapturePlus, VideoCapturePlusOptions, MediaFile } from '@ionic-native/video-capture-plus';
+import { VideoEditor } from '@ionic-native/video-editor';
+import { OneSignal } from '@ionic-native/onesignal';
 
 import { LogoutPage } from '../logout/logout';
 import { retry } from 'rxjs/operators/retry';
 import { HomePage } from '../home/home';
+import { ChatReadModalPage } from "../../pages/chat/chat-read-modal/chat-read-modal";
+import { SavedMediaPage } from "../../pages/chat/saved-media/saved-media";
+
+import { AudioProvider } from 'ionic-audio';
+import { Modal } from 'ionic-angular/components/modal/modal';
 @IonicPage()
 @Component({
   selector: 'page-chat',
@@ -38,6 +49,7 @@ import { HomePage } from '../home/home';
 export class ChatPage {
   @ViewChild(Content) content: Content;
   @ViewChild('messageInput') messageInput: any;
+  global: any = Global;
 
   data: any = {};
   ticket: string = null;
@@ -47,11 +59,14 @@ export class ChatPage {
   isCordova: boolean = false;
   keyboardHeight: number = 0;
 
+
   basePath: string = '';
+  path: string = '';
 
   messagesRef: firebase.database.Reference;
   newMessagesRef: firebase.database.Query;
   messages: Array<any> = [];
+  offlineMessages: Array<any> = [];
   messagesKeys: Array<any> = []; //this will keep track of keys vs index in original array of messages
   messagesLoaded: boolean = false;
   message: string = '';
@@ -69,13 +84,10 @@ export class ChatPage {
 
   user: any = {};
   userID = null;
-  //other users Register Device ID
-  otherUserRegisterDeviceIDs: any = [];
   chatUsers: any = {};
-  badgeUsers: any = {};
 
   lastcalled: boolean = false;
-
+  readyForPagination: boolean = false;
   sendClickKeepKeyboardOpened: boolean = false;
   //camera
   private cameraOptions: CameraOptions = {
@@ -95,7 +107,7 @@ export class ChatPage {
     sourceType: this.camera.PictureSourceType.SAVEDPHOTOALBUM,
     destinationType: this.camera.DestinationType.FILE_URI,
     encodingType: this.camera.EncodingType.JPEG,
-    mediaType: this.camera.MediaType.PICTURE
+    mediaType: this.camera.MediaType.ALLMEDIA
   }
   progressPercent: number = 0;
 
@@ -111,6 +123,21 @@ export class ChatPage {
   vibrateDuration: number = 300;
 
   keyboardOpen: boolean = false;
+  hasInternet: boolean = true;
+  lastReadingTime: number = 0;
+  offlineMessageText: string = 'The message cannot be downloaded as there is\'nt any internet connection';
+
+  myLanguage: string = null;
+  chatLanguages: Array<string> = [];
+  translating: boolean = false;
+
+  doctor_translate: string = 'Doctor';
+  impression_no_translate: string = 'Imp No.';
+  camera_translate: string = 'Camera';
+  photo_video_library_translate: string = 'Photo & Video Library';
+  audio_tranlate: string = 'Audio';
+  video_translate: string = 'Video';
+  cancel_translate: string = 'Cancel';
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -121,36 +148,64 @@ export class ChatPage {
     public camera: Camera,
     private transfer: FileTransfer,
     private file: File,
-    private mediaCapture: MediaCapture,
     private _media: Media,
     public actionSheetCtrl: ActionSheetController,
-    private _oneSignal: OneSignal,
     private _toastCtrl: ToastController,
     private vibration: Vibration,
     private keyboard: Keyboard,
-    private network: Network,
+    private _network: Network,
+    private _firebaseTransaction: FirebaseTransactionProvider,
+    private videoCapturePlus: VideoCapturePlus,
+    private videoEditor: VideoEditor,
+    private elementRef: ElementRef,
+    private modal: ModalController,
+    private common: CommonProvider,
+    public http: Http,
+    private translate: TranslateService,
+    private _oneSignal: OneSignal,
   ) {
     //init
     this.isIOS = this.platform.is('ios');
     this.isCordova = this.platform.is('cordova');
-    this.dataDirectory = this.platform.is('android') ? this.file.externalDataDirectory : this.file.tempDirectory;
+    this.global = Global;
+    this.common.getDataDirectory().then(path => {
+      this.dataDirectory = path;
+    }).catch(error => {
+      console.log(error);
+    });
 
     //getting Ticket no
     this.ticket = this.navParams.data;
+    console.log(this.ticket);
+
     this.basePath = 'Communications/' + this.ticket + '/';
 
     this.keyboard.onKeyboardShow().subscribe((data) => {
-      this.scrollBottom('keyboard show');
+      this.scrollBottom('keyboard show').catch(error => { });
     });
     this.keyboard.onKeyboardHide().subscribe((data) => {
-      console.log('keyboard closes');
+      console.log('keyboard closes: ', data);
       this.contentResize();
       if (this.sendClickKeepKeyboardOpened === false) {
         this.closeKeyboard(null);
       } else {
         this.sendClickKeepKeyboardOpened = false;
       }
-      this.scrollBottom('keyboard hide');
+      this.scrollBottom('keyboard hide').catch(error => { });
+    });
+
+    this.hasInternet = this._network.type !== 'none';
+    this.events.subscribe('network:online', () => {
+      this.hasInternet = true;
+      this.messagesLoaded = this.messages.length > 0;
+
+      this.setFirebaseRef();
+      this.listenToFirebaseEvents(true);
+      //make all unread count of this ticket to zero
+      this.clearBadgeCountIfAny();
+    });
+    this.events.subscribe('network:offline', () => {
+      this.hasInternet = false;
     });
 
     //making folder with this ticket number to save files
@@ -166,27 +221,25 @@ export class ChatPage {
 
     //for chatting: This will prevent notification from same chat
     this.chattingRef = firebase.database().ref(this.basePath + 'Chatting');
+
+    //keyboard disable
+    this.keyboard.disableScroll(true);
   }
 
   connectFireBase() {
     this.setFirebaseRef();
-
     //actual data/messages
     //getting first n message
     this.messagesRef.orderByKey().limitToLast(this.messageLimit).once('value', (snapshot) => {
-      let lastKey = null;
       let numberOfMessages = 0;
       let ignoredStart = false;
 
       let messages = snapshot.val();
+
       for (let key in messages) {
         let message = messages[key];
         message['key'] = key;
-
-        this.messages.push(message);
-        this.messagesKeys.push(key);
-
-        lastKey = key;
+        this.pushItem(message, true);
       }
 
       //checking if no more messages ie. first message key is same at 0 index
@@ -195,16 +248,17 @@ export class ChatPage {
       setTimeout(() => {
         this.messagesLoaded = true;
         setTimeout(() => {
-          this.scrollBottom('first time message load');
+          this.scrollBottom('first time message load').then(status => {
+            this.readyForPagination = true;
+            this.saveOfflineData();
+          }).catch(error => { });
         }, 100);
       });
 
 
       //for new message
       this.newMessagesRef = this.messagesRef.orderByKey();
-      if (lastKey) {
-        this.newMessagesRef = this.newMessagesRef.startAt(lastKey);
-      }
+
       this.listenToFirebaseEvents(ignoredStart);
     });
 
@@ -219,20 +273,44 @@ export class ChatPage {
   }
 
   listenToFirebaseEvents(ignoredStart) {
+    if (Global.getActiveComponentName(this.navCtrl.getActive()) !== 'ChatPage') {
+      return;
+    }
     //new Message
+    if (this.messagesKeys.length > 0) {
+      let lastMessageKey = this.messagesKeys[this.messagesKeys.length - 1];
+      if (this.newMessagesRef) {
+        this.newMessagesRef.off('child_added');
+      }
+      this.newMessagesRef = this.messagesRef.orderByKey().startAt(lastMessageKey);
+    } else { //empty messages, listening to actual first
+
+    }
+
     this.newMessagesRef.on('child_added', (snapshot) => {
-      if (ignoredStart) {
-        let message = snapshot.val();
+      let message = snapshot.val();
+
+      if (ignoredStart || this.messagesKeys.length === 0) {
         if (this.messages && message) {
           message['key'] = snapshot.key;
 
-          this.messages.push(message);
-          this.messagesKeys.push(snapshot.key);
+          if (this.messagesKeys.indexOf(snapshot.key) === -1) {
+            this.pushItem(message);
+            this.saveOfflineData();
+          }
+          if (this.firstMessageKey === null) {
+            this.firstMessageKey = snapshot.key;
+            this.checkForNoMoreMessages();
+          }
 
           setTimeout(() => {
-            this.scrollBottom('new message');
-          }, 200);
+            setTimeout(() => {
+              this.scrollBottom('new message').catch(error => { });
+            });
+          }, 250);
+        } else {
         }
+        ignoredStart = true;
       } else {
         ignoredStart = true;
       }
@@ -244,6 +322,19 @@ export class ChatPage {
       let index = this.messagesKeys.indexOf(snapshot.key);
       if (index > -1 && typeof this.messages !== 'undefined' && typeof this.messages[index] !== 'undefined') {
         this.messages[index].Status = message.Status;
+        this.offlineMessages[index].Status = message.Status;
+        this.saveOfflineData();
+      }
+    });
+
+    //listening to read change event
+    this.messagesRef.orderByChild('Read').on('child_changed', (snapshot) => {
+      let message = snapshot.val();
+      let index = this.messagesKeys.indexOf(snapshot.key);
+      if (index > -1 && typeof this.messages !== 'undefined' && typeof this.messages[index] !== 'undefined') {
+        this.messages[index].Read = message.Read;
+        this.offlineMessages[index].Read = message.Read;
+        this.saveOfflineData();
       }
     });
 
@@ -253,7 +344,7 @@ export class ChatPage {
       if (this.typingRefLoaded) {
         console.log(this.userTyping);
         setTimeout(() => {
-          this.scrollBottom('typing ref init');//1
+          this.scrollBottom('typing ref init').catch(error => { });
         }, 100);
       }
       this.typingRefLoaded = true;
@@ -267,20 +358,30 @@ export class ChatPage {
   }
 
   paginate(paginator) {
-    if (!this.messagesLoaded) {
-      paginator.complete();
+    if (!this.messagesLoaded || !this.readyForPagination) {
+      setTimeout(() => {
+        paginator.complete();
+      }, 500);
+      return;
     }
-    if (this.messages === null || this.messages[0].key === this.firstMessageKey) {
-      paginator.enable(false);
+    if (this.messages === null || this.messages.length === 0 || this.messages[0].key === this.firstMessageKey) {
       this.showNoMoreMessages = true;
+      paginator.enable(false);
+      this.goToElement('').then(() => {
+      }).catch(() => { });
+      return;
     }
 
     console.log('paginate');
     //paging prev 10 messages
     if (this.messagesRef) {
-      if (typeof this.messages[0] !== 'undefined') {
+      if (this.messages && this.messages.length > 0 && typeof this.messages[0] !== 'undefined') {
         this.messagesRef.orderByKey().limitToLast(this.messageLimit).endAt(this.messages[0].key).once('value', (snapshot) => {
           let messages = [];
+          let lastMessageKey = null;
+          if (this.messagesKeys.length) {
+            lastMessageKey = this.messagesKeys[this.messagesKeys.length - 1];
+          }
           snapshot = snapshot.val();
           if (snapshot) {
             //removing first
@@ -290,26 +391,36 @@ export class ChatPage {
               let message = snapshot[key];
               message['key'] = key;
               messages.push(message);
+              lastMessageKey = key;
             }
             //checking
-            if (!_.isEmpty(messages)) {
+            if (messages.length) {
               //reverse to added from start
               messages.reverse();
               //adding to messages list
               messages.forEach((message) => {
-                this.messages.unshift(message);
-                this.messagesKeys.unshift(message.key);
+                if (this.messagesKeys.indexOf(message.key) === -1) {
+                  this.pushItem(message, false);
+                }
               });
+              this.saveOfflineData();
             }
             this.contentResize();
           }
-          paginator.complete();
+          if (lastMessageKey) {
+            this.goToElement('message-' + lastMessageKey).then(() => {
+              paginator.complete();
+            }).catch(() => {
+              paginator.complete();
+            })
+          }
         });
       } else {
         paginator.enable(false);
         paginator.complete();
       }
     } else {
+      paginator.enable(false);
       paginator.complete();
     }
   }
@@ -326,6 +437,7 @@ export class ChatPage {
       console.log('pause');
       this.doLeaving(false);
     });
+
     this.events.subscribe('platform:onResumed', () => {
       this.setFirebaseRef();
       this.listenToFirebaseEvents(true);
@@ -365,13 +477,56 @@ export class ChatPage {
     });
   }
 
+  doTranslate() {
+    //loading
+    this.translate.get('Common._Loading_').subscribe(translated => {
+      if (this.title === 'loading') {
+        this.title = translated;
+      }
+    });
+    //doctor
+    this.translate.get('CommunicationPage._Doctor_').subscribe(translated => {
+      this.doctor_translate = translated;
+    });
+    //impression
+    this.translate.get('ChatScreen._ImpressionNo_').subscribe(translated => {
+      this.impression_no_translate = translated;
+    });
+    //camera
+    this.translate.get('ChatScreen._Camera_').subscribe(translated => {
+      this.camera_translate = translated;
+    });
+    //photo & video
+    this.translate.get('ChatScreen._CameraAndVideo_').subscribe(translated => {
+      this.photo_video_library_translate = translated;
+    });
+    //video
+    this.translate.get('ChatScreen._Videos_').subscribe(translated => {
+      this.video_translate = translated;
+    });
+    //audio
+    this.translate.get('ChatScreen._Audios_').subscribe(translated => {
+      this.audio_tranlate = translated;
+    });
+    //cancel
+    this.translate.get('ChatScreen._Cancel_').subscribe(translated => {
+      this.cancel_translate = translated;
+    });
+
+  }
+
   ionViewDidEnter() {
+    this.doTranslate();
     //checking if user logged in
+
     if (!_.isEmpty(this.connection.user)) {
       this.initUser();
-      this.listenToEvents();
       //get Chat info before we load
-      this.initData();
+      this.initData().then(status => {
+        this.listenToEvents();
+      }).catch(error => {
+        this.navCtrl.pop();
+      });
     } else {
       this.events.subscribe('user:ready', User => {
         if (!_.isEmpty(User)) {
@@ -390,20 +545,49 @@ export class ChatPage {
   }
 
   initData() {
-    this.connection.doPost('Communication/GetQueryDetail', {
-      TicketRegisterNo: this.ticket,
-    }).then((response: any) => {
-      this.data = response;
+    return new Promise((resolve, reject) => {
+      if (this._network.type !== 'none') {
+        this.connection.doPost('Communication/GetQueryDetail', {
+          TicketRegisterNo: this.ticket,
+        }).then((response: any) => {
+          this.data = JSON.parse(response.Data);
+          console.log(this.data);
+          this.setOfflineTicketList(this.data);
+          this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { });
 
-      this.setTitle();
-      this.setUsers().then((chatUsersList) => {
-        this.connectFireBase();
-      }).catch(error => {
-        this.navCtrl.setRoot(HomePage);
-      })
+          this.setTitle();
+          this.setUsers().then((chatUsersList) => {
+            this.connectFireBase();
+            resolve(true);
+          }).catch(error => {
+            this.navCtrl.setRoot(HomePage);
+            reject(false);
+          })
 
-    }).catch(error => {
-
+        }).catch(error => {
+          reject(error);
+        });
+      } else {
+        this.storage.get('OfflineTickets').then(tickets => {
+          if (_.isEmpty(tickets)) {
+            tickets = {};
+          }
+          if (!(this.ticket in tickets) || _.size(tickets[this.ticket]) === 0) {
+            this.events.publish('toast:create', this.offlineMessageText);
+            reject(false);
+            return;
+          }
+          this.data = tickets[this.ticket];
+          console.log(this.data);
+          this.setTitle();
+          this.setUsers().then(chatUsersList => {
+            this.initOffline();
+            resolve(true);
+          }).catch(error => {
+            reject(error);
+          });
+        });
+      }
     });
   }
 
@@ -412,7 +596,7 @@ export class ChatPage {
    */
   setTitle() {
     this.title = this.data.Query[0].Patient;
-    this.subTitle = 'Doctor: ' + this.data.Query[0].Doctor + ', Imp No.: ' + this.data.Query[0].ImpNo;
+    this.subTitle = this.doctor_translate + ': ' + this.data.Query[0].Doctor + ', ' + this.impression_no_translate + ': ' + this.data.Query[0].ImpNo;
   }
 
   /**
@@ -420,21 +604,16 @@ export class ChatPage {
    */
   setUsers() {
     return new Promise((resolve, reject) => {
-      if (!_.isEmpty(this.data)) {
+      if (this.data && this.data.User.length) {
         this.data.User[0].Dentist.forEach(user => {
           //for typing
-          //this.userTyping[user.LoginUserID] = user.UserName;
+          this.userTyping[user.LoginUserID] = user.UserName;
 
           //actual user
           this.chatUsers[user.LoginUserID] = { Name: user.UserName, LoginTypeID: user.LoginTypeID };
 
-          //badege user
-          this.badgeUsers[user.LoginUserID] = true;
-
-          //adding push notification device ID
-          if (user.LoginUserID !== this.userID && user.RegisteredDeviceID.length === 36) {
-            this.otherUserRegisterDeviceIDs.push(user.RegisteredDeviceID);
-          }
+          //adding lang
+          this.addLang(user);
         });
         this.data.User[0].GroupUser.forEach(user => {
           //for typing
@@ -443,13 +622,8 @@ export class ChatPage {
           //actual user
           this.chatUsers[user.LoginUserID] = { Name: user.UserName, LoginTypeID: user.LoginTypeID };
 
-          //badege user
-          this.badgeUsers[user.LoginUserID] = true;
-
-          //adding push notification device ID
-          if (user.LoginUserID !== this.userID && user.RegisteredDeviceID.length === 36) {
-            this.otherUserRegisterDeviceIDs.push(user.RegisteredDeviceID);
-          }
+          //adding lang
+          this.addLang(user);
         });
         resolve(this.chatUsers);
       } else {
@@ -458,35 +632,53 @@ export class ChatPage {
     });
   }
 
+  addLang(user) {
+    //adding to group languages
+    if (this.chatLanguages.indexOf(user.MyLanguage) === -1) {
+      this.chatLanguages.push(user.MyLanguage);
+    }
+    //setting my own lang
+    if (user.LoginUserID === this.userID) {
+      this.myLanguage = user.MyLanguage;
+    }
+  }
+
   openUploadOptions() {
     const actionSheet = this.actionSheetCtrl.create({
       title: null,
       cssClass: 'text-left',
       buttons: [
         {
-          text: 'Camera',
+          text: this.camera_translate,
           icon: 'ios-camera-outline',
           handler: () => {
             this.captureImage('camera');
           }
         },
         {
-          text: 'Photo & Gallery',
+          text: this.photo_video_library_translate,
           icon: 'ios-image-outline',
           handler: () => {
             this.captureImage('gallery');
           }
         },
         {
-          text: 'Audio',
+          text: this.audio_tranlate,
           icon: 'ios-mic-outline',
-          role: 'desructive',
           handler: () => {
             this.captureAudio(0);
           }
         },
         {
-          text: 'Cancel',
+          text: this.video_translate,
+          icon: 'ios-videocam-outline',
+          // role: 'desructive',
+          handler: () => {
+            this.captureVideo(60);
+          }
+        },
+        {
+          text: this.cancel_translate,
           role: 'cancel',
           handler: () => {
 
@@ -507,46 +699,107 @@ export class ChatPage {
       this.sendClickKeepKeyboardOpened = false;
     }
 
-    if (_.isEmpty(this.message.trim())) {
+    if (this.translating) {
+      return;
+    }
+
+    if (this.message.trim() === '') {
       return false;
     }
     if (this.message) {
       let textMessage = this.message.trim().replace(/(?:\r\n|\r|\n)/g, '<br/>');
 
-      this.sendToFirebase(textMessage);
+      this.translating = true;
+      this.sendToFirebase(textMessage).then(data => {
+        this.translating = false;
+        this.message = '';
+      }).catch(error => {
+        console.log(error);
+        this.translating = false;
+        this.message = '';
+      });
+    } else {
+      this.message = '';
     }
-    this.message = '';
   }
 
   sendToFirebase(message: string = '', type: string = 'Text', url: any = false) {
-    let readObject = {};
-    readObject[this.userID] = firebase.database.ServerValue.TIMESTAMP;
+    return new Promise((resolve, reject) => {
+      let readObject = {};
+      readObject[this.userID] = firebase.database.ServerValue.TIMESTAMP;
 
-    this.messagesRef.push({
-      Message: message,
-      CreateAt: firebase.database.ServerValue.TIMESTAMP,
-      MessageType: type,
-      HasAttachment: type !== 'Text',
-      From: this.user.Customer,
-      UserID: this.userID,
-      LoginTypeID: this.user.LoginTypeID,
-      Status: 0,
-      URL: url,
-      TicketNo: this.ticket,
-      Read: readObject,
-      BadgeCount: this.badgeUsers,
-    }).then((messageFromFirebase) => {
-      let data = {
-        Message: message,
-        MessageType: type,
-        URL: url,
-        key: messageFromFirebase.key,
-      };
-      //send Push notification
-      this.sendPushNotification(data);
+      this.translateMessage(message, type).then(translatedMessages => {
+        console.log(translatedMessages);
+        this.messagesRef.push({
+          Message: message,
+          Translation: translatedMessages,
+          MessageLanguage: this.myLanguage,
+          CreateAt: firebase.database.ServerValue.TIMESTAMP,
+          MessageType: type,
+          HasAttachment: type !== 'Text',
+          From: this.user.Customer,
+          UserID: this.userID,
+          LoginTypeID: this.user.LoginTypeID,
+          Status: 0,
+          URL: url,
+          TicketNo: this.ticket,
+          Read: readObject,
+        }).then((messageFromFirebase) => {
+          let data = {
+            Message: message,
+            MessageType: type,
+            URL: url,
+            key: messageFromFirebase.key,
+            Translation: translatedMessages,
+            MessageLanguage: this.myLanguage,
+          };
 
-      //send to Server
-      this.sendMessageToServer(data);
+          //send to Server
+          this.sendMessageToServer(data);
+          resolve(data);
+        });
+      }).catch(error => {
+        reject(error);
+      });
+    });
+  }
+
+  translateMessage(message, type) {
+    return new Promise((resolve, reject) => {
+      if (type === 'Text') {
+        let translation = {};
+        //adding mine which is original
+        translation[this.myLanguage] = message;
+        //checking if all user knows only one lang, hence no need of translating
+        if (this.chatLanguages.length < 2) {
+          resolve(translation);
+        } else {
+          //looping over each lang and getting translation
+          this.chatLanguages.forEach(lang => {
+            //not translating my lang
+            if (lang !== this.myLanguage) {
+              this.http.post('https://translation.googleapis.com/language/translate/v2?key=' + Global.Translate.key, {
+                q: message,
+                source: this.myLanguage,
+                target: lang,
+              }).map((response: Response) => response.json()).subscribe(response => {
+                if (response.data) {
+                  translation[lang] = response.data.translations[0].translatedText;
+                } else {
+                  translation[lang] = message;
+                }
+                if (_.size(translation) === this.chatLanguages.length) {
+                  resolve(translation);
+                }
+              }, error => {
+                reject(error);
+              });
+            }
+          })
+        }
+      } else {
+        resolve({});
+      }
     });
   }
 
@@ -582,7 +835,7 @@ export class ChatPage {
     return new Promise((resolve, reject) => {
       if (this.typingRef) { //null check
         //setting value
-        let currentTypingTime = moment().valueOf();
+        let currentTypingTime = moment().utc().valueOf();
         if (flag) {
           if ((currentTypingTime - this.lastTypingTime) > 2500) { //only for true 
             this.lastTypingTime = currentTypingTime;
@@ -616,18 +869,22 @@ export class ChatPage {
   scrollBottom(caller) {
     console.log('ScrollBottom: ' + caller);
     return new Promise((resolve, reject) => {
+      if (Global.getActiveComponentName(this.navCtrl.getActive()) !== 'ChatPage') {
+        reject(false);
+        return;
+      }
       if (typeof this.content !== 'undefined') {
         let animate = 300;
         this.contentResize();
         if (this.content && typeof this.content.scrollToBottom === 'function' && this.content._scroll) {
-          const wait = this.content.isScrolling ? 150 : 1;
+          const wait = this.content.isScrolling ? 150 : null;
           setTimeout(() => {
             this.content.scrollToBottom(animate).then(value => {
               resolve(value);
             }).catch(error => {
               reject(error);
             });
-          }, wait);
+          });
         }
       } else {
         reject('no content');
@@ -646,16 +903,24 @@ export class ChatPage {
     if (type === 'gallery') {
       options = this.galleryOptions;
     }
+
     this.camera.getPicture(options).then(url => {
-      url = normalizeURL(url);
-      this.uploadFile(url).then((data: string) => {
-        if (data.indexOf('https') !== -1) {
-          //sending to Firebase
-          this.sendToFirebase('', 'Image', data);
-        }
-      }).catch(error => {
-        this.events.publish('toast:error', error);
-      });
+      let mimeType = mime.lookup(url);
+
+      //checking if video of image
+      if (mimeType.indexOf('image') > -1) {//image
+        url = normalizeURL(url);
+        this.uploadFile(url).then((data: string) => {
+          if (data.indexOf('https') !== -1) {
+            //sending to Firebase
+            this.sendToFirebase('', 'Image', data);
+          }
+        }).catch(error => {
+          this.events.publish('toast:error', error);
+        });
+      } else if (mimeType.indexOf('video') > -1) {
+        this.checkVideoAndUpload(url);
+      }
     }).catch(error => {
       this.events.publish('toast:error', error);
     });
@@ -744,6 +1009,68 @@ export class ChatPage {
 
   }
 
+  captureVideo(duration) {
+    const options: VideoCapturePlusOptions = {
+      limit: 1,
+      highquality: false,
+      duration: duration,
+    }
+
+    this.videoCapturePlus.captureVideo(options).then((mediafile: MediaFile[]) => {
+      if (mediafile.length > 0) {
+        let url = mediafile[0].fullPath;
+        this.checkVideoAndUpload(url);
+      }
+    }, error => {
+      this.events.publish('toast:error', error.message);
+    }).catch(error => {
+      console.log(error);
+    });
+  }
+
+  checkVideoAndUpload(url) {
+    //checking if not mp4 then converting it to mp4 before uploading
+    let fileExtension = url.substring(url.lastIndexOf('.') + 1);
+    let escapeTranscode = true;
+    console.log(fileExtension);
+    if (escapeTranscode || fileExtension === 'mp4') {
+      this.uploadVideo(url);
+    } else {
+      url = normalizeURL(url);
+      console.log(url);
+      this.events.publish('loading:create', 'processing video');
+      this.videoEditor.transcodeVideo({
+        fileUri: url,
+        outputFileName: 'output-' + new Date().getTime(),
+        outputFileType: this.videoEditor.OutputFileType.MPEG4,
+        saveToLibrary: false,
+        deleteInputFile: false,
+        progress: (info) => {
+          console.log((info * 100) + '%');
+        }
+      }).then((fileUri: string) => {
+        this.events.publish('loading:close');
+        this.uploadVideo(fileUri);
+      }).catch((error: any) => {
+        console.log(error);
+        this.events.publish('loading:close');
+        this.events.publish('toast:error', 'Failed to process. Try again!');
+      });
+    }
+  }
+
+  uploadVideo(url) {
+    url = normalizeURL(url);
+    this.uploadFile(url).then((data: string) => {
+      if (data.indexOf('https') !== -1) {
+        //sending to Firebase
+        this.sendToFirebase('', 'Video', data);
+      }
+    }).catch(error => {
+      this.events.publish('toast:error', error);
+    });
+  }
+
   uploadFile(file) {
     return new Promise((resolve, reject) => {
       if (file) {
@@ -756,8 +1083,10 @@ export class ChatPage {
           .then((data) => {
             this.progressPercent = 0;
             //getting URL from XML
-
-            if (data.response.indexOf('>') > -1) {
+            console.log(data);
+            if (data.response.indexOf('http') === -1) {
+              reject(data);
+            } else if (data.response.indexOf('>') > -1) {
               resolve(data.response.substring(data.response.indexOf('>') + 1, data.response.lastIndexOf('<')));
             } else {
               resolve(JSON.parse(data.response));
@@ -811,21 +1140,24 @@ export class ChatPage {
   }
 
 
-  sendPushNotification(message) {
-    if (Global.Push.OneSignal) {
+  sendPushNotification(message, users: Array<object>) {
+    users.forEach((user: any) => {
       let notificationObj: any = {
-        include_player_ids: this.otherUserRegisterDeviceIDs,
+        include_player_ids: [
+          user.DeviceID
+        ],
         data: {
-          page: 'ChatPage', params: this.ticket
+          badge: user.Badge,
+          page: 'ChatPage',
+          params: this.ticket
         },
         headings: {
-          en: this.user.Customer
+          en: Global.APP_NAME
         },
-        contents: {
-          en: message.Message,
-        },
-        ios_badgeType: 'Increase',
-        ios_badgeCount: 1,
+        priority: 10,
+        contents: message.Translation,
+        ios_badgeType: 'SetTo',
+        ios_badgeCount: user.Badge,
       };
 
       //checking if Image then adding image notification
@@ -835,16 +1167,17 @@ export class ChatPage {
           'attachment-1': message.URL,
         };
         notificationObj['big_picture'] = message.URL;
+      } else if (message.MessageType === 'Video') {
+        notificationObj.contents.en = '📹 Video Message';
       } else if (message.MessageType === 'Audio') {
         notificationObj.contents.en = '🎤 Voice Message';
       }
-
       this._oneSignal.postNotification(notificationObj).then(response => {
         console.log(response);
       }).catch(error => {
         console.log(error);
       });
-    }
+    });
   }
 
   sendMessageToServer(message) {
@@ -868,6 +1201,14 @@ export class ChatPage {
       FileName: fileName,
       FileExtension: fileExtension,
     }, false).then((response: any) => {
+      //send Push
+      if (Global.Push.OneSignal) {
+        this.sendPushNotification(message, response.Data);
+      }
+      //managing firebase count
+      this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { })
+    }).catch(error => {
+
     });
   }
 
@@ -888,13 +1229,22 @@ export class ChatPage {
 
     });
     //no more status change read
-    this.messagesRef.orderByChild('Status').off('child_changed');
+    if (this.messagesRef) {
+      this.messagesRef.orderByChild('Read').off('child_changed');
+      this.messagesRef.orderByChild('Status').off('child_changed');
+    }
 
     if (messageNull) {
-      this.messages = null;
+      this.messages = [];
+      this.messagesKeys = [];
+      this.offlineMessages = [];
+      this.events.unsubscribe('platform:onPause');
+      this.events.unsubscribe('platform:onResumed');
+      this.events.unsubscribe('notification:chat');
     }
 
     this.events.unsubscribe('user:ready');
+    this.keyboard.disableScroll(false);
   }
 
   getLiveChatUsers() {
@@ -913,26 +1263,53 @@ export class ChatPage {
   }
 
   checkForNoMoreMessages() {
+    console.log(this.messages, this.firstMessageKey);
     if (this.messages && this.firstMessageKey && this.firstMessageKey === this.messages[0].key) {
-      this.showNoMoreMessages = true;
+      setTimeout(() => {
+        this.showNoMoreMessages = true;
+        this.contentResize();
+      })
     }
   }
 
   clearBadgeCountIfAny() {
-    this.connection.doPost('Communication/UpdateChatStatus', {
-      TicketNo: this.ticket,
-      UserCode: this.userID
-    }, false).then(response => {
-      console.log(response);
-    }).catch(error => {
-      console.log(error);
-    })
+    if (this.messages.length) {
+      this.connection.doPost('Communication/UpdateChatStatus', {
+        TicketNo: this.ticket,
+        UserCode: this.userID
+      }, false).then((response: any) => {
+        this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { })
+      }).catch(error => {
+        console.log(error);
+      });
+    }
+  }
+
+  showDoctorTyping() {
+    for (let typingUserId in this.userTyping) {
+      //avoiding self
+      if (typingUserId === this.userID) {
+        continue;
+      }
+      //checking if in range
+      if (this.isWithinRange(this.userTyping[typingUserId])) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  getName(userID) {
+    if (!_.isEmpty(this.chatUsers) && userID in this.chatUsers) {
+      return this.chatUsers[userID].Name;
+    }
+    return '';
   }
 
   isWithinRange(time) {
     let momentTime = moment(time).utc().local();
     if (momentTime.isValid()) {
-      time = moment().valueOf() - momentTime.valueOf();
+      time = moment().utc().valueOf() - momentTime.valueOf();
       return time <= 3000;
     }
     return false;
@@ -948,10 +1325,145 @@ export class ChatPage {
     });
   }
 
-  ionViewCanEnter() {
-    if (this.network.type === 'none') {
-      this.events.publish('toast:error', 'Pickup not available Offline');
+  initOffline() {
+    return new Promise((resolve, reject) => {
+      this.storage.get('OfflineMessages-' + this.ticket).then(messages => {
+        if (_.isEmpty(messages)) {
+          messages = {};
+        }
+        if (_.size(messages) === 0) {
+          this.events.publish('toast:create', this.offlineMessageText);
+          reject(false);
+          return;
+        }
+        //init List
+        for (let key in messages) {
+          this.pushItem(messages[key], false);
+        }
+        //for first message
+        if (this.messages.length) {
+          this.firstMessageKey = this.messagesKeys[0];
+          this.checkForNoMoreMessages();
+        }
+        //saveOffline
+        this.saveOfflineData().then(status => {
+          resolve(status);
+        }).catch(error => {
+          reject(error);
+        });
+      }).catch(error => {
+        reject(error);
+      });
+    });
+  }
+
+  pushItem(item, pushFlag: boolean = true) {
+    //converting time in milisec
+    if (isNaN(item.CreateAt)) {
+      let time = moment(item.CreateAt);
+      if (time.isValid()) {
+        item.CreateAt = time.valueOf();
+      }
     }
-    return this.network.type !== 'none';
+
+    let key = item.key;
+    let index = this.messagesKeys.indexOf(key);
+    if (index === -1) {
+      if (pushFlag) {
+        index = this.messages.push(item);
+        //adding ticketno
+        this.messagesKeys.push(key);
+        //offline messages
+        this.offlineMessages.push(item);
+      } else {
+        index = this.messages.unshift(item);
+        //adding ticketno
+        this.messagesKeys.unshift(key);
+        //offline messages
+        this.offlineMessages.unshift(item);
+      }
+    }
+    return index;
+  }
+
+
+  saveOfflineData() {
+    return new Promise((resolve, reject) => {
+      this.storage.set('OfflineMessages-' + this.ticket, this.offlineMessages).then(status => {
+        resolve(status);
+      }).catch(error => {
+        reject(error);
+      });
+    });
+  }
+
+  setOfflineTicketList(data) {
+    return new Promise((resolve, reject) => {
+      this.storage.get('OfflineTickets').then(tickets => {
+        if (_.isEmpty(tickets)) {
+          tickets = {};
+        }
+        tickets[this.ticket] = data;
+
+        this.storage.set('OfflineTickets', tickets).then(status => {
+          resolve(status);
+        }).catch(error => {
+          reject(error);
+        });
+      })
+    });
+  }
+
+  openReading(event, message) {
+    let time = new Date().getTime();
+    if ((time - this.lastReadingTime) < 1000) {
+      return;
+    }
+    if ([Global.LoginType.Doctor, Global.LoginType.Parent].indexOf(this.user.LoginTypeID) > -1) {
+      return;
+    }
+    this.lastReadingTime = time;
+    let params = {
+      message: message,
+      chatUsers: this.chatUsers,
+      ticket: this.ticket,
+      userID: this.userID,
+      loginTypeID: this.user.LoginTypeID,
+    };
+    let chatReadModal = this.modal.create(ChatReadModalPage, params);
+    chatReadModal.onDidDismiss(data => {
+
+    });
+    chatReadModal.present();
+  }
+
+  openSavedMedia(event) {
+    let params = {
+      path: this.dataDirectory,
+      folder: this.ticket,
+      loginTypeID: this.user.LoginTypeID,
+    };
+    let savedMediaModal = this.modal.create(SavedMediaPage, params);
+    savedMediaModal.onDidDismiss(data => {
+
+    });
+    savedMediaModal.present();
+
+  }
+
+  goToElement(id) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        let element = document.getElementById(id)
+        if (element) {
+          let yOffset = element.offsetTop;
+          this.content.scrollTo(0, yOffset).then(() => {
+            resolve();
+          }).catch(error => {
+            reject();
+          })
+        }
+      });
+    });
   }
 }

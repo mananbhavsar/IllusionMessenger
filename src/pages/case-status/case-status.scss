@@ -63,6 +63,7 @@ page-case-status {
                         font-size: 0.8em;
                         &[ion-note] {
                             text-align: end;
+                            max-width: 49%;
                             &.danger {
                                 color: color($colors, danger);
                             }

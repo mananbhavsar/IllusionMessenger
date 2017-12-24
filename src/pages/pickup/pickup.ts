@@ -3,6 +3,7 @@ import { IonicPage, NavController, ModalController, Events } from 'ionic-angular
 
 import { OfficeServiceProvider } from "../../providers/office-service/office-service";
 import { ConnectionProvider } from "../../providers/connection/connection";
+import { TranslateService } from "@ngx-translate/core";
 
 import * as moment from 'moment';
 import * as firebase from 'firebase';
@@ -19,7 +20,10 @@ import { retry } from 'rxjs/operators/retry';
   templateUrl: 'pickup.html'
 })
 export class PickupPage {
-  title: String = 'loading';
+  title: string = 'loading';
+  pick_up: string = 'Pickup';
+  monday: string = 'Monday';
+  tuesday: string = 'Tuesday';
   titles = ['Today', 'Tomorrow'];
   selectedOffice: any = {};
   selectedTab: string = '0';
@@ -33,23 +37,71 @@ export class PickupPage {
   disablePickupButton: Boolean = true;
   disableRadio: Boolean;
   serverDate: moment.Moment = null;
+
+  request_sent: string= 'Request Sent';
+  pickup_request_alert: string = '';
+  pickup_offline: string = '';
   constructor(
     public navCtrl: NavController,
     public offliceList: OfficeServiceProvider,
     public events: Events,
     public connection: ConnectionProvider,
     private network: Network,
+    private translate: TranslateService,
   ) {
+    
+  }
+
+  doTranslate() {
+    //loading
+    this.translate.get('Common._Loading_').subscribe((translated: string) => {
+      if (this.title === 'loading') {
+        this.title = translated;
+      }
+    });
+    //today
+    this.translate.get('PickUP._Today_').subscribe((translated: string) => {
+      this.titles[0] = translated;
+    });
+    //tomorrow
+    this.translate.get('PickUP._Tomorrow_').subscribe((translated: string) => {
+      this.titles[1] = translated;
+    });
+    //pickup
+    this.translate.get('PickUP._Pickup_').subscribe((translated: string) => {
+      this.pick_up = translated;
+    });
+    //monday
+    this.translate.get('PickUP._Monday_').subscribe((translated: string) => {
+      this.monday = translated;
+    });
+    //tuesday
+    this.translate.get('PickUP._Tuesday_').subscribe((translated: string) => {
+      this.tuesday = translated;
+    });
+    //request sent
+    this.translate.get('PickUP._RequestSent_').subscribe((translated: string) => {
+      this.request_sent = translated;
+    });
+    //request alert
+    this.translate.get('PickUP.PickupRequestAlert').subscribe((translated: string) => {
+      this.pickup_request_alert = translated;
+    });
+    //offline
+    this.translate.get('PickUP._Offline_').subscribe((translated: string) => {
+      this.pickup_offline = translated;
+    });
   }
 
   ionViewCanEnter() {
+    this.doTranslate();
     if (this.network.type === 'none') {
-      this.events.publish('toast:error', 'Pickup not available Offline');
+      this.events.publish('toast:error', this.pickup_offline);
     }
     return this.network.type !== 'none';
   }
 
-  ionViewDidLoad() {
+  ionViewDidEnter() {
     this.offliceList.getOffice('Pickup').then((selectedOffice) => {
       this.selectedOffice = selectedOffice;
       this.setTitle();
@@ -82,7 +134,7 @@ export class PickupPage {
   }
 
   setTitle() {
-    this.title = 'Pickup: ' + this.titles[parseInt(this.selectedTab)];
+    this.title = this.pick_up + ': ' + this.titles[parseInt(this.selectedTab)];
   }
 
   segmentChanged(event) {
@@ -94,12 +146,12 @@ export class PickupPage {
 
   isDisabled(time) {
     //checking if tab is not sunday
-    if (this.serverDate.day() === 0) {
-      this.titles[0] = 'Monday';
-      this.titles[1] = 'Tuesday';
+    if (this.isSunday()) {
+      this.titles[0] = this.monday;
+      this.titles[1] = this.tuesday;
       return false; // all available
-    } if (this.serverDate.day() === 6) { //next day sunday
-      this.titles[1] = 'Monday';
+    } if (this.isSaturday()) { //next day sunday
+      this.titles[1] = this.monday;
     }
     if (this.selectedTab === '1') { //no disable to all for tomorrow
       return false;
@@ -112,6 +164,13 @@ export class PickupPage {
     }
   }
 
+  isSunday() {
+    return this.serverDate.day() === 0;
+  }
+  isSaturday() {
+    return this.serverDate.day() === 6;
+  }
+
   selectTime() {
     if (this.time) {
       this.disablePickupButton = false;
@@ -121,26 +180,38 @@ export class PickupPage {
   }
 
   confirm() {
-    const pickupTime = moment().utc().set({ 'hour': this.time, 'minute': 0, 'second': 0, 'millisecond': 0 }).toISOString()
-    const day = this.selectedTab === '0' ? "TODAY" : "TOMORROW";
-    const hour = this.time
+    let date = this.serverDate;
+    //checking tab selected vs day
+    if (this.selectedTab === '0') {
+      if (this.isSunday()) {
+        //making it plus 1
+        date = date.add(1, 'day');
+      }
+    } else {
+      if (this.isSunday() || this.isSaturday()) {
+        //making it plus 2
+        date = date.add(2, 'day');
+      } else {
+        date = date.add(1, 'day');
+      }
+    }
 
+    const pickupDateTime = moment().set({ date: date.get('date'), 'hour': this.time, 'minute': 0, 'second': 0, 'millisecond': 0 }).toISOString();
+    console.log(pickupDateTime);
     this.connection.doPost('Pickup/Insert_PP_TPickUP', {
-      PickUPDatetime: pickupTime,
-      Day: day,
-      Hours: hour,
-      PickupTime: pickupTime,
+      PickupDateTime: pickupDateTime,
       CreatedByID: this.connection.user.CustomerPortalID,
     }).then(() => {
-      this.events.publish('alert:basic', 'Request Sent!', 'Your request has been received. You will get confirmation once accepted along with pickup person contact detail.');
+      this.events.publish('alert:basic', this.request_sent, this.pickup_request_alert);
 
       //Increment count
       this.increaseCount('PickUpCount');
       this.increaseCount('Total');
 
       this.navCtrl.setRoot(HomePage);
-    }).catch(error=>{});
+    }).catch(error => {
 
+    });
     this.time = null;
     this.disablePickupButton = true;
   }

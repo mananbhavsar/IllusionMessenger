@@ -23,8 +23,12 @@ export class CaseStatusModalPage {
     this.title = this.item.Patient;
   }
 
-  ionViewDidLoad() {
+  ionViewDidEnter() {
+    this.doTranslate();
+  }
 
+  doTranslate(){
+    
   }
 
   dismiss(data) {

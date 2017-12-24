@@ -120,6 +120,11 @@ page-chat {
         }
         .send-button {
             font-size: 11px;
+            ion-spinner{
+                circle{
+                    fill: #FFF;
+                }
+            }
         }
         .buttons-seperator {
             color: color($colors, primary);

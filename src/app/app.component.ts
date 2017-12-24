@@ -7,10 +7,11 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { Geolocation } from '@ionic-native/geolocation';
 import { Diagnostic } from '@ionic-native/diagnostic';
 import { LocationAccuracy } from '@ionic-native/location-accuracy';
-import { OneSignal } from '@ionic-native/onesignal';
 import { Keyboard } from '@ionic-native/keyboard';
 import { Badge } from '@ionic-native/badge';
 import { FCM } from '@ionic-native/fcm';
+import { Globalization } from '@ionic-native/globalization';
+import { OneSignal } from '@ionic-native/onesignal';
 
 import { Storage } from '@ionic/storage';
 
@@ -36,12 +37,15 @@ import { Global } from './global';
 
 import { AngularFireDatabase } from 'angularfire2/database';
 import { not } from '@angular/compiler/src/output/output_ast';
+import { TranslateService } from '@ngx-translate/core';
+import { locale } from 'moment';
 
 enableProdMode();
 
 export interface PageInterface {
     title: string;
     name: string;
+    translate_key: string,
     component: any;
     icon: string;
     logsOut?: boolean;
@@ -55,11 +59,13 @@ export interface PageInterface {
 })
 export class MyApp {
     @ViewChild(Nav) nav: Nav;
+    inBackgroud: boolean = false;
     loading: any;
     loggedIn: Boolean = false;
     rootPage: any = WelcomePage;
     disconnectSubscription: any;
     connectSubscription: any;
+    lastOfflineMessageShown: number = 0;
     latitude: number = 0.0;
     longitude: number = 0.0;
     locationSubscription: any;
@@ -67,26 +73,31 @@ export class MyApp {
     // the left menu only works after login
     // the login page disables the left menu
     appPages: PageInterface[] = [
-        { title: 'About', name: 'AboutPage', component: AboutPage, icon: 'information-circle' },
-        // { title: 'Contact', name: 'ContactUsPage', component: ContactUsPage, icon: 'mail' },
-        { title: 'Help', name: 'HelpPage', component: HelpPage, icon: 'help-circle' },
+        { title: 'About', translate_key: 'Common._About', name: 'AboutPage', component: AboutPage, icon: 'information-circle' },
+        { title: 'Help', translate_key: 'Common._Help_', name: 'HelpPage', component: HelpPage, icon: 'help-circle' },
     ];
     loggedInPages: PageInterface[] = [
-        { title: 'Home', name: 'HomePage', component: HomePage, icon: 'home' },
-        { title: 'Dashboard', name: 'DashboardPage', component: DashboardPage, icon: '' },
-        { title: 'Pickup', name: 'PickupPage', component: PickupPage, icon: '' },
-        { title: 'Case Status', name: 'CaseStatusPage', component: CaseStatusPage, icon: '' },
-        { title: 'Communication', name: 'CommunicationPage', component: CommunicationPage, icon: '' },
+        { title: 'Home', translate_key: 'HomeScreen._Home_', name: 'HomePage', component: HomePage, icon: 'home' },
+        { title: 'Dashboard', translate_key: 'HomeScreen._Dashboard_', name: 'DashboardPage', component: DashboardPage, icon: '' },
+        { title: 'Pickup', translate_key: 'HomeScreen._PickUp_', name: 'PickupPage', component: PickupPage, icon: '' },
+        { title: 'Case Status', translate_key: 'HomeScreen._CaseStatus_', name: 'CaseStatusPage', component: CaseStatusPage, icon: '' },
+        { title: 'Communication', translate_key: 'HomeScreen._Communication_', name: 'CommunicationPage', component: CommunicationPage, icon: '' },
     ];
     accountPages: PageInterface[] = [
-        // { title: 'Account', name: 'AccountPage', component: AccountPage, icon: 'user' },
-        { title: 'Logout', name: 'LogoutPage', component: LogoutPage, icon: 'log-out', logsOut: true }
+        { title: 'Account', translate_key:'Common._Account_',name: 'AccountPage', component: AccountPage, icon: 'user' },
+        { title: 'Logout', translate_key: 'Common._LogOut_', name: 'LogoutPage', component: LogoutPage, icon: 'log-out', logsOut: true }
     ];
     loggedOutPages: PageInterface[] = [
-        { title: 'Login', name: 'LoginPage', component: LoginPage, icon: 'log-in' },
-        { title: 'Forgot Password', name: 'ForgotPasswordPage', component: ForgotPasswordPage, icon: 'key' },
+        { title: 'Login', translate_key: 'LoginPage._log_in', name: 'LoginPage', component: LoginPage, icon: 'log-in' },
+        { title: 'Forgot Password', translate_key: 'LoginPage._Forgot_Password', name: 'ForgotPasswordPage', component: ForgotPasswordPage, icon: 'key' },
     ];
 
+    //mubass
+    error_translate: string = 'Error occurred! Try again';
+    offline_translate: string = 'You seems to be offline';
+    online_translate: string = 'Hola, you are online now';
+    location_permission_denied_translate: string = 'Location permission cancelled';
+    welcome_translate: string = 'Welcome';
     constructor(
         public events: Events,
         public menu: MenuController,
@@ -100,7 +111,6 @@ export class MyApp {
         public modalCtrl: ModalController,
         private toast: ToastController,
         private _network: Network,
-        private _oneSignal: OneSignal,
         private _diagnostic: Diagnostic,
         private _locationAccuracy: LocationAccuracy,
         private _geolocation: Geolocation,
@@ -108,8 +118,11 @@ export class MyApp {
         private _badge: Badge,
         private angularFireDatabase: AngularFireDatabase,
         private _fcm: FCM,
+        private _oneSignal: OneSignal,
+        private translate: TranslateService,
+        private globalization: Globalization,
     ) {
-
+        this.translate.setDefaultLang('en');
         platform.ready().then(() => {
             this._statusBar.overlaysWebView(false); // let status bar overlay webview
             this._statusBar.backgroundColorByHexString(Global.color.primary);
@@ -119,6 +132,7 @@ export class MyApp {
             this.listenToGobalEvents();
             this.listenToLoginEvents();
             this._keyboard.hideKeyboardAccessoryBar(false);
+            this._keyboard.disableScroll(false);
 
             setTimeout(() => {
                 this.initPreLoginPlugins();
@@ -133,6 +147,10 @@ export class MyApp {
     }
 
     openPage(page: PageInterface) {
+        //not opening if same page
+        if (page.name === Global.getActiveComponentName(this.nav.getActive())) {
+            return true;
+        }
         let params = {};
 
         // the nav component was found using @ViewChild(Nav)
@@ -186,7 +204,7 @@ export class MyApp {
     isAuthorized(page: PageInterface) {
         if (this.user && this.user._user) {
             //for LoginTypeID 3
-            if (this.user._user.LoginTypeID === 3) {
+            if (this.user._user.LoginTypeID === Global.LoginType.Group) {
                 //for dashboard
                 return ['DashboardPage', 'PickupPage'].indexOf(page.name) === -1;
             }
@@ -195,7 +213,32 @@ export class MyApp {
         return false;
     }
 
+    doTranslate() {
+        //error
+        this.translate.get('Common._ErrorOccurred_').subscribe(translated => {
+            this.error_translate = translated;
+        });
+        //offline
+        this.translate.get('Common._Offline_').subscribe(translated => {
+            this.offline_translate = translated;
+        });
+        //online
+        this.translate.get('Common._Online_').subscribe(translated => {
+            this.online_translate = translated;
+        });
+        //location permission denied
+        this.translate.get('Common.').subscribe(translated => {
+            this.location_permission_denied_translate = translated;
+        });
+        //welcome
+        this.translate.get('Common._Welcome_').subscribe(translated => {
+            this.welcome_translate = translated;
+        });
+    }
+
     listenToGobalEvents() {
+        this.doTranslate();
+
         this.events.subscribe('loading:create', (content) => {
             content = content || 'Please wait';
             this.loading = this.loadingCtrl.create({
@@ -213,22 +256,26 @@ export class MyApp {
 
 
         this.events.subscribe('alert:basic', (title, subTitle, buttons) => {
-            buttons = buttons || ['OK'];
-            let alert = this.alertCtrl.create({
-                title: title,
-                subTitle: subTitle,
-                buttons: buttons
+            this.translate.get('Common._OK_').subscribe(translated => {
+                buttons = buttons || [translated]; //OK
+                let alert = this.alertCtrl.create({
+                    title: title,
+                    subTitle: subTitle,
+                    buttons: buttons
+                });
+                alert.present();
             });
-            alert.present();
         });
 
 
         this.events.subscribe('toast:create', (message, cssClass) => {
             cssClass = cssClass || null;
-
+            if (message.trim() === '') {
+                return;
+            }
             let toast = this.toast.create({
                 message: message,
-                duration: 3000,
+                duration: 5000,
                 position: 'top',
                 showCloseButton: true,
                 closeButtonText: 'x',
@@ -249,30 +296,37 @@ export class MyApp {
                 let body = error._body ? error._body : JSON.parse(error._body);
                 this.events.publish('alert:basic', body.title, body.message);
             } else {
-                this.events.publish('toast:create', 'Error occurred! Try again', 'danger');
+                this.events.publish('toast:create', this.error_translate, 'danger');
             }
         });
 
         this.events.subscribe('push:send', (id, message) => {
-            //             this._oneSignal.postNotification(notificationObj: OneSignalNotification);
+
         });
 
         //Network events
         this.events.subscribe('network:offline', () => {
+            let time = new Date().getTime();
+            console.log(time, this.lastOfflineMessageShown);
+            if ((time - this.lastOfflineMessageShown) < 1000) {
+                return;
+            }
+            this.lastOfflineMessageShown = time;
             //sending to offline page only if not in offline 
             var currentPage = Global.getActiveComponentName(this.nav.getActive());
             if (currentPage !== 'OfflinePage') {
-                this.events.publish('toast:create', 'you seems to be offline!');
-                this.nav.setRoot(OfflinePage);
+                this.events.publish('toast:create', this.offline_translate + '!');
+                //this.nav.setRoot(OfflinePage);
             }
         });
+        this.events.unsubscribe('network:online');
         this.events.subscribe('network:online', () => {
             //sending to home page only in offline page
-            var currentPage = Global.getActiveComponentName(this.nav.getActive());
-            if (currentPage === 'OfflinePage') {
-                this.events.publish('toast:create', 'Hola, you are online now');
-                this.nav.setRoot(WelcomePage, true);
-            }
+            //var currentPage = Global.getActiveComponentName(this.nav.getActive());
+            //if (currentPage === 'OfflinePage') {
+            this.events.publish('toast:create', this.online_translate);
+            //this.nav.setRoot(WelcomePage, true);
+            //}
         });
 
     }
@@ -284,28 +338,32 @@ export class MyApp {
 
         //On app Resume & Pause
         this.platform.resume.subscribe(() => {
+            this.inBackgroud = false;
             this.events.publish('platform:onResumed');
         });
         this.platform.pause.subscribe(() => {
+            this.inBackgroud = true;
             this.events.publish('platform:onPause');
         });
 
         //working on OS Version
         this.doVersionCheck();
+
+        //do globalization
+        this.doGlobalization();
     }
 
     initPostLoginPlugins() {
         //Location
         //this.initLocation();
 
-        //OneSignal
-        if (Global.Push.OneSignal) {
-            this.initOneSignal();
-        }
-
         //init FCM
         if (Global.Push.FCM) {
             this.initFCM();
+        }
+        //init OneSignal
+        if (Global.Push.OneSignal) {
+            this.initOneSignal();
         }
 
         //Badge
@@ -330,6 +388,16 @@ export class MyApp {
 
     doVersionCheck() {
         this.user.doVersionCheck();
+    }
+
+    doGlobalization() {
+        if (this.platform.is('cordova')) {
+            this.globalization.getPreferredLanguage().then(language => {
+                console.log(language);
+            });
+        } else {
+            
+        }
     }
 
     initWatchLocation() {
@@ -359,7 +427,7 @@ export class MyApp {
                         text: 'Cancel',
                         role: 'cancel',
                         handler: () => {
-                            this.events.publish('toast:create', 'Location permission cancelled!');
+                            this.events.publish('toast:create', this.location_permission_denied_translate + '!');
                         }
                     },
                     {
@@ -484,10 +552,6 @@ export class MyApp {
         });
 
         this._oneSignal.endInit();
-
-        this.events.subscribe('notification:process', (notification, directOpenPage) => {
-
-        });
     }
 
     initFCM() {
@@ -496,18 +560,25 @@ export class MyApp {
         }
         this.platform.ready().then(() => {
             this._fcm.onNotification().subscribe(notification => {
-                if(!('wasTapped' in notification)){
+                if (!('wasTapped' in notification)) {
                     notification.wasTapped = false;
                 }
                 console.log(notification);
                 console.log((notification.wasTapped === false && notification.onlyData === 'false'), (notification.wasTapped === true && notification.onlyData === 'true'));
                 /*
                  * showing message
+                 * 1. iOS => 
                  * 1. wasTapped=true & onlyData=true => when message was clicked from notification
                  * 2. wasTapped=false & onlyData=false => when app was opened
                  */
-                if ((notification.wasTapped === false && notification.onlyData === 'false')
-                    || (notification.wasTapped === true && notification.onlyData === 'true')) {
+                let canShowNotification = false;
+
+                if (this.platform.is('ios')) {
+                    canShowNotification = true;
+                } else if (this.platform.is('android')) {
+                    canShowNotification = notification.wasTapped || (notification.wasTapped === false && notification.onlyData === 'false');;
+                }
+                if (canShowNotification) {
                     let payload = {
                         payload: {
                             title: notification.title || notification.title,
@@ -520,7 +591,7 @@ export class MyApp {
                         payload.payload.additionalData['page'] = notification.page;
                     }
                     if ('params' in notification) {
-                        payload.payload.additionalData['params'] = notification.page;
+                        payload.payload.additionalData['params'] = notification.params;
                     }
                     this.processNotification(payload, notification.wasTapped);
                 }
@@ -528,7 +599,7 @@ export class MyApp {
             this._fcm.getToken().then(token => {
                 this.user.registerPushID(token);
             }).catch(error => {
-                
+
             });
             this._fcm.onTokenRefresh().subscribe(token => {
                 this.user.registerPushID(token);
@@ -552,15 +623,18 @@ export class MyApp {
 
     listenToLoginEvents() {
         this.events.subscribe('user:login', (user) => {
-            console.log(user);
             this.loggedIn = true;
             this.enableMenu(true);
+            if (Global.Push.OneSignal) {
+                this._oneSignal.setSubscription(true);
+            }
+            this.translate.use(user.MyLanguage);
 
             this.nav.setRoot(HomePage);
 
             setTimeout(() => {
                 var full_name = user ? user.Customer : '';
-                this.events.publish('toast:create', 'Welcome ' + full_name);
+                this.events.publish('toast:create', this.welcome_translate + ' ' + full_name);
                 this.initPostLoginPlugins();
                 this.events.publish('user:changed');
                 this.events.publish('user:postLogin', true);
@@ -586,8 +660,9 @@ export class MyApp {
 
         this.events.subscribe('user:unautharized', () => {
             this.events.publish('user:logout', 'You are unauthorized user');
-            //degistering device
-            this._oneSignal.setSubscription(false);
+            if (Global.Push.OneSignal) {
+                this._oneSignal.setSubscription(false);
+            }
         });
 
         //checking if user already logged in

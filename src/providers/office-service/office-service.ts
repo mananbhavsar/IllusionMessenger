@@ -10,6 +10,9 @@ import { Observable } from 'rxjs/Observable';
 
 import * as _ from 'underscore';
 
+import { Network } from '@ionic-native/network';
+import { TranslateService } from '@ngx-translate/core';
+
 @Injectable()
 export class OfficeServiceProvider {
   officeList: any = {};
@@ -21,11 +24,16 @@ export class OfficeServiceProvider {
   communicationSelectedOffice: any = null;
 
   user: any = {};
+
+  office_list_unavailable_translate: string = 'No Office/Branch is asigned to you. Kindly contact Admin';
+  failed_to_load_translate: string = 'Failed to load Office list';
   constructor(
     public storage: Storage,
     public events: Events,
     public connection: ConnectionProvider,
     public modalCtrl: ModalController,
+    private _network: Network,
+    private translate: TranslateService,
   ) {
     //setting user ID
     this.setUser().catch(error => { });
@@ -46,13 +54,33 @@ export class OfficeServiceProvider {
     this.events.subscribe('user:ready', (user) => {
       if (user) {
         this.events.publish('officeList:get');
+      } else {
+        this.reset();
       }
     });
 
     //on Logout clearing office list
     this.events.subscribe('user:postLogout', () => {
-      this.officeList = null;
+      this.reset();
     });
+
+  }
+
+  doTranslate() {
+    //unavailable
+    this.translate.get('OfficeList._OfficeListUnavailable_').subscribe(translated => {
+      this.office_list_unavailable_translate = translated;
+    });
+    //failed to load
+    this.translate.get('OfficeList._FailedToLoad_').subscribe(translated => {
+      this.failed_to_load_translate = translated;
+    });
+  }
+
+  reset() {
+    this.officeList = {};
+    this.loadingOfficeList = true;
+    this.isMultipleOffice = -1;
   }
 
   setUser() {
@@ -68,20 +96,34 @@ export class OfficeServiceProvider {
 
   loadOfficeList() {
     return new Promise((resolve, reject) => {
+      this.doTranslate();
       this.loadingOfficeList = true;
-      //loading from firebase
-      firebase.database().ref('OfficeList/' + this.user.id).on('value', snapshot => {
-        this.officeList = snapshot.val();
-        this.loadingOfficeList = false;
-        
-        if (_.size(this.officeList) > 0) {
-          this.isMultipleOffice = _.size(this.officeList) > 1;
-          resolve(true);
-        } else {
-          this.isMultipleOffice = -1;
-          reject(false);
-        }
-      });
+      //checking if has internet
+      if (this._network.type === 'none') { //offline
+        this.storage.get('OfflineOfficeList').then(officeList => {
+          this.officeList = officeList;
+          this.loadingOfficeList = false;
+
+          this.setMultiOffice().then(status => {
+            resolve(status);
+          }).catch(status => {
+            reject(status);
+          });
+        })
+      } else { //online
+        //loading from firebase
+        firebase.database().ref('OfficeList/' + this.user.id).on('value', snapshot => {
+          this.officeList = snapshot.val();
+          this.storage.set('OfflineOfficeList', this.officeList);
+          this.loadingOfficeList = false;
+
+          this.setMultiOffice().then(status => {
+            resolve(status);
+          }).catch(status => {
+            reject(status);
+          });
+        });
+      }
     })
   }
 
@@ -92,6 +134,17 @@ export class OfficeServiceProvider {
     return this.isMultipleOffice;
   }
 
+  setMultiOffice() {
+    return new Promise((resolve, reject) => {
+      if (_.size(this.officeList) > 0) {
+        this.isMultipleOffice = _.size(this.officeList) > 1;
+        resolve(true);
+      } else {
+        this.isMultipleOffice = -1;
+        reject(false);
+      }
+    });
+  }
   /**
    * returns selected Office or open Modal to selects on
    * @param type PageType
@@ -127,7 +180,7 @@ export class OfficeServiceProvider {
           let first = this.officeList[Object.keys(this.officeList)[0]];
           resolve(first);
         } else { //no office
-          reject('No Office/Branch is asigned to you. Kindly contact Admin');
+          reject(this.office_list_unavailable_translate);
         }
       }).catch((message) => {
         reject(message);
@@ -142,6 +195,18 @@ export class OfficeServiceProvider {
       if (this.loadingOfficeList) {
         //showing loading
         this.events.publish('loading:create', 'loading');
+        //setting timeout of 10 secs to reload
+        setTimeout(() => {
+          if (this.loadingOfficeList) {//still loading
+            this.events.publish('loading:close');
+            //trying to load again
+            this.loadOfficeList().then(status => {
+              resolve(status);
+            }).catch(error => {
+              reject('Failed to load. Try again');
+            });
+          }
+        }, 10000);
         //subscribing to event
         this.events.subscribe('officeList:loaded', (status) => {
           //closing office list
@@ -150,7 +215,7 @@ export class OfficeServiceProvider {
           if (status) {
             resolve(true);
           } else {
-            reject('Failed to load Office list');
+            reject(this.failed_to_load_translate);
           }
         });
       } else {

@@ -26,7 +26,7 @@
                                                 <ion-icon name="sunny" text-right></ion-icon>
                                             </ion-col>
                                             <ion-col col-6>
-                                                MORNING
+                                                {{'PickUP._Morning_' | translate}}
                                             </ion-col>
                                         </ion-row>
                                     </ion-grid>
@@ -59,7 +59,7 @@
                                                 <ion-icon name="partly-sunny" text-right></ion-icon>
                                             </ion-col>
                                             <ion-col col-6>
-                                                EVENING
+                                                {{'PickUP._Evening_' | translate}}
                                             </ion-col>
                                         </ion-row>
                                     </ion-grid>
@@ -88,12 +88,14 @@
         <ion-grid>
             <ion-row text-center>
                 <ion-col>
-                    <button ion-button full [disabled]="disablePickupButton" (click)="confirm()"> CONFIRM </button>
+                    <button ion-button full [disabled]="disablePickupButton" (click)="confirm()">
+                        {{'PickUP._Confirm_' | translate}}
+                    </button>
                 </ion-col>
             </ion-row>
         </ion-grid>
     </ng-container>
     <ion-fab right bottom>
-        <call-fab></call-fab>
+        <call-fab type="PickUp"></call-fab>
     </ion-fab>
 </ion-content>

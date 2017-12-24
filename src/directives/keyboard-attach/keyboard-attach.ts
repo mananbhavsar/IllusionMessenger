@@ -88,7 +88,14 @@ export class KeyboardAttachDirective {
       this.setElementPosition(keyboardHeight);
     }
     this.attachTime++
+
+    // setTimeout(() => {
+    //   window.scrollTo(0, 0);
+    //   this.content.scrollToBottom(0);
+    //   this.keyboard.disableScroll(true);
+    // });
   };
+
 
   private onHide() {
     this.setElementPosition(0);
@@ -98,6 +105,6 @@ export class KeyboardAttachDirective {
   private setElementPosition(pixels: number) {
     this.elementRef.nativeElement.style.paddingBottom = pixels + 'px';
     this.content.getScrollElement().style.marginBottom = (pixels + 44) + 'px';
-    this.content.scrollToBottom()
+    //this.content.scrollToBottom()
   }
 }

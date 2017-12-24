@@ -1,6 +1,5 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ElementRef } from '@angular/core';
 import { Platform, NavController, Events, normalizeURL } from 'ionic-angular';
-import { Observable } from 'rxjs/Observable';
 import * as firebase from 'firebase';
 import { AngularFireDatabase } from 'angularfire2/database';
 import * as _ from 'underscore';
@@ -8,22 +7,37 @@ import * as mime from 'mime-types';
 import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer';
 import { File } from '@ionic-native/file';
 import { FileOpener } from '@ionic-native/file-opener';
+import { StreamingMedia, StreamingVideoOptions } from '@ionic-native/streaming-media';
+import { Network } from '@ionic-native/network';
+
+import { CommonProvider } from "../../providers/common/common";
+import { TranslateService } from "@ngx-translate/core";
+
 import * as moment from 'moment';
+
+import 'moment/locale/fr';
+import 'moment/locale/en-gb';
 
 import { AudioProvider } from 'ionic-audio';
 import { Global } from '../../app/global';
 import { retry } from 'rxjs/operator/retry';
+
+import { ImageViewerController } from 'ionic-img-viewer';
 
 @Component({
   selector: 'chat-bubble',
   templateUrl: 'chat-bubble.html',
 })
 export class ChatBubbleComponent {
+  element: any = null;
   @Input() message: any;
   @Input() userID: string;
   @Input() ticket: string;
   @Input() users: any = {};
   @Input() LoginTypeID: number = 0;
+  @Input() myLanguage: string = 'en';
+
+  global: any = Global;
 
   basePath: string = '';
   messagePath: string = '';
@@ -31,6 +45,9 @@ export class ChatBubbleComponent {
   dataDirectory: string = null;
   downloadDirectory: string = null;
   selectedTrack: number;
+  isCordova: boolean = false;
+
+  not_available_offline_translate: string = 'Not available in Offline';
   constructor(
     public angularFireDB: AngularFireDatabase,
     private file: File,
@@ -40,8 +57,16 @@ export class ChatBubbleComponent {
     private fileOpener: FileOpener,
     private _audioProvider: AudioProvider,
     private navCtlr: NavController,
+    private streamingMedia: StreamingMedia,
+    private _imageViewerController: ImageViewerController,
+    private _elementRef: ElementRef,
+    private common: CommonProvider,
+    private network: Network,
+    private translate: TranslateService,
   ) {
-    this.dataDirectory = this.platform.is('android') ? this.file.externalDataDirectory : this.file.dataDirectory;
+    this.global = Global;
+    this.isCordova = this.platform.is('cordova');
+
     //listening to page change event to pause audio
     this.navCtlr.viewWillLeave.subscribe(event => {
       this.pauseSelectedTrack();
@@ -49,21 +74,39 @@ export class ChatBubbleComponent {
     this.events.subscribe('platform:onPause', (event) => {
       this.pauseSelectedTrack();
     });
+
+  }
+
+  doTranslate() {
+    this.translate.get('ChatScreen._NotAvailableOffline_').subscribe(translated => {
+      this.not_available_offline_translate = translated;
+    });
   }
 
   ngOnInit() {
+    this.doTranslate();
     this.basePath = 'Communications/' + this.ticket + '/';
     this.messagePath = this.basePath + 'Chat/' + this.message.key;
 
     this.doReading();
 
+    this.common.getDataDirectory().then((path: string) => {
+      this.dataDirectory = path;
 
-    this.downloadDirectory = this.dataDirectory + this.ticket + '/';
-    this.createIfNotExist();
+      this.downloadDirectory = this.dataDirectory + this.ticket + '/';
+      this.createIfNotExist();
 
-    this.processFile();
+      this.processFile();
+    }).catch(error => {
+      console.log(error);
+    });
 
     // this.processBadgeCount();
+  }
+
+  ngOnDestroy() {
+    this.events.unsubscribe('platform:onPause');
+    this.events.unsubscribe('message:file:deleted');
   }
 
   doReading() {
@@ -100,16 +143,22 @@ export class ChatBubbleComponent {
      *  2.1 If any single dentist read, make it 1
      *  2.2 read by all dentist & group users, make it 2
      */
+    if (!('UserID' in this.message)) {
+      this.message['UserID'] = 0;
+    }
+    if (!('LoginTypeID' in this.message)) {
+      this.message['LoginTypeID'] = 0;
+    }
     if (this.message.UserID !== this.userID) { //avoid same user type also
       let status = -1;
       //sent by 
-      if (this.message.LoginTypeID === 1 && this.LoginTypeID === 3) { //dentist & read by group user
+      if ([Global.LoginType.Doctor, Global.LoginType.Parent].indexOf(this.message.LoginTypeID) > -1 && this.LoginTypeID === Global.LoginType.Group) { //dentist & read by group user
         status = 2;
-      } else if (this.message.LoginTypeID === 3) { //sent by group user
+      } else if ([Global.LoginType.LabGuru, Global.LoginType.Group].indexOf(this.message.LoginTypeID) > -1) { //sent by group user
         //checking if read by all
         if (_.size(this.message.Read) === _.size(this.users)) {
           status = 2;
-        } else if (this.LoginTypeID === 1 && this.message.Status === 0) { //read by any dentist
+        } else if ([Global.LoginType.Doctor, Global.LoginType.Parent].indexOf(this.message.LoginTypeID) > -1 && this.message.Status === 0) { //read by any dentist
           status = 1;
         }
       }
@@ -119,28 +168,85 @@ export class ChatBubbleComponent {
     }
   }
 
-  openImage(url) {
-    //checking if file exist
-    //this.check(url).then((entry: any) => {
-    //  this.openFileInApp(entry.nativeURL);
-    //});
+  openFile() {
+    if (this.network.type === 'none') {
+      this.events.publish('toast:error', this.not_available_offline_translate);
+      return;
+    }
+    if (this.message.URL) {
+      if (this.isCordova) {
+        let file = this.message.nativeURL || this.message.URL;
+
+        let wasDownloaded = this.message.downloaded;
+        this.check(file).then(entry => {
+          if (wasDownloaded) {
+            switch (this.message.MessageType) {
+              case 'Image':
+                this.openImage();
+                break;
+
+              case 'Audio':
+                this.openAudio();
+                break;
+
+              case 'Video':
+                this.openVideo();
+                break;
+            }
+          }
+
+        }).catch(error => {
+          console.log(error);
+        });
+      }
+    }
   }
 
-  openAudio(message) {
+  openImage() {
+    this.element = this._elementRef.nativeElement.querySelector('#message-image-' + this.message.key);
+    let image = this._imageViewerController.create(this.element);
+    image.present();
 
+  }
+
+  openAudio() {
+    let options = {
+      successCallback: () => { console.log('Audio played') },
+      errorCallback: (e) => { console.log('Error streaming') },
+      shouldAutoClose: true,
+      bgImage: 'https://static.wixstatic.com/media/8f701c_6ac02356f4b2498ea521408e3469bffd~mv2.gif',
+    };
+    this.streamingMedia.playAudio(this.message.nativeURL, options);
+  }
+
+  openVideo() {
+    let options = {
+      successCallback: () => { console.log('Video played') },
+      errorCallback: (e) => { console.log('Error streaming') },
+      shouldAutoClose: true,
+    };
+    this.streamingMedia.playVideo(this.message.nativeURL, options);
   }
 
   check(file) {
     return new Promise((resolve, reject) => {
       this.isFileDownloaded(file).then(status => {
+        console.log(status);
         resolve(status);
       }).catch(error => {
-        this.events.publish('loading:create', 'downloading');
+        this.message.downloading = true;
         this.downloadFile(file).then((entry: any) => {
-          this.events.publish('loading:close');
-          resolve(entry);
+          this.message.nativeURL = this.getNativeURL(file);
+          this.message.downloading = false;
+          this.message.downloaded = true;
+
+          this.subscribeToFileDelete(file);
+          setTimeout(() => {
+            console.log(entry);
+            resolve(entry);
+          });
         }).catch(error => {
-          this.events.publish('loading:close');
+          this.message.downloading = false;
           this.events.publish('toast:error', error);
           reject(error);
         })
@@ -156,55 +262,32 @@ export class ChatBubbleComponent {
     });
   }
 
-  _processFile() {
-    //downloading file
-    if (this.message.URL) {
-      //if cordova
-      if (this.platform.is('cordovaaa')) {
-
-      } else {
-        this.message.downloaded = true;
-        this.message.nativeURL = this.message.URL;
-        this.makeTrackForAudio();
-      }
-    } else {
-      this.message['downloaded'] = true;
-    }
-  }
-
   processFile() {
     //downloading file
     if (this.message.URL) {
-      //if cordova
-      if (this.platform.is('cordova')) {
+      if (this.isCordova) {
         let file = this.message.URL;
 
         this.isFileDownloaded(file).then(status => {
           if (status) {
             this.message['downloaded'] = true;
+            this.message['downloading'] = false;
             this.message.nativeURL = this.getNativeURL(file);
-            console.log(this.message.nativeURL);
-            //download for thumbnail in case of image
-            //pending
-          }
-          this.makeTrackForAudio();
-        }).catch(error => {
-          this.message['downloaded'] = false;
-          this.downloadFile(file).then((entry: any) => {
-            this.message.downloaded = true;
-            this.message.nativeURL = this.getNativeURL(entry.nativeURL);
 
-            this.makeTrackForAudio();
-          }).catch(error => {
-            this.message.downloaded = false;
-            this.message['error'] = error;
-          });
-        })
+            this.subscribeToFileDelete(file);
+          }
+        }).catch(error => {
+          //checking if sent by me and sent within last 500ms. We will try to download this
+          if (this.message.UserID === this.userID && (moment().utc().valueOf() - this.message.CreateAt) <= 500) {
+            this.openFile();
+          } else {
+            this.message['downloaded'] = false;
+            this.message['downloading'] = false;
+          }
+        });
 
       } else {
-        this.message.downloaded = true;
-        this.message.nativeURL = this.message.URL;
-        this.makeTrackForAudio();
+        this.message['downloaded'] = false;
       }
     } else {
       this.message['downloaded'] = true;
@@ -224,6 +307,25 @@ export class ChatBubbleComponent {
     });
   }
 
+  downloadMessage() {
+    let file = this.message.URL;
+    if (this.isCordova) {
+      this.message.downloading = true;
+      this.downloadFile(file).then((entry: any) => {
+        this.message.downloaded = true;
+        this.message.nativeURL = this.getNativeURL(entry.nativeURL);
+
+        this.message.downloading = false;
+        this.subscribeToFileDelete(file);
+        this.makeTrackForAudio();
+      }).catch(error => {
+        this.message.downloading = false;
+        this.message.downloaded = false;
+        this.message['error'] = error;
+      });
+    }
+  }
+
   downloadFile(file) {
     return new Promise((resolve, reject) => {
       let fileName = this.getFileName(file);
@@ -232,7 +334,15 @@ export class ChatBubbleComponent {
       fileTransfer.download(file, this.downloadDirectory + fileName).then((entry) => {
         resolve(entry);
       }, (error) => {
+        console.log(error);
         this.message['failed'] = error;
+        this.message.downloaded = false;
+        this.message.downloading = false;
+      }).catch(error => {
+        console.log(error);
+        this.message['failed'] = error;
+        this.message.downloaded = false;
+        this.message.downloading = false;
       });
     });
   }
@@ -259,10 +369,10 @@ export class ChatBubbleComponent {
   }
 
   createIfNotExist() {
-    this.file.checkDir(this.downloadDirectory, this.ticket).then(status => {
+    this.file.checkDir(this.dataDirectory, this.ticket).then(status => {
     }).catch(error => {
       if (error.code === 1) {
-        this.file.createDir(this.downloadDirectory, this.ticket, false).catch(error => { });
+        this.file.createDir(this.dataDirectory, this.ticket, false).catch(error => { });
       }
     });
   }
@@ -272,6 +382,8 @@ export class ChatBubbleComponent {
       let momentTime = null;
 
       momentTime = moment(time).utc().local();
+      momentTime.locale(this.myLanguage);
+
       //checking if its dd-mm-yyy format
       if (!momentTime.isValid() && moment(time, 'DD-MM-YYYY hh:mm:ss').isValid()) {
         momentTime = moment(time, 'DD-MM-YYYY hh:mm:ss').utc().local();
@@ -295,7 +407,7 @@ export class ChatBubbleComponent {
   }
 
   showRead(message) {
-    if (this.LoginTypeID === 3) {
+    if (this.LoginTypeID === Global.LoginType.Group) {
     }
   }
 
@@ -363,11 +475,48 @@ export class ChatBubbleComponent {
   onTrackFinished(track: any) {
     console.log('Track finished', track);
     //re-adding this track
-    this.message.audioTrack = {
-      src: null,
-    };
+    // this.message.audioTrack = {
+    //   src: null,
+    // };
     setTimeout(() => {
       this.makeTrackForAudio();
-    }, 150);
+    });
+  }
+
+  onHold(event) {
+    //showing popover for read, translate
+    console.log('on hold');
+
+  }
+
+  subscribeToFileDelete(file) {
+    let fileName = file.substring(file.lastIndexOf('/') + 1);
+
+    this.events.unsubscribe('message:file:deleted');
+    this.events.subscribe('message:file:deleted', (deletedFileName) => {
+      if (fileName === deletedFileName) {
+        this.message.nativeURL = null;
+        this.processFile();
+      }
+    });
+  }
+
+  isHidden() {
+    //checking if sent by LabGuru & logged in user type is group then show tick
+    if (this.message.LoginTypeID === Global.LoginType.LabGuru && this.LoginTypeID === Global.LoginType.Group) {
+      return false;
+    }
+    return this.message.UserID !== this.userID;
+  }
+
+  getTextMessage() {
+    //checking if MyLang exist in message
+    if (!('Translation' in this.message)) {
+      this.message['Translation'] = {};
+    }
+    if (!(this.myLanguage in this.message.Translation)) {
+      this.message.Translation[this.myLanguage] = this.message.Message;
+    }
+    return this.message.Translation[this.myLanguage];
   }
 }

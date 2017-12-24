@@ -93,6 +93,8 @@ ext {
 
 // PLUGIN GRADLE EXTENSIONS START
 apply from: "cordova-plugin-badge/app-badge.gradle"
+apply from: "cordova-plugin-fcm/app-FCMPlugin.gradle"
+apply from: "cordova-plugin-video-editor/app-build.gradle"
 apply from: "onesignal-cordova-plugin/app-build-extras-onesignal.gradle"
 // PLUGIN GRADLE EXTENSIONS END
 
@@ -256,10 +258,12 @@ dependencies {
     debugCompile(project(path: "CordovaLib", configuration: "debug"))
     releaseCompile(project(path: "CordovaLib", configuration: "release"))
     compile "com.android.support:support-v4:24.1.1+"
+    compile "com.google.firebase:firebase-core:+"
+    compile "com.google.firebase:firebase-messaging:+"
+    compile "com.android.support:support-v4:+"
     compile "com.android.support:support-v4:26.+"
     compile "com.android.support:appcompat-v7:26.+"
-    compile "com.onesignal:OneSignal:3.6.3"
-    compile "com.android.support:support-v4:+"
+    compile "com.onesignal:OneSignal:3.6.5"
     // SUB-PROJECT DEPENDENCIES END
 }
 

@@ -8,24 +8,38 @@ export class FirebaseTransactionProvider {
   constructor() {
   }
 
-  doTransaction(transations) {
-    for (let path in transations) {
-      let count = transations[path];
-      if (isNaN(count)) {
-        count = 0;
-      } else {
-        count = parseInt(transations[path]);
+  doTransaction(transations: Array<{ Path?: string, Value?: number, ValueStr?: string }>) {
+    return new Promise((resolve, reject) => {
+      if (!_.isEmpty(transations)) {
+        var processed = 0;
+        console.log(transations);
+        transations.forEach((object) => {
+          let value: any = null;
+          if (object.Value !== null) {
+            value = object.Value;
+          }
+          if (object.ValueStr !== null) {
+            value = object.ValueStr;
+          }
+          if (value !== null) {
+            let path = object.Path;
+            firebase.database().ref(path).set(value).then(result=>{
+              processed++;
+              if(processed === transations.length){
+                resolve(true);
+              }
+            });
+          }else{
+            processed++;
+            if(processed === transations.length){
+              resolve(true);
+            }
+          }
+        });
+      }else{
+        reject('Empty');
       }
-      firebase.database().ref(path).transaction(countOnFirebase => {
-        //null prevention
-        countOnFirebase = countOnFirebase || 0;
-        //checking if count negative to update
-        if (countOnFirebase === 0 && count < 0) {
-          return countOnFirebase;
-        }
-        return countOnFirebase + count;
-      });
-    }
+    });
   }
 
 }

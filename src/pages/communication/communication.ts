@@ -3,11 +3,15 @@ import { IonicPage, NavController, NavParams, Events, Content, Platform } from '
 
 import { OfficeServiceProvider } from "../../providers/office-service/office-service";
 import { ConnectionProvider } from "../../providers/connection/connection";
+import { TranslateService } from "@ngx-translate/core";
 
 import { ChatPage } from "../chat/chat";
 import * as _ from 'underscore';
 import * as firebase from 'firebase';
 import { Item } from 'ionic-angular/components/item/item';
+
+import { Network } from '@ionic-native/network';
+import { Storage } from '@ionic/storage';
 
 @IonicPage()
 @Component({
@@ -17,48 +21,96 @@ import { Item } from 'ionic-angular/components/item/item';
 export class CommunicationPage {
   @ViewChild(Content) content: Content;
   title: String = 'loading';
-  titles = ['Today', 'Pending', 'All'];
+  titles = { 'Today': '', 'Pending': '', 'All': '' };
   status = {
     'Resolved': { label: 'Resolved', color: 'secondary' },
     'Pending': { label: 'Pending', color: 'danger' },
   };
   selectedOffice: any = {};
+  selectedCustomerBranchID: string = null;
+
+  queries_text: string = '';
   selectedTab = 'All';
   page: number = 0;
+
   items: any = [];
   itemsTicketNo: any = [];
   itemsSearchCopy: any = [];
+
+  offlineItems: any = {};
+
   searchText: string = '';
   showSearchBar: boolean = true;
-  wasModalShown: boolean | -1 = false;
   openingChat: boolean = false;
 
   newChatEventRefs: Object = {};
   newQueryEventRefs: Object = {};
 
+  hasInternet: boolean = true;
   constructor(
     public navCtrl: NavController,
     public offliceList: OfficeServiceProvider,
     public events: Events,
     public connection: ConnectionProvider,
     public platform: Platform,
+    private _network: Network,
+    private _storage: Storage,
+    private translate: TranslateService,
   ) {
+    this.hasInternet = this._network.type !== 'none';
+    this.events.subscribe('network:online', () => {
+      this.hasInternet = true;
+    });
+    this.events.subscribe('network:offline', () => {
+      this.hasInternet = false;
+    });
+  }
 
+  doTranslate() {
+    //Queries
+    this.translate.get('CommunicationPage._Queries_').subscribe(translated => {
+      this.queries_text = translated;
+    });
+    //loading
+    this.translate.get('Common._Loading_').subscribe(translated => {
+      if (this.title === 'loading') {
+        this.title = translated;
+      }
+    });
+    //today
+    this.translate.get('CommunicationPage._Today_').subscribe(translated => {
+      this.titles.Today = translated;
+    });
+    //Pending
+    this.translate.get('CommunicationPage._Pending_').subscribe(translated => {
+      this.titles.Pending = translated;
+      this.status.Pending.label = translated;
+    });
+    //All
+    this.translate.get('CommunicationPage._All_').subscribe(translated => {
+      this.titles.All = translated;
+    });
+    //Resolved
+    this.translate.get('CommunicationPage._Resolved').subscribe(translated => {
+      this.status.Resolved.label = translated;
+    });
   }
 
   ionViewDidEnter() {
+    this.doTranslate();
     if (_.isEmpty(this.selectedOffice)) {
       this.offliceList.getOffice('Communication').then((selectedOffice) => {
         this.selectedOffice = selectedOffice;
-        console.log(this.selectedOffice);
-        
-        this.setTitle();
+        if (this.selectedOffice) {
+          this.selectedCustomerBranchID = this.selectedOffice.CustomerBranchID;
 
-        this.wasModalShown = this.offliceList.isMultiOffice();
-
+          this.setTitle();
+          this.initOffline();
+        }
         this.initData().then(response => { }).catch(error => {
-         
+
         });
+        this.listenToFirebaseQueryEvent();
       }).catch((error) => {
         console.log(error);
         this.events.publish('toast:error', error);
@@ -72,6 +124,88 @@ export class CommunicationPage {
     }
   }
 
+  initOffline() {
+    return new Promise((resolve, reject) => {
+      this._storage.get('OfflineQuery').then(queries => {
+        if (_.isEmpty(queries)) {
+          queries = {};
+        }
+        //checking if this office is set
+        if (!(this.selectedCustomerBranchID in queries)) {
+          queries[this.selectedCustomerBranchID] = {};
+        }
+        console.log(queries[this.selectedCustomerBranchID]);
+        this.offlineItems = queries[this.selectedCustomerBranchID];
+
+        //init List
+        for (let key in this.offlineItems) {
+          this.pushItem(this.offlineItems[key], false);
+        }
+        //saveOffline
+        this.saveOfflineData().then(status => {
+          resolve(status);
+        }).catch(error => {
+          reject(error);
+        });
+      }).catch(error => {
+        reject(error);
+      });
+    });
+  }
+
+  pushItem(item, addToOffline: boolean = true) {
+    item['ResponseDateTimeInMili'] = new Date(item.ResponseDateTime).getTime();
+
+    let ticketNo = item.TicketNo;
+    let index = this.getIndexOfTicket(ticketNo);
+    if (index === -1) {//push
+      index = this.items.push(item);
+      //making copy for search
+      this.itemsSearchCopy.push(item);
+      //adding ticketno
+      this.itemsTicketNo.push(ticketNo);
+
+      //listening to count event
+      this.listenToFirebaseChatEvent(item);
+    } else {//update
+      this.items[index] = item;
+      //making copy for search
+      this.itemsSearchCopy[index] = item;
+    }
+    //adding to Offline
+    if (addToOffline) {
+      this.addToOffline(item);
+    }
+    return index;
+  }
+
+  addToOffline(item) {
+    this.offlineItems[item.TicketNo] = item;
+  }
+
+  saveOfflineData() {
+    return new Promise((resolve, reject) => {
+      this._storage.get('OfflineQuery').then(queries => {
+        if (_.isEmpty(queries)) {
+          queries = {};
+        }
+        //checking if this office is set
+        if (!(this.selectedCustomerBranchID in queries)) {
+          queries[this.selectedCustomerBranchID] = {};
+        }
+
+        queries[this.selectedCustomerBranchID] = this.offlineItems;
+
+        this._storage.set('OfflineQuery', queries).then(status => {
+          console.log('saved');
+          resolve(status);
+        }).catch(error => {
+          reject(error);
+        });
+      })
+    });
+  }
+
   initData(): Promise<any> {
     return new Promise((resolve, reject) => {
       this.connection.doPost('Communication/GetAllQueries', {
@@ -80,23 +214,24 @@ export class CommunicationPage {
         DisablePaging: false,
         PageNumber: this.page,
         RowsPerPage: 100,
-      }).then((response: any) => {
+      }, this.items.length === 0).then((response: any) => {
         for (let i = 0; i < response.length; i++) {
-          this.items.push(response[i]);
-          this.itemsTicketNo.push(response[i].TicketNo);
-
-          //making copy for search
-          this.itemsSearchCopy.push(response[i]);
-          //listening to count event
-          this.listenToFirebaseChatEvent(response[i]);
+          //converting date to miliseconds
+          this.pushItem(response[i]);
         }
         this.page++;
         //checking if already searched
         // this.getItems();
-        resolve();
+        this.saveOfflineData().then(status => {
+          resolve(status);
+        }).catch(error => {
+          reject(error);
+        });
       }).catch(error => {
-        this.page = -1;
-        reject(error);
+        setTimeout(() => {
+          this.page = -1;
+          reject(error);
+        });
       });
     });
   }
@@ -121,7 +256,7 @@ export class CommunicationPage {
   }
 
   setTitle() {
-    this.title = 'Queries: ' + this.selectedTab;
+    this.title = this.queries_text + ': ' + this.titles[this.selectedTab];
   }
 
   getStatusColor(status) {
@@ -158,11 +293,32 @@ export class CommunicationPage {
   }
 
   openChat(item, index) {
-    if (this.items && typeof this.items[index] !== 'undefined') {
-      this.items[index].UnreadCount = 0;
-    }
-    item.UnreadCount = 0;
-    this.navCtrl.push(ChatPage, item.TicketNo);
+    this.setUnReadCount(item, index).then(status => {
+      this.navCtrl.push(ChatPage, item.TicketNo);
+    }).catch(error => {
+      console.log(error);
+    })
+  }
+
+  setUnReadCount(item, index) {
+    return new Promise((resolve, reject) => {
+      if (item.UnreadCount) {
+        if (this.items && typeof this.items[index] !== 'undefined') {
+          this.items[index].UnreadCount = 0;
+        }
+        item.UnreadCount = 0;
+        this.offlineItems[item.TicketNo].UnreadCount = 0;
+
+        this.saveOfflineData().then(status => {
+          console.log('unread saved');
+          resolve(status);
+        }).catch(error => {
+          reject(error);
+        });
+      } else {
+        resolve(true);
+      }
+    });
   }
 
   getItems() {
@@ -206,7 +362,28 @@ export class CommunicationPage {
       //now listening to new
       itemRef.on('child_added', (snapshot) => {
         let count = snapshot.val();
-        item.UnreadCount += count;
+        let time = new Date().getTime();
+        console.log(ticketNo);
+
+        //count
+        item.UnreadCount = count;
+        item.ResponseDateTime = new Date().getTime();
+        item.ResponseDateTimeInMili = new Date().getTime();
+
+        setTimeout(() => {
+          //setting value
+          let index = this.getIndexOfTicket(ticketNo);
+          if (this.items[index].TicketNo === ticketNo) {
+            this.items[index] = item;
+            this.itemsSearchCopy[index] = item;
+            this.offlineItems[item.TicketNo] = item;
+
+            this.saveOfflineData();
+          } else {
+            console.log('else');
+          }
+        });
+
         itemRef.remove();
       });
     }
@@ -225,9 +402,20 @@ export class CommunicationPage {
           item.QueryStatus = 'Pending';
         }
         //checking if already exist
-        if (this.itemsTicketNo.indexOf(item.TicketNo) === -1) {
+        if (this.getIndexOfTicket(item.TicketNo) === -1) {
+          item.ResponseDateTimeInMili = new Date().getTime();
+
           this.items.unshift(item);
-          this.itemsTicketNo.push(item.TicketNo);
+          this.itemsTicketNo.unshift(item.TicketNo);
+
+          this.itemsSearchCopy.unshift(item);
+          this.offlineItems[item.TicketNo] = item;
+
+          //saving for next time use
+          this.saveOfflineData();
+
+          //listening to new chat on it
+          this.listenToFirebaseChatEvent(item);
         }
         queryRef.remove();
       });
@@ -243,5 +431,29 @@ export class CommunicationPage {
       this.newQueryEventRefs[key].off('child_added');
       delete this.newQueryEventRefs[key];
     }
+  }
+
+  getIndexOfTicket(ticketNo) {
+    let index = -1;
+    if (ticketNo) {
+      index = this.itemsTicketNo.indexOf(ticketNo);
+      if (index === -1) {
+        return index;
+      }
+      //verifying if its indeed right index
+      if (this.items && this.items[index].TicketNo !== ticketNo) {
+        //looping to find
+        let index = 0;
+        this.items.forEach(item => {
+          if (item.TicketNo === ticketNo) {
+            return index;
+          }
+          index++;
+        });
+        //since not found
+        index = -1;
+      }
+    }
+    return index;
   }
 }

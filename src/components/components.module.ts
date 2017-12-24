@@ -14,6 +14,7 @@ import { ChatBubbleComponent } from './chat-bubble/chat-bubble';
 import { IonicAudioModule } from 'ionic-audio';
 import { IonicImageLoader } from 'ionic-image-loader';
 import { IonicImageViewerModule } from 'ionic-img-viewer';
+import { TranslateModule } from "@ngx-translate/core";
 
 @NgModule({
     declarations: [EmptyComponent,
@@ -54,6 +55,7 @@ import { IonicImageViewerModule } from 'ionic-img-viewer';
         ProgressBarComponent,
         CallFabComponent,
         ChatBubbleComponent,
+        TranslateModule,
     ]
 })
 export class ComponentsModule { }

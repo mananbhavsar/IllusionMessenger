@@ -1,5 +1,5 @@
 <ion-header no-border>
-    <header title="Home"></header>
+    <header [title]="'HomeScreen._Home_' | translate"></header>
     <!-- <div [hidden]="Customer === null" class="cutomer-name">{{Customer}}</div> -->
 </ion-header>
 <ion-content no-padding>
@@ -16,8 +16,8 @@
                         <img src="assets/img/test7.png" height="70" width="80" style="padding-top: 10px;" />
                     </ion-col>
                     <ion-col style="color:white">
-                        <h5 style="margin-bottom:0px;"> DASHBOARD </h5>
-                        <p style="margin-bottom:0px;margin-top:0px; font-size: smaller;">Your dashboard summary</p>
+                        <h5 style="margin-bottom:0px;">{{'HomeScreen._Dashboard_' | translate}}</h5>
+                        <p style="margin-bottom:0px;margin-top:0px; font-size: smaller;">{{'HomeScreen._DashboardSummary_' | translate}}</p>
                     </ion-col>
                 </ion-row>
             </ion-grid>
@@ -29,12 +29,12 @@
                         <img src="assets/img/test4.png" height="80" width="80" style="padding-top: 10px;" />
                     </ion-col>
                     <ion-col style="color:white">
-                        <h5 style="margin-bottom:0px;"> PICK UP
+                        <h5 style="margin-bottom:0px;"> {{'HomeScreen._PickUp_' | translate}}
                             <sup *ngIf="data.PickUpCount !== 0">
                                 <ion-badge style="background:gray">{{data.PickUpCount}}</ion-badge>
                             </sup>
                         </h5>
-                        <p style="margin-bottom:0px;margin-top:0px; font-size: smaller;">Easy pickup request</p>
+                        <p style="margin-bottom:0px;margin-top:0px; font-size: smaller;">{{'HomeScreen._EasyPickup_' | translate}}</p>
                     </ion-col>
                 </ion-row>
             </ion-grid>
@@ -46,12 +46,12 @@
                         <img src="assets/img/test6.png" height="65" width="60" style="padding-top: 10px;" />
                     </ion-col>
                     <ion-col style="color:white">
-                        <h5 style="margin-bottom:0px;"> CASE STATUS
+                        <h5 style="margin-bottom:0px;"> {{'HomeScreen._CaseStatus_' | translate}}
                             <sup *ngIf="data.CaseSearchCount !== 0 && loginType !== 3">
                                 <ion-badge style="background:gray">{{data.CaseSearchCount}}</ion-badge>
                             </sup>
                         </h5>
-                        <p style="margin-bottom:0px;margin-top:0px; font-size: smaller;"> View your case status</p>
+                        <p style="margin-bottom:0px;margin-top:0px; font-size: smaller;">{{'HomeScreen._ViewCaseStatus' | translate}}</p>
                     </ion-col>
                 </ion-row>
             </ion-grid>
@@ -63,16 +63,18 @@
                         <img src="assets/img/test5.png" height="70" width="65" style="padding-top: 10px;" />
                     </ion-col>
                     <ion-col style="color:white">
-                        <h5 style="margin-bottom:0px;"> COMMUNICATION
+                        <h5 style="margin-bottom:0px;"> {{'HomeScreen._Communication_' | translate}}
                             <sup *ngIf="data.CommunicationCount !== 0">
                                 <ion-badge style="background:gray">{{data.CommunicationCount}}</ion-badge>
                             </sup>
                         </h5>
-                        <p style="margin-bottom:0px;margin-top:0px; font-size: smaller;"> View your communications</p>
+                        <p style="margin-bottom:0px;margin-top:0px; font-size: smaller;"> {{'HomeScreen._ViewCommunication_' | translate}}</p>
                     </ion-col>
                 </ion-row>
             </ion-grid>
         </div>
     </ng-container>
-    <button (click)="openChat()" full ion-button>Open Test Chat</button>
+    <!-- <button ion-button full (click)="openChat('SWA20')">Open Chat</button> -->
+    <button ion-button full (click)="useLang('en')">Use en</button>
+    <button ion-button full (click)="useLang('fr')">Use fr</button>
 </ion-content>

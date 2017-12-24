@@ -1,11 +1,11 @@
 <ion-header>
   <ion-toolbar ion-text color="primary">
     <ion-title>
-      Select Office
+      {{'OfficeList._SelectOffice_' | translate}}
     </ion-title>
     <ion-buttons end>
       <button color="light" ion-button outline (click)="dismiss(null)">
-        close
+          {{'ChatScreen._Close_' | translate}}
       </button>
     </ion-buttons>
   </ion-toolbar>
@@ -14,10 +14,10 @@
 </ion-header>
 <ion-content>
   <ion-list>
-    <ion-item class="list_wrap" *ngFor="let item of officeList | async | filter:'CustomerName':searchText" (click)="selectOffice(item)">
-      {{item.CustomerName}}
-      <ion-badge item-end color="secondary" *ngIf="modelFlagName === 'CaseStatus' && item.CaseSearch_BranchCount">{{item.CaseSearch_BranchCount}}</ion-badge>
-      <ion-badge item-end color="secondary" *ngIf="modelFlagName === 'Communication' && item.Communication_BranchCount">{{item.Communication_BranchCount}}</ion-badge>
+    <ion-item class="list_wrap" *ngFor="let CustomerBranchID of officeList | keys | objectFilter:'CustomerName':searchText:officeList" (click)="selectOffice(CustomerBranchID)">
+      {{officeList[CustomerBranchID].CustomerName}}
+      <ion-badge item-end color="secondary" *ngIf="modelFlagName === 'CaseStatus' && officeList[CustomerBranchID].CaseSearch_BranchCount">{{officeList[CustomerBranchID].CaseSearch_BranchCount}}</ion-badge>
+      <ion-badge item-end color="secondary" *ngIf="modelFlagName === 'Communication' && officeList[CustomerBranchID].Communication_BranchCount">{{officeList[CustomerBranchID].Communication_BranchCount}}</ion-badge>
     </ion-item>
   </ion-list>
 </ion-content>

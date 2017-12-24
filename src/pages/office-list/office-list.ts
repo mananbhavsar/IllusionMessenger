@@ -2,8 +2,11 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, ViewController, Platform } from 'ionic-angular';
 
 import { Storage } from '@ionic/storage';
-import { AngularFireDatabase } from 'angularfire2/database';
+
 import { Observable } from 'rxjs/Observable';
+import * as firebase from 'firebase';
+
+import { Network } from '@ionic-native/network';
 
 @IonicPage()
 @Component({
@@ -11,8 +14,8 @@ import { Observable } from 'rxjs/Observable';
   templateUrl: 'office-list.html',
 })
 export class OfficeListPage {
-  officeList: Observable<any[]>;
-  officeListCopy: Observable<any[]>;
+  officeList: any = {};
+  officeListCopy: any = {}
   searchText: String = "";
   modelFlagName: String = "";
 
@@ -23,17 +26,31 @@ export class OfficeListPage {
     public viewCtrl: ViewController,
     public storage: Storage,
     public platform: Platform,
-    public angularFireDatabase: AngularFireDatabase,
+    private _network: Network,
   ) {
     this.modelFlagName = this.navParams.data.modelFlagName;
   }
 
-  ionViewDidLoad() {
+  ionViewDidEnter() {
     this.storage.get('User').then(User => {
       if (User) {
         this.path = 'OfficeList/' + User.id;
-        this.officeList = this.angularFireDatabase.list(this.path).valueChanges();
-        this.officeListCopy = this.officeList;
+
+        //checking if online
+        if (this._network.type === 'none') {
+          this.storage.get('OfflineOfficeList').then(officeList => {
+            this.officeList = officeList;
+            this.officeListCopy = this.officeList;
+          });
+        } else {
+          firebase.database().ref(this.path).on('value', snapshot => {
+            this.officeList = snapshot.val();
+            this.officeListCopy = this.officeList;
+
+            this.storage.set('OfflineOfficeList', this.officeList);
+
+          });
+        }
       }
     });
   }
@@ -43,6 +60,6 @@ export class OfficeListPage {
   }
 
   selectOffice(office) {
-    this.dismiss(office);
+    this.dismiss(this.officeList[office]);
   }
 }

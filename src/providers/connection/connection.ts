@@ -6,11 +6,13 @@ import { Http, Headers, Response, URLSearchParams } from '@angular/http';
 import 'rxjs/add/operator/map';
 import { Global } from '../../app/global';
 import { Device } from '@ionic-native/device';
+import { UniqueDeviceID } from '@ionic-native/unique-device-id';
 
 @Injectable()
 export class ConnectionProvider {
     user: any = {};
     headers: Headers;
+    uuid: string;
     constructor(
         public http: Http,
         public storage: Storage,
@@ -18,7 +20,7 @@ export class ConnectionProvider {
         public network: Network,
         public platform: Platform,
         public device: Device,
-
+        private uniqueDeviceID: UniqueDeviceID
     ) {
         this.events.subscribe('user:changed', (user) => {
             this.storage.get('User').then((user) => {
@@ -27,6 +29,15 @@ export class ConnectionProvider {
             });
         });
         this.headers = new Headers({ 'Content-Type': 'application/json' });
+
+        //device id
+        platform.ready().then(()=>{
+            this.uniqueDeviceID.get()
+                .then((uuid: any) => {
+                    this.uuid = uuid;
+                })
+                .catch((error: any) => console.log(error));
+        });
     }
 
     /**
@@ -78,11 +89,11 @@ export class ConnectionProvider {
                 if (loader) {
                     this.events.publish('loading:close');
                 }
-                console.log(error);
                 //checking for timeout
-                if(typeof error === 'object' && ('name' in error) && error.name === 'TimeoutError'){
+                if (typeof error === 'object' && ('name' in error) && error.name === 'TimeoutError') {
                     error = error.message;
                 }
+                console.log(error);
                 this.events.publish('toast:error', error);
                 reject(error);
             });
@@ -97,6 +108,7 @@ export class ConnectionProvider {
             urlSearchParams.append(key, params[key]);
         }
         //device specific info
+        urlSearchParams.append('UniqueID', this.uuid);
         urlSearchParams.append('Device', this.device.platform);
         urlSearchParams.append('OSVersion', this.device.version);
         urlSearchParams.append('Manufacturer', this.device.manufacturer);

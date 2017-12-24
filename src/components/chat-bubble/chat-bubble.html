@@ -1,48 +1,32 @@
-<div class="message" [ngClass]="message.UserID === userID ? 'message-mine' : 'message-other'" on-hold="showRead(message)">
-  <div class="message-header" *ngIf="LoginTypeID !== 1 && message.UserID !== userID">
+<div class="message" [ngClass]="message.UserID === userID ? 'message-mine' : 'message-other'">
+  <div class="message-header" *ngIf="LoginTypeID === global.LoginType.Group && message.UserID !== userID">
     <div class="message-user">{{message.From}}</div>
   </div>
-  <div class="message-body">
-    <div class="downloading" *ngIf="!message.downloaded" [hidden]="message.MessageType === 'Audio'">
-      <ion-spinner name="crescent"></ion-spinner>
+  <div class="message-body" (click)="openFile()">
+    <div class="download" *ngIf="message.downloaded === false" [ngClass]="{'message-other': LoginTypeID === global.LoginType.Group && message.UserID !== userID }">
+      <ion-icon name="md-download" *ngIf="!message.downloading"></ion-icon>
+      <ion-spinner name="crescent" *ngIf="message.downloading"></ion-spinner>
     </div>
     <ng-container [ngSwitch]="message.MessageType">
-      <div *ngSwitchCase="'Text'" class="text" [innerHTML]="message.Message"></div>
-      <div *ngSwitchCase="'Image'" class="picture" [ngClass]="{'done':message.downloaded}" (click)="openImage(message.URL)">
-        <img *ngIf="message.downloaded" [imageViewer]="message.nativeURL" [src]="message.nativeURL" width="160" height="160"
-        />
+      <div *ngSwitchCase="'Text'" class="text" [innerHTML]="getTextMessage()"></div>
+      <div *ngSwitchCase="'Image'" class="picture" [ngClass]="message.downloaded ? 'done' : 'image-center-small'">
+        <img *ngIf="message.downloaded" [id]="'message-image-'+message.key" [src]="message.nativeURL" width="160" height="160" />
+        <img *ngIf="message.downloaded === false" src="assets/img/camera.png" />
       </div>
-      <div *ngSwitchCase="'Audio'" class="audio" [ngClass]="{'done':message.downloaded}" (click)="openAudio(message)">
-        <audio-track #audio [track]="message.audioTrack" (onFinish)="onTrackFinished($event)">
-          <ion-item no-padding>
-            <audio-track-play dark [audioTrack]="audio"></audio-track-play>
-            <div item-content>
-              <ion-grid>
-                <ion-row>
-                  <ion-col col-3>
-                    <button class="control-button" clear icon-only ion-button (click)="togglePlay(audio)" [disabled]="audio.error || audio.isLoading">
-                      <ion-icon name="pause" *ngIf="audio.isPlaying && !audio.isLoading"></ion-icon>
-                      <ion-spinner name="bubbles" *ngIf="audio.isLoading"></ion-spinner>
-                      <ion-icon name="play" *ngIf="!audio.isPlaying && !audio.isLoading"></ion-icon>
-                    </button>
-                  </ion-col>
-                  <ion-col>
-                    <audio-track-progress-bar duration progress [audioTrack]="audio"></audio-track-progress-bar>
-                  </ion-col>
-                </ion-row>
-              </ion-grid>
-            </div>
-          </ion-item>
-        </audio-track>
+      <div *ngSwitchCase="'Audio'" class="audio image-center-small" [ngClass]="{'done':message.downloaded}">
+        <img src="assets/img/audio.png" />
+      </div>
+      <div *ngSwitchCase="'Video'" class="video image-center-small" [ngClass]="{'done':message.downloaded}" (click)="openVideo()">
+        <img src="assets/img/video.png" />
       </div>
     </ng-container>
   </div>
   <div class="message-footer">
     <div class="message-timestamp">{{ getTime(message.CreateAt)}}</div>
-    <div class="message-status" [ngClass]="'status-' + message.Status" [hidden]="message.UserID !== userID">
+    <div class="message-status" [ngClass]="'status-' + message.Status" [hidden]="isHidden()">
       <ng-container [ngSwitch]="message.Status">
         <ion-icon *ngSwitchCase="0" name="md-checkmark"></ion-icon>
-        <ion-icon *ngSwitchCase="1" [name]="message.LoginTypeID === 1 ? 'md-done-all' : 'md-checkmark'"></ion-icon>
+        <ion-icon *ngSwitchCase="1" [name]="[global.LoginType.Doctor, global.LoginType.Parent].indexOf(message.LoginTypeID) > -1 ? 'md-done-all' : 'md-checkmark'"></ion-icon>
         <ion-icon *ngSwitchCase="2" name="md-done-all"></ion-icon>
       </ng-container>
     </div>

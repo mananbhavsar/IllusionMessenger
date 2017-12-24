@@ -5,6 +5,9 @@ page-communication {
         background: gray;
         color: white;
         text-align: center;
+        ion-spinner{
+            font-size: 1em;
+        }
     }
     ion-list.communications-list {
         ion-label {

@@ -1,5 +1,5 @@
 <ion-header no-border>
-  <header title="Dashboard"></header>
+  <header [title]="'HomeScreen._Dashboard_' | translate"></header>
 </ion-header>
 <ion-content no-padding>
   <ion-refresher (ionRefresh)="initData($event)">
@@ -9,25 +9,25 @@
   <!-- Payment -->
   <ion-list>
     <ion-list-header class="list_header">
-      PAYMENT
+      {{'DashboardDetail._Payment_' | translate}}
     </ion-list-header>
     <ion-item>
       <ion-icon name='cash' item-left color="dashboardColor"></ion-icon>
-      OUTSTANDING AMOUNT
+      {{'DashboardDetail._OutstandingAmount_' | translate}}
       <ion-note item-right>
         &#8377; {{roundUp(dashboardData.OutstandingAmount)}}
       </ion-note>
     </ion-item>
     <ion-item>
       <ion-icon name='cash' item-left color="dashboardColor"></ion-icon>
-      UNBILLED AMOUNT
+      {{'DashboardDetail._UnbilledAmount_' | translate}}
       <ion-note item-right>
         &#8377; {{roundUp(dashboardData.UnbilledAmount)}}
       </ion-note>
     </ion-item>
     <ion-item>
       <ion-icon name='cash' item-left color="dashboardColor"></ion-icon>
-      LAST BILL AMOUNT
+      {{'DashboardDetail._LastBillAmount_' | translate}}
       <ion-note item-right>
         &#8377; {{roundUp(dashboardData.LastMonthBillAmount)}}
       </ion-note>
@@ -37,11 +37,11 @@
   <!-- Case -->
   <ion-list>
     <ion-list-header class="list_header">
-      CASE
+      {{'DashboardDetail._Case_' | translate}}
     </ion-list-header>
     <ion-item>
       <ion-icon name='document' item-left color="dashboardColor"></ion-icon>
-      IN PROCESS
+      {{'DashboardDetail._InProcess_' | translate}}
       <ion-note item-right>
         {{roundUp(dashboardData.InProgress)}}
       </ion-note>
@@ -55,14 +55,14 @@
     </ion-item> -->
     <ion-item>
       <ion-icon name='bus' item-left color="dashboardColor"></ion-icon>
-      COMPLETED
+      {{'DashboardDetail._Completed' | translate}}
       <ion-note item-right>
         {{roundUp(dashboardData.JobDelivered)}}
       </ion-note>
     </ion-item>
     <ion-item>
       <ion-icon name='document' item-left color="dashboardColor"></ion-icon>
-      ALL CASES
+      {{'DashboardDetail._AllCases_' | translate}}
       <ion-note item-right>
         {{roundUp(dashboardData.Allcases)}}
       </ion-note>
@@ -73,32 +73,32 @@
   <!-- QUERY -->
   <ion-list>
     <ion-list-header class="list_header">
-      QUERY
+      {{'DashboardDetail._Query' | translate}}
     </ion-list-header>
     <ion-item>
       <ion-icon name='md-help-circle' item-left color="dashboardColor"></ion-icon>
-      TODAY'S QUERIES
+      {{'DashboardDetail._TodaysQuery_' | translate}}
       <ion-note item-right>
         {{roundUp(dashboardData.TodayQueries)}}
       </ion-note>
     </ion-item>
     <ion-item>
       <ion-icon name='md-help-circle' item-left color="dashboardColor"></ion-icon>
-      PENDING QUERIES
+      {{'DashboardDetail._PendingQuery_' | translate}}
       <ion-note item-right>
         {{roundUp(dashboardData.PendingQueries)}}
       </ion-note>
     </ion-item>
     <ion-item>
       <ion-icon name='md-help-circle' item-left color="dashboardColor"></ion-icon>
-      RESOLVED QUERIES
+      {{'DashboardDetail._ResolvedQuery_' | translate}}
       <ion-note item-right>
         {{roundUp(dashboardData.ClosedQueries)}}
       </ion-note>
     </ion-item>
     <ion-item>
       <ion-icon name='md-help-circle' item-left color="dashboardColor"></ion-icon>
-      ALL QUERIES
+      {{'DashboardDetail._AllQuery_' | translate}}
       <ion-note item-right>
         {{roundUp(dashboardData.AllQueries)}}
       </ion-note>
@@ -110,32 +110,32 @@
   <!-- REDO -->
   <ion-list>
     <ion-list-header class="list_header">
-      REDO
+      {{'DashboardDetail._Redo' | translate}}
     </ion-list-header>
     <ion-item>
       <ion-icon name='ios-redo' item-left color="dashboardColor"></ion-icon>
-      IN LAST 12 MONTHS
+      {{'DashboardDetail._Last12Month_' | translate}}
       <ion-note item-right>
         {{roundUp(dashboardData.RedoP_12Months)}}%
       </ion-note>
     </ion-item>
     <ion-item>
       <ion-icon name='ios-redo' item-left color="dashboardColor"></ion-icon>
-      IN LAST 6 MONTHS
+      {{'DashboardDetail._Last6Month_' | translate}}
       <ion-note item-right>
         {{roundUp(dashboardData.RedoP_6Months)}}%
       </ion-note>
     </ion-item>
     <ion-item>
       <ion-icon name='ios-redo' item-left color="dashboardColor"></ion-icon>
-      IN LAST 3 MONTHS
+      {{'DashboardDetail._Last2Month_' | translate}}
       <ion-note item-right>
         {{roundUp(dashboardData.RedoP_3Months)}}%
       </ion-note>
     </ion-item>
     <ion-item>
       <ion-icon name='ios-redo' item-left color="dashboardColor"></ion-icon>
-      IN LAST 30 DAYS
+      {{'DashboardDetail._Last30Days_' | translate}}
       <ion-note item-right>
         {{roundUp(dashboardData.RedoP_30Days)}}%
       </ion-note>

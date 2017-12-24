@@ -19,11 +19,6 @@
     "cordova-plugin-badge": {
       "PACKAGE_NAME": "com.illusiondental.app"
     },
-    "cordova-plugin-camera": {
-      "CAMERA_USAGE_DESCRIPTION": "To upload images after clicking to chat response",
-      "PHOTOLIBRARY_USAGE_DESCRIPTION": " ",
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
     "cordova-plugin-compat": {
       "PACKAGE_NAME": "com.illusiondental.app"
     },
@@ -85,7 +80,29 @@
     "mx.ferreyra.callnumber": {
       "PACKAGE_NAME": "com.illusiondental.app"
     },
+    "com.hutchind.cordova.plugins.streamingmedia": {
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "nl.x-services.plugins.videocaptureplus": {
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "cordova-plugin-video-editor": {
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "cordova-plugin-uniquedeviceid": {
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "cordova-plugin-globalization": {
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "cordova-plugin-photo-library": {
+      "PHOTO_LIBRARY_USAGE_DESCRIPTION": "To save files in Library",
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
     "onesignal-cordova-plugin": {
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "cordova-plugin-camera": {
       "PACKAGE_NAME": "com.illusiondental.app"
     }
   },

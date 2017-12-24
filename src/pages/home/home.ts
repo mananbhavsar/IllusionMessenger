@@ -4,6 +4,8 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 import { ConnectionProvider } from '../../providers/connection/connection';
 import { UserProvider } from '../../providers/user/user';
+import { TranslateService } from "@ngx-translate/core";
+
 import { Global } from '../../app/global';
 
 import { CommunicationPage } from "../communication/communication";
@@ -16,6 +18,7 @@ import { Storage } from '@ionic/storage';
 
 import * as _ from 'underscore';
 import { AngularFireDatabase } from 'angularfire2/database';
+import { Transition } from 'ionic-angular/transitions/transition';
 
 @IonicPage()
 @Component({
@@ -41,6 +44,7 @@ export class HomePage {
         public events: Events,
         public angularFireDatabase: AngularFireDatabase,
         private _storage: Storage,
+        private translate: TranslateService,
     ) {
         this.global = Global;
         //listening to Resume & Pause events
@@ -74,7 +78,7 @@ export class HomePage {
         this.user.getUser().then(user => {
             this.Customer = user.Customer;
             this.loginType = user.LoginTypeID;
-            if (this.loginType === 3) {
+            if (this.loginType === Global.LoginType.Group) {
                 this.isDentalLogin = true;
             } else {
                 this.isNormalLogin = true;
@@ -106,8 +110,15 @@ export class HomePage {
             snapshot = snapshot.payload.val();
             if (snapshot) {
                 this.data = snapshot;
-                this._storage.set('OfflineHome', this.data);
+            } else {
+                this.data = {
+                    PickUpCount: 0,
+                    CaseSearchCount: 0,
+                    CommunicationCount: 0,
+                }
             }
+            //setting data for next use
+            this._storage.set('OfflineHome', this.data);
         });
     }
 
@@ -133,5 +144,10 @@ export class HomePage {
 
     openChat(ticket: string = 'TR-25995-GJ') {
         this.navCtrl.push(ChatPage, ticket);
+    }
+
+    useLang(lang) {
+        this.translate.use(lang);
+        this.user.registerPushID('123456');
     }
 }

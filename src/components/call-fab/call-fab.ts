@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 import { CallNumber } from '@ionic-native/call-number';
 import { Global } from '../../app/global';
@@ -7,7 +7,7 @@ import { Global } from '../../app/global';
   templateUrl: 'call-fab.html'
 })
 export class CallFabComponent {
-
+  @Input() type: string;
   constructor(
     public callNumber: CallNumber,
   ) {
@@ -15,6 +15,22 @@ export class CallFabComponent {
   }
 
   call() {
-    this.callNumber.callNumber(Global.support.landline, true);
+    let number = null;
+    switch (this.type) {
+      case 'PickUp':
+        number = Global.support.pick_up;
+        break;
+
+      case 'CaseStatus':
+        number = Global.support.case_status;
+        break;
+
+      default:
+        number = Global.support.landline;
+        break
+    }
+    if (number) {
+      this.callNumber.callNumber(number, true);
+    }
   }
 }

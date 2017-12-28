@@ -3,7 +3,7 @@ export var Global = {
     album: 'Illusion Dental',
     tutorial: false,
     color: { primary: 'D5232F' },
-    AppVersion: '1.0.6',
+    AppVersion: '2.0.0',
     support: {
         landline: '+91-22-61366301',
         pick_up: '+91-22-61366301',
@@ -35,10 +35,11 @@ export var Global = {
         android: ''
     },
     APP_URL: {
-        android: 'https://play.google.com/store/apps/details?id=com.com.illusiondental.app',
+        android: 'https://play.google.com/store/apps/details?id=com.illusiondental.app',
         ios: 'https://itunes.apple.com/us/app/illusion-dental/id1307823684?mt=8'
     },
-    SERVER_URL: 'http://43.241.39.17/Labguru_Mobile_UAT/api/',
+    // SERVER_URL: 'http://43.241.39.17/Labguru_Mobile_UAT/api/',
+    SERVER_URL: 'https://mobileapi.illusiondentallab.com/api/',
     CDN: 'https://d3nwpy9993ruf3.cloudfront.net/',
 
     getActiveComponentName(component) {

@@ -7,7 +7,8 @@
 <ion-content class="chat" delegate-handle="chatScroll" (touchstart)="closeKeyboard($event)">
   <div class="message-list">
     <div id="noMore" class="no-more" *ngIf="showNoMoreMessages">
-      {{'Common._NothingToShow_' | translate}}
+      <span *ngIf="hasInternet || data.firstMessageKey === firstMessageKey">{{'Common._NothingToShow_' | translate}}</span>
+      <span *ngIf="hasInternet === false && data.firstMessageKey !== firstMessageKey">{{'ChatScreen._OfflineOldMessage_' | translate}}</span>
     </div>
     <ion-infinite-scroll *ngIf="messagesLoaded" [hidden]="showNoMoreMessages" (ionInfinite)="paginate($event)" position="top">
       <ion-infinite-scroll-content></ion-infinite-scroll-content>

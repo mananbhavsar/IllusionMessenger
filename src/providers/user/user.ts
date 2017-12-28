@@ -11,7 +11,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { Global } from "../../app/global";
 
 import * as _ from 'underscore';
-import { FCM } from '@ionic-native/fcm';
 import { Badge } from '@ionic-native/badge';
 import { Network } from '@ionic-native/network';
 
@@ -39,7 +38,6 @@ export class UserProvider {
         public officeList: OfficeServiceProvider,
         private badge: Badge,
         private angularFireDatabase: AngularFireDatabase,
-        private fcm: FCM,
         private translate: TranslateService,
     ) {
         this.global = Global;
@@ -205,7 +203,7 @@ export class UserProvider {
             if (AppVersion && this.global.AppVersion !== AppVersion) {
                 let alert = this.alertCtrl.create({
                     title: 'Version Update Available',
-                    message: 'There is a version update please update your application',
+                    message: 'There is a version update, please update your application',
                     buttons: [
                         {
                             text: 'NO',

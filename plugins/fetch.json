@@ -159,26 +159,10 @@
     "is_top_level": true,
     "variables": {}
   },
-  "cordova-plugin-file-opener2": {
-    "source": {
-      "type": "registry",
-      "id": "cordova-plugin-file-opener2"
-    },
-    "is_top_level": true,
-    "variables": {}
-  },
   "mx.ferreyra.callnumber": {
     "source": {
       "type": "registry",
       "id": "call-number"
-    },
-    "is_top_level": true,
-    "variables": {}
-  },
-  "cordova-plugin-fcm": {
-    "source": {
-      "type": "registry",
-      "id": "https://github.com/arindamnayak/cordova-plugin-fcm.git"
     },
     "is_top_level": true,
     "variables": {}

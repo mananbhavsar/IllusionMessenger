@@ -41,12 +41,12 @@
             </ion-col>
             <ion-col ion-note>{{item.ImpressionNo}}</ion-col>
           </ion-row>
-          <ion-row>
+          <!-- <ion-row>
             <ion-col>
               TicketNo
             </ion-col>
             <ion-col ion-note>{{item.TicketNo}}</ion-col>
-          </ion-row>
+          </ion-row> -->
           <ion-row>
             <ion-col>
               {{'CommunicationPage._ReferenceEntryNo' | translate}}
@@ -58,12 +58,6 @@
               {{'CommunicationPage._Satus_' | translate}}
             </ion-col>
             <ion-col ion-note [ngClass]="getStatusColor(item.QueryStatus)">{{getStatusLabel(item.QueryStatus)}}</ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col>
-              {{'CommunicationPage._DateTime' | translate}}
-            </ion-col>
-            <ion-col ion-note>{{item.ResponseDateTimeInMili}}</ion-col>
           </ion-row>
         </ion-grid>
       </p>

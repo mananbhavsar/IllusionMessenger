@@ -26,8 +26,6 @@ import { File } from '@ionic-native/file';
 import { MediaCapture } from '@ionic-native/media-capture';
 import { Media } from '@ionic-native/media';
 import { Vibration } from '@ionic-native/vibration';
-import { FileOpener } from '@ionic-native/file-opener';
-import { FCM } from '@ionic-native/fcm';
 import { VideoCapturePlus } from '@ionic-native/video-capture-plus';
 import { StreamingMedia } from '@ionic-native/streaming-media';
 import { VideoEditor } from '@ionic-native/video-editor';
@@ -183,8 +181,6 @@ export function createTranslateLoader(http: HttpClient) {
         MediaCapture,
         Media,
         Vibration,
-        FileOpener,
-        FCM,
         VideoCapturePlus,
         StreamingMedia,
         VideoEditor,

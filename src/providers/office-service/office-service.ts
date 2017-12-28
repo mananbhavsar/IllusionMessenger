@@ -206,7 +206,7 @@ export class OfficeServiceProvider {
               reject('Failed to load. Try again');
             });
           }
-        }, 10000);
+        }, 5000);
         //subscribing to event
         this.events.subscribe('officeList:loaded', (status) => {
           //closing office list

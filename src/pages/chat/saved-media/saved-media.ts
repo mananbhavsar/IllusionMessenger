@@ -163,7 +163,7 @@ export class SavedMediaPage {
       successCallback: () => { console.log('Audio played') },
       errorCallback: (e) => { console.log('Error streaming') },
       shouldAutoClose: true,
-      bgImage: 'assets/img/audio-wave.png',
+      bgImage: 'https://s3-ap-southeast-1.amazonaws.com/eiosys/images/equilizer.gif',
     };
     this.streamingMedia.playAudio(file.nativeURL, options);
   }
@@ -259,7 +259,11 @@ export class SavedMediaPage {
             this._events.publish('toast:create', this.saved_translate);
           }).catch(error => {
             console.log(error);
-            this._events.publish('toast:error', this.failed_to_save_transalate);
+            if (error === 'Retrieved asset is nil') {
+              this._events.publish('toast:create', this.saved_translate);
+            } else {
+              this._events.publish('toast:error', this.failed_to_save_transalate);
+            }
           });
           break;
 
@@ -269,7 +273,11 @@ export class SavedMediaPage {
             this._events.publish('toast:create', this.saved_translate);
           }).catch(error => {
             console.log(error);
-            this._events.publish('toast:error', this.failed_to_save_transalate);
+            if (error === 'Retrieved asset is nil') {
+              this._events.publish('toast:create', this.saved_translate);
+            } else {
+              this._events.publish('toast:error', this.failed_to_save_transalate);
+            }
           });
           break;
       }

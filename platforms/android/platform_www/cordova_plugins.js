@@ -86,14 +86,6 @@ module.exports = [
     ]
   },
   {
-    "id": "cordova-plugin-fcm.FCMPlugin",
-    "file": "plugins/cordova-plugin-fcm/www/FCMPlugin.js",
-    "pluginId": "cordova-plugin-fcm",
-    "clobbers": [
-      "FCMPlugin"
-    ]
-  },
-  {
     "id": "cordova-plugin-file.DirectoryEntry",
     "file": "plugins/cordova-plugin-file/www/DirectoryEntry.js",
     "pluginId": "cordova-plugin-file",
@@ -265,14 +257,6 @@ module.exports = [
       "cordova"
     ],
     "runs": true
-  },
-  {
-    "id": "cordova-plugin-file-opener2.FileOpener2",
-    "file": "plugins/cordova-plugin-file-opener2/www/plugins.FileOpener2.js",
-    "pluginId": "cordova-plugin-file-opener2",
-    "clobbers": [
-      "cordova.plugins.fileOpener2"
-    ]
   },
   {
     "id": "cordova-plugin-file-transfer.FileTransferError",
@@ -523,6 +507,14 @@ module.exports = [
     "clobbers": [
       "OneSignal"
     ]
+  },
+  {
+    "id": "nl.x-services.plugins.videocaptureplus.VideoCapturePlus",
+    "file": "plugins/nl.x-services.plugins.videocaptureplus/www/VideoCapturePlus.js",
+    "pluginId": "nl.x-services.plugins.videocaptureplus",
+    "clobbers": [
+      "window.plugins.videocaptureplus"
+    ]
   }
 ];
 module.exports.metadata = 
@@ -536,9 +528,7 @@ module.exports.metadata =
   "cordova-plugin-badge": "0.8.5",
   "cordova-plugin-camera": "3.0.0",
   "cordova-plugin-device": "1.1.6",
-  "cordova-plugin-fcm": "2.1.2",
   "cordova-plugin-file": "4.3.3",
-  "cordova-plugin-file-opener2": "2.0.19",
   "cordova-plugin-file-transfer": "1.6.3",
   "cordova-plugin-globalization": "1.0.8",
   "cordova-plugin-inappbrowser": "1.7.1",
@@ -557,7 +547,8 @@ module.exports.metadata =
   "cordova.plugins.diagnostic": "3.7.1",
   "ionic-plugin-keyboard": "2.2.1",
   "mx.ferreyra.callnumber": "0.0.2",
-  "onesignal-cordova-plugin": "2.2.4"
+  "onesignal-cordova-plugin": "2.2.4",
+  "nl.x-services.plugins.videocaptureplus": "1.0.0"
 };
 // BOTTOM OF METADATA
 });

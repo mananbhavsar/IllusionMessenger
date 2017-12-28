@@ -114,12 +114,14 @@ export class CaseStatusPage {
           this.initOffline();
         }
 
-
         this.initData().then(response => { }).catch(error => {
           console.log(error);
         });
       }).catch((error) => {
-        this.events.publish('toast:error', error);
+        console.log(error);
+        if (error !== null) {
+          this.events.publish('toast:error', error);
+        }
         this.navCtrl.popToRoot();
       })
     }

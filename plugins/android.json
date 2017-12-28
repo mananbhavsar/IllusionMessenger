@@ -31,13 +31,7 @@
     "cordova-plugin-device": {
       "PACKAGE_NAME": "com.illusiondental.app"
     },
-    "cordova-plugin-fcm": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
     "cordova-plugin-file": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-plugin-file-opener2": {
       "PACKAGE_NAME": "com.illusiondental.app"
     },
     "cordova-plugin-file-transfer": {
@@ -95,6 +89,9 @@
       "PACKAGE_NAME": "com.illusiondental.app"
     },
     "onesignal-cordova-plugin": {
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "nl.x-services.plugins.videocaptureplus": {
       "PACKAGE_NAME": "com.illusiondental.app"
     }
   },

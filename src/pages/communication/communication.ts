@@ -113,7 +113,9 @@ export class CommunicationPage {
         this.listenToFirebaseQueryEvent();
       }).catch((error) => {
         console.log(error);
-        this.events.publish('toast:error', error);
+        if (error !== null) {
+          this.events.publish('toast:error', error);
+        }
         this.navCtrl.popToRoot();
       });
     } else {

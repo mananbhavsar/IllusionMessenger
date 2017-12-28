@@ -184,7 +184,6 @@ export class ChatPage {
       this.scrollBottom('keyboard show').catch(error => { });
     });
     this.keyboard.onKeyboardHide().subscribe((data) => {
-      console.log('keyboard closes: ', data);
       this.contentResize();
       if (this.sendClickKeepKeyboardOpened === false) {
         this.closeKeyboard(null);
@@ -268,6 +267,9 @@ export class ChatPage {
       if (message) {
         this.firstMessageKey = Object.keys(message)[0];
         this.checkForNoMoreMessages();
+        //saving first message key
+        this.data.firstMessageKey = this.firstMessageKey;
+        this.setOfflineTicketList(this.data);
       }
     });
   }
@@ -301,6 +303,9 @@ export class ChatPage {
           if (this.firstMessageKey === null) {
             this.firstMessageKey = snapshot.key;
             this.checkForNoMoreMessages();
+            //saving first message key
+            this.data.firstMessageKey = this.firstMessageKey;
+            this.setOfflineTicketList(this.data);
           }
 
           setTimeout(() => {
@@ -1092,6 +1097,7 @@ export class ChatPage {
               resolve(JSON.parse(data.response));
             }
           }, (err) => {
+            console.log(err);
             this.progressPercent = 0;
             reject(err);
           });
@@ -1120,10 +1126,12 @@ export class ChatPage {
       fileName: fileName,
       mimeType: mime.lookup(fileExtension),
       chunkedMode: false,
-      headers: new Headers({
-        'Content-Type': 'application/json',
-        Connection: "close"
-      }),
+      // headers: new Headers({
+      //   // 'Content-Type': 'application/json',
+      //   // Connection: "close",
+      //   FileName: fileName,
+      //   FileExtension: fileExtension,
+      // }),
       params: {
         TicketNo: this.ticket,
         CustomerID: this.user.CustomerID,
@@ -1141,6 +1149,9 @@ export class ChatPage {
 
 
   sendPushNotification(message, users: Array<object>) {
+    if (_.isEmpty(message.Translation)) {
+      message.Translation = { en: message.Message };
+    }
     users.forEach((user: any) => {
       let notificationObj: any = {
         include_player_ids: [
@@ -1151,11 +1162,10 @@ export class ChatPage {
           page: 'ChatPage',
           params: this.ticket
         },
-        headings: {
-          en: Global.APP_NAME
-        },
+        headings: user.Title,
         priority: 10,
         contents: message.Translation,
+	android_accent_color: 'FF' + Global.color.primary,
         ios_badgeType: 'SetTo',
         ios_badgeCount: user.Badge,
       };
@@ -1163,14 +1173,17 @@ export class ChatPage {
       //checking if Image then adding image notification
       if (message.MessageType === 'Image') {
         notificationObj.contents.en = '📷 Image';
+        notificationObj.contents.fr = '📷 Image';
         notificationObj['ios_attachments'] = {
           'attachment-1': message.URL,
         };
         notificationObj['big_picture'] = message.URL;
       } else if (message.MessageType === 'Video') {
         notificationObj.contents.en = '📹 Video Message';
+        notificationObj.contents.fr = '📹 Video Message';
       } else if (message.MessageType === 'Audio') {
         notificationObj.contents.en = '🎤 Voice Message';
+        notificationObj.contents.fr = '🎤 Voice Message';
       }
       this._oneSignal.postNotification(notificationObj).then(response => {
         console.log(response);
@@ -1263,7 +1276,6 @@ export class ChatPage {
   }
 
   checkForNoMoreMessages() {
-    console.log(this.messages, this.firstMessageKey);
     if (this.messages && this.firstMessageKey && this.firstMessageKey === this.messages[0].key) {
       setTimeout(() => {
         this.showNoMoreMessages = true;

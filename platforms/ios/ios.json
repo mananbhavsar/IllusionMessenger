@@ -25,15 +25,7 @@
               "count": 1
             },
             {
-              "xml": "<feature name=\"FCMPlugin\"><param name=\"ios-package\" value=\"FCMPlugin\" /></feature>",
-              "count": 1
-            },
-            {
               "xml": "<feature name=\"File\"><param name=\"ios-package\" value=\"CDVFile\" /><param name=\"onload\" value=\"true\" /></feature>",
-              "count": 1
-            },
-            {
-              "xml": "<feature name=\"FileOpener2\"><param name=\"ios-package\" value=\"FileOpener2\" /></feature>",
               "count": 1
             },
             {
@@ -237,22 +229,12 @@
       },
       "*/Entitlements-Debug.plist": {
         "parents": {
-          "aps-environment": [
-            {
-              "xml": "<string>development</string>",
-              "count": 1
-            }
-          ]
+          "aps-environment": []
         }
       },
       "*/Entitlements-Release.plist": {
         "parents": {
-          "aps-environment": [
-            {
-              "xml": "<string>production</string>",
-              "count": 1
-            }
-          ]
+          "aps-environment": []
         }
       },
       "*-Debug.plist": {
@@ -296,13 +278,7 @@
     "cordova-plugin-device": {
       "PACKAGE_NAME": "com.illusiondental.app"
     },
-    "cordova-plugin-fcm": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
     "cordova-plugin-file": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-plugin-file-opener2": {
       "PACKAGE_NAME": "com.illusiondental.app"
     },
     "cordova-plugin-file-transfer": {
@@ -414,14 +390,6 @@
       "pluginId": "cordova-plugin-device",
       "clobbers": [
         "device"
-      ]
-    },
-    {
-      "id": "cordova-plugin-fcm.FCMPlugin",
-      "file": "plugins/cordova-plugin-fcm/www/FCMPlugin.js",
-      "pluginId": "cordova-plugin-fcm",
-      "clobbers": [
-        "FCMPlugin"
       ]
     },
     {
@@ -596,14 +564,6 @@
         "cordova"
       ],
       "runs": true
-    },
-    {
-      "id": "cordova-plugin-file-opener2.FileOpener2",
-      "file": "plugins/cordova-plugin-file-opener2/www/plugins.FileOpener2.js",
-      "pluginId": "cordova-plugin-file-opener2",
-      "clobbers": [
-        "cordova.plugins.fileOpener2"
-      ]
     },
     {
       "id": "cordova-plugin-file-transfer.FileTransferError",
@@ -913,9 +873,7 @@
     "cordova-plugin-badge": "0.8.5",
     "cordova-plugin-compat": "1.2.0",
     "cordova-plugin-device": "1.1.6",
-    "cordova-plugin-fcm": "2.1.2",
     "cordova-plugin-file": "4.3.3",
-    "cordova-plugin-file-opener2": "2.0.19",
     "cordova-plugin-file-transfer": "1.6.3",
     "cordova-plugin-inappbrowser": "1.7.1",
     "cordova-plugin-ionic-webview": "1.1.16",

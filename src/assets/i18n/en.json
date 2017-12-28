@@ -71,6 +71,7 @@
         "_Status_": "Status",
         "_ProgressDetail_": "Progress Detail",
         "_ImpressionDate_": "ImpressionDate",
+        "_ClickToCommunicate_": "Click to Communicate",
         "Dispatch": {
             "_Patient": "Patient",
             "_DispatchDate": "Dispatch Date",
@@ -118,7 +119,8 @@
         "_UnreadBy": "Unread By",
         "_NotAvailableOffline_": "Not available in Offline",
         "_Typing_": "{{name}} typing",
-        "_OfflineMessageSend_": "Please connect to the internet to send messages"
+        "_OfflineMessageSend_": "Please connect to the internet to send messages",
+        "_OfflineOldMessage_": "Connect to internet to load old messages"
     },
     "OfficeList": {
         "_SelectOffice_": "Select Office",

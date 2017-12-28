@@ -9,7 +9,6 @@ import { Diagnostic } from '@ionic-native/diagnostic';
 import { LocationAccuracy } from '@ionic-native/location-accuracy';
 import { Keyboard } from '@ionic-native/keyboard';
 import { Badge } from '@ionic-native/badge';
-import { FCM } from '@ionic-native/fcm';
 import { Globalization } from '@ionic-native/globalization';
 import { OneSignal } from '@ionic-native/onesignal';
 
@@ -73,7 +72,7 @@ export class MyApp {
     // the left menu only works after login
     // the login page disables the left menu
     appPages: PageInterface[] = [
-        { title: 'About', translate_key: 'Common._About', name: 'AboutPage', component: AboutPage, icon: 'information-circle' },
+        // { title: 'About', translate_key: 'Common._About', name: 'AboutPage', component: AboutPage, icon: 'information-circle' },
         { title: 'Help', translate_key: 'Common._Help_', name: 'HelpPage', component: HelpPage, icon: 'help-circle' },
     ];
     loggedInPages: PageInterface[] = [
@@ -84,7 +83,7 @@ export class MyApp {
         { title: 'Communication', translate_key: 'HomeScreen._Communication_', name: 'CommunicationPage', component: CommunicationPage, icon: '' },
     ];
     accountPages: PageInterface[] = [
-        { title: 'Account', translate_key:'Common._Account_',name: 'AccountPage', component: AccountPage, icon: 'user' },
+        // { title: 'Account', translate_key:'Common._Account_',name: 'AccountPage', component: AccountPage, icon: 'user' },
         { title: 'Logout', translate_key: 'Common._LogOut_', name: 'LogoutPage', component: LogoutPage, icon: 'log-out', logsOut: true }
     ];
     loggedOutPages: PageInterface[] = [
@@ -117,7 +116,6 @@ export class MyApp {
         private _keyboard: Keyboard,
         private _badge: Badge,
         private angularFireDatabase: AngularFireDatabase,
-        private _fcm: FCM,
         private _oneSignal: OneSignal,
         private translate: TranslateService,
         private globalization: Globalization,
@@ -359,7 +357,7 @@ export class MyApp {
 
         //init FCM
         if (Global.Push.FCM) {
-            this.initFCM();
+            
         }
         //init OneSignal
         if (Global.Push.OneSignal) {
@@ -552,59 +550,6 @@ export class MyApp {
         });
 
         this._oneSignal.endInit();
-    }
-
-    initFCM() {
-        if (!this.platform.is('cordova')) {
-            return;
-        }
-        this.platform.ready().then(() => {
-            this._fcm.onNotification().subscribe(notification => {
-                if (!('wasTapped' in notification)) {
-                    notification.wasTapped = false;
-                }
-                console.log(notification);
-                console.log((notification.wasTapped === false && notification.onlyData === 'false'), (notification.wasTapped === true && notification.onlyData === 'true'));
-                /*
-                 * showing message
-                 * 1. iOS => 
-                 * 1. wasTapped=true & onlyData=true => when message was clicked from notification
-                 * 2. wasTapped=false & onlyData=false => when app was opened
-                 */
-                let canShowNotification = false;
-
-                if (this.platform.is('ios')) {
-                    canShowNotification = true;
-                } else if (this.platform.is('android')) {
-                    canShowNotification = notification.wasTapped || (notification.wasTapped === false && notification.onlyData === 'false');;
-                }
-                if (canShowNotification) {
-                    let payload = {
-                        payload: {
-                            title: notification.title || notification.title,
-                            body: notification.text || notification.text,
-                            additionalData: {}
-                        },
-                    };
-                    //adding additional data if any
-                    if ('page' in notification) {
-                        payload.payload.additionalData['page'] = notification.page;
-                    }
-                    if ('params' in notification) {
-                        payload.payload.additionalData['params'] = notification.params;
-                    }
-                    this.processNotification(payload, notification.wasTapped);
-                }
-            });
-            this._fcm.getToken().then(token => {
-                this.user.registerPushID(token);
-            }).catch(error => {
-
-            });
-            this._fcm.onTokenRefresh().subscribe(token => {
-                this.user.registerPushID(token);
-            });
-        });
     }
 
     initBadge() {

@@ -1,8 +1,8 @@
 <ion-header no-border>
     <header [title]="title" [buttons]="[{icon:'search'}]" (buttonClicked)="headerButtonClicked($event)"></header>
     <div [hidden]="selectedOffice === {}" class="office">{{selectedOffice.CustomerName}}</div>
-    <ion-searchbar [placeholder]="'Common._Search_' | translate" [hidden]="showSearchBar" [(ngModel)]="searchText" (ionInput)="getItems(searchText)" showCancelButton="true"
-        (ionCancel)="onCancel()">
+    <ion-searchbar [placeholder]="'Common._Search_' | translate" [hidden]="showSearchBar" [(ngModel)]="searchText" (ionInput)="getItems(searchText)"
+        showCancelButton="true" (ionCancel)="onCancel()">
     </ion-searchbar>
     <ion-segment padding mode="ios" [(ngModel)]="selectedTab" color="casestatus" (ionChange)="segmentChanged($event)">
         <ion-segment-button value="In Process">
@@ -26,7 +26,8 @@
             (click)="openCase(item, i)" text-wrap>
             <h2>
                 {{item.Patient}}
-                <ion-badge *ngIf="item.IsNew === 1 && item.Status === 'Job Dispatched' && [global.LoginType.Doctor, global.LoginType.Parent].indexOf(loginType) > -1" color="primary">
+                <ion-badge *ngIf="item.IsNew === 1 && item.Status === 'Job Dispatched' && [global.LoginType.Doctor, global.LoginType.Parent].indexOf(loginType) > -1"
+                    color="primary">
                     {{'CaseStatus._NEW_' | translate}}
                 </ion-badge>
             </h2>
@@ -63,15 +64,17 @@
                         </ion-col>
                         <ion-col ion-note [ngClass]="getStatusColor(item.Status)">{{item.ProgressDetail}}</ion-col>
                     </ion-row>
-                    <ion-row>
-                        <ion-col>
-                            {{'CaseStatus._ImpressionDate_' | translate}}
+                    <ion-row *ngIf="global && [global.LoginType.Doctor, global.LoginType.Parent].indexOf(loginType) > -1">
+                        <ion-col>&nbsp;</ion-col>
+                        <ion-col text-right>
+                            <button ion-button color="dashboard" icon-left small (click)="openChat(item, i, $event)">
+                                <ion-icon name="ios-chatbubbles"></ion-icon>
+                                {{'CaseStatus._ClickToCommunicate_' | translate}}
+                            </button>
                         </ion-col>
-                        <ion-col ion-note>{{item.ImpressionDateInMili}}</ion-col>
                     </ion-row>
                 </ion-grid>
             </p>
-            <ion-icon *ngIf="global && [global.LoginType.Doctor, global.LoginType.Parent].indexOf(loginType) > -1" name="ios-chatbubbles" item-end (click)="openChat(item, i, $event)"></ion-icon>
             <ion-icon [hidden]="item.Status !== 'Job Dispatched'" name="ios-arrow-forward" item-end></ion-icon>
 
         </ion-item>

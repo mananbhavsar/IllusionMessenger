@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.illusiondental.app" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.illusiondental.app" version="2.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <feature name="StreamingMedia">
         <param name="android-package" value="com.hutchind.cordova.plugins.streamingmedia.StreamingMedia" />
     </feature>
@@ -21,18 +21,11 @@
     <feature name="Device">
         <param name="android-package" value="org.apache.cordova.device.Device" />
     </feature>
-    <feature name="FCMPlugin">
-        <param name="android-package" value="com.gae.scaffolder.plugin.FCMPlugin" />
-        <param name="onload" value="true" />
-    </feature>
     <feature name="File">
         <param name="android-package" value="org.apache.cordova.file.FileUtils" />
         <param name="onload" value="true" />
     </feature>
     <allow-navigation href="cdvfile:*" />
-    <feature name="FileOpener2">
-        <param name="android-package" value="io.github.pwlin.cordova.plugins.fileopener2.FileOpener2" />
-    </feature>
     <feature name="FileTransfer">
         <param name="android-package" value="org.apache.cordova.filetransfer.FileTransfer" />
     </feature>
@@ -87,6 +80,9 @@
     <feature name="OneSignalPush">
         <param name="android-package" value="com.plugin.gcm.OneSignalPush" />
     </feature>
+    <feature name="VideoCapturePlus">
+        <param name="android-package" value="nl.xservices.plugins.videocaptureplus.VideoCapturePlus" />
+    </feature>
     <feature name="VideoEditor">
         <param name="android-package" value="org.apache.cordova.videoeditor.VideoEditor" />
     </feature>
@@ -115,6 +111,8 @@
     <allow-navigation href="http://192.168.5.71:8100" />
     <allow-navigation href="http://192.168.5.69:8100" />
     <allow-navigation href="http://192.168.0.7:8100" />
+    <allow-navigation href="http://192.168.5.67:8100" />
+    <allow-navigation href="http://192.168.5.73:8100" />
     <allow-intent href="market:*" />
     <icon density="ldpi" src="resources/android/icon/drawable-ldpi-icon.png" />
     <icon density="mdpi" src="resources/android/icon/drawable-mdpi-icon.png" />

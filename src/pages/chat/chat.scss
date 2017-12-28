@@ -46,7 +46,8 @@ page-chat {
             background: rgba(225, 245, 254, 0.92);
             margin: 0 auto 10px;
             display: block;
-            width: 150px;
+            width: fit-content;
+            max-width: 50%;
             padding: 5px;
             border-radius: 5px;
             font-size: 10px;

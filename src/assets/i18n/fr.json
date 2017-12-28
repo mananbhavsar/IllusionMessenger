@@ -72,6 +72,7 @@
         "_Status_": "Statut",
         "_ProgressDetail_": "Détail des progrès",
         "_ImpressionDate_": "Date d'impression",
+        "_ClickToCommunicate_": "Cliquez pour communiquer",
         "Dispatch": {
             "_Patient": "Patient",
             "_DispatchDate": "Date d'envoi",
@@ -119,8 +120,9 @@
         "_ReadBy_": "Lire par",
         "_UnreadBy": "non lu par",
         "_NotAvailableOffline_": "Non disponible en mode hors connexion",
-        "_Typing_":"{{name}} dactylographie",
-        "_OfflineMessageSend_": "Veuillez connecter à internet pour envoyer des message"
+        "_Typing_": "{{name}} dactylographie",
+        "_OfflineMessageSend_": "Veuillez connecter à internet pour envoyer des message",
+        "_OfflineOldMessage_": "Connectez-vous à Internet pour charger les anciens messages"
     },
     "OfficeList": {
         "_SelectOffice_": "Sélectionnez un bureau",

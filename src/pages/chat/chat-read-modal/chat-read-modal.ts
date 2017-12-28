@@ -46,11 +46,15 @@ export class ChatReadModalPage {
     if (this.message.Read) {
       for (let userId in this.message.Read) {
         //not adding for self
-        if(userId !== this.message.UserID && userId !== this.userID){//sent by or me
-          this.reads.push({
-            name: this.chatUsers[userId].Name,
-            time: this.message.Read[userId],
-          });
+        console.log(this.chatUsers);
+        if (userId !== this.message.UserID && userId !== this.userID) {//sent by or me
+          //escaping if no name present
+          if (userId in this.chatUsers) {
+            this.reads.push({
+              name: this.chatUsers[userId].Name,
+              time: this.message.Read[userId],
+            });
+          }
         }
       }
     }
@@ -94,7 +98,7 @@ export class ChatReadModalPage {
 
   inRead(userId) {
     //checking if its logged in user
-    if(userId === this.message.UserID){
+    if (userId === this.message.UserID) {
       return true;
     }
     return (userId in this.message.Read);

@@ -6,7 +6,6 @@ import * as _ from 'underscore';
 import * as mime from 'mime-types';
 import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer';
 import { File } from '@ionic-native/file';
-import { FileOpener } from '@ionic-native/file-opener';
 import { StreamingMedia, StreamingVideoOptions } from '@ionic-native/streaming-media';
 import { Network } from '@ionic-native/network';
 
@@ -54,7 +53,6 @@ export class ChatBubbleComponent {
     private transfer: FileTransfer,
     private platform: Platform,
     private events: Events,
-    private fileOpener: FileOpener,
     private _audioProvider: AudioProvider,
     private navCtlr: NavController,
     private streamingMedia: StreamingMedia,
@@ -214,7 +212,7 @@ export class ChatBubbleComponent {
       successCallback: () => { console.log('Audio played') },
       errorCallback: (e) => { console.log('Error streaming') },
       shouldAutoClose: true,
-      bgImage: 'https://static.wixstatic.com/media/8f701c_6ac02356f4b2498ea521408e3469bffd~mv2.gif',
+      bgImage: 'https://s3-ap-southeast-1.amazonaws.com/eiosys/images/equilizer.gif',
     };
     this.streamingMedia.playAudio(this.message.nativeURL, options);
   }
@@ -251,14 +249,6 @@ export class ChatBubbleComponent {
           reject(error);
         })
       });
-    });
-  }
-
-  openFileInApp(file) {
-    //opening
-    this.fileOpener.open(this.getNativeURL(file), mime.lookup(file)).then(status => {
-    }).catch(error => {
-      this.events.publish('toast:error', error);
     });
   }
 

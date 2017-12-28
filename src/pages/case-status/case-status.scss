@@ -71,13 +71,12 @@ page-case-status {
                                 color: color($colors, secondary);
                             }
                         }
+                        button{
+                            font-size: 0.9em;
+                        }
                     }
                 }
             }
-        }
-        ion-icon {
-            color: #999;
-            margin-right: 4px;
         }
     }
 }

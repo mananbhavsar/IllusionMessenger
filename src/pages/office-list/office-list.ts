@@ -20,6 +20,7 @@ export class OfficeListPage {
   modelFlagName: String = "";
 
   path: string = '';
+  backDeregisterFunction: any = null;
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -32,6 +33,9 @@ export class OfficeListPage {
   }
 
   ionViewDidEnter() {
+    this.backDeregisterFunction = this.platform.registerBackButtonAction(() => {
+      this.dismiss(null);
+    });
     this.storage.get('User').then(User => {
       if (User) {
         this.path = 'OfficeList/' + User.id;
@@ -62,4 +66,12 @@ export class OfficeListPage {
   selectOffice(office) {
     this.dismiss(this.officeList[office]);
   }
+
+  ionViewWillLeave() {
+    if (this.backDeregisterFunction) {
+      this.backDeregisterFunction();
+    }
+    this.backDeregisterFunction = null;
+  }
+
 }

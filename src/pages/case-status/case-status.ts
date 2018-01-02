@@ -49,6 +49,7 @@ export class CaseStatusPage {
 
   hasInternet: boolean = true;
   case_status: string = 'Case Status';
+  not_availble_in_offline_translate: string = 'Not available in Offline';
   constructor(
     public navCtrl: NavController,
     public offliceList: OfficeServiceProvider,
@@ -99,6 +100,10 @@ export class CaseStatusPage {
     //Job Dispatched
     this.translate.get('CaseStatus._Dispatched').subscribe(translated => {
       this.status['Job Dispatched'].label = translated;
+    });
+    //Not Available in Offline
+    this.translate.get('ChatScreen._NotAvailableOffline_').subscribe(translated => {
+      this.not_availble_in_offline_translate = translated;
     });
   }
 
@@ -151,7 +156,7 @@ export class CaseStatusPage {
             }
             this.saveOfflineData();
 
-            this.page++;
+            this.page = -1;//make it ++ in paging
             //now doing firebase transaction
             this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => {
               resolve(data.length);
@@ -371,46 +376,49 @@ export class CaseStatusPage {
     if (item.TicketNo && item.TicketNo !== '') {
       this.navCtrl.push(ChatPage, item.TicketNo);
     } else {
+      //checking if offline
+      if (this.hasInternet) {
+        let alert = this.alertCtrl.create({
+          title: 'Alert',
+          message: item.PopupMessage,
+          buttons: [
+            {
+              text: 'Cancel',
+              role: 'cancel',
+              handler: () => {
 
-      let alert = this.alertCtrl.create({
-        title: 'Alert',
-        message: item.PopupMessage,
-        buttons: [
-          {
-            text: 'Cancel',
-            role: 'cancel',
-            handler: () => {
+              }
+            },
+            {
+              text: 'Ok',
+              handler: () => {
 
-            }
-          },
-          {
-            text: 'Ok',
-            handler: () => {
+                this.connection.doPost('Communication/InitiateChat', {
+                  ImpNo: item.ImpressionNo
+                }, true).then((response: any) => {
+                  let data = response.Data[0];
+                  item.TicketNo = data.TicketNo;
+                  this.items[index].TicketNo = data.TicketNo;
 
-              this.connection.doPost('Communication/InitiateChat', {
-                ImpNo: item.ImpressionNo
-              }, true).then((response: any) => {
-                let data = response.Data[0];
-                item.TicketNo = data.TicketNo;
-                this.items[index].TicketNo = data.TicketNo;
-
-                this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => {
-                  this.navCtrl.push(ChatPage, data.TicketNo);
+                  this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => {
+                    this.navCtrl.push(ChatPage, data.TicketNo);
+                  }).catch(error => {
+                    console.log(error);
+                    if (error === 'Empty') {
+                      this.navCtrl.push(ChatPage, data.TicketNo);
+                    }
+                  });
                 }).catch(error => {
                   console.log(error);
-                  if (error === 'Empty') {
-                    this.navCtrl.push(ChatPage, data.TicketNo);
-                  }
                 });
-              }).catch(error => {
-                console.log(error);
-              });
+              }
             }
-          }
-        ]
-      });
-      alert.present();
-
+          ]
+        });
+        alert.present();
+      } else {
+        this.events.publish('toast:error', this.not_availble_in_offline_translate);
+      }
     }
   }
 }

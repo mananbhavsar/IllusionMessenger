@@ -4,9 +4,7 @@ import { Nav, MenuController, Platform, Events, LoadingController, ModalControll
 import { Network } from '@ionic-native/network';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
-import { Geolocation } from '@ionic-native/geolocation';
 import { Diagnostic } from '@ionic-native/diagnostic';
-import { LocationAccuracy } from '@ionic-native/location-accuracy';
 import { Keyboard } from '@ionic-native/keyboard';
 import { Badge } from '@ionic-native/badge';
 import { Globalization } from '@ionic-native/globalization';
@@ -67,7 +65,6 @@ export class MyApp {
     lastOfflineMessageShown: number = 0;
     latitude: number = 0.0;
     longitude: number = 0.0;
-    locationSubscription: any;
     // List of pages that can be navigated to from the left menu
     // the left menu only works after login
     // the login page disables the left menu
@@ -95,8 +92,12 @@ export class MyApp {
     error_translate: string = 'Error occurred! Try again';
     offline_translate: string = 'You seems to be offline';
     online_translate: string = 'Hola, you are online now';
-    location_permission_denied_translate: string = 'Location permission cancelled';
     welcome_translate: string = 'Welcome';
+    ok_translate: string = 'Ok';
+    loading_translate: string = 'loading';
+    cancel_translate: string = 'Cancel';
+    alert_translate: string = 'Alert';
+    logout_message_translate: string = 'Are you sure, you want to logout?';
     constructor(
         public events: Events,
         public menu: MenuController,
@@ -111,8 +112,6 @@ export class MyApp {
         private toast: ToastController,
         private _network: Network,
         private _diagnostic: Diagnostic,
-        private _locationAccuracy: LocationAccuracy,
-        private _geolocation: Geolocation,
         private _keyboard: Keyboard,
         private _badge: Badge,
         private angularFireDatabase: AngularFireDatabase,
@@ -164,8 +163,26 @@ export class MyApp {
         if (this.nav.getActiveChildNavs().length && page.index != undefined) {
             this.nav.getActiveChildNavs()[0].select(page.index);
         } else {
-            // Set the root of the nav with params if it's a tab index
-            this.nav.push(page.name, params)
+            //checking if logging out and need to ask for confirmation
+            if (page.name === 'LogoutPage') {
+                let logoutConfirmation = this.alertCtrl.create({
+                    title: this.alert_translate,
+                    message: this.logout_message_translate,
+                    buttons: [{
+                        text: this.cancel_translate,
+                        role: 'cancel'
+                    }, {
+                        text: this.ok_translate,
+                        handler: () => {
+                            this.nav.push(page.name, params);
+                        }
+                    }]
+                });
+                logoutConfirmation.present();
+            } else {
+                // Set the root of the nav with params if it's a tab index
+                this.nav.push(page.name, params);
+            }
         }
 
         if (page.logsOut === true) {
@@ -224,13 +241,30 @@ export class MyApp {
         this.translate.get('Common._Online_').subscribe(translated => {
             this.online_translate = translated;
         });
-        //location permission denied
-        this.translate.get('Common.').subscribe(translated => {
-            this.location_permission_denied_translate = translated;
-        });
         //welcome
         this.translate.get('Common._Welcome_').subscribe(translated => {
             this.welcome_translate = translated;
+        });
+        //ok
+        this.translate.get('Common._OK_').subscribe(translated => {
+            this.ok_translate = translated;
+        });
+        //cancel
+        this.translate.get('Common._Cancel_').subscribe(translated => {
+            this.cancel_translate = translated;
+        });
+        //alert
+        this.translate.get('Common._Alert_').subscribe(translated => {
+            this.alert_translate = translated;
+        });
+        //logout message
+        this.translate.get('Logout._LogoutMessage_').subscribe(translated => {
+            this.logout_message_translate = translated;
+        });
+
+        //loading
+        this.translate.get('Common._Loading_').subscribe(translated => {
+            this.loading_translate = translated;
         });
     }
 
@@ -238,7 +272,7 @@ export class MyApp {
         this.doTranslate();
 
         this.events.subscribe('loading:create', (content) => {
-            content = content || 'Please wait';
+            content = content || this.loading_translate;
             this.loading = this.loadingCtrl.create({
                 content: content + '...'
             });
@@ -254,15 +288,16 @@ export class MyApp {
 
 
         this.events.subscribe('alert:basic', (title, subTitle, buttons) => {
-            this.translate.get('Common._OK_').subscribe(translated => {
-                buttons = buttons || [translated]; //OK
-                let alert = this.alertCtrl.create({
-                    title: title,
-                    subTitle: subTitle,
-                    buttons: buttons
-                });
-                alert.present();
+            if (title.trim() === '' || subTitle.trim() === '') {
+                return;
+            }
+            buttons = buttons || [this.ok_translate]; //OK
+            let alert = this.alertCtrl.create({
+                title: title,
+                subTitle: subTitle,
+                buttons: buttons
             });
+            alert.present();
         });
 
 
@@ -352,12 +387,10 @@ export class MyApp {
     }
 
     initPostLoginPlugins() {
-        //Location
-        //this.initLocation();
 
         //init FCM
         if (Global.Push.FCM) {
-            
+
         }
         //init OneSignal
         if (Global.Push.OneSignal) {
@@ -394,55 +427,8 @@ export class MyApp {
                 console.log(language);
             });
         } else {
-            
+
         }
-    }
-
-    initWatchLocation() {
-        this.locationSubscription = this._geolocation.watchPosition()
-            .subscribe(position => {
-                if (position.coords != undefined) {
-                    this.latitude = position.coords.latitude;
-                    this.longitude = position.coords.longitude;
-                } else { }
-
-            });
-    }
-
-    initLocation() {
-        if (!this.platform.is('cordova')) {
-            return;
-        }
-        //checking for Location availability
-        this._diagnostic.isLocationEnabled().then((enabled) => {
-            if (enabled) {
-                this.initWatchLocation();
-            } else {
-                let alert = this.alertCtrl.create({
-                    title: 'Location not enabled',
-                    message: 'Kindly switch on Location',
-                    buttons: [{
-                        text: 'Cancel',
-                        role: 'cancel',
-                        handler: () => {
-                            this.events.publish('toast:create', this.location_permission_denied_translate + '!');
-                        }
-                    },
-                    {
-                        text: 'Enable',
-                        handler: () => {
-                            this._locationAccuracy.request(this._locationAccuracy.REQUEST_PRIORITY_HIGH_ACCURACY).then(() => {
-                                this.initWatchLocation();
-                            }).catch(() => {
-
-                            });
-                        }
-                    }
-                    ]
-                });
-                alert.present();
-            }
-        });
     }
 
     openNotificationPage(payload) {
@@ -495,26 +481,6 @@ export class MyApp {
                 }
             });
             notificationToast.present();
-
-            /*
-            let notificationAlert = this.alertCtrl.create({
-                title: payload.title,
-                message: payload.body,
-                buttons: [
-                    {
-                        text: 'Ok',
-                        handler: () => {
-                            this.openNotificationPage(payload);
-                        }
-                    },
-                    {
-                        text: 'Cancel',
-                        role: 'cancel',
-                    }
-                ]
-            });
-            notificationAlert.present();
-            */
         }
     }
 
@@ -595,10 +561,6 @@ export class MyApp {
                 this.events.publish('user:changed');
                 this.events.publish('user:postLogout', true);
             });
-            if (this.locationSubscription) {
-                this.locationSubscription.unsubscribe();
-                this.locationSubscription = null;
-            }
             this._badge.clear();
         });
 

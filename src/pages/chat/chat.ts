@@ -39,7 +39,6 @@ import { HomePage } from '../home/home';
 import { ChatReadModalPage } from "../../pages/chat/chat-read-modal/chat-read-modal";
 import { SavedMediaPage } from "../../pages/chat/saved-media/saved-media";
 
-import { AudioProvider } from 'ionic-audio';
 import { Modal } from 'ionic-angular/components/modal/modal';
 @IonicPage()
 @Component({
@@ -514,7 +513,7 @@ export class ChatPage {
       this.audio_tranlate = translated;
     });
     //cancel
-    this.translate.get('ChatScreen._Cancel_').subscribe(translated => {
+    this.translate.get('Common._Cancel_').subscribe(translated => {
       this.cancel_translate = translated;
     });
 
@@ -924,7 +923,7 @@ export class ChatPage {
           this.events.publish('toast:error', error);
         });
       } else if (mimeType.indexOf('video') > -1) {
-        this.checkVideoAndUpload(url);
+        this.uploadVideo(url);
       }
     }).catch(error => {
       this.events.publish('toast:error', error);
@@ -1024,44 +1023,13 @@ export class ChatPage {
     this.videoCapturePlus.captureVideo(options).then((mediafile: MediaFile[]) => {
       if (mediafile.length > 0) {
         let url = mediafile[0].fullPath;
-        this.checkVideoAndUpload(url);
+        this.uploadVideo(url);
       }
     }, error => {
       this.events.publish('toast:error', error.message);
     }).catch(error => {
       console.log(error);
     });
-  }
-
-  checkVideoAndUpload(url) {
-    //checking if not mp4 then converting it to mp4 before uploading
-    let fileExtension = url.substring(url.lastIndexOf('.') + 1);
-    let escapeTranscode = true;
-    console.log(fileExtension);
-    if (escapeTranscode || fileExtension === 'mp4') {
-      this.uploadVideo(url);
-    } else {
-      url = normalizeURL(url);
-      console.log(url);
-      this.events.publish('loading:create', 'processing video');
-      this.videoEditor.transcodeVideo({
-        fileUri: url,
-        outputFileName: 'output-' + new Date().getTime(),
-        outputFileType: this.videoEditor.OutputFileType.MPEG4,
-        saveToLibrary: false,
-        deleteInputFile: false,
-        progress: (info) => {
-          console.log((info * 100) + '%');
-        }
-      }).then((fileUri: string) => {
-        this.events.publish('loading:close');
-        this.uploadVideo(fileUri);
-      }).catch((error: any) => {
-        console.log(error);
-        this.events.publish('loading:close');
-        this.events.publish('toast:error', 'Failed to process. Try again!');
-      });
-    }
   }
 
   uploadVideo(url) {
@@ -1165,7 +1133,7 @@ export class ChatPage {
         headings: user.Title,
         priority: 10,
         contents: message.Translation,
-	android_accent_color: 'FF' + Global.color.primary,
+        android_accent_color: 'FF' + Global.color.primary,
         ios_badgeType: 'SetTo',
         ios_badgeCount: user.Badge,
       };

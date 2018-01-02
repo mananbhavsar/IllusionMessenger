@@ -112,7 +112,6 @@
         "_FailedToDelete_": "Failed to delete!",
         "_FailedToSave_": "Failed to saved!",
         "_SaveToGallery": "Save to Gallery",
-        "_Cancel_": "Cancel",
         "_PermissionNotGranted_": "Permissions weren't granted to save",
         "_MessageInfo_": "Message Info",
         "_ReadBy_": "Read By",
@@ -127,6 +126,9 @@
         "_OfficeListUnavailable_": "No Office/Branch is asigned to you. Kindly contact Admin",
         "_FailedToLoad_": "Failed to load Office list"
     },
+    "Logout": {
+        "_LogoutMessage_": "Are you sure, you want to logout?"
+    },
     "Common": {
         "_Menu_": "Menu",
         "_Home_": "Home",
@@ -137,15 +139,18 @@
         "_Account_": "Account",
         "_Offline_": "You seem to be offline",
         "_MessageNotDownload_": "",
+        "_Alert_": "Alert",
         "_Open_": "Open",
         "_Online_": "You are online now",
         "_Loading_": "Loading",
         "_Search_": "Search",
         "_ByeBye_": "Bye bye, see you soon",
         "_OK_": "OK",
+        "_Cancel_": "Cancel",
         "_Close": "Close",
         "_NothingToShow_": "Nothing to show more",
         "_Welcome_": "Welcome",
-        "_ErrorOccurred_": "Error occurred! Try again"
+        "_ErrorOccurred_": "Error occurred! Try again",
+        "_CheckInternetConnection_": "Please check your network connection"
     }
 }

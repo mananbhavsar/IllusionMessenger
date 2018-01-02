@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, ViewController, NavParams, Events } from 'ionic-angular';
+import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
-import { Global } from '../../app/global';
-
-import { ConnectionProvider } from '../../providers/connection/connection';
-import { UserProvider } from '../../providers/user/user';
+/**
+ * Generated class for the EditProfilePage page.
+ *
+ * See https://ionicframework.com/docs/components/#navigation for more info on
+ * Ionic pages and navigation.
+ */
 
 @IonicPage()
 @Component({
@@ -12,38 +14,12 @@ import { UserProvider } from '../../providers/user/user';
   templateUrl: 'edit-profile.html',
 })
 export class EditProfilePage {
-  user: any = null;
-  client: string = null;
-  global: any = null;
-  data: any = {};
 
-  constructor(
-    public navCtrl: NavController,
-    private _user: UserProvider,
-    public connection: ConnectionProvider,
-    public viewCtrl: ViewController,
-    public events: Events,
-  ) {
-    this.global = Global;
+  constructor(public navCtrl: NavController, public navParams: NavParams) {
   }
 
   ionViewDidLoad() {
-    this._user.getUser().then((user) => {
-      this.user = user;
-
-    });
-  }
-
-  onUpdate() {
-    //getting data for Setup
-    this.connection.doPost('JobSeekers/profile/' + this.user.user.id, this.data, 'Updating').then(response => {
-      this.events.publish('loading:close');
-      this.viewCtrl.dismiss(response);
-    });
-  }
-
-  dismiss() {
-    this.viewCtrl.dismiss(null);
+    console.log('ionViewDidLoad EditProfilePage');
   }
 
 }

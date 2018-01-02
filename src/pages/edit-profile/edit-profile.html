@@ -1,51 +1,20 @@
+<!--
+  Generated template for the EditProfilePage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
 <ion-header>
-  <ion-toolbar ion-text color="primary">
-    <ion-title>
-      Edit Profile
-    </ion-title>
-    <ion-buttons end>
-      <button color="light" ion-button outline (click)="dismiss(null)">
-          {{'ChatScreen._Close_' | translate}}
-      </button>
-    </ion-buttons>
-  </ion-toolbar>
+
+  <ion-navbar>
+    <ion-title>edit-profile</ion-title>
+  </ion-navbar>
+
 </ion-header>
-<ion-content class="login">
-  <ion-grid class="slide_header">
-    <div id="login-box">
-      <ion-list *ngIf="data.JobSeeker">
-        <ion-item>
-          <ion-label color="primary" floating>Mobile Number</ion-label>{{data.JobSeeker.contact_number}}
-          <ion-input type="tel" placeholder="Mobile Number" [(ngModel)]="data.JobSeeker.contact_number"></ion-input>
-        </ion-item>
-        <ion-item>
-          <ion-label color="primary">Gender</ion-label>
-          <ion-select [(ngModel)]="data.JobSeeker.gender">
-            <ion-option value="Male">Male</ion-option>
-            <ion-option value="Female">Female</ion-option>
-            <ion-option value="Other">Other</ion-option>
-          </ion-select>
-        </ion-item>
-        <ion-item>
-          <ion-label color="primary">Salary Range</ion-label>
-          <ion-select [(ngModel)]="data.JobSeeker.salary_range_id">
-            <ion-option *ngFor="let id of data.salaryRange | keys" value="{{id}}">{{data.salaryRange[id]}}</ion-option>
-          </ion-select>
-        </ion-item>
-        <ion-item>
-          <ion-label color="primary">Experience</ion-label>
-          <ion-select [(ngModel)]="data.JobSeeker.experience_id">
-            <ion-option *ngFor="let id of data.experience | keys" value="{{id}}">{{data.experience[id]}}</ion-option>
-          </ion-select>
-        </ion-item>
-        <ion-item>
-          <ion-label color="primary">Preferred Work Location</ion-label>
-          <ion-select [(ngModel)]="data.JobSeeker.location_id">
-            <ion-option *ngFor="let id of data.locations | keys" value="{{id}}">{{data.locations[id]}}</ion-option>
-          </ion-select>
-        </ion-item>
-        <button color="button" type="submit" (click)="onUpdate()" ion-button block>Update</button>
-      </ion-list>
-    </div>
-  </ion-grid>
+
+
+<ion-content padding>
+name:display name
+email:email
+mobile:mobile
 </ion-content>

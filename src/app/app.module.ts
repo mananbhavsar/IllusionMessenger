@@ -9,12 +9,10 @@ import {HttpClientModule, HttpClient} from '@angular/common/http';
 
 import { Network } from '@ionic-native/network';
 import { StatusBar } from '@ionic-native/status-bar';
-import { Geolocation } from '@ionic-native/geolocation';
 import { Keyboard } from '@ionic-native/keyboard';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { Diagnostic } from '@ionic-native/diagnostic';
 import { SQLite } from '@ionic-native/sqlite';
-import { LocationAccuracy } from '@ionic-native/location-accuracy'
 import { CallNumber } from '@ionic-native/call-number';
 import { EmailComposer } from '@ionic-native/email-composer';
 import { Badge } from '@ionic-native/badge';
@@ -36,7 +34,6 @@ import { OneSignal } from '@ionic-native/onesignal';
 
 import { HttpModule } from '@angular/http';
 import { IonicStorageModule } from '@ionic/storage';
-import { IonicImageLoader } from 'ionic-image-loader';
 
 import { MyApp } from './app.component';
 
@@ -79,7 +76,6 @@ import { LongPressModule } from 'ionic-long-press';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabaseModule, AngularFireDatabase } from 'angularfire2/database';
 import { AngularFireAuthModule } from 'angularfire2/auth';
-import { IonicAudioModule, WebAudioProvider, CordovaMediaProvider, defaultAudioProviderFactory } from 'ionic-audio';
 import { IonicImageViewerModule } from 'ionic-img-viewer';
 
 export const firebaseConfig = {
@@ -117,11 +113,9 @@ export function createTranslateLoader(http: HttpClient) {
             name: '__dental_illusion_db',
             driverOrder: ['indexeddb', 'sqlite', 'websql']
         }),
-        IonicImageLoader.forRoot(),
         AngularFireModule.initializeApp(firebaseConfig),
         AngularFireDatabaseModule,
         AngularFireAuthModule,
-        IonicAudioModule.forRoot(defaultAudioProviderFactory),
         IonicImageViewerModule,
         AboutPageModule,
         AccountPageModule,
@@ -164,12 +158,10 @@ export function createTranslateLoader(http: HttpClient) {
         FirebaseTransactionProvider,
         Network,
         StatusBar,
-        Geolocation,
         Keyboard,
         SplashScreen,
         Diagnostic,
         SQLite,
-        LocationAccuracy,
         CallNumber,
         EmailComposer,
         Badge,

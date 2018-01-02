@@ -154,6 +154,10 @@ export class UserProvider {
         return new Promise((resolve, reject) => {
             //checking if logged in
             if (!_.isEmpty(this.connection.user)) {
+                //setting in connection
+                this.connection.push_id = push_id;
+
+                //sending to server
                 this.connection.doPost('Account/RegisterDevice', {
                     DeviceID: push_id,
                     IsLogin: push_id !== '',

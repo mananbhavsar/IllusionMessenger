@@ -27,6 +27,7 @@ export class OfficeServiceProvider {
 
   office_list_unavailable_translate: string = 'No Office/Branch is asigned to you. Kindly contact Admin';
   failed_to_load_translate: string = 'Failed to load Office list';
+  loading_translate: string = 'loading';
   constructor(
     public storage: Storage,
     public events: Events,
@@ -74,6 +75,10 @@ export class OfficeServiceProvider {
     //failed to load
     this.translate.get('OfficeList._FailedToLoad_').subscribe(translated => {
       this.failed_to_load_translate = translated;
+    });
+    //loading
+    this.translate.get('Common._Loading_').subscribe(translated => {
+      this.loading_translate = translated;
     });
   }
 
@@ -194,7 +199,7 @@ export class OfficeServiceProvider {
       //not loaded yet. Show loading and wait to load
       if (this.loadingOfficeList) {
         //showing loading
-        this.events.publish('loading:create', 'loading');
+        this.events.publish('loading:create', this.loading_translate);
         //setting timeout of 10 secs to reload
         setTimeout(() => {
           if (this.loadingOfficeList) {//still loading

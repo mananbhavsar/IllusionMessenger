@@ -70,7 +70,7 @@ export class SavedMediaPage {
       this.save_to_gallery_tranlate = translated;
     });
     //cancel
-    this.translate.get('ChatScreen._Cancel_').subscribe(translated => {
+    this.translate.get('Common._Cancel_').subscribe(translated => {
       this.cancel_translate = translated;
     });
     //delete

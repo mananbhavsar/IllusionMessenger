@@ -17,7 +17,6 @@ import * as moment from 'moment';
 import 'moment/locale/fr';
 import 'moment/locale/en-gb';
 
-import { AudioProvider } from 'ionic-audio';
 import { Global } from '../../app/global';
 import { retry } from 'rxjs/operator/retry';
 
@@ -53,7 +52,6 @@ export class ChatBubbleComponent {
     private transfer: FileTransfer,
     private platform: Platform,
     private events: Events,
-    private _audioProvider: AudioProvider,
     private navCtlr: NavController,
     private streamingMedia: StreamingMedia,
     private _imageViewerController: ImageViewerController,
@@ -67,10 +65,10 @@ export class ChatBubbleComponent {
 
     //listening to page change event to pause audio
     this.navCtlr.viewWillLeave.subscribe(event => {
-      this.pauseSelectedTrack();
+
     });
     this.events.subscribe('platform:onPause', (event) => {
-      this.pauseSelectedTrack();
+
     });
 
   }
@@ -156,7 +154,7 @@ export class ChatBubbleComponent {
         //checking if read by all
         if (_.size(this.message.Read) === _.size(this.users)) {
           status = 2;
-        } else if ([Global.LoginType.Doctor, Global.LoginType.Parent].indexOf(this.message.LoginTypeID) > -1 && this.message.Status === 0) { //read by any dentist
+        } else if ([Global.LoginType.Doctor, Global.LoginType.Parent].indexOf(this.message.LoginTypeID) === -1 && this.message.Status === 0) { //read by any dentist
           status = 1;
         }
       }
@@ -174,7 +172,10 @@ export class ChatBubbleComponent {
     if (this.message.URL) {
       if (this.isCordova) {
         let file = this.message.nativeURL || this.message.URL;
-
+        //if already downloading
+        if(this.message.downloading){
+          return;
+        }
         let wasDownloaded = this.message.downloaded;
         this.check(file).then(entry => {
           if (wasDownloaded) {
@@ -268,7 +269,7 @@ export class ChatBubbleComponent {
           }
         }).catch(error => {
           //checking if sent by me and sent within last 500ms. We will try to download this
-          if (this.message.UserID === this.userID && (moment().utc().valueOf() - this.message.CreateAt) <= 500) {
+          if (this.message.UserID === this.userID && (moment().utc().valueOf() - this.message.CreateAt) <= 10000) {
             this.openFile();
           } else {
             this.message['downloaded'] = false;
@@ -435,31 +436,6 @@ export class ChatBubbleComponent {
     this.message.audioTrack = {
       src: this.message.nativeURL
     };
-  }
-
-  playSelectedTrack(trackId) {
-    // use AudioProvider to control selected track 
-    this._audioProvider.play(this.selectedTrack);
-  }
-
-  pauseSelectedTrack() {
-    // use AudioProvider to control selected track 
-    this._audioProvider.pause(this.selectedTrack);
-  }
-
-  togglePlay(audioTrack) {
-    if (audioTrack.isPlaying) {
-      audioTrack.pause()
-    } else {
-      //pause other playing video
-      if (this.selectedTrack !== audioTrack.id) {
-        this._audioProvider.pause();
-        // this.selectedTrack = audioTrack.id;
-        audioTrack.play();
-      } else {
-        audioTrack.play()
-      }
-    }
   }
 
   onTrackFinished(track: any) {

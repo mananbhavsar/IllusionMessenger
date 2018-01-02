@@ -11,8 +11,6 @@ import { OrComponent } from "./or/or";
 import { ProgressBarComponent } from "./progress-bar/progress-bar";
 import { CallFabComponent } from './call-fab/call-fab';
 import { ChatBubbleComponent } from './chat-bubble/chat-bubble';
-import { IonicAudioModule } from 'ionic-audio';
-import { IonicImageLoader } from 'ionic-image-loader';
 import { IonicImageViewerModule } from 'ionic-img-viewer';
 import { TranslateModule } from "@ngx-translate/core";
 
@@ -30,8 +28,6 @@ import { TranslateModule } from "@ngx-translate/core";
     ],
     imports: [
         MomentModule,
-        IonicImageLoader,
-        IonicAudioModule,
         IonicImageViewerModule,
         IonicPageModule.forChild(EmptyComponent),
         IonicPageModule.forChild(ReachUsComponent),

@@ -114,7 +114,6 @@
         "_FailedToDelete_": "Échec de la suppression!",
         "_FailedToSave_": "Échec de l'enregistrement!",
         "_SaveToGallery": "Enregistrer dans la Galerie",
-        "_Cancel_": "Annuler",
         "_PermissionNotGranted_": "les autorisations n'ont pas été accordées pour enregistrer",
         "_MessageInfo_": "",
         "_ReadBy_": "Lire par",
@@ -129,6 +128,9 @@
         "_OfficeListUnavailable_": "Aucun bureau / succursale ne vous est attribué. Veuillez contacter Admin",
         "_FailedToLoad_": "Impossible de charger la liste Bureau"
     },
+    "Logout": {
+        "_LogoutMessage_": "Êtes-vous sûr, de vouloir vous déconnecter?"
+    },
     "Common": {
         "_Menu_": "Menu",
         "_Home_": "Home",
@@ -139,15 +141,18 @@
         "_Account_": "Compte",
         "_Offline_": "Vous semblez être en mode hors connexion",
         "_MessageNotDownload_": "",
+        "_Alert_": "Alerte",
         "_Open_": "Ouvrir",
         "_Online_": "Vous êtes en ligne maintenant",
         "_Loading_": "Chargement",
         "_Search_": "Chercher",
         "_ByeBye_": "au revoir, à bientôt",
         "_OK_": "OK",
+        "_Cancel_": "Annuler",
         "_Close": "Fermer",
         "_NothingToShow_": "Rien de plus pour montrer",
         "_Welcome_": "Bienvenue",
-        "_ErrorOccurred_": "Erreur est survenue! Réessayer"
+        "_ErrorOccurred_": "Erreur est survenue! Réessayer",
+        "_CheckInternetConnection_": "Veuillez vérifier votre connexion réseau"
     }
 }

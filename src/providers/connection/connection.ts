@@ -3,9 +3,14 @@ import { Events, Platform } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { Network } from '@ionic-native/network';
 import { Http, Headers, Response, URLSearchParams } from '@angular/http';
+
 import 'rxjs/add/operator/map';
+import { TranslateService } from "@ngx-translate/core";
+
 import { Global } from '../../app/global';
+
 import { Device } from '@ionic-native/device';
+
 import { UniqueDeviceID } from '@ionic-native/unique-device-id';
 
 @Injectable()
@@ -13,6 +18,10 @@ export class ConnectionProvider {
     user: any = {};
     headers: Headers;
     uuid: string;
+    push_id: string = null;
+
+    loading_translate: string = 'loading';
+    please_check_internet_connection: string = 'Please check your network connection';
     constructor(
         public http: Http,
         public storage: Storage,
@@ -20,7 +29,8 @@ export class ConnectionProvider {
         public network: Network,
         public platform: Platform,
         public device: Device,
-        private uniqueDeviceID: UniqueDeviceID
+        private uniqueDeviceID: UniqueDeviceID,
+        private translate: TranslateService,
     ) {
         this.events.subscribe('user:changed', (user) => {
             this.storage.get('User').then((user) => {
@@ -31,12 +41,24 @@ export class ConnectionProvider {
         this.headers = new Headers({ 'Content-Type': 'application/json' });
 
         //device id
-        platform.ready().then(()=>{
+        platform.ready().then(() => {
             this.uniqueDeviceID.get()
                 .then((uuid: any) => {
                     this.uuid = uuid;
                 })
                 .catch((error: any) => console.log(error));
+            this.doTranslate();
+        });
+    }
+
+    doTranslate() {
+        //loading
+        this.translate.get('Common._Loading_').subscribe(translated => {
+            this.loading_translate = translated;
+        });
+        //please check 
+        this.translate.get('Common._CheckInternetConnection_').subscribe(translated => {
+            this.please_check_internet_connection = translated;
         });
     }
 
@@ -50,13 +72,13 @@ export class ConnectionProvider {
         return new Promise((resolve, reject) => {
             //checking if Network availble
             if (this.network.type === 'none') {
-                reject('Please check your network connection');
+                reject(this.please_check_internet_connection);
                 return;
             }
             //if need to show loader
             if (loader) {
                 if (loader === true) {
-                    loader = 'loading';
+                    loader = this.loading_translate;
                 }
                 this.events.publish('loading:create', loader);
             }
@@ -133,6 +155,7 @@ export class ConnectionProvider {
         urlSearchParams.append('OrganizationUnitID', this.user.LoginOUID);
         urlSearchParams.append('LoginTypeID', this.user.LoginTypeID);
         urlSearchParams.append('LoginUserID', this.user.CustomerPortalID);
+        urlSearchParams.append('PushID', this.push_id);
         return urlSearchParams
     }
 }

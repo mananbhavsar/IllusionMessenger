@@ -1,1 +1,43 @@
-webpackJsonp([0],{1073:function(o,e,a){"use strict";Object.defineProperty(e,"__esModule",{value:!0}),a.d(e,"WelcomePageModuleNgFactory",function(){return g});var m=a(1),d=a(342),r=a(670),n=a(671),t=a(672),l=a(673),p=a(674),u=a(675),c=a(676),i=a(677),s=a(678),F=a(705),M=a(17),v=a(22),C=a(311),b=a(113),f=a(119),g=m["ɵcmf"](d.a,[],function(o){return m["ɵmod"]([m["ɵmpd"](512,m.ComponentFactoryResolver,m["ɵCodegenComponentFactoryResolver"],[[8,[r.a,n.a,t.a,l.a,p.a,u.a,c.a,i.a,s.a,F.a]],[3,m.ComponentFactoryResolver],m.NgModuleRef]),m["ɵmpd"](4608,M.NgLocalization,M.NgLocaleLocalization,[m.LOCALE_ID]),m["ɵmpd"](4608,v["ɵi"],v["ɵi"],[]),m["ɵmpd"](4608,v.FormBuilder,v.FormBuilder,[]),m["ɵmpd"](512,M.CommonModule,M.CommonModule,[]),m["ɵmpd"](512,v["ɵba"],v["ɵba"],[]),m["ɵmpd"](512,v.FormsModule,v.FormsModule,[]),m["ɵmpd"](512,v.ReactiveFormsModule,v.ReactiveFormsModule,[]),m["ɵmpd"](512,C.a,C.a,[]),m["ɵmpd"](512,C.b,C.b,[]),m["ɵmpd"](512,d.a,d.a,[]),m["ɵmpd"](256,b.a,f.a,[])])})}});
+webpackJsonp([0],{
+
+/***/ 1119:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LogoutPageModule", function() { return LogoutPageModule; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__logout__ = __webpack_require__(251);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+
+
+
+var LogoutPageModule = /** @class */ (function () {
+    function LogoutPageModule() {
+    }
+    LogoutPageModule = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["NgModule"])({
+            declarations: [
+                __WEBPACK_IMPORTED_MODULE_2__logout__["a" /* LogoutPage */],
+            ],
+            imports: [
+                __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["p" /* IonicPageModule */].forChild(__WEBPACK_IMPORTED_MODULE_2__logout__["a" /* LogoutPage */]),
+            ],
+            schemas: [__WEBPACK_IMPORTED_MODULE_0__angular_core__["CUSTOM_ELEMENTS_SCHEMA"]]
+        })
+    ], LogoutPageModule);
+    return LogoutPageModule;
+}());
+
+//# sourceMappingURL=logout.module.js.map
+
+/***/ })
+
+});
+//# sourceMappingURL=0.js.map

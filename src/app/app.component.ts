@@ -80,7 +80,7 @@ export class MyApp {
         { title: 'Communication', translate_key: 'HomeScreen._Communication_', name: 'CommunicationPage', component: CommunicationPage, icon: '' },
     ];
     accountPages: PageInterface[] = [
-        // { title: 'Account', translate_key:'Common._Account_',name: 'AccountPage', component: AccountPage, icon: 'user' },
+        { title: 'Account', translate_key:'Common._Account_',name: 'AccountPage', component: AccountPage, icon: 'user' },
         { title: 'Logout', translate_key: 'Common._LogOut_', name: 'LogoutPage', component: LogoutPage, icon: 'log-out', logsOut: true }
     ];
     loggedOutPages: PageInterface[] = [

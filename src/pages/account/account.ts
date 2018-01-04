@@ -5,8 +5,9 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { ConnectionProvider } from '../../providers/connection/connection';
 import { UserProvider } from '../../providers/user/user';
 
-import { ChangePasswordPage } from '../change-password/change-password';
-import { EditProfilePage } from "../edit-profile/edit-profile";
+import { ChangePasswordPage } from './change-password/change-password';
+import { EditProfilePage } from "./edit-profile/edit-profile";
+import { NotificationPreferencesPage } from "./notification-preferences/notification-preferences";
 
 import { Global } from '../../app/global';
 
@@ -29,8 +30,30 @@ export class AccountPage {
         public events: Events,
     ) {
         this.global = Global;
-
-
     }
-    
+
+    openEditProfile() {
+        let editProfilePageModal = this.modalCtrl.create(EditProfilePage);
+        editProfilePageModal.onDidDismiss(data => {
+
+        });
+        editProfilePageModal.present();
+    }
+
+    openChangePassword() {
+        let changePasswordPagePageModal = this.modalCtrl.create(ChangePasswordPage);
+        changePasswordPagePageModal.onDidDismiss(data => {
+
+        });
+        changePasswordPagePageModal.present();
+    }
+
+    openNotifications() {
+        let notificationPreferencesPageModal = this.modalCtrl.create(NotificationPreferencesPage);
+        notificationPreferencesPageModal.onDidDismiss(data => {
+
+        });
+        notificationPreferencesPageModal.present();
+    }
+
 }

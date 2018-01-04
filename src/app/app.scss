@@ -129,3 +129,17 @@ ion-app.md {
 .margin-left-1 {
     margin-left: 1rem;
 }
+
+.error-message-block {
+    color: color($colors, 'danger');
+    padding: 0 16px;
+    font-size: 0.9em;
+    font-style: italic;
+    span {
+        display: block;
+        width: 100%;
+        &::before {
+            content: '* ';
+        }
+    }
+}

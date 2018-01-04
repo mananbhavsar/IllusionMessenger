@@ -28,6 +28,9 @@ temp/
 platforms/
 www/
 $RECYCLE.BIN/
+google-services.json
+GoogleService-Info.plist
+config.xml
 
 .DS_Store
 Thumbs.db

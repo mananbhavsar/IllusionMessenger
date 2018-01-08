@@ -22,6 +22,8 @@ export class OfficeServiceProvider {
   pickupSelectedOffice: any = null;
   caseStatusSelectedOffice: any = null;
   communicationSelectedOffice: any = null;
+  invoiceSelectedOffice: any = null;
+  paymentsSelectedOffice: any = null;
 
   user: any = {};
 
@@ -250,6 +252,14 @@ export class OfficeServiceProvider {
 
       case 'Communication':
         this.communicationSelectedOffice = data;
+        break;
+
+      case 'Invoice':
+        this.invoiceSelectedOffice = data;
+        break;
+
+      case 'Payments':
+        this.paymentsSelectedOffice = data;
         break;
     }
   }

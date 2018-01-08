@@ -32,12 +32,12 @@
         </ion-item-divider>
         <ion-item>
           <ion-icon name="ios-person" item-start></ion-icon>
-          {{'CaseStatus.Dispatch._PersonName' | translate}} 
+          {{'CaseStatus.Dispatch._PersonName' | translate}}
           <ion-note item-end>{{item.DeliveryBoyEmployee}}</ion-note>
         </ion-item>
         <ion-item (click)="callNumber(item.MobileNo)">
           <ion-icon name="ios-call" item-start></ion-icon>
-          {{'CaseStatus.Dispatch._MobileNumber' | translate}} 
+          {{'CaseStatus.Dispatch._MobileNumber' | translate}}
           <ion-note item-end>{{item.MobileNo}}</ion-note>
         </ion-item>
       </ion-item-group>
@@ -47,15 +47,31 @@
         </ion-item-divider>
         <ion-item>
           <ion-icon name="ios-document" item-start></ion-icon>
-          {{'CaseStatus.Dispatch._Courier' | translate}} 
+          {{'CaseStatus.Dispatch._Courier' | translate}}
           <ion-note item-end>{{item.Courier}}</ion-note>
         </ion-item>
         <ion-item (click)="openURL(item.TrackingURL)">
           <ion-icon name="logo-steam" item-start></ion-icon>
-          {{'CaseStatus.Dispatch._TrackingNo' | translate}} 
+          {{'CaseStatus.Dispatch._TrackingNo' | translate}}
           <ion-note item-end>{{item.TrackingNo}}</ion-note>
         </ion-item>
       </ion-item-group>
     </ion-list>
+  </ion-card>
+  <ion-card *ngIf="challanVisible" class="challans">
+    <h2 padding>Challan Details:</h2>
+    <ion-grid>
+      <ion-row class="header" justify-content-center>
+        <ion-col col-6>Product</ion-col>
+        <ion-col>Amount</ion-col>
+        <ion-col>Unit</ion-col>
+      </ion-row>
+      <ion-row *ngFor="let challan of challans;let index=index; let odd=odd; let even=even;" [ngClass]="{ odd: odd, even: even }"
+        class="row" align-items-center>
+        <ion-col col-6 align-self-start>{{challan.Product}}</ion-col>
+        <ion-col>{{challan.Amount}}</ion-col>
+        <ion-col>{{challan.Unit}}</ion-col>
+      </ion-row>
+    </ion-grid>
   </ion-card>
 </ion-content>

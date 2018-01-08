@@ -25,6 +25,8 @@ export class HeaderComponent {
         pickup: '#2574A9',
         casestatus: '#87D37C',
         communication: '#00B16A',
+        invoice: '#673AB7',
+        payments: '#009688'
     };
     constructor(
         public navCtrl: NavController,
@@ -78,6 +80,12 @@ export class HeaderComponent {
 
             case 'CommunicationPage':
                 return 'communication';
+
+            case 'InvoicePage':
+                return 'invoice';
+
+            case 'PaymentsPage':
+                return 'payments';
 
             default:
                 return 'primary';

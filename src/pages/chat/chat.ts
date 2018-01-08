@@ -13,10 +13,12 @@ import { Http, Headers, Response, URLSearchParams } from '@angular/http';
 import 'rxjs/add/operator/switchMap';
 
 import { ConnectionProvider } from '../../providers/connection/connection';
+import { NotificationsProvider } from "../../providers/notifications/notifications";
 import { UserProvider } from '../../providers/user/user';
 import { FirebaseTransactionProvider } from '../../providers/firebase-transaction/firebase-transaction';
 import { CommonProvider } from "../../providers/common/common";
 import { TranslateService } from "@ngx-translate/core";
+import { FileOpsProvider } from "../../providers/file-ops/file-ops";
 
 import { Global } from '../../app/global';
 
@@ -31,7 +33,6 @@ import { Vibration } from '@ionic-native/vibration';
 import { Network } from '@ionic-native/network';
 import { VideoCapturePlus, VideoCapturePlusOptions, MediaFile } from '@ionic-native/video-capture-plus';
 import { VideoEditor } from '@ionic-native/video-editor';
-import { OneSignal } from '@ionic-native/onesignal';
 
 import { LogoutPage } from '../logout/logout';
 import { retry } from 'rxjs/operators/retry';
@@ -161,13 +162,14 @@ export class ChatPage {
     private common: CommonProvider,
     public http: Http,
     private translate: TranslateService,
-    private _oneSignal: OneSignal,
+    private _notifications: NotificationsProvider,
+    private _fileOps: FileOpsProvider,
   ) {
     //init
     this.isIOS = this.platform.is('ios');
     this.isCordova = this.platform.is('cordova');
     this.global = Global;
-    this.common.getDataDirectory().then(path => {
+    this._fileOps.getDataDirectory().then(path => {
       this.dataDirectory = path;
     }).catch(error => {
       console.log(error);
@@ -1121,43 +1123,22 @@ export class ChatPage {
       message.Translation = { en: message.Message };
     }
     users.forEach((user: any) => {
-      let notificationObj: any = {
-        include_player_ids: [
-          user.DeviceID
-        ],
-        data: {
-          badge: user.Badge,
-          page: 'ChatPage',
-          params: this.ticket
-        },
-        headings: user.Title,
-        priority: 10,
-        contents: message.Translation,
-        android_accent_color: 'FF' + Global.color.primary,
-        ios_badgeType: 'SetTo',
-        ios_badgeCount: user.Badge,
-      };
+
+      let contents = message.Translation;
 
       //checking if Image then adding image notification
       if (message.MessageType === 'Image') {
-        notificationObj.contents.en = '📷 Image';
-        notificationObj.contents.fr = '📷 Image';
-        notificationObj['ios_attachments'] = {
-          'attachment-1': message.URL,
-        };
-        notificationObj['big_picture'] = message.URL;
+        contents.en = '📷 Image';
+        contents.fr = '📷 Image';
       } else if (message.MessageType === 'Video') {
-        notificationObj.contents.en = '📹 Video Message';
-        notificationObj.contents.fr = '📹 Video Message';
+        contents.en = '📹 Video Message';
+        contents.fr = '📹 Video Message';
       } else if (message.MessageType === 'Audio') {
-        notificationObj.contents.en = '🎤 Voice Message';
-        notificationObj.contents.fr = '🎤 Voice Message';
+        contents.en = '🎤 Voice Message';
+        contents.fr = '🎤 Voice Message';
       }
-      this._oneSignal.postNotification(notificationObj).then(response => {
-        console.log(response);
-      }).catch(error => {
-        console.log(error);
-      });
+
+      this._notifications.send(user.DeviceID, user.title, contents, user.Badge, 'ChatPage', this.ticket, message.URL).catch(error => { });
     });
   }
 

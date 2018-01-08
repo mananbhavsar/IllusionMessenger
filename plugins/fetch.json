@@ -66,7 +66,7 @@
   "cordova-plugin-file": {
     "source": {
       "type": "registry",
-      "id": "cordova-plugin-file"
+      "id": "cordova-plugin-file@^4.3.3"
     },
     "is_top_level": true,
     "variables": {}
@@ -237,6 +237,14 @@
     "source": {
       "type": "registry",
       "id": "cordova-plugin-camera@3.0.0"
+    },
+    "is_top_level": true,
+    "variables": {}
+  },
+  "cordova-plugin-file-opener2": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-file-opener2@^2.0.19"
     },
     "is_top_level": true,
     "variables": {}

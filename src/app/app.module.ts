@@ -31,6 +31,7 @@ import { UniqueDeviceID } from '@ionic-native/unique-device-id';
 import { PhotoLibrary } from '@ionic-native/photo-library';
 import { Globalization } from '@ionic-native/globalization';
 import { OneSignal } from '@ionic-native/onesignal';
+import { FileOpener } from '@ionic-native/file-opener';
 
 import { HttpModule } from '@angular/http';
 import { IonicStorageModule } from '@ionic/storage';
@@ -51,12 +52,13 @@ import { EditProfilePageModule } from "../pages/account/edit-profile/edit-profil
 import { ForgotPasswordPageModule } from '../pages/forgot-password/forgot-password.module';
 import { HelpPageModule } from '../pages/help/help.module';
 import { HomePageModule } from '../pages/home/home.module';
+import { InvoicePageModule } from '../pages/invoice/invoice.module';
 import { LoginPageModule } from '../pages/login/login.module';
 import { NotificationPreferencesPageModule } from "../pages/account/notification-preferences/notification-preferences.module";
 import { OfficeListPageModule } from "../pages/office-list/office-list.module";
 import { OfflinePageModule } from '../pages/offline/offline.module';
+import { PaymentsPageModule } from "../pages/payments/payments.module";
 import { PickupPageModule } from "../pages/pickup/pickup.module";
-import { RegisterPageModule } from '../pages/register/register.module';
 import { SavedMediaPageModule } from "../pages/chat/saved-media/saved-media.module";
 import { SearchPageModule } from '../pages/search/search.module';
 import { TutorialPageModule } from '../pages/tutorial/tutorial.module';
@@ -67,6 +69,8 @@ import { UserProvider } from '../providers/user/user';
 import { OfficeServiceProvider } from '../providers/office-service/office-service';
 import { FirebaseTransactionProvider } from '../providers/firebase-transaction/firebase-transaction';
 import { CommonProvider } from "../providers/common/common";
+import { NotificationsProvider } from "../providers/notifications/notifications";
+import { FileOpsProvider } from '../providers/file-ops/file-ops';
 
 import { ComponentsModule } from '../components/components.module';
 import { PipesModule } from "../pipes/pipes.module";
@@ -74,7 +78,6 @@ import { DirectivesModule } from "../directives/directives.module";
 import { MomentModule } from 'angular2-moment';
 import { ElasticModule } from 'ng-elastic';
 import { OrderModule } from 'ngx-order-pipe';
-import { LongPressModule } from 'ionic-long-press';
 
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabaseModule, AngularFireDatabase } from 'angularfire2/database';
@@ -134,12 +137,13 @@ export function createTranslateLoader(http: HttpClient) {
         ForgotPasswordPageModule,
         HelpPageModule,
         HomePageModule,
+        InvoicePageModule,
         LoginPageModule,
         NotificationPreferencesPageModule,
         OfficeListPageModule,
         OfflinePageModule,
+        PaymentsPageModule,
         PickupPageModule,
-        RegisterPageModule,
         SavedMediaPageModule,
         SearchPageModule,
         TutorialPageModule,
@@ -147,7 +151,6 @@ export function createTranslateLoader(http: HttpClient) {
         MomentModule,
         ElasticModule,
         OrderModule,
-        LongPressModule,
     ],
     bootstrap: [IonicApp],
     entryComponents: [
@@ -187,6 +190,9 @@ export function createTranslateLoader(http: HttpClient) {
         Globalization,
         CommonProvider,
         OneSignal,
+        NotificationsProvider,
+        FileOpener,
+    FileOpsProvider,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

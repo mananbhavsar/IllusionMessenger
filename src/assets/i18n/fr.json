@@ -22,7 +22,9 @@
         "_CaseStatus_": "État de cas",
         "_ViewCaseStatus": "Voir l'état de votre cas",
         "_Communication_": "la communication",
-        "_ViewCommunication_": "Voir votre communication"
+        "_ViewCommunication_": "Voir votre communication",
+        "_Invoice_": "facture d'achat",
+        "_Payments_": "Paiements"
     },
     "DashboardDetail": {
         "_Payment_": "Versement",
@@ -130,6 +132,11 @@
     },
     "Logout": {
         "_LogoutMessage_": "Êtes-vous sûr, de vouloir vous déconnecter?"
+    },
+    "Invoice": {
+        "_InvoiceNo_": "Numéro de facture",
+        "_InvoiceDate_": "Date de facturation",
+        "_NetAmount_": "Montant net"
     },
     "Common": {
         "_Menu_": "Menu",

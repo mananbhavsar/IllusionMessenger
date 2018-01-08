@@ -11,5 +11,18 @@ page-case-status-modal {
                 }
             }
         }
+        &.challans {
+            ion-grid {
+                ion-row {
+                    border-top: 1px solid #ccc;
+                    font-size: 0.9em;
+                    &.header {
+                        background-color: #f4f4f4;
+                        border-bottom: 1px solid #ccc;
+                        font-weight: 600;
+                    }
+                }
+            }
+        }
     }
 }

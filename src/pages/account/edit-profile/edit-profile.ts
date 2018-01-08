@@ -80,6 +80,7 @@ export class EditProfilePage {
         this.storage.get('User').then(user => {
           if (user) {
             user.DisplayName = this.editProfileForm.get('name').value;
+            user.Customer = this.editProfileForm.get('name').value;
             user.EmailID = this.editProfileForm.get('email').value;
             user.MobileNo = this.editProfileForm.get('mobile_number').value;
 

@@ -181,12 +181,12 @@ export class UserProvider {
                 //waiting to logged in
                 this.events.subscribe('user:ready', (user) => {
                     if (user) {
-                        this.registerPushID(push_id).then(status=>{
+                        this.registerPushID(push_id).then(status => {
                             resolve(status);
-                        }).catch(error => { 
+                        }).catch(error => {
                             reject(error);
                         });
-                    }else{
+                    } else {
                         reject('Already logged out');
                     }
                 });
@@ -244,6 +244,9 @@ export class UserProvider {
                 this.storage.remove('OfflineMessages-' + ticket);
             }
         });
+        this.storage.remove('OfflineChallans');
+        this.storage.remove('OfflineInvoice');
+        this.storage.remove('OfflinePayments');
 
     }
 

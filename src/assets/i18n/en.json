@@ -22,7 +22,9 @@
         "_CaseStatus_": "Case Status",
         "_ViewCaseStatus": "View your case status",
         "_Communication_": "Communication",
-        "_ViewCommunication_": "View your communications"
+        "_ViewCommunication_": "View your communications",
+        "_Invoice_": "Invoice",
+        "_Payments_": "Payments"
     },
     "DashboardDetail": {
         "_Payment_": "Payment",
@@ -128,6 +130,11 @@
     },
     "Logout": {
         "_LogoutMessage_": "Are you sure, you want to logout?"
+    },
+    "Invoice": {
+        "_InvoiceNo_": "Invoice No",
+        "_InvoiceDate_": "Invoice Date",
+        "_NetAmount_": "Net Amount"
     },
     "Common": {
         "_Menu_": "Menu",

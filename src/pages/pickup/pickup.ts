@@ -3,6 +3,7 @@ import { IonicPage, NavController, ModalController, Events } from 'ionic-angular
 
 import { OfficeServiceProvider } from "../../providers/office-service/office-service";
 import { ConnectionProvider } from "../../providers/connection/connection";
+import { NotificationsProvider } from "../../providers/notifications/notifications";
 import { TranslateService } from "@ngx-translate/core";
 
 import * as moment from 'moment';
@@ -13,6 +14,7 @@ import { Network } from '@ionic-native/network';
 
 import { HomePage } from "../home/home";
 import { retry } from 'rxjs/operators/retry';
+import { Notification } from 'rxjs/Notification';
 
 @IonicPage()
 @Component({
@@ -38,7 +40,7 @@ export class PickupPage {
   disableRadio: Boolean;
   serverDate: moment.Moment = null;
 
-  request_sent: string= 'Request Sent';
+  request_sent: string = 'Request Sent';
   pickup_request_alert: string = '';
   pickup_offline: string = '';
   constructor(
@@ -48,8 +50,9 @@ export class PickupPage {
     public connection: ConnectionProvider,
     private network: Network,
     private translate: TranslateService,
+    private notifications: NotificationsProvider,
   ) {
-    
+
   }
 
   doTranslate() {
@@ -197,16 +200,22 @@ export class PickupPage {
     }
 
     const pickupDateTime = moment().set({ date: date.get('date'), 'hour': this.time, 'minute': 0, 'second': 0, 'millisecond': 0 }).toISOString();
-    console.log(pickupDateTime);
+
     this.connection.doPost('Pickup/Insert_PP_TPickUP', {
       PickupDateTime: pickupDateTime,
       CreatedByID: this.connection.user.CustomerPortalID,
-    }).then(() => {
+    }).then((response: any) => {
+
       this.events.publish('alert:basic', this.request_sent, this.pickup_request_alert);
 
       //Increment count
       this.increaseCount('PickUpCount');
       this.increaseCount('Total');
+
+      //sending notifications
+      response.Data.forEach((data: any) => {
+        this.notifications.send(data.DeviceID, data.Title, data.Message, data.Badge).catch(error => { });
+      });
 
       this.navCtrl.setRoot(HomePage);
     }).catch(error => {

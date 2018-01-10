@@ -173,7 +173,7 @@ export class ChatBubbleComponent {
       if (this.isCordova) {
         let file = this.message.nativeURL || this.message.URL;
         //if already downloading
-        if(this.message.downloading){
+        if (this.message.downloading) {
           return;
         }
         let wasDownloaded = this.message.downloaded;
@@ -221,7 +221,10 @@ export class ChatBubbleComponent {
   openVideo() {
     let options = {
       successCallback: () => { console.log('Video played') },
-      errorCallback: (e) => { console.log('Error streaming') },
+      errorCallback: (e) => {
+        console.log(e);
+        return false;
+      },
       shouldAutoClose: true,
     };
     this.streamingMedia.playVideo(this.message.nativeURL, options);

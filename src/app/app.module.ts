@@ -71,7 +71,6 @@ import { DirectivesModule } from "../directives/directives.module";
 import { MomentModule } from 'angular2-moment';
 import { ElasticModule } from 'ng-elastic';
 import { OrderModule } from 'ngx-order-pipe';
-import { LongPressModule } from 'ionic-long-press';
 
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabaseModule, AngularFireDatabase } from 'angularfire2/database';
@@ -141,7 +140,6 @@ export function createTranslateLoader(http: HttpClient) {
         MomentModule,
         ElasticModule,
         OrderModule,
-        LongPressModule,
     ],
     bootstrap: [IonicApp],
     entryComponents: [

@@ -1,8 +1,8 @@
 {
   "_from": "cordova-plugin-globalization",
-  "_id": "cordova-plugin-globalization@1.0.8",
+  "_id": "cordova-plugin-globalization@1.0.9",
   "_inBundle": false,
-  "_integrity": "sha1-+uxTtJU2Kt6dcKuQSJWf3iaCG0M=",
+  "_integrity": "sha1-RluZmP7qC4iIRNCc19oCv6Jst6M=",
   "_location": "/cordova-plugin-globalization",
   "_phantomChildren": {},
   "_requested": {
@@ -19,10 +19,10 @@
     "#USER",
     "/"
   ],
-  "_resolved": "https://registry.npmjs.org/cordova-plugin-globalization/-/cordova-plugin-globalization-1.0.8.tgz",
-  "_shasum": "faec53b495362ade9d70ab9048959fde26821b43",
+  "_resolved": "https://registry.npmjs.org/cordova-plugin-globalization/-/cordova-plugin-globalization-1.0.9.tgz",
+  "_shasum": "465b9998feea0b888844d09cd7da02bfa26cb7a3",
   "_spec": "cordova-plugin-globalization",
-  "_where": "/Users/Mubasshir/Documents/ionic/SignatureSmiles/old/IllusionDental",
+  "_where": "/Users/Mubasshir/Documents/ionic/SignatureSmiles/illusion-dental",
   "author": {
     "name": "Apache Software Foundation"
   },
@@ -90,5 +90,5 @@
     "test": "npm run eslint"
   },
   "types": "./types/index.d.ts",
-  "version": "1.0.8"
+  "version": "1.0.9"
 }

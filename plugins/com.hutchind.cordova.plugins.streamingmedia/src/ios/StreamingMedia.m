@@ -246,7 +246,6 @@ NSString * const DEFAULT_IMAGE_SCALE = @"center";
 	imageView = nil;
     initFullscreen = false;
 	backgroundColor = nil;
-	[self.viewController dismissViewControllerAnimated:NO completion:nil];
 
 	// Remove Done Button listener
 	[[NSNotificationCenter defaultCenter]

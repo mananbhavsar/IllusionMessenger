@@ -80,6 +80,8 @@ export class ChatPage {
 
   userChatting: any = {}; // active chat users
   chattingRef: firebase.database.Reference;
+  chattingInterval = null;
+
   lastTypingTime: number = 0;
 
   user: any = {};
@@ -348,7 +350,7 @@ export class ChatPage {
     this.typingRef.on('value', snapshot => {
       this.userTyping = snapshot.val();
       if (this.typingRefLoaded) {
-        console.log(this.userTyping);
+
         setTimeout(() => {
           this.scrollBottom('typing ref init').catch(error => { });
         }, 100);
@@ -361,6 +363,14 @@ export class ChatPage {
     });
 
     this.setChatting(true);
+    //updating chatting time at 1 sec interval		
+    if (this.chattingInterval) {
+      clearInterval(this.chattingInterval);
+      this.chattingInterval = null;
+    }
+    this.chattingInterval = setInterval(() => {
+      this.setChatting(true);
+    }, 1000);
   }
 
   paginate(paginator) {
@@ -863,9 +873,11 @@ export class ChatPage {
   setChatting(flag: boolean = true) {
     return new Promise((resolve, reject) => {
       if (this.chattingRef) { //null check
-        this.chattingRef.child(this.userID).set(flag).then(value => {
-          resolve();
-        })
+        if (flag) {
+          this.chattingRef.child(this.userID).set(firebase.database.ServerValue.TIMESTAMP).then(value => {
+            resolve();
+          });
+        }
       } else {
         // reject('No ref');
       }
@@ -1157,6 +1169,8 @@ export class ChatPage {
     this.connection.doPost('Communication/InsertChat', {
       TicketNo: this.ticket,
       LiveUsersOnChat: activeUserList,
+      ChattingUsers: this.common.build_query(this.userChatting),
+      TimeOnPhone: moment().utc().valueOf(),
       Message: message.Message ? message.Message : '',
       MessageType: message.MessageType,
       URL: message.URL,
@@ -1179,6 +1193,10 @@ export class ChatPage {
   }
 
   doLeaving(messageNull) {
+    if (this.chattingInterval) {
+      clearInterval(this.chattingInterval);
+      this.chattingInterval = null;
+    }
     this.setChatting(false).then(response => {
       this.chattingRef.off('value');
       this.newMessagesRef.off('child_added');
@@ -1203,6 +1221,8 @@ export class ChatPage {
       this.events.unsubscribe('platform:onPause');
       this.events.unsubscribe('platform:onResumed');
       this.events.unsubscribe('notification:chat');
+      this.events.unsubscribe('network:online');
+      this.events.unsubscribe('network:offline');
     }
 
     this.events.unsubscribe('user:ready');
@@ -1211,15 +1231,26 @@ export class ChatPage {
 
   getLiveChatUsers() {
     var activeUserList = '';
-    let currentChattingUsers = this.userChatting;
+    let currentChattingUsers = [];
+    let nowTime = moment().utc().valueOf();
 
-    if (!_.isEmpty(currentChattingUsers)) {
-      var filterUser = Object.keys(currentChattingUsers).filter(function (user) {
-        return currentChattingUsers[user] !== false;
-      });
-      if (typeof filterUser !== 'undefined' && filterUser.length > 0) {
-        activeUserList = filterUser.join();
+    if (!_.isEmpty(this.userChatting)) {
+      for (let userID in this.userChatting) {
+        let value = this.userChatting[userID];
+        //checking if boolean, older version
+        if (typeof value === 'boolean') {
+          //if true
+          if (value) {
+            currentChattingUsers.push(userID);
+          }
+        } else {
+          //checking if now is less than a sec which can be considered as online & chatting
+          if ((nowTime - value) <= 1000) {
+            currentChattingUsers.push(userID);
+          }
+        }
       }
+      activeUserList = currentChattingUsers.join(',');
     }
     return activeUserList;
   }

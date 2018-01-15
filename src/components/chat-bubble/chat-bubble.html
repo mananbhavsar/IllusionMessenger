@@ -16,7 +16,7 @@
       <div *ngSwitchCase="'Audio'" class="audio image-center-small" [ngClass]="{'done':message.downloaded}">
         <img src="assets/img/audio.png" />
       </div>
-      <div *ngSwitchCase="'Video'" class="video image-center-small" [ngClass]="{'done':message.downloaded}" (click)="openVideo()">
+      <div *ngSwitchCase="'Video'" class="video image-center-small" [ngClass]="{'done':message.downloaded}">
         <img src="assets/img/video.png" />
       </div>
     </ng-container>

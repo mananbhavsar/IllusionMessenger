@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, Events } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, Events, Platform } from 'ionic-angular';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { ConnectionProvider } from '../../providers/connection/connection';
 import { UserProvider } from '../../providers/user/user';
 import { TranslateService } from "@ngx-translate/core";
+
+import { OneSignal } from '@ionic-native/onesignal';
 
 import { Global } from '../../app/global';
 
@@ -45,6 +47,8 @@ export class HomePage {
         public angularFireDatabase: AngularFireDatabase,
         private _storage: Storage,
         private translate: TranslateService,
+        private _oneSignal: OneSignal,
+        private platform: Platform,
     ) {
         this.global = Global;
         //listening to Resume & Pause events
@@ -63,6 +67,17 @@ export class HomePage {
                 if (status) {
                     this.initData(null, false);
                 }
+            });
+        }
+    }
+
+    ionViewDidEnter() {
+        if (this.platform.is('cordova')) {
+            setTimeout(() => {
+                this._oneSignal.getIds().then((id) => {
+                    //updating user ID
+                    this.user.registerPushID(id.userId);
+                });
             });
         }
     }

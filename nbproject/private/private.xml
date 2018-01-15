@@ -3,11 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/Mubasshir/Documents/ionic/PromptPersonnel/PromptJobs/package.json</file>
-            <file>file:/Users/Mubasshir/Documents/ionic/PromptPersonnel/PromptJobs/src/app/app.module.ts</file>
-            <file>file:/Users/Mubasshir/Documents/ionic/PromptPersonnel/PromptJobs/src/pages/setup/setup.html</file>
-            <file>file:/Users/Mubasshir/Documents/ionic/PromptPersonnel/PromptJobs/src/pages/setup/setup.ts</file>
-            <file>file:/Users/Mubasshir/Documents/ionic/PromptPersonnel/PromptJobs/src/app/global.ts</file>
+            <file>file:/Users/Mubasshir/Documents/ionic/SignatureSmiles/laxmi-dental/src/pages/chat/chat.ts</file>
+            <file>file:/Users/Mubasshir/Documents/ionic/SignatureSmiles/laxmi-dental/src/providers/connection/connection.ts</file>
+            <file>file:/Users/Mubasshir/Documents/ionic/SignatureSmiles/laxmi-dental/config.xml</file>
+            <file>file:/Users/Mubasshir/Documents/ionic/SignatureSmiles/laxmi-dental/src/providers/common/common.ts</file>
         </group>
     </open-files>
 </project-private>

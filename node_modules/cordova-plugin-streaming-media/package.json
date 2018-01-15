@@ -1,19 +1,19 @@
 {
-  "_from": "cordova-plugin-streaming-media",
+  "_from": "cordova-plugin-streaming-media@^1.0.2",
   "_id": "cordova-plugin-streaming-media@1.0.2",
   "_inBundle": false,
   "_integrity": "sha1-02hIAVMlIIoPmX+6TOmAZ9ktLMs=",
   "_location": "/cordova-plugin-streaming-media",
   "_phantomChildren": {},
   "_requested": {
-    "type": "tag",
+    "type": "range",
     "registry": true,
-    "raw": "cordova-plugin-streaming-media",
+    "raw": "cordova-plugin-streaming-media@^1.0.2",
     "name": "cordova-plugin-streaming-media",
     "escapedName": "cordova-plugin-streaming-media",
-    "rawSpec": "",
+    "rawSpec": "^1.0.2",
     "saveSpec": null,
-    "fetchSpec": "latest"
+    "fetchSpec": "^1.0.2"
   },
   "_requiredBy": [
     "#USER",
@@ -21,8 +21,8 @@
   ],
   "_resolved": "https://registry.npmjs.org/cordova-plugin-streaming-media/-/cordova-plugin-streaming-media-1.0.2.tgz",
   "_shasum": "d36848015325208a0f997fba4ce98067d92d2ccb",
-  "_spec": "cordova-plugin-streaming-media",
-  "_where": "/Users/Mubasshir/Documents/ionic/SignatureSmiles/old/IllusionDental",
+  "_spec": "cordova-plugin-streaming-media@^1.0.2",
+  "_where": "/Users/Mubasshir/Documents/ionic/SignatureSmiles/laxmi-dental",
   "author": {
     "name": "Nicholas Hutchind"
   },

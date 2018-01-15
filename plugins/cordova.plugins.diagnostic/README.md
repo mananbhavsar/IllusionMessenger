@@ -23,8 +23,8 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [isWifiEnabled()](#iswifienabled)
     - [isCameraAvailable()](#iscameraavailable)
     - [isBluetoothAvailable()](#isbluetoothavailable)
-    - [switchToLocationSettings()](#switchtolocationsettings)
   - [Android and Windows 10 Mobile only](#android-and-windows-10-mobile-only)
+    - [switchToLocationSettings()](#switchtolocationsettings)
     - [switchToMobileDataSettings()](#switchtomobiledatasettings)
     - [switchToBluetoothSettings()](#switchtobluetoothsettings)
     - [switchToWifiSettings()](#switchtowifisettings)
@@ -33,6 +33,9 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
   - [Android and iOS](#android-and-ios)
     - [permissionStatus constants](#permissionstatus-constants)
     - [bluetoothState constants](#bluetoothstate-constants)
+    - [cpuArchitecture constants](#cpuarchitecture-constants)
+    - [enableDebug()](#enabledebug)
+    - [getArchitecture()](#getarchitecture)
     - [isLocationEnabled()](#islocationenabled)
     - [isLocationAuthorized()](#islocationauthorized)
     - [getLocationAuthorizationStatus()](#getlocationauthorizationstatus)
@@ -84,6 +87,7 @@ Cordova diagnostic plugin [![Latest Stable Version](https://img.shields.io/npm/v
     - [isNFCAvailable()](#isnfcavailable)
     - [isADBModeEnabled()](#isadbmodeenabled)
     - [isDeviceRooted()](#isdevicerooted)
+    - [restart()](#restart)
     - [registerNFCStateChangeHandler()](#registernfcstatechangehandler)
     - [NFCState constants](#nfcstate-constants)
   - [iOS only](#ios-only)
@@ -422,6 +426,8 @@ This callback function is passed a single string parameter containing the error 
         console.error("The following error occurred: "+error);
     });
 
+## Android and Windows 10 Mobile only
+
 ### switchToLocationSettings()
 
 Displays the device location settings to allow user to enable location services/change location mode.
@@ -429,8 +435,6 @@ Displays the device location settings to allow user to enable location services/
     cordova.plugins.diagnostic.switchToLocationSettings();
 
 Note: On Android, you may want to consider using the [Request Location Accuracy Plugin for Android](https://github.com/dpa99c/cordova-plugin-request-location-accuracy) to request the desired location accuracy without needing the user to manually do this on the Location Settings page.
-
-## Android and Windows 10 Mobile only
 
 ### switchToMobileDataSettings()
 
@@ -583,6 +587,80 @@ Defines constants for the various Bluetooth hardware states
     cordova.plugins.diagnostic.getBluetoothState(function(state){
         if(state === cordova.plugins.diagnostic.bluetoothState.POWERED_ON){
             // Do something with Bluetooth
+        }
+    }, function(error){
+        console.error(error);
+    });
+    
+### cpuArchitecture constants
+
+Defines constants for the various CPU architectures of the current hardware returned by [getArchitecture()](#getarchitecture).
+
+        cordova.plugins.diagnostic.cpuArchitecture
+
+#### Android
+
+- `UNKNOWN` - Unknown CPU architecture
+- `ARMv6` - ARM v6 or below (32 bit)
+- `ARMv7` - ARM v7 (32 bit)
+- `ARMv8` - ARM v8 (64 bit)
+- `X86` - Intel x86 (32 bit)
+- `X86_64` - Intel x86 (64 bit)
+- `MIPS` - MIPS (32 bit)
+- `MIPS_64` - MIPS (64 bit)
+
+#### iOS
+
+- `UNKNOWN` - Unknown CPU architecture
+- `ARMv6` - ARM v6 or below (32 bit)
+- `ARMv7` - ARM v7 (32 bit)
+- `ARMv8` - ARM v8 (64 bit)
+- `X86` - Intel x86 (32 bit)
+- `X86_64` - Intel x86 (64 bit)
+
+#### Example usage
+
+See [getArchitecture()](#getarchitecture).
+    
+### enableDebug()
+
+Enables debug mode, which logs native debug messages to the native and JS consoles.
+- For Android, log messages will appear in the native logcat output and in the JS console if Chrome Developer Tools is connected to the app Webview.
+- For Android, log messages will appear in the native Xcode console output and in the JS console if Safari Web Inspector is connected to the app Webview.
+- Debug mode is initially disabled on plugin initialisation.
+
+
+    cordova.plugins.diagnostic.enableDebug(successCallback);
+    
+#### Parameters
+
+- {Function} successCallback - The callback which will be called when debug has been enabled.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.enableDebug(function(){
+        console.log("Debug is enabled"));
+    });
+    
+### getArchitecture()
+
+Returns the CPU architecture of the current device.
+
+    cordova.plugins.diagnostic.getArchitecture(successCallback, errorCallback);
+    
+#### Parameters
+
+- {Function} successCallback -  The callback which will be called when operation is successful.
+This callback function is passed a single boolean parameter which indicates the location authorization status as a [cpuArchitecture constant](#cpuarchitecture-constants).
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+This callback function is passed a single string parameter containing the error message.
+
+#### Example usage
+
+    cordova.plugins.diagnostic.getArchitecture(function(arch){
+        if(arch === cordova.plugins.diagnostic.cpuArchitecture.X86
+        || arch === cordova.plugins.diagnostic.cpuArchitecture.X86_64){
+            console.log("Intel inside");
         }
     }, function(error){
         console.error(error);
@@ -2121,6 +2199,38 @@ This callback function is passed a single string parameter containing the error 
     }, function(error){
         console.error("The following error occurred: "+error);
     });
+    
+### restart()
+
+Restarts the application.
+By default, a "warm" restart will be performed in which the main Cordova activity is immediately restarted, causing the Webview instance to be recreated.
+
+However, if the `cold` parameter is set to true, then the application will be "cold" restarted, meaning a system exit will be performed, causing the entire application to be restarted.
+This is useful if you want to fully reset the native application state but will cause the application to briefly disappear and re-appear.
+
+Note: There is no `successCallback()` since if the operation is successful, the application will restart immediately before any success callback can be applied.
+
+    cordova.plugins.diagnostic.restart(errorCallback, cold);
+
+#### Parameters
+
+- {Function} errorCallback -  The callback which will be called when operation encounters an error.
+This callback function is passed a single string parameter containing the error message.
+- {Boolean} cold - if true the application will be cold restarted. Defaults to false.
+
+
+#### Example usage
+
+    var onError = function(error){
+        console.error("The following error occurred: "+error);
+    }
+    
+    // Warm restart
+    cordova.plugins.diagnostic.restart(onError, false);
+        
+    // Cold restart
+    cordova.plugins.diagnostic.restart(onError, true);
+    
 ### registerNFCStateChangeHandler()
 
 Registers a function to be called when a change in NFC state occurs.
@@ -2649,11 +2759,14 @@ You can add these permissions either by manually editing the AndroidManifest.xml
 
     <platform name="android">
         <plugin name="cordova-custom-config" version="*"/>
-        <config-file target="AndroidManifest.xml" parent="/*">
+        <custom-config-file target="AndroidManifest.xml" parent="/*">
             <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
             <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-        </config-file>
+        </custom-config-file>
     </platform>
+    
+Note: If you're using Phonegap Build (or some other Cloud build system), `cordova-custom-config` won't work because it relies on hook scripts.
+For Phonegap Build you can use [`<config-file>` blocks](http://docs.phonegap.com/phonegap-build/configuring/config-file-element/) so long as you use `cli-6.5.0` or below (support for `<config-file>` blocks was dropped in `cli-7.0.1`).
 
 #### Android runtime permissions
 
@@ -2767,17 +2880,19 @@ For example:
 
     <platform name="ios">
         <plugin name="cordova-custom-config" version="*"/>
-        <config-file platform="ios" target="*-Info.plist" parent="NSLocationAlwaysUsageDescription">
+        <custom-config-file platform="ios" target="*-Info.plist" parent="NSLocationAlwaysUsageDescription">
             <string>My custom message for always using location.</string>
-        </config-file>
-        <config-file platform="ios" target="*-Info.plist" parent="NSLocationWhenInUseUsageDescription">
+        </custom-config-file>
+        <custom-config-file platform="ios" target="*-Info.plist" parent="NSLocationWhenInUseUsageDescription">
             <string>My custom message for using location when in use.</string>
-        </config-file>
+        </custom-config-file>
     </platform>
 
 # Example project
 
-An example project illustrating use of this plugin can be found here: [https://github.com/dpa99c/cordova-diagnostic-plugin-example](https://github.com/dpa99c/cordova-diagnostic-plugin-example)
+Example project using simple HTML/CSS/JS (no frameworks): [cordova-diagnostic-plugin-example](https://github.com/dpa99c/cordova-diagnostic-plugin-example)
+
+Example project using Ionic Framework: [cordova-diagnostic-plugin-ionic-example](https://github.com/dpa99c/cordova-diagnostic-plugin-ionic-example)
 
 Phonegap Build users who want to validate the plugin in that environment can try building: [https://github.com/dpa99c/cordova-diagnostic-plugin-phonegap-build-example](https://github.com/dpa99c/cordova-diagnostic-plugin-phonegap-build-example)
 

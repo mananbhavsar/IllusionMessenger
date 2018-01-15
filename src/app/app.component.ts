@@ -133,7 +133,6 @@ export class MyApp {
 
             setTimeout(() => {
                 this.initPreLoginPlugins();
-                // this.connectSocket();
             }, 500);
         });
     }
@@ -379,6 +378,9 @@ export class MyApp {
             this.events.publish('platform:onPause');
         });
 
+        //OneSignal
+        this.initOneSignal();
+
         //working on OS Version
         this.doVersionCheck();
 
@@ -394,7 +396,7 @@ export class MyApp {
         }
         //init OneSignal
         if (Global.Push.OneSignal) {
-            this.initOneSignal();
+            this.processOneSignalId();
         }
 
         //Badge
@@ -490,21 +492,6 @@ export class MyApp {
         }
         this._oneSignal.startInit(Global.OneSignal.key, Global.OneSignal.android);
         this._oneSignal.inFocusDisplaying(this._oneSignal.OSInFocusDisplayOption.None);
-        this._oneSignal.getIds().then((id) => {
-            //registering user
-            this._oneSignal.setSubscription(true);
-            //updating user ID
-            this.events.subscribe('user:ready', (response) => {
-                this.user.registerPushID(id.userId);
-            });
-            //setting tags for this user
-            this.user.getUser().then(user => {
-                this._oneSignal.sendTags({
-                    user_id: user.id,
-                    name: user.Customer
-                });
-            });
-        });
         this._oneSignal.handleNotificationReceived().subscribe((notification) => {
             // do something when notification is received
             this.processNotification(notification, false);
@@ -516,6 +503,22 @@ export class MyApp {
         });
 
         this._oneSignal.endInit();
+    }
+
+    processOneSignalId(){
+        this._oneSignal.getIds().then((id) => {
+            //registering user
+            this._oneSignal.setSubscription(true);
+            //updating user ID
+            this.user.registerPushID(id.userId);
+            //setting tags for this user
+            this.user.getUser().then(user => {
+                this._oneSignal.sendTags({
+                    user_id: user.id,
+                    name: user.Customer
+                });
+            });
+        });
     }
 
     initBadge() {
@@ -579,22 +582,5 @@ export class MyApp {
             }
         });
     }
-
-    //remove in next version
-    connectSocket() {
-        // this.socket = io("https://illusion-chat-server.herokuapp.com/");
-        // this.socket.on('connect', () => {
-        //     console.log('Connected');
-        // });
-        // this.socket.on('disconnect', () => {
-        //     console.log('Disconnected');
-        // });
-
-        // //listening to events
-        // this.socket.on('updateCount', (response) => {
-        //     this.events.publish('socket:updateCount', response);
-        // });
-    }
-
 
 }

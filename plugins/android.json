@@ -7,92 +7,92 @@
     "files": {}
   },
   "installed_plugins": {
-    "com.hutchind.cordova.plugins.streamingmedia": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "com.moust.cordova.videoplayer": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-base64-to-gallery": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-plugin-add-swift-support": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-plugin-app-version": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-plugin-badge": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-plugin-camera": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-plugin-device": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
     "cordova-plugin-file": {
       "PACKAGE_NAME": "com.illusiondental.app"
     },
-    "cordova-plugin-file-transfer": {
-      "PACKAGE_NAME": "com.illusiondental.app"
+    "cordova-plugin-firebase": {
+      "PACKAGE_NAME": "com.laxmidental.app"
     },
-    "cordova-plugin-globalization": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-plugin-inappbrowser": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-plugin-ionic-webview": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-plugin-media": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-plugin-media-capture": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-plugin-network-information": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-plugin-photo-library": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-plugin-splashscreen": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-plugin-statusbar": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-plugin-uniquedeviceid": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-plugin-vibration": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-plugin-video-editor": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-plugin-whitelist": {
-      "PACKAGE_NAME": "com.illusiondental.app"
+    "cordova-plugin-app-version": {
+      "PACKAGE_NAME": "com.laxmidental.app"
     },
     "cordova-sqlite-storage": {
-      "PACKAGE_NAME": "com.illusiondental.app"
+      "PACKAGE_NAME": "com.laxmidental.app"
     },
-    "cordova.plugins.diagnostic": {
-      "PACKAGE_NAME": "com.illusiondental.app"
+    "cordova-plugin-device": {
+      "PACKAGE_NAME": "com.laxmidental.app"
+    },
+    "cordova-plugin-splashscreen": {
+      "PACKAGE_NAME": "com.laxmidental.app"
+    },
+    "cordova-plugin-statusbar": {
+      "PACKAGE_NAME": "com.laxmidental.app"
+    },
+    "cordova-plugin-network-information": {
+      "PACKAGE_NAME": "com.laxmidental.app"
+    },
+    "cordova-base64-to-gallery": {
+      "PACKAGE_NAME": "com.laxmidental.app"
+    },
+    "cordova-plugin-add-swift-support": {
+      "PACKAGE_NAME": "com.laxmidental.app"
+    },
+    "cordova-plugin-badge": {
+      "PACKAGE_NAME": "com.laxmidental.app"
+    },
+    "cordova-plugin-whitelist": {
+      "PACKAGE_NAME": "com.laxmidental.app"
+    },
+    "cordova-plugin-inappbrowser": {
+      "PACKAGE_NAME": "com.laxmidental.app"
+    },
+    "cordova-plugin-ionic-webview": {
+      "PACKAGE_NAME": "com.laxmidental.app"
     },
     "ionic-plugin-keyboard": {
-      "PACKAGE_NAME": "com.illusiondental.app"
+      "PACKAGE_NAME": "com.laxmidental.app"
     },
-    "mx.ferreyra.callnumber": {
-      "PACKAGE_NAME": "com.illusiondental.app"
+    "cordova.plugins.diagnostic": {
+      "PACKAGE_NAME": "com.laxmidental.app"
+    },
+    "cordova-plugin-vibration": {
+      "PACKAGE_NAME": "com.laxmidental.app"
+    },
+    "call-number": {
+      "PACKAGE_NAME": "com.laxmidental.app"
+    },
+    "cordova-plugin-video-editor": {
+      "PACKAGE_NAME": "com.laxmidental.app"
+    },
+    "cordova-plugin-uniquedeviceid": {
+      "PACKAGE_NAME": "com.laxmidental.app"
+    },
+    "cordova-plugin-globalization": {
+      "PACKAGE_NAME": "com.laxmidental.app"
+    },
+    "cordova-plugin-photo-library": {
+      "PACKAGE_NAME": "com.laxmidental.app"
     },
     "onesignal-cordova-plugin": {
-      "PACKAGE_NAME": "com.illusiondental.app"
+      "PACKAGE_NAME": "com.laxmidental.app"
+    },
+    "cordova-plugin-camera": {
+      "PACKAGE_NAME": "com.laxmidental.app"
+    },
+    "cordova-plugin-file-transfer": {
+      "PACKAGE_NAME": "com.laxmidental.app"
+    },
+    "com.hutchind.cordova.plugins.streamingmedia": {
+      "PACKAGE_NAME": "com.laxmidental.app"
+    },
+    "cordova-plugin-media": {
+      "PACKAGE_NAME": "com.laxmidental.app"
+    },
+    "cordova-plugin-media-capture": {
+      "PACKAGE_NAME": "com.laxmidental.app"
     },
     "nl.x-services.plugins.videocaptureplus": {
-      "PACKAGE_NAME": "com.illusiondental.app"
+      "PACKAGE_NAME": "com.laxmidental.app"
     }
   },
   "dependent_plugins": {}

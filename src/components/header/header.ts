@@ -15,17 +15,7 @@ export class HeaderComponent {
     _title: string;
     cartCounter: number = null;
     prevPageColor: string = null;
-    colorHex = {
-        primary: '#D5232F',
-        secondary: '#32db64',
-        danger: '#f53d3d',
-        light: '#f4f4f4',
-        dark: '#222',
-        dashboard: '#4ECDC4',
-        pickup: '#2574A9',
-        casestatus: '#87D37C',
-        communication: '#00B16A',
-    };
+    colorHex = Global.color;
     constructor(
         public navCtrl: NavController,
         public events: Events,
@@ -38,7 +28,7 @@ export class HeaderComponent {
                 if (true || this.prevPageColor !== currentPageColor) {
                     this.prevPageColor = currentPageColor;
                     //setting header color
-                    this._statusBar.backgroundColorByHexString(this.colorHex[this.prevPageColor]);
+                    this._statusBar.backgroundColorByHexString('#' + this.colorHex[this.prevPageColor]);
                 }
             });
         });

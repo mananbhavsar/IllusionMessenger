@@ -53,7 +53,6 @@ import { LoginPageModule } from '../pages/login/login.module';
 import { OfficeListPageModule } from "../pages/office-list/office-list.module";
 import { OfflinePageModule } from '../pages/offline/offline.module';
 import { PickupPageModule } from "../pages/pickup/pickup.module";
-import { RegisterPageModule } from '../pages/register/register.module';
 import { SavedMediaPageModule } from "../pages/chat/saved-media/saved-media.module";
 import { SearchPageModule } from '../pages/search/search.module';
 import { TutorialPageModule } from '../pages/tutorial/tutorial.module';
@@ -71,7 +70,6 @@ import { DirectivesModule } from "../directives/directives.module";
 import { MomentModule } from 'angular2-moment';
 import { ElasticModule } from 'ng-elastic';
 import { OrderModule } from 'ngx-order-pipe';
-import { LongPressModule } from 'ionic-long-press';
 
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabaseModule, AngularFireDatabase } from 'angularfire2/database';
@@ -81,7 +79,7 @@ import { IonicImageViewerModule } from 'ionic-img-viewer';
 export const firebaseConfig = {
     apiKey: "AIzaSyAeAsx1UOrRVQ9m9zlwvmHiTsCuvLtO-J4",
     authDomain: "illusion-dental-5d48c.firebaseapp.com",
-    databaseURL: "https://illusion-dental-5d48c.firebaseio.com",
+    databaseURL: "https://illusion-dental-5d48c-84139.firebaseio.com",
     projectId: "illusion-dental-5d48c",
     storageBucket: "illusion-dental-5d48c.appspot.com",
     messagingSenderId: "7402421237",
@@ -133,7 +131,6 @@ export function createTranslateLoader(http: HttpClient) {
         OfficeListPageModule,
         OfflinePageModule,
         PickupPageModule,
-        RegisterPageModule,
         SavedMediaPageModule,
         SearchPageModule,
         TutorialPageModule,
@@ -141,7 +138,6 @@ export function createTranslateLoader(http: HttpClient) {
         MomentModule,
         ElasticModule,
         OrderModule,
-        LongPressModule,
     ],
     bootstrap: [IonicApp],
     entryComponents: [

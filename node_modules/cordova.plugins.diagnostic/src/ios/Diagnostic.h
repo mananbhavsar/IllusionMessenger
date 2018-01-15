@@ -26,6 +26,9 @@
 #import <arpa/inet.h> // For AF_INET, etc.
 #import <ifaddrs.h> // For getifaddrs()
 #import <net/if.h> // For IFF_LOOPBACK
+#import <mach/machine.h>
+#import <sys/types.h>
+#import <sys/sysctl.h>
 
 @interface Diagnostic : CDVPlugin <CBCentralManagerDelegate, CLLocationManagerDelegate>
 
@@ -36,6 +39,8 @@
     @property (nonatomic, retain) NSString* locationRequestCallbackId;
     @property (nonatomic) EKEventStore *eventStore;
     @property (nonatomic, retain) NSString* currentLocationAuthorizationStatus;
+
+- (void) enableDebug: (CDVInvokedUrlCommand*)command;
 
 - (void) isLocationAvailable: (CDVInvokedUrlCommand*)command;
 - (void) isLocationEnabled: (CDVInvokedUrlCommand*)command;
@@ -63,7 +68,6 @@
 - (void) isRegisteredForRemoteNotifications: (CDVInvokedUrlCommand*)command;
 
 - (void) switchToSettings: (CDVInvokedUrlCommand*)command;
-- (void) switchToLocationSettings: (CDVInvokedUrlCommand*)command;
 
 - (void) isMicrophoneAuthorized: (CDVInvokedUrlCommand*)command;
 - (void) getMicrophoneAuthorizationStatus: (CDVInvokedUrlCommand*)command;
@@ -86,5 +90,7 @@
 - (void) isMotionRequestOutcomeAvailable: (CDVInvokedUrlCommand*)command;
 - (void) getMotionAuthorizationStatus: (CDVInvokedUrlCommand*)command;
 - (void) requestMotionAuthorization: (CDVInvokedUrlCommand*)command;
+
+- (void) getArchitecture: (CDVInvokedUrlCommand*)command;
 
 @end

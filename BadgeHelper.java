@@ -1,4 +1,4 @@
-package com.illusiondental.app;
+package com.laxmidental.app;
 
 import android.content.Context;
 import android.util.Log;

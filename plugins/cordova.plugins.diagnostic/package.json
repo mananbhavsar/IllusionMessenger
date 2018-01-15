@@ -1,8 +1,8 @@
 {
   "_from": "cordova.plugins.diagnostic",
-  "_id": "cordova.plugins.diagnostic@3.7.1",
+  "_id": "cordova.plugins.diagnostic@3.8.1",
   "_inBundle": false,
-  "_integrity": "sha1-TynArmJz7XetaOmApml502rbg6I=",
+  "_integrity": "sha1-S+BISJzTwtBL6UZFq+hKYScAvWo=",
   "_location": "/cordova.plugins.diagnostic",
   "_phantomChildren": {},
   "_requested": {
@@ -19,10 +19,10 @@
     "#USER",
     "/"
   ],
-  "_resolved": "https://registry.npmjs.org/cordova.plugins.diagnostic/-/cordova.plugins.diagnostic-3.7.1.tgz",
-  "_shasum": "4f29c0ae6273ed77ad68e980a66979d36adb83a2",
+  "_resolved": "https://registry.npmjs.org/cordova.plugins.diagnostic/-/cordova.plugins.diagnostic-3.8.1.tgz",
+  "_shasum": "4be048489cd3c2d04be94645abe84a612700bd6a",
   "_spec": "cordova.plugins.diagnostic",
-  "_where": "/Users/Mubasshir/Documents/ionic/SignatureSmiles/IllusionDental",
+  "_where": "/Users/Mubasshir/Documents/ionic/SignatureSmiles/laxmi-dental",
   "author": {
     "name": "Dave Alden"
   },
@@ -65,5 +65,5 @@
     "url": "git+https://github.com/dpa99c/cordova-diagnostic-plugin.git"
   },
   "types": "./cordova.plugins.diagnostic.d.ts",
-  "version": "3.7.1"
+  "version": "3.8.1"
 }

@@ -3,8 +3,6 @@ import { IonicPage, NavController, Events, ModalController } from 'ionic-angular
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 
 import { ForgotPasswordPage } from '../forgot-password/forgot-password';
-import { RegisterPage } from '../register/register';
-
 import { UserProvider } from '../../providers/user/user';
 
 import { Global } from '../../app/global';
@@ -37,7 +35,7 @@ export class LoginPage {
     }
 
     onRegister() {
-        this.navCtrl.push(RegisterPage);
+        
     }
 
     doLogin() {

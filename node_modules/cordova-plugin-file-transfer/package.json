@@ -1,19 +1,19 @@
 {
-  "_from": "cordova-plugin-file-transfer",
+  "_from": "cordova-plugin-file-transfer@1.6.3",
   "_id": "cordova-plugin-file-transfer@1.6.3",
   "_inBundle": false,
   "_integrity": "sha1-bHHeY7B2y+xXDspmRYb/mlG4rCE=",
   "_location": "/cordova-plugin-file-transfer",
   "_phantomChildren": {},
   "_requested": {
-    "type": "tag",
+    "type": "version",
     "registry": true,
-    "raw": "cordova-plugin-file-transfer",
+    "raw": "cordova-plugin-file-transfer@1.6.3",
     "name": "cordova-plugin-file-transfer",
     "escapedName": "cordova-plugin-file-transfer",
-    "rawSpec": "",
+    "rawSpec": "1.6.3",
     "saveSpec": null,
-    "fetchSpec": "latest"
+    "fetchSpec": "1.6.3"
   },
   "_requiredBy": [
     "#USER",
@@ -21,8 +21,8 @@
   ],
   "_resolved": "https://registry.npmjs.org/cordova-plugin-file-transfer/-/cordova-plugin-file-transfer-1.6.3.tgz",
   "_shasum": "6c71de63b076cbec570eca664586ff9a51b8ac21",
-  "_spec": "cordova-plugin-file-transfer",
-  "_where": "/Users/Mubasshir/Documents/ionic/SignatureSmiles/IllusionDental",
+  "_spec": "cordova-plugin-file-transfer@1.6.3",
+  "_where": "/Users/Mubasshir/Documents/ionic/SignatureSmiles/laxmi-dental",
   "author": {
     "name": "Apache Software Foundation"
   },
@@ -46,7 +46,7 @@
       "browser"
     ]
   },
-  "deprecated": false,
+  "deprecated": "This plugin has been deprecated",
   "description": "Cordova File Transfer Plugin",
   "devDependencies": {
     "jscs": "^2.6.0",

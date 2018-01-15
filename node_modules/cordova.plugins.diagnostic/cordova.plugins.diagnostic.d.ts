@@ -35,6 +35,13 @@ interface Diagnostic {
 
     /**
      * iOS ONLY
+     * Constants for requesting and reporting the various motion states.
+     * @type {Object}
+     */
+    motionStatus?: any;
+
+    /**
+     * iOS ONLY
      * Location authorization mode
      * @type {Object}
      */
@@ -62,6 +69,13 @@ interface Diagnostic {
      * @type {Object}
      */
     NFCState?: any;
+
+    /**
+     * ANDROID ONLY
+     * Constants for the various CPU architectures.
+     * @type {Object}
+     */
+    cpuArchitecture?: any;
 
     /**
      * Checks if app is able to access device location.
@@ -169,6 +183,15 @@ interface Diagnostic {
         successCallback: (enabled: boolean) => void,
         errorCallback: (error: string) => void,
         state: boolean
+    ) => void;
+
+    /**
+     * ANDROID and iOS ONLY
+     * Enables debug mode, which logs native plugin debug messages to the native and JS consoles.
+     * Debug mode is initially disabled on plugin initialisation.
+     */
+    enableDebug?: (
+        successCallback: () => void
     ) => void;
 
     /**
@@ -411,6 +434,33 @@ interface Diagnostic {
         successCallback: (state: string) => void
     ) => void;
 
+
+    /**
+     * ANDROID ONLY
+     * Restarts the application.
+     * By default, a "warm" restart will be performed in which the main Cordova activity is immediately restarted, causing the Webview instance to be recreated.
+     * However, if the `cold` parameter is set to true, then the application will be "cold" restarted, meaning a system exit will be performed, causing the entire application to be restarted.
+     * This is useful if you want to fully reset the native application state but will cause the application to briefly disappear and re-appear.
+     *
+     * Note: There is no successCallback() since if the operation is successful, the application will restart immediately before any success callback can be applied.
+     * @param {(error: string) => void} errorCallback
+     * @param {boolean} cold
+     */
+    restart?: (
+        errorCallback: (error: string) => void,
+        cold: boolean
+    ) => void;
+
+    /**
+     * ANDROID and iOS ONLY
+     * Returns CPU architecture of the current device.
+     * @param successCallback
+     * @param errorCallback
+     */
+    getArchitecture?: (
+        successCallback: (state: string) => void,
+        errorCallback: (error: string) => void
+    ) => void;
 
     /**
      * ANDROID ONLY

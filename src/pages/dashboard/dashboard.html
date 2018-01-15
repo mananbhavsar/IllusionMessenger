@@ -15,21 +15,21 @@
       <ion-icon name='cash' item-left color="dashboardColor"></ion-icon>
       {{'DashboardDetail._OutstandingAmount_' | translate}}
       <ion-note item-right>
-        &#8377; {{roundUp(dashboardData.OutstandingAmount)}}
+        {{dashboardData.CurrencySymbol}} {{roundUp(dashboardData.OutstandingAmount)}}
       </ion-note>
     </ion-item>
     <ion-item>
       <ion-icon name='cash' item-left color="dashboardColor"></ion-icon>
       {{'DashboardDetail._UnbilledAmount_' | translate}}
       <ion-note item-right>
-        &#8377; {{roundUp(dashboardData.UnbilledAmount)}}
+        {{dashboardData.CurrencySymbol}} {{roundUp(dashboardData.UnbilledAmount)}}
       </ion-note>
     </ion-item>
     <ion-item>
       <ion-icon name='cash' item-left color="dashboardColor"></ion-icon>
       {{'DashboardDetail._LastBillAmount_' | translate}}
       <ion-note item-right>
-        &#8377; {{roundUp(dashboardData.LastMonthBillAmount)}}
+        {{dashboardData.CurrencySymbol}} {{roundUp(dashboardData.LastMonthBillAmount)}}
       </ion-note>
     </ion-item>
   </ion-list>

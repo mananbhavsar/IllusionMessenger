@@ -1,28 +1,28 @@
 {
-  "_from": "onesignal-cordova-plugin",
-  "_id": "onesignal-cordova-plugin@2.2.4",
+  "_from": "onesignal-cordova-plugin@^2.2.4",
+  "_id": "onesignal-cordova-plugin@2.2.5",
   "_inBundle": false,
-  "_integrity": "sha512-qy3nCqCWL/emBOq0vx+kkM0qYckqX8zdrPKdEh22DcvDunzB88Ic+F93u7JOz9gZ9gOPWlCmkDy7Bcpd531qZA==",
+  "_integrity": "sha512-4mYhkIj2kA2182AwZ9L8+iI+NotDlio5J4eF9m+iucDIqmz8xp74ktZCpQk6ZiBpuPUn8aA2O3M92T9ctCkH6g==",
   "_location": "/onesignal-cordova-plugin",
   "_phantomChildren": {},
   "_requested": {
-    "type": "tag",
+    "type": "range",
     "registry": true,
-    "raw": "onesignal-cordova-plugin",
+    "raw": "onesignal-cordova-plugin@^2.2.4",
     "name": "onesignal-cordova-plugin",
     "escapedName": "onesignal-cordova-plugin",
-    "rawSpec": "",
+    "rawSpec": "^2.2.4",
     "saveSpec": null,
-    "fetchSpec": "latest"
+    "fetchSpec": "^2.2.4"
   },
   "_requiredBy": [
     "#USER",
     "/"
   ],
-  "_resolved": "https://registry.npmjs.org/onesignal-cordova-plugin/-/onesignal-cordova-plugin-2.2.4.tgz",
-  "_shasum": "bfa58489fcda9ea56417e9cdc0669c81ce08c77f",
-  "_spec": "onesignal-cordova-plugin",
-  "_where": "/Users/Mubasshir/Documents/ionic/SignatureSmiles/old/IllusionDental",
+  "_resolved": "https://registry.npmjs.org/onesignal-cordova-plugin/-/onesignal-cordova-plugin-2.2.5.tgz",
+  "_shasum": "619e3292101d15d237441c7da468abd0df0dc99c",
+  "_spec": "onesignal-cordova-plugin@^2.2.4",
+  "_where": "/Users/Mubasshir/Documents/ionic/SignatureSmiles/solitaire_dental",
   "author": {
     "name": "Josh Kasten"
   },
@@ -92,5 +92,5 @@
     "type": "git",
     "url": "git+https://github.com/onesignal/OneSignal-Cordova-SDK.git"
   },
-  "version": "2.2.4"
+  "version": "2.2.5"
 }

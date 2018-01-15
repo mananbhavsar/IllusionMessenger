@@ -1,19 +1,19 @@
 {
-  "_from": "cordova-plugin-video-editor",
+  "_from": "cordova-plugin-video-editor@^1.1.3",
   "_id": "cordova-plugin-video-editor@1.1.3",
   "_inBundle": false,
   "_integrity": "sha1-pf3SVIwdfiDTNlDKJYkTuhj7/NY=",
   "_location": "/cordova-plugin-video-editor",
   "_phantomChildren": {},
   "_requested": {
-    "type": "tag",
+    "type": "range",
     "registry": true,
-    "raw": "cordova-plugin-video-editor",
+    "raw": "cordova-plugin-video-editor@^1.1.3",
     "name": "cordova-plugin-video-editor",
     "escapedName": "cordova-plugin-video-editor",
-    "rawSpec": "",
+    "rawSpec": "^1.1.3",
     "saveSpec": null,
-    "fetchSpec": "latest"
+    "fetchSpec": "^1.1.3"
   },
   "_requiredBy": [
     "#USER",
@@ -21,8 +21,8 @@
   ],
   "_resolved": "https://registry.npmjs.org/cordova-plugin-video-editor/-/cordova-plugin-video-editor-1.1.3.tgz",
   "_shasum": "a5fdd2548c1d7e20d33650ca258913ba18fbfcd6",
-  "_spec": "cordova-plugin-video-editor",
-  "_where": "/Users/Mubasshir/Documents/ionic/SignatureSmiles/old/IllusionDental",
+  "_spec": "cordova-plugin-video-editor@^1.1.3",
+  "_where": "/Users/Mubasshir/Documents/ionic/SignatureSmiles/solitaire_dental",
   "author": {
     "name": "Josh Bavari"
   },

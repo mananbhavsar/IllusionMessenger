@@ -1,19 +1,19 @@
 {
-  "_from": "cordova-plugin-photo-library",
+  "_from": "cordova-plugin-photo-library@^2.1.0",
   "_id": "cordova-plugin-photo-library@2.1.0",
   "_inBundle": false,
   "_integrity": "sha1-P+K1RbgYWnSBBQSJioy0F6991uQ=",
   "_location": "/cordova-plugin-photo-library",
   "_phantomChildren": {},
   "_requested": {
-    "type": "tag",
+    "type": "range",
     "registry": true,
-    "raw": "cordova-plugin-photo-library",
+    "raw": "cordova-plugin-photo-library@^2.1.0",
     "name": "cordova-plugin-photo-library",
     "escapedName": "cordova-plugin-photo-library",
-    "rawSpec": "",
+    "rawSpec": "^2.1.0",
     "saveSpec": null,
-    "fetchSpec": "latest"
+    "fetchSpec": "^2.1.0"
   },
   "_requiredBy": [
     "#USER",
@@ -21,8 +21,8 @@
   ],
   "_resolved": "https://registry.npmjs.org/cordova-plugin-photo-library/-/cordova-plugin-photo-library-2.1.0.tgz",
   "_shasum": "3fe2b545b8185a74810504898a8cb417af7dd6e4",
-  "_spec": "cordova-plugin-photo-library",
-  "_where": "/Users/Mubasshir/Documents/ionic/SignatureSmiles/old/IllusionDental",
+  "_spec": "cordova-plugin-photo-library@^2.1.0",
+  "_where": "/Users/Mubasshir/Documents/ionic/SignatureSmiles/solitaire_dental",
   "author": {
     "name": "Roman Viskin",
     "email": "npm@terikon.com",

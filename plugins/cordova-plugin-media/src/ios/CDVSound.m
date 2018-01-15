@@ -754,8 +754,6 @@
     if ((audioFile != nil) && (audioFile.recorder != nil)) {
         NSLog(@"Stopped recording audio sample '%@'", audioFile.resourcePath);
         [audioFile.recorder stop];
-	[self startPlayingAudio:command];
-	[self stopPlayingAudio:command];
         // no callback - that will happen in audioRecorderDidFinishRecording
     }
 }

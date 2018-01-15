@@ -3,6 +3,7 @@ import { Events, Platform } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { Network } from '@ionic-native/network';
 import { Http, Headers, Response, URLSearchParams } from '@angular/http';
+import 'rxjs/add/operator/timeout';
 
 import 'rxjs/add/operator/map';
 import { TranslateService } from "@ngx-translate/core";

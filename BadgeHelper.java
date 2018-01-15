@@ -1,4 +1,4 @@
-package com.illusiondental.app;
+package com.solitairedental.app;
 
 import android.content.Context;
 import android.util.Log;

@@ -288,7 +288,10 @@ export class MyApp {
 
 
         this.events.subscribe('alert:basic', (title, subTitle, buttons) => {
-            if (title.trim() === '' || subTitle.trim() === '') {
+            if (title && title.trim() === '') {
+                return;
+            }
+            if (subTitle && subTitle.trim() === '') {
                 return;
             }
             buttons = buttons || [this.ok_translate]; //OK

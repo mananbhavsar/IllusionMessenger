@@ -181,12 +181,12 @@ export class UserProvider {
                 //waiting to logged in
                 this.events.subscribe('user:ready', (user) => {
                     if (user) {
-                        this.registerPushID(push_id).then(status=>{
+                        this.registerPushID(push_id).then(status => {
                             resolve(status);
-                        }).catch(error => { 
+                        }).catch(error => {
                             reject(error);
                         });
-                    }else{
+                    } else {
                         reject('Already logged out');
                     }
                 });
@@ -202,7 +202,7 @@ export class UserProvider {
         if (this.platform.is('android')) {
             OSName = 'android';
         }
-        this.angularFireDatabase.object('Version/' + OSName).snapshotChanges().subscribe(snapshot => {
+        this.angularFireDatabase.object('Version/' + Global.APP_NAME.replace(/\s+/g, '-').toLowerCase() + '/' + OSName).snapshotChanges().subscribe(snapshot => {
             let AppVersion = snapshot.payload.val();
             if (AppVersion && this.global.AppVersion !== AppVersion) {
                 let alert = this.alertCtrl.create({

@@ -1,19 +1,19 @@
 {
-  "_from": "cordova-plugin-media@3.0.1",
+  "_from": "cordova-plugin-media@^3.0.1",
   "_id": "cordova-plugin-media@3.0.1",
   "_inBundle": false,
   "_integrity": "sha1-XkbnbPp31O0oqHWYywco5Ourbyc=",
   "_location": "/cordova-plugin-media",
   "_phantomChildren": {},
   "_requested": {
-    "type": "version",
+    "type": "range",
     "registry": true,
-    "raw": "cordova-plugin-media@3.0.1",
+    "raw": "cordova-plugin-media@^3.0.1",
     "name": "cordova-plugin-media",
     "escapedName": "cordova-plugin-media",
-    "rawSpec": "3.0.1",
+    "rawSpec": "^3.0.1",
     "saveSpec": null,
-    "fetchSpec": "3.0.1"
+    "fetchSpec": "^3.0.1"
   },
   "_requiredBy": [
     "#USER",
@@ -21,8 +21,8 @@
   ],
   "_resolved": "https://registry.npmjs.org/cordova-plugin-media/-/cordova-plugin-media-3.0.1.tgz",
   "_shasum": "5e46e76cfa77d4ed28a87598cb0728e4ebab6f27",
-  "_spec": "cordova-plugin-media@3.0.1",
-  "_where": "/Users/Mubasshir/Documents/ionic/SignatureSmiles/IllusionDental",
+  "_spec": "cordova-plugin-media@^3.0.1",
+  "_where": "/Users/Mubasshir/Documents/ionic/SignatureSmiles/solitaire_dental",
   "author": {
     "name": "Apache Software Foundation"
   },

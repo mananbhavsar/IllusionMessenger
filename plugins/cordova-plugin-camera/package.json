@@ -1,19 +1,19 @@
 {
-  "_from": "cordova-plugin-camera@3.0.0",
+  "_from": "cordova-plugin-camera@^3.0.0",
   "_id": "cordova-plugin-camera@3.0.0",
   "_inBundle": false,
   "_integrity": "sha1-khL/DiohHuhA2Kg/BR030N7AvR8=",
   "_location": "/cordova-plugin-camera",
   "_phantomChildren": {},
   "_requested": {
-    "type": "version",
+    "type": "range",
     "registry": true,
-    "raw": "cordova-plugin-camera@3.0.0",
+    "raw": "cordova-plugin-camera@^3.0.0",
     "name": "cordova-plugin-camera",
     "escapedName": "cordova-plugin-camera",
-    "rawSpec": "3.0.0",
+    "rawSpec": "^3.0.0",
     "saveSpec": null,
-    "fetchSpec": "3.0.0"
+    "fetchSpec": "^3.0.0"
   },
   "_requiredBy": [
     "#USER",
@@ -21,8 +21,8 @@
   ],
   "_resolved": "https://registry.npmjs.org/cordova-plugin-camera/-/cordova-plugin-camera-3.0.0.tgz",
   "_shasum": "9212ff0e2a211ee840d8a83f051d37d0dec0bd1f",
-  "_spec": "cordova-plugin-camera@3.0.0",
-  "_where": "/Users/Mubasshir/Documents/ionic/SignatureSmiles/old/IllusionDental",
+  "_spec": "cordova-plugin-camera@^3.0.0",
+  "_where": "/Users/Mubasshir/Documents/ionic/SignatureSmiles/solitaire_dental",
   "author": {
     "name": "Apache Software Foundation"
   },

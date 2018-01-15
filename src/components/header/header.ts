@@ -16,7 +16,7 @@ export class HeaderComponent {
     cartCounter: number = null;
     prevPageColor: string = null;
     colorHex = {
-        primary: '#D5232F',
+        primary: '#0098da',
         secondary: '#32db64',
         danger: '#f53d3d',
         light: '#f4f4f4',

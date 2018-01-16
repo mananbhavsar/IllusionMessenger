@@ -136,6 +136,15 @@
         "_InvoiceDate_": "Invoice Date",
         "_NetAmount_": "Net Amount"
     },
+    "Payments": {
+        "_InstrumentDate_": "Instrument Date",
+        "_InstrumentNo_": "Instrument No",
+        "_ReceiptAmount_": "Receipt Amount",
+        "_ReceiptDate_": "Receipt Date",
+        "_ReceiptMode_": "Receipt Mode",
+        "_ReceiptNo_": "Receipt No",
+        "_ReceiptRoute_": "Receipt Route"
+    },
     "Common": {
         "_Menu_": "Menu",
         "_Home_": "Home",

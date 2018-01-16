@@ -3,6 +3,16 @@
   <div [hidden]="selectedOffice === {}" class="office">{{selectedOffice.CustomerName}}</div>
 </ion-header>
 <ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <button ion-button full icon-left (click)="makePayment()">
+          <ion-icon name="ios-card"></ion-icon>
+          Make Payment
+        </button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
   <center-spinner [hidden]="items"></center-spinner>
   <ion-list class="cases">
     <ion-item *ngFor="let item of items | orderBy:'InvoiceDateInMili':true;let i = index" (click)="openInvoice(item, i)" text-wrap>

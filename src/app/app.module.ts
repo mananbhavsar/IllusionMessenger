@@ -192,7 +192,7 @@ export function createTranslateLoader(http: HttpClient) {
         OneSignal,
         NotificationsProvider,
         FileOpener,
-    FileOpsProvider,
+        FileOpsProvider,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

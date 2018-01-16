@@ -22,8 +22,6 @@ export class CommonProvider {
     this.isCordova = this.platform.is('cordova');
   }
 
-  
-
   build_query(params) {
 
     var esc = encodeURIComponent;

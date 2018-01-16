@@ -6,12 +6,16 @@ import { OfficeServiceProvider } from "../../providers/office-service/office-ser
 import { ConnectionProvider } from "../../providers/connection/connection";
 import { FileOpsProvider } from "../../providers/file-ops/file-ops";
 
+import * as firebase from 'firebase';
+import * as moment from 'moment';
 import * as _ from 'underscore';
+import { UUID } from 'angular2-uuid';
 
 import { Global } from "../../app/global";
 
 import { Network } from '@ionic-native/network';
 import { Storage } from '@ionic/storage';
+import { InAppBrowser, InAppBrowserObject } from '@ionic-native/in-app-browser';
 
 @IonicPage()
 @Component({
@@ -22,6 +26,9 @@ export class InvoicePage {
   items: any = [];
   itemInvoices: any = [];
   offlineItems: any = {};
+
+  paymentRef: firebase.database.Reference;
+  browser: InAppBrowserObject = null;
 
   loginType: number = 0;
   selectedOffice: any = {};
@@ -47,6 +54,7 @@ export class InvoicePage {
     private translate: TranslateService,
     private actionSheetCtrl: ActionSheetController,
     private _fileOps: FileOpsProvider,
+    private _inAppBrowser: InAppBrowser,
   ) {
     this.global = Global;
     this.loginType = this.connection.user.LoginTypeID;
@@ -60,7 +68,7 @@ export class InvoicePage {
       this.loading = translated;
     });
     //title
-    this.translate.get('HomeScreen.HomeScreen').subscribe(translated => {
+    this.translate.get('HomeScreen._Invoice_').subscribe(translated => {
       this.title = translated;
     });
     //Not Available in Offline
@@ -88,7 +96,7 @@ export class InvoicePage {
           });
 
           this.setTitle();
-          // this.initOffline();
+          this.initOffline();
         }
 
         this.initData().then(response => { }).catch(error => {
@@ -129,6 +137,12 @@ export class InvoicePage {
         reject(false);
       }
     });
+  }
+
+  ngOnDestroy() {
+    if (this.paymentRef) {
+      this.paymentRef.off('value');
+    }
   }
 
   initOffline() {
@@ -251,6 +265,53 @@ export class InvoicePage {
     }).catch(error => {
 
     });
+  }
+
+  makePayment() {
+    //create uuid to identify it
+    let payment_uuid = UUID.UUID();
+    console.log(payment_uuid);
+
+    //making request to server to save sync this uuid
+    this.connection.doPost('MobileApp/GetTransactionURL', {
+      UUID: payment_uuid
+    }).then((response: any) => {
+      //listening to status change event
+      if (this.paymentRef) {
+        this.paymentRef.off('value');
+      }
+      this.paymentRef = firebase.database().ref('Payments/' + payment_uuid);
+      this.paymentRef.on('value', snapshot => {
+        let paymentSnapshot = snapshot.val();
+        switch (paymentSnapshot.Status) {
+          case 'Initiate':
+            //open inAppBrowser 
+            this.browser = this._inAppBrowser.create(response.URL);
+            this.browser.show();
+            break;
+
+          case 'Success':
+            this.browser.close();
+            this.paymentRef.off('value');
+            this.paymentRef = null;
+
+            this.events.publish('alert:create', 'Success!', paymentSnapshot.Message);
+            break;
+
+          case 'Failed':
+            this.browser.close();
+            this.paymentRef.off('value');
+            this.paymentRef = null;
+
+            this.events.publish('alert:create', 'Failed!', paymentSnapshot.Message);
+            break;
+        }
+      });
+
+    }).catch(error => {
+      console.log(error);
+    });
+
   }
 
 }

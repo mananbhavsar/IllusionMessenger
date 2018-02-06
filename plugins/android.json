@@ -85,13 +85,13 @@
     "ionic-plugin-keyboard": {
       "PACKAGE_NAME": "com.illusiondental.app"
     },
-    "mx.ferreyra.callnumber": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
     "onesignal-cordova-plugin": {
       "PACKAGE_NAME": "com.illusiondental.app"
     },
     "nl.x-services.plugins.videocaptureplus": {
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "com-sarriaroman-photoviewer": {
       "PACKAGE_NAME": "com.illusiondental.app"
     }
   },

@@ -32,6 +32,7 @@ import { PhotoLibrary } from '@ionic-native/photo-library';
 import { Globalization } from '@ionic-native/globalization';
 import { OneSignal } from '@ionic-native/onesignal';
 import { FileOpener } from '@ionic-native/file-opener';
+import { PhotoViewer } from '@ionic-native/photo-viewer';
 
 import { HttpModule } from '@angular/http';
 import { IonicStorageModule } from '@ionic/storage';
@@ -193,6 +194,7 @@ export function createTranslateLoader(http: HttpClient) {
         NotificationsProvider,
         FileOpener,
         FileOpsProvider,
+	PhotoViewer
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

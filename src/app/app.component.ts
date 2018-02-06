@@ -226,6 +226,12 @@ export class MyApp {
             if (this.user._user.LoginTypeID === Global.LoginType.Group) {
                 //for dashboard
                 return ['DashboardPage', 'PickupPage', 'InvoicePage', 'PaymentsPage'].indexOf(page.name) === -1;
+            } else {
+                //for non portal user
+                if (!this.user._user.isPortalAdmin) {
+                    return ['InvoicePage', 'PaymentsPage'].indexOf(page.name) === -1;
+                }
+
             }
             return true;
         }

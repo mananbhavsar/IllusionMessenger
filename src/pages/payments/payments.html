@@ -1,28 +1,17 @@
 <ion-header no-border>
   <header [title]="title"></header>
-  <div [hidden]="selectedOffice === {}" class="office">{{selectedOffice?.CustomerName}}</div>
+  <!-- <div [hidden]="selectedOffice === {}" class="office">{{selectedOffice?.CustomerName}}</div> -->
+  <div class="sub-heading">Last six payments</div>
 </ion-header>
 <ion-content>
   <center-spinner [hidden]="items"></center-spinner>
   <ion-list class="cases">
-    <ion-item *ngFor="let item of items | orderBy:'ReceiptDateInMili':true;let i = index" text-wrap>
+    <ion-item *ngFor="let item of items;let i = index" text-wrap>
       <h2>
         {{item.ReceiptNo}}
       </h2>
       <p>
         <ion-grid>
-          <ion-row>
-            <ion-col>
-              {{'Payments._InstrumentDate_' | translate}}
-            </ion-col>
-            <ion-col ion-note>{{item.InstrumentDate}}</ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col>
-              {{'Payments._InstrumentNo_' | translate}}
-            </ion-col>
-            <ion-col ion-note>{{item.InstrumentNo}}</ion-col>
-          </ion-row>
           <ion-row>
             <ion-col>
               {{'Payments._ReceiptAmount_' | translate}}
@@ -37,21 +26,9 @@
           </ion-row>
           <ion-row>
             <ion-col>
-              {{'Payments._ReceiptMode_' | translate}}
-            </ion-col>
-            <ion-col ion-note>{{item.ReceiptMode}}</ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col>
               {{'Payments._ReceiptNo_' | translate}}
             </ion-col>
             <ion-col ion-note>{{item.ReceiptNo}}</ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col>
-              {{'Payments._ReceiptRoute_' | translate}}
-            </ion-col>
-            <ion-col ion-note>{{item.ReceiptRoute}}</ion-col>
           </ion-row>
         </ion-grid>
       </p>

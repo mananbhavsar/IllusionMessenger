@@ -29,6 +29,7 @@ export class InvoicePage {
 
   paymentRef: firebase.database.Reference;
   browser: InAppBrowserObject = null;
+  paymentSnapshot: any = {};
 
   loginType: number = 0;
   selectedOffice: any = {};
@@ -55,6 +56,7 @@ export class InvoicePage {
     private actionSheetCtrl: ActionSheetController,
     private _fileOps: FileOpsProvider,
     private _inAppBrowser: InAppBrowser,
+    private network: Network,
   ) {
     this.global = Global;
     this.loginType = this.connection.user.LoginTypeID;
@@ -75,6 +77,14 @@ export class InvoicePage {
     this.translate.get('ChatScreen._NotAvailableOffline_').subscribe(translated => {
       this.not_availble_in_offline_translate = translated;
     });
+  }
+
+  ionViewCanEnter() {
+    this.doTranslate();
+    if (this.network.type === 'none') {
+      this.events.publish('toast:error', this.not_availble_in_offline_translate);
+    }
+    return this.network.type !== 'none';
   }
 
   ionViewDidEnter() {
@@ -280,31 +290,49 @@ export class InvoicePage {
       if (this.paymentRef) {
         this.paymentRef.off('value');
       }
-      this.paymentRef = firebase.database().ref('Payments/' + payment_uuid);
+      this.paymentRef = firebase.database().ref('Payment/' + payment_uuid);
       this.paymentRef.on('value', snapshot => {
-        let paymentSnapshot = snapshot.val();
-        switch (paymentSnapshot.Status) {
+        this.paymentSnapshot = snapshot.val();
+
+        switch (this.paymentSnapshot.Status) {
           case 'Initiate':
             //open inAppBrowser 
-            this.browser = this._inAppBrowser.create(response.URL);
+            this.browser = this._inAppBrowser.create(response.URL, '_blank', {
+              zoom: 'no',
+              location: 'yes',
+              enableViewportScale: 'no',
+              toolbar: 'no'
+            });
             this.browser.show();
             break;
 
           case 'Success':
             this.browser.close();
-            this.paymentRef.off('value');
-            this.paymentRef = null;
-
-            this.events.publish('alert:create', 'Success!', paymentSnapshot.Message);
             break;
 
           case 'Failed':
             this.browser.close();
+            break;
+        }
+
+        if (this.paymentSnapshot.Status === 'Initiate') {
+          //listening to close event
+          this.browser.on('exit').subscribe((event) => {
             this.paymentRef.off('value');
             this.paymentRef = null;
 
-            this.events.publish('alert:create', 'Failed!', paymentSnapshot.Message);
-            break;
+            if (['Success', 'Failed'].indexOf(this.paymentSnapshot.Status) > -1) {
+              setTimeout(() => {
+                this.events.publish('alert:basic', this.paymentSnapshot.Status + '!', this.paymentSnapshot.Message);
+                //loading data again if success to get latest payment
+                if (this.paymentSnapshot.Status === 'Success') {
+                  this.initData().catch(error => { });
+                }
+              });
+            }
+          }, (error) => {
+            console.log(error);
+          });
         }
       });
 

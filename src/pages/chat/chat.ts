@@ -53,13 +53,14 @@ export class ChatPage {
 
   data: any = {};
   ticket: string = null;
+  impressNo: string = null;
   title: string = 'loading';
   subTitle: string = null;
   isIOS: boolean = false;
   isCordova: boolean = false;
   keyboardHeight: number = 0;
 
-
+  pathIdentifier: string = '';
   basePath: string = '';
   path: string = '';
 
@@ -177,11 +178,24 @@ export class ChatPage {
       console.log(error);
     });
 
+    //checking if param is single string
+    if (typeof this.navParams.data === 'string') {
+      this.navParams.data = {
+        TicketNo: this.navParams.data
+      };
+    }
     //getting Ticket no
-    this.ticket = this.navParams.data;
-    console.log(this.ticket);
+    if (Global.work_with_impression_no) {
+      this.ticket = this.navParams.data.TicketNo;
+      this.impressNo = this.navParams.data.ImpressionNo;
 
-    this.basePath = 'Communications/' + this.ticket + '/';
+      this.pathIdentifier = this.impressNo;
+    } else {
+      this.ticket = this.navParams.data.TicketNo;
+      this.pathIdentifier = this.ticket;
+    }
+    this.basePath = 'Communications/' + this.pathIdentifier + '/';
+
 
     this.keyboard.onKeyboardShow().subscribe((data) => {
       this.scrollBottom('keyboard show').catch(error => { });
@@ -563,9 +577,13 @@ export class ChatPage {
   initData() {
     return new Promise((resolve, reject) => {
       if (this._network.type !== 'none') {
-        this.connection.doPost('Communication/GetQueryDetail', {
-          TicketRegisterNo: this.ticket,
-        }).then((response: any) => {
+        let params = {
+          TicketRegisterNo: this.ticket
+        };
+        if (Global.work_with_impression_no) {
+          params['ImpressionNo'] = this.impressNo;
+        }
+        this.connection.doPost('Communication/GetQueryDetail', params).then((response: any) => {
           this.data = JSON.parse(response.Data);
           console.log(this.data);
           this.setOfflineTicketList(this.data);
@@ -745,8 +763,7 @@ export class ChatPage {
       readObject[this.userID] = firebase.database.ServerValue.TIMESTAMP;
 
       this.translateMessage(message, type).then(translatedMessages => {
-        console.log(translatedMessages);
-        this.messagesRef.push({
+        let values = {
           Message: message,
           Translation: translatedMessages,
           MessageLanguage: this.myLanguage,
@@ -758,9 +775,14 @@ export class ChatPage {
           LoginTypeID: this.user.LoginTypeID,
           Status: 0,
           URL: url,
-          TicketNo: this.ticket,
           Read: readObject,
-        }).then((messageFromFirebase) => {
+          TicketNo: this.ticket,
+        };
+        if (Global.work_with_impression_no) {
+          values['ImpressionNo'] = this.impressNo;
+        }
+
+        this.messagesRef.push(values).then((messageFromFirebase) => {
           let data = {
             Message: message,
             MessageType: type,
@@ -1103,6 +1125,20 @@ export class ChatPage {
     let fileName = file.substring(file.lastIndexOf('/') + 1);
     let fileExtension = file.substring(file.lastIndexOf('.') + 1);
 
+    let params = {
+      CustomerID: this.user.CustomerID,
+      SecureToken: this.user.SecureToken,
+      OrganizationUnitID: this.user.LoginOUID,
+      LoginTypeID: this.user.LoginTypeID,
+      LoginUserID: this.user.CustomerPortalID,
+      FileName: fileName,
+      FileExtension: fileExtension,
+      TicketNo: this.ticket,
+    };
+    if (Global.work_with_impression_no) {
+      params['ImpressionNo'] = this.impressNo;
+    }
+
     let options: FileUploadOptions = {
       fileKey: 'file',
       fileName: fileName,
@@ -1114,16 +1150,7 @@ export class ChatPage {
       //   FileName: fileName,
       //   FileExtension: fileExtension,
       // }),
-      params: {
-        TicketNo: this.ticket,
-        CustomerID: this.user.CustomerID,
-        SecureToken: this.user.SecureToken,
-        OrganizationUnitID: this.user.LoginOUID,
-        LoginTypeID: this.user.LoginTypeID,
-        LoginUserID: this.user.CustomerPortalID,
-        FileName: fileName,
-        FileExtension: fileExtension,
-      },
+      params: params,
     }
 
     return options;
@@ -1166,8 +1193,7 @@ export class ChatPage {
       fileName = message.URL.substring(message.URL.lastIndexOf('/') + 1).replace('.' + fileExtension, '');
     }
 
-    this.connection.doPost('Communication/InsertChat', {
-      TicketNo: this.ticket,
+    let params = {
       LiveUsersOnChat: activeUserList,
       ChattingUsers: this.common.build_query(this.userChatting),
       TimeOnPhone: moment().utc().valueOf(),
@@ -1176,7 +1202,13 @@ export class ChatPage {
       URL: message.URL,
       FileName: fileName,
       FileExtension: fileExtension,
-    }, false).then((response: any) => {
+      TicketNo: this.ticket,
+    };
+    if (Global.work_with_impression_no) {
+      params['ImpressionNo'] = this.impressNo;
+    }
+
+    this.connection.doPost('Communication/InsertChat', params, false).then((response: any) => {
       //send Push
       if (Global.Push.OneSignal) {
         this.sendPushNotification(message, response.Data);
@@ -1266,10 +1298,16 @@ export class ChatPage {
 
   clearBadgeCountIfAny() {
     if (this.messages.length) {
-      this.connection.doPost('Communication/UpdateChatStatus', {
+
+      let params = {
+        UserCode: this.userID,
         TicketNo: this.ticket,
-        UserCode: this.userID
-      }, false).then((response: any) => {
+      };
+      if (Global.work_with_impression_no) {
+        params['ImpressionNo'] = this.ticket;
+      }
+
+      this.connection.doPost('Communication/UpdateChatStatus', params, false).then((response: any) => {
         this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { })
       }).catch(error => {
         console.log(error);

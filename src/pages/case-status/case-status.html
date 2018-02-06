@@ -48,6 +48,18 @@
                     </ion-row>
                     <ion-row>
                         <ion-col>
+                            {{'CaseStatus._ImpressionDate_' | translate}}
+                        </ion-col>
+                        <ion-col ion-note>{{item.formatedImpressionDateTime}}</ion-col>
+                    </ion-row>
+                    <ion-row>
+                        <ion-col>
+                            {{'CaseStatus._DueDate_' | translate}}
+                        </ion-col>
+                        <ion-col ion-note>{{item.DueDate}}</ion-col>
+                    </ion-row>
+                    <ion-row>
+                        <ion-col>
                             {{'CaseStatus._ReferenceEntryNo' | translate}}
                         </ion-col>
                         <ion-col ion-note>{{item.ReferenceEntryNo}}</ion-col>
@@ -64,9 +76,14 @@
                         </ion-col>
                         <ion-col ion-note [ngClass]="getStatusColor(item.Status)">{{item.ProgressDetail}}</ion-col>
                     </ion-row>
-                    <ion-row *ngIf="global && [global.LoginType.Doctor, global.LoginType.Parent].indexOf(loginType) > -1">
-                        <ion-col>&nbsp;</ion-col>
-                        <ion-col text-right>
+                    <ion-row>
+                        <ion-col text-left *ngIf="item.Rx && item.Rx !== ''">
+                            <button ion-button color="casestatus" icon-left small (click)="openRx(item, i, $event)">
+                                <ion-icon name="ios-paper"></ion-icon>
+                                {{'CaseStatus._OpenRx_' | translate}}
+                            </button>
+                        </ion-col>
+                        <ion-col text-right *ngIf="global && [global.LoginType.Doctor, global.LoginType.Parent].indexOf(loginType) > -1">
                             <button ion-button color="dashboard" icon-left small (click)="openChat(item, i, $event)">
                                 <ion-icon name="ios-chatbubbles"></ion-icon>
                                 {{'CaseStatus._ClickToCommunicate_' | translate}}

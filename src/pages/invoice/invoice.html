@@ -1,6 +1,7 @@
 <ion-header no-border>
   <header [title]="title"></header>
-  <div [hidden]="selectedOffice === {}" class="office">{{selectedOffice.CustomerName}}</div>
+  <!-- <div [hidden]="selectedOffice === {}" class="office">{{selectedOffice.CustomerName}}</div> -->
+  <div class="sub-heading">Last six invoices</div>
 </ion-header>
 <ion-content>
   <ion-grid>
@@ -15,7 +16,7 @@
   </ion-grid>
   <center-spinner [hidden]="items"></center-spinner>
   <ion-list class="cases">
-    <ion-item *ngFor="let item of items | orderBy:'InvoiceDateInMili':true;let i = index" (click)="openInvoice(item, i)" text-wrap>
+    <ion-item *ngFor="let item of items;let i = index" (click)="openInvoice(item, i)" text-wrap>
       <p>
         <ion-grid>
           <ion-row>

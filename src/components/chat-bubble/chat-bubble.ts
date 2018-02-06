@@ -32,12 +32,14 @@ export class ChatBubbleComponent {
   @Input() message: any;
   @Input() userID: string;
   @Input() ticket: string;
+  @Input() impressNo: string;
   @Input() users: any = {};
   @Input() LoginTypeID: number = 0;
   @Input() myLanguage: string = 'en';
 
   global: any = Global;
 
+  pathIdentifier: string = null;
   basePath: string = '';
   messagePath: string = '';
   statusRef = null;
@@ -83,23 +85,30 @@ export class ChatBubbleComponent {
 
   ngOnInit() {
     this.doTranslate();
-    this.basePath = 'Communications/' + this.ticket + '/';
-    this.messagePath = this.basePath + 'Chat/' + this.message.key;
+    if (Global.work_with_impression_no) {
+      this.pathIdentifier = this.impressNo;
+    } else {
+      this.pathIdentifier = this.ticket;
+    }
+    if (this.pathIdentifier) {
+      this.basePath = 'Communications/' + this.pathIdentifier + '/';
+      this.messagePath = this.basePath + 'Chat/' + this.message.key;
 
-    this.doReading();
+      this.doReading();
 
-    this.fileOps.getDataDirectory().then((path: string) => {
-      this.dataDirectory = path;
+      this.fileOps.getDataDirectory().then((path: string) => {
+        this.dataDirectory = path;
 
-      this.downloadDirectory = this.dataDirectory + this.ticket + '/';
-      this.fileOps.createDirectoryIfNotExist(this.dataDirectory, this.ticket);
+        this.downloadDirectory = this.dataDirectory + this.ticket + '/';
+        this.fileOps.createDirectoryIfNotExist(this.dataDirectory, this.ticket);
 
-      this.processFile();
-    }).catch(error => {
-      console.log(error);
-    });
+        this.processFile();
+      }).catch(error => {
+        console.log(error);
+      });
 
-    // this.processBadgeCount();
+      // this.processBadgeCount();
+    }
   }
 
   ngOnDestroy() {

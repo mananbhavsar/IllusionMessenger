@@ -44,6 +44,7 @@
     "@ionic-native/network": "^4.3.2",
     "@ionic-native/onesignal": "^4.5.2",
     "@ionic-native/photo-library": "^4.5.0",
+    "@ionic-native/photo-viewer": "^4.5.3",
     "@ionic-native/shake": "^4.3.0",
     "@ionic-native/social-sharing": "^4.3.0",
     "@ionic-native/splash-screen": "^4.3.2",
@@ -63,7 +64,9 @@
     "angular2-uuid": "^1.1.1",
     "angularfire2": "^5.0.0-rc.3",
     "call-number": "^1.0.1",
+    "com-sarriaroman-photoviewer": "^1.1.11",
     "com.hutchind.cordova.plugins.streamingmedia": "~0.1.4",
+    "com.moust.cordova.videoplayer": "https://github.com/moust/cordova-plugin-videoplayer.git",
     "cordova-android": "6.3.0",
     "cordova-base64-to-gallery": "^4.1.2",
     "cordova-ios": "4.5.4",
@@ -151,7 +154,6 @@
       "ionic-plugin-keyboard": {},
       "cordova.plugins.diagnostic": {},
       "cordova-plugin-vibration": {},
-      "mx.ferreyra.callnumber": {},
       "com.hutchind.cordova.plugins.streamingmedia": {},
       "nl.x-services.plugins.videocaptureplus": {},
       "cordova-plugin-video-editor": {},
@@ -161,7 +163,11 @@
         "PHOTO_LIBRARY_USAGE_DESCRIPTION": "To save files in Library"
       },
       "onesignal-cordova-plugin": {},
-      "cordova-plugin-camera": {}
+      "cordova-plugin-camera": {},
+      "call-number": {},
+      "cordova-plugin-file-opener2": {},
+      "com.moust.cordova.videoplayer": {},
+      "com-sarriaroman-photoviewer": {}
     },
     "platforms": [
       "ios"

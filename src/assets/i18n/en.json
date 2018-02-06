@@ -72,8 +72,10 @@
         "_ReferenceEntryNo": "Reference Entry No",
         "_Status_": "Status",
         "_ProgressDetail_": "Progress Detail",
-        "_ImpressionDate_": "ImpressionDate",
+        "_ImpressionDate_": "Impression Date",
+        "_DueDate_":"Due Date",
         "_ClickToCommunicate_": "Click to Communicate",
+        "_OpenRx_":"Open Rx",
         "Dispatch": {
             "_Patient": "Patient",
             "_DispatchDate": "Dispatch Date",

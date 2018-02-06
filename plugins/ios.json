@@ -71,9 +71,6 @@
     "ionic-plugin-keyboard": {
       "PACKAGE_NAME": "com.illusiondental.app"
     },
-    "mx.ferreyra.callnumber": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
     "com.hutchind.cordova.plugins.streamingmedia": {
       "PACKAGE_NAME": "com.illusiondental.app"
     },
@@ -97,6 +94,12 @@
       "PACKAGE_NAME": "com.illusiondental.app"
     },
     "cordova-plugin-camera": {
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "com.moust.cordova.videoplayer": {
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "com-sarriaroman-photoviewer": {
       "PACKAGE_NAME": "com.illusiondental.app"
     }
   },

@@ -74,7 +74,9 @@
         "_Status_": "Statut",
         "_ProgressDetail_": "Détail des progrès",
         "_ImpressionDate_": "Date d'impression",
+        "_DueDate_": "Date d'échéance",
         "_ClickToCommunicate_": "Cliquez pour communiquer",
+        "_OpenRx_": "ouvrir Rx",
         "Dispatch": {
             "_Patient": "Patient",
             "_DispatchDate": "Date d'envoi",

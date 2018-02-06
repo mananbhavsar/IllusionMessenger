@@ -159,14 +159,6 @@
     "is_top_level": true,
     "variables": {}
   },
-  "mx.ferreyra.callnumber": {
-    "source": {
-      "type": "registry",
-      "id": "call-number"
-    },
-    "is_top_level": true,
-    "variables": {}
-  },
   "com.moust.cordova.videoplayer": {
     "source": {
       "type": "registry",
@@ -245,6 +237,14 @@
     "source": {
       "type": "registry",
       "id": "cordova-plugin-file-opener2@^2.0.19"
+    },
+    "is_top_level": true,
+    "variables": {}
+  },
+  "com-sarriaroman-photoviewer": {
+    "source": {
+      "type": "registry",
+      "id": "com-sarriaroman-photoviewer"
     },
     "is_top_level": true,
     "variables": {}

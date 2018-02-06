@@ -12,6 +12,7 @@ import { Global } from "../../app/global";
 
 import { Network } from '@ionic-native/network';
 import { Storage } from '@ionic/storage';
+
 @IonicPage()
 @Component({
   selector: 'page-payments',
@@ -69,6 +70,13 @@ export class PaymentsPage {
     });
   }
 
+  ionViewCanEnter() {
+    this.doTranslate();
+    if (this._network.type === 'none') {
+      this.events.publish('toast:error', this.not_availble_in_offline_translate);
+    }
+    return this._network.type !== 'none';
+  }
 
   ionViewDidEnter() {
     this.doTranslate();

@@ -15,6 +15,7 @@ import { Global } from "../../app/global";
 
 import { Network } from '@ionic-native/network';
 import { Storage } from '@ionic/storage';
+import { PhotoViewer } from '@ionic-native/photo-viewer';
 
 @IonicPage()
 @Component({
@@ -34,7 +35,7 @@ export class CaseStatusPage {
   selectedCustomerBranchID: string = null;
   global: any = null;
 
-  selectedTab = 'All';
+  selectedTab = 'In Process';
   page: number = 0;
 
   items: any = [];
@@ -61,6 +62,7 @@ export class CaseStatusPage {
     private _storage: Storage,
     private alertCtrl: AlertController,
     private translate: TranslateService,
+    private photoViewer: PhotoViewer,
   ) {
     this.global = Global;
     this.loginType = this.connection.user.LoginTypeID;
@@ -373,8 +375,15 @@ export class CaseStatusPage {
     event.preventDefault();
     event.stopPropagation();
 
-    if (item.TicketNo && item.TicketNo !== '') {
-      this.navCtrl.push(ChatPage, item.TicketNo);
+    let chatParams = item.TicketNo;
+    if (Global.work_with_impression_no) {
+      chatParams = {
+        ImpressionNo: item.ImpressionNo,
+        TicketNo: item.TicketNo
+      }
+    }
+    if (chatParams && chatParams !== '') {
+      this.navCtrl.push(ChatPage, chatParams);
     } else {
       //checking if offline
       if (this.hasInternet) {
@@ -400,12 +409,19 @@ export class CaseStatusPage {
                   item.TicketNo = data.TicketNo;
                   this.items[index].TicketNo = data.TicketNo;
 
+                  let chatParams = item.TicketNo;
+                  if (Global.work_with_impression_no) {
+                    chatParams = {
+                      ImpressionNo: item.ImpressionNo,
+                      TicketNo: item.TicketNo
+                    }
+                  }
+
                   this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => {
-                    this.navCtrl.push(ChatPage, data.TicketNo);
+                    this.navCtrl.push(ChatPage, chatParams);
                   }).catch(error => {
-                    console.log(error);
                     if (error === 'Empty') {
-                      this.navCtrl.push(ChatPage, data.TicketNo);
+                      this.navCtrl.push(ChatPage, chatParams);
                     }
                   });
                 }).catch(error => {
@@ -419,6 +435,13 @@ export class CaseStatusPage {
       } else {
         this.events.publish('toast:error', this.not_availble_in_offline_translate);
       }
+    }
+  }
+
+  openRx(item, index, event) {
+    if (item.Rx) {
+      let url  = item.Rx;
+      this.photoViewer.show(url, 'Rx', { share: false });
     }
   }
 }

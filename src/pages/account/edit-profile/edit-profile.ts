@@ -34,7 +34,7 @@ export class EditProfilePage {
   ) {
     this.global = Global;
     this.editProfileForm = this.formBuilder.group({
-      name: ['', [Validators.required, Validators.pattern(/^[A-Za-z\s]+$/)]],
+      name: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.pattern(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]],
       mobile_number: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern(/^\d{10}$/)]]
     });

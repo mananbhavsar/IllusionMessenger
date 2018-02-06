@@ -12,6 +12,9 @@ import { Item } from 'ionic-angular/components/item/item';
 
 import { Network } from '@ionic-native/network';
 import { Storage } from '@ionic/storage';
+import { PhotoViewer } from '@ionic-native/photo-viewer';
+
+import { Global } from '../../app/global';
 
 @IonicPage()
 @Component({
@@ -56,6 +59,7 @@ export class CommunicationPage {
     private _network: Network,
     private _storage: Storage,
     private translate: TranslateService,
+    private photoViewer: PhotoViewer,
   ) {
     this.hasInternet = this._network.type !== 'none';
     this.events.subscribe('network:online', () => {
@@ -296,7 +300,14 @@ export class CommunicationPage {
 
   openChat(item, index) {
     this.setUnReadCount(item, index).then(status => {
-      this.navCtrl.push(ChatPage, item.TicketNo);
+      let chatParams = item.TicketNo;
+      if (Global.work_with_impression_no) {
+        chatParams = {
+          ImpressionNo: item.ImpressionNo,
+          TicketNo: item.TicketNo
+        }
+      }
+      this.navCtrl.push(ChatPage, chatParams);
     }).catch(error => {
       console.log(error);
     })
@@ -353,7 +364,8 @@ export class CommunicationPage {
 
   listenToFirebaseChatEvent(item) {
     let ticketNo = item.TicketNo;
-    let path = 'NewChatEvent/' + ticketNo + '/' + this.connection.user.id;
+    let chatParams = Global.work_with_impression_no ? item.ImpressionNo : item.TicketNo;
+    let path = 'NewChatEvent/' + chatParams + '/' + this.connection.user.id;
 
     if (!(path in this.newChatEventRefs)) {
       let itemRef = firebase.database().ref(path)
@@ -365,7 +377,6 @@ export class CommunicationPage {
       itemRef.on('child_added', (snapshot) => {
         let count = snapshot.val();
         let time = new Date().getTime();
-        console.log(ticketNo);
 
         //count
         item.UnreadCount = count;
@@ -457,5 +468,14 @@ export class CommunicationPage {
       }
     }
     return index;
+  }
+
+  openRx(item, index, event) {
+    event.preventDefault();
+    
+    if (item.Rx) {
+      let url = item.Rx;
+      this.photoViewer.show(url, 'Rx', { share: false });
+    }
   }
 }

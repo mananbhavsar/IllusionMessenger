@@ -14,7 +14,7 @@
       <ion-infinite-scroll-content></ion-infinite-scroll-content>
     </ion-infinite-scroll>
     <chat-bubble [id]="'message-'+message.key" *ngFor="let message of messages | orderBy:'CreateAt'" class="message-wrapper"
-      [message]="message" [userID]="userID" [ticket]="ticket" [users]="chatUsers" [LoginTypeID]="user.LoginTypeID" [myLanguage]="myLanguage"
+      [message]="message" [userID]="userID" [ticket]="ticket" [impressNo]="impressNo" [users]="chatUsers" [LoginTypeID]="user.LoginTypeID" [myLanguage]="myLanguage"
       (press)="openReading($event, message, false)"></chat-bubble>
   </div>
   <div class="typing-container">

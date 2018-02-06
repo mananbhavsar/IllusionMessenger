@@ -82,16 +82,13 @@
     "cordova-plugin-ionic-webview": {
       "PACKAGE_NAME": "com.illusiondental.app"
     },
-    "cordova.plugins.diagnostic": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
     "cordova-plugin-vibration": {
       "PACKAGE_NAME": "com.illusiondental.app"
     },
     "cordova-plugin-photo-library": {
       "PACKAGE_NAME": "com.illusiondental.app"
     },
-    "cordova-plugin-media-capture": {
+    "com-sarriaroman-photoviewer": {
       "PACKAGE_NAME": "com.illusiondental.app"
     }
   },

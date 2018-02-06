@@ -21,9 +21,11 @@ import { ContactUsPage } from '../pages/contact-us/contact-us';
 import { DashboardPage } from "../pages/dashboard/dashboard";
 import { HelpPage } from '../pages/help/help';
 import { HomePage } from '../pages/home/home';
+import { InvoicePage } from '../pages/invoice/invoice';
 import { LoginPage } from '../pages/login/login';
 import { LogoutPage } from '../pages/logout/logout';
 import { OfflinePage } from '../pages/offline/offline';
+import { PaymentsPage } from "../pages/payments/payments";
 import { PickupPage } from "../pages/pickup/pickup";
 import { ForgotPasswordPage } from '../pages/forgot-password/forgot-password';
 import { TutorialPage } from '../pages/tutorial/tutorial';
@@ -78,9 +80,11 @@ export class MyApp {
         { title: 'Pickup', translate_key: 'HomeScreen._PickUp_', name: 'PickupPage', component: PickupPage, icon: '' },
         { title: 'Case Status', translate_key: 'HomeScreen._CaseStatus_', name: 'CaseStatusPage', component: CaseStatusPage, icon: '' },
         { title: 'Communication', translate_key: 'HomeScreen._Communication_', name: 'CommunicationPage', component: CommunicationPage, icon: '' },
+        { title: 'Invoice', translate_key: 'HomeScreen._Invoice_', name: 'InvoicePage', component: InvoicePage, icon: '' },
+        { title: 'Payments', translate_key: 'HomeScreen._Payments_', name: 'PaymentsPage', component: PaymentsPage, icon: '' },
     ];
     accountPages: PageInterface[] = [
-        // { title: 'Account', translate_key:'Common._Account_',name: 'AccountPage', component: AccountPage, icon: 'user' },
+        { title: 'Account', translate_key: 'Common._Account_', name: 'AccountPage', component: AccountPage, icon: 'user' },
         { title: 'Logout', translate_key: 'Common._LogOut_', name: 'LogoutPage', component: LogoutPage, icon: 'log-out', logsOut: true }
     ];
     loggedOutPages: PageInterface[] = [
@@ -220,7 +224,13 @@ export class MyApp {
             //for LoginTypeID 3
             if (this.user._user.LoginTypeID === Global.LoginType.Group) {
                 //for dashboard
-                return ['DashboardPage', 'PickupPage'].indexOf(page.name) === -1;
+                return ['DashboardPage', 'PickupPage', 'InvoicePage', 'PaymentsPage'].indexOf(page.name) === -1;
+            } else {
+                //for non portal user
+                if (!this.user._user.isPortalAdmin) {
+                    return ['InvoicePage', 'PaymentsPage'].indexOf(page.name) === -1;
+                }
+
             }
             return true;
         }

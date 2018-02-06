@@ -13,10 +13,12 @@ import { Http, Headers, Response, URLSearchParams } from '@angular/http';
 import 'rxjs/add/operator/switchMap';
 
 import { ConnectionProvider } from '../../providers/connection/connection';
+import { NotificationsProvider } from "../../providers/notifications/notifications";
 import { UserProvider } from '../../providers/user/user';
 import { FirebaseTransactionProvider } from '../../providers/firebase-transaction/firebase-transaction';
 import { CommonProvider } from "../../providers/common/common";
 import { TranslateService } from "@ngx-translate/core";
+import { FileOpsProvider } from "../../providers/file-ops/file-ops";
 
 import { Global } from '../../app/global';
 
@@ -31,7 +33,6 @@ import { Vibration } from '@ionic-native/vibration';
 import { Network } from '@ionic-native/network';
 import { VideoCapturePlus, VideoCapturePlusOptions, MediaFile } from '@ionic-native/video-capture-plus';
 import { VideoEditor } from '@ionic-native/video-editor';
-import { OneSignal } from '@ionic-native/onesignal';
 
 import { LogoutPage } from '../logout/logout';
 import { retry } from 'rxjs/operators/retry';
@@ -52,13 +53,14 @@ export class ChatPage {
 
   data: any = {};
   ticket: string = null;
+  impressNo: string = null;
   title: string = 'loading';
   subTitle: string = null;
   isIOS: boolean = false;
   isCordova: boolean = false;
   keyboardHeight: number = 0;
 
-
+  pathIdentifier: string = '';
   basePath: string = '';
   path: string = '';
 
@@ -163,23 +165,37 @@ export class ChatPage {
     private common: CommonProvider,
     public http: Http,
     private translate: TranslateService,
-    private _oneSignal: OneSignal,
+    private _notifications: NotificationsProvider,
+    private _fileOps: FileOpsProvider,
   ) {
     //init
     this.isIOS = this.platform.is('ios');
     this.isCordova = this.platform.is('cordova');
     this.global = Global;
-    this.common.getDataDirectory().then(path => {
+    this._fileOps.getDataDirectory().then(path => {
       this.dataDirectory = path;
     }).catch(error => {
       console.log(error);
     });
 
+    //checking if param is single string
+    if (typeof this.navParams.data === 'string') {
+      this.navParams.data = {
+        TicketNo: this.navParams.data
+      };
+    }
     //getting Ticket no
-    this.ticket = this.navParams.data;
-    console.log(this.ticket);
+    if (Global.work_with_impression_no) {
+      this.ticket = this.navParams.data.TicketNo;
+      this.impressNo = this.navParams.data.ImpressionNo;
 
-    this.basePath = 'Communications/' + this.ticket + '/';
+      this.pathIdentifier = this.impressNo;
+    } else {
+      this.ticket = this.navParams.data.TicketNo;
+      this.pathIdentifier = this.ticket;
+    }
+    this.basePath = 'Communications/' + this.pathIdentifier + '/';
+
 
     this.keyboard.onKeyboardShow().subscribe((data) => {
       this.scrollBottom('keyboard show').catch(error => { });
@@ -561,9 +577,13 @@ export class ChatPage {
   initData() {
     return new Promise((resolve, reject) => {
       if (this._network.type !== 'none') {
-        this.connection.doPost('Communication/GetQueryDetail', {
-          TicketRegisterNo: this.ticket,
-        }).then((response: any) => {
+        let params = {
+          TicketRegisterNo: this.ticket
+        };
+        if (Global.work_with_impression_no) {
+          params['ImpressionNo'] = this.impressNo;
+        }
+        this.connection.doPost('Communication/GetQueryDetail', params).then((response: any) => {
           this.data = JSON.parse(response.Data);
           console.log(this.data);
           this.setOfflineTicketList(this.data);
@@ -743,8 +763,7 @@ export class ChatPage {
       readObject[this.userID] = firebase.database.ServerValue.TIMESTAMP;
 
       this.translateMessage(message, type).then(translatedMessages => {
-        console.log(translatedMessages);
-        this.messagesRef.push({
+        let values = {
           Message: message,
           Translation: translatedMessages,
           MessageLanguage: this.myLanguage,
@@ -756,9 +775,14 @@ export class ChatPage {
           LoginTypeID: this.user.LoginTypeID,
           Status: 0,
           URL: url,
-          TicketNo: this.ticket,
           Read: readObject,
-        }).then((messageFromFirebase) => {
+          TicketNo: this.ticket,
+        };
+        if (Global.work_with_impression_no) {
+          values['ImpressionNo'] = this.impressNo;
+        }
+
+        this.messagesRef.push(values).then((messageFromFirebase) => {
           let data = {
             Message: message,
             MessageType: type,
@@ -1101,6 +1125,20 @@ export class ChatPage {
     let fileName = file.substring(file.lastIndexOf('/') + 1);
     let fileExtension = file.substring(file.lastIndexOf('.') + 1);
 
+    let params = {
+      CustomerID: this.user.CustomerID,
+      SecureToken: this.user.SecureToken,
+      OrganizationUnitID: this.user.LoginOUID,
+      LoginTypeID: this.user.LoginTypeID,
+      LoginUserID: this.user.CustomerPortalID,
+      FileName: fileName,
+      FileExtension: fileExtension,
+      TicketNo: this.ticket,
+    };
+    if (Global.work_with_impression_no) {
+      params['ImpressionNo'] = this.impressNo;
+    }
+
     let options: FileUploadOptions = {
       fileKey: 'file',
       fileName: fileName,
@@ -1112,16 +1150,7 @@ export class ChatPage {
       //   FileName: fileName,
       //   FileExtension: fileExtension,
       // }),
-      params: {
-        TicketNo: this.ticket,
-        CustomerID: this.user.CustomerID,
-        SecureToken: this.user.SecureToken,
-        OrganizationUnitID: this.user.LoginOUID,
-        LoginTypeID: this.user.LoginTypeID,
-        LoginUserID: this.user.CustomerPortalID,
-        FileName: fileName,
-        FileExtension: fileExtension,
-      },
+      params: params,
     }
 
     return options;
@@ -1133,43 +1162,22 @@ export class ChatPage {
       message.Translation = { en: message.Message };
     }
     users.forEach((user: any) => {
-      let notificationObj: any = {
-        include_player_ids: [
-          user.DeviceID
-        ],
-        data: {
-          badge: user.Badge,
-          page: 'ChatPage',
-          params: this.ticket
-        },
-        headings: user.Title,
-        priority: 10,
-        contents: message.Translation,
-        android_accent_color: 'FF' + Global.color.primary,
-        ios_badgeType: 'SetTo',
-        ios_badgeCount: user.Badge,
-      };
+
+      let contents = message.Translation;
 
       //checking if Image then adding image notification
       if (message.MessageType === 'Image') {
-        notificationObj.contents.en = '📷 Image';
-        notificationObj.contents.fr = '📷 Image';
-        notificationObj['ios_attachments'] = {
-          'attachment-1': message.URL,
-        };
-        notificationObj['big_picture'] = message.URL;
+        contents.en = '📷 Image';
+        contents.fr = '📷 Image';
       } else if (message.MessageType === 'Video') {
-        notificationObj.contents.en = '📹 Video Message';
-        notificationObj.contents.fr = '📹 Video Message';
+        contents.en = '📹 Video Message';
+        contents.fr = '📹 Video Message';
       } else if (message.MessageType === 'Audio') {
-        notificationObj.contents.en = '🎤 Voice Message';
-        notificationObj.contents.fr = '🎤 Voice Message';
+        contents.en = '🎤 Voice Message';
+        contents.fr = '🎤 Voice Message';
       }
-      this._oneSignal.postNotification(notificationObj).then(response => {
-        console.log(response);
-      }).catch(error => {
-        console.log(error);
-      });
+
+      this._notifications.send(user.DeviceID, user.title, contents, user.Badge, 'ChatPage', this.ticket, message.URL).catch(error => { });
     });
   }
 
@@ -1185,8 +1193,7 @@ export class ChatPage {
       fileName = message.URL.substring(message.URL.lastIndexOf('/') + 1).replace('.' + fileExtension, '');
     }
 
-    this.connection.doPost('Communication/InsertChat', {
-      TicketNo: this.ticket,
+    let params = {
       LiveUsersOnChat: activeUserList,
       ChattingUsers: this.common.build_query(this.userChatting),
       TimeOnPhone: moment().utc().valueOf(),
@@ -1195,7 +1202,13 @@ export class ChatPage {
       URL: message.URL,
       FileName: fileName,
       FileExtension: fileExtension,
-    }, false).then((response: any) => {
+      TicketNo: this.ticket,
+    };
+    if (Global.work_with_impression_no) {
+      params['ImpressionNo'] = this.impressNo;
+    }
+
+    this.connection.doPost('Communication/InsertChat', params, false).then((response: any) => {
       //send Push
       if (Global.Push.OneSignal) {
         this.sendPushNotification(message, response.Data);
@@ -1285,10 +1298,16 @@ export class ChatPage {
 
   clearBadgeCountIfAny() {
     if (this.messages.length) {
-      this.connection.doPost('Communication/UpdateChatStatus', {
+
+      let params = {
+        UserCode: this.userID,
         TicketNo: this.ticket,
-        UserCode: this.userID
-      }, false).then((response: any) => {
+      };
+      if (Global.work_with_impression_no) {
+        params['ImpressionNo'] = this.ticket;
+      }
+
+      this.connection.doPost('Communication/UpdateChatStatus', params, false).then((response: any) => {
         this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { })
       }).catch(error => {
         console.log(error);

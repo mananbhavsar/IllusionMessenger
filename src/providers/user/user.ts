@@ -181,12 +181,12 @@ export class UserProvider {
                 //waiting to logged in
                 this.events.subscribe('user:ready', (user) => {
                     if (user) {
-                        this.registerPushID(push_id).then(status=>{
+                        this.registerPushID(push_id).then(status => {
                             resolve(status);
-                        }).catch(error => { 
+                        }).catch(error => {
                             reject(error);
                         });
-                    }else{
+                    } else {
                         reject('Already logged out');
                     }
                 });
@@ -202,26 +202,36 @@ export class UserProvider {
         if (this.platform.is('android')) {
             OSName = 'android';
         }
-        this.angularFireDatabase.object('Version/' + OSName).snapshotChanges().subscribe(snapshot => {
-            let AppVersion = snapshot.payload.val();
-            if (AppVersion && this.global.AppVersion !== AppVersion) {
-                let alert = this.alertCtrl.create({
-                    title: 'Version Update Available',
-                    message: 'There is a version update, please update your application',
-                    buttons: [
+        this.angularFireDatabase.object('VersionOptions/' + OSName).snapshotChanges().subscribe(snapshot => {
+            let allowAlertClose = snapshot.payload.val();
+            this.angularFireDatabase.object('Version/' + OSName).snapshotChanges().subscribe(snapshot => {
+                let AppVersion = snapshot.payload.val();
+                if (AppVersion && this.global.AppVersion !== AppVersion) {
+                    let buttons: Array<any> = [
                         {
-                            text: 'NO',
-                        },
-                        {
-                            text: 'YES',
+                            text: 'Update Now',
                             handler: () => {
                                 window.open(this.global.APP_URL[OSName], '_system');
                             }
                         }
-                    ]
-                });
-                alert.present();
-            }
+                    ];
+                    //adding cancel option
+                    if (allowAlertClose) {
+                        buttons.push({
+                            text: 'Not now',
+                            role: 'cancel'
+                        });
+                    }
+                    
+                    let alert = this.alertCtrl.create({
+                        enableBackdropDismiss: allowAlertClose,
+                        title: 'Version Update Available',
+                        message: 'There is a version update, please update your application',
+                        buttons: buttons
+                    });
+                    alert.present();
+                }
+            });
         });
     }
 
@@ -244,6 +254,9 @@ export class UserProvider {
                 this.storage.remove('OfflineMessages-' + ticket);
             }
         });
+        this.storage.remove('OfflineChallans');
+        this.storage.remove('OfflineInvoice');
+        this.storage.remove('OfflinePayments');
 
     }
 

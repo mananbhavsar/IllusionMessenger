@@ -2,9 +2,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
-import {TranslateHttpLoader} from '@ngx-translate/http-loader';
-import {HttpClientModule, HttpClient} from '@angular/common/http';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 
 
 import { Network } from '@ionic-native/network';
@@ -31,6 +31,8 @@ import { UniqueDeviceID } from '@ionic-native/unique-device-id';
 import { PhotoLibrary } from '@ionic-native/photo-library';
 import { Globalization } from '@ionic-native/globalization';
 import { OneSignal } from '@ionic-native/onesignal';
+import { FileOpener } from '@ionic-native/file-opener';
+import { PhotoViewer } from '@ionic-native/photo-viewer';
 
 import { HttpModule } from '@angular/http';
 import { IonicStorageModule } from '@ionic/storage';
@@ -41,19 +43,23 @@ import { AboutPageModule } from '../pages/about/about.module';
 import { AccountPageModule } from '../pages/account/account.module';
 import { CaseStatusPageModule } from "../pages/case-status/case-status.module";
 import { CaseStatusModalPageModule } from "../pages/case-status/case-status-modal/case-status-modal.module";
+import { ChangePasswordPageModule } from "../pages/account/change-password/change-password.module";
 import { ChatPageModule } from "../pages/chat/chat.module";
 import { ChatReadModalPageModule } from "../pages/chat/chat-read-modal/chat-read-modal.module";
 import { CommunicationPageModule } from "../pages/communication/communication.module";
 import { ContactUsPageModule } from '../pages/contact-us/contact-us.module';
 import { DashboardPageModule } from "../pages/dashboard/dashboard.module";
+import { EditProfilePageModule } from "../pages/account/edit-profile/edit-profile.module";
 import { ForgotPasswordPageModule } from '../pages/forgot-password/forgot-password.module';
 import { HelpPageModule } from '../pages/help/help.module';
 import { HomePageModule } from '../pages/home/home.module';
+import { InvoicePageModule } from '../pages/invoice/invoice.module';
 import { LoginPageModule } from '../pages/login/login.module';
+import { NotificationPreferencesPageModule } from "../pages/account/notification-preferences/notification-preferences.module";
 import { OfficeListPageModule } from "../pages/office-list/office-list.module";
 import { OfflinePageModule } from '../pages/offline/offline.module';
+import { PaymentsPageModule } from "../pages/payments/payments.module";
 import { PickupPageModule } from "../pages/pickup/pickup.module";
-import { RegisterPageModule } from '../pages/register/register.module';
 import { SavedMediaPageModule } from "../pages/chat/saved-media/saved-media.module";
 import { SearchPageModule } from '../pages/search/search.module';
 import { TutorialPageModule } from '../pages/tutorial/tutorial.module';
@@ -64,6 +70,8 @@ import { UserProvider } from '../providers/user/user';
 import { OfficeServiceProvider } from '../providers/office-service/office-service';
 import { FirebaseTransactionProvider } from '../providers/firebase-transaction/firebase-transaction';
 import { CommonProvider } from "../providers/common/common";
+import { NotificationsProvider } from "../providers/notifications/notifications";
+import { FileOpsProvider } from '../providers/file-ops/file-ops';
 
 import { ComponentsModule } from '../components/components.module';
 import { PipesModule } from "../pipes/pipes.module";
@@ -120,19 +128,23 @@ export function createTranslateLoader(http: HttpClient) {
         AccountPageModule,
         CaseStatusPageModule,
         CaseStatusModalPageModule,
+        ChangePasswordPageModule,
         ChatPageModule,
         ChatReadModalPageModule,
         CommunicationPageModule,
         ContactUsPageModule,
         DashboardPageModule,
+        EditProfilePageModule,
         ForgotPasswordPageModule,
         HelpPageModule,
         HomePageModule,
+        InvoicePageModule,
         LoginPageModule,
+        NotificationPreferencesPageModule,
         OfficeListPageModule,
         OfflinePageModule,
+        PaymentsPageModule,
         PickupPageModule,
-        RegisterPageModule,
         SavedMediaPageModule,
         SearchPageModule,
         TutorialPageModule,
@@ -179,6 +191,10 @@ export function createTranslateLoader(http: HttpClient) {
         Globalization,
         CommonProvider,
         OneSignal,
+        NotificationsProvider,
+        FileOpener,
+        FileOpsProvider,
+	PhotoViewer
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

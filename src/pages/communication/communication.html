@@ -4,7 +4,8 @@
     {{selectedOffice.CustomerName}}
     <!-- <ion-spinner color="light"></ion-spinner> -->
   </div>
-  <ion-searchbar [placeholder]="'Common._Search_' | translate" [hidden]="showSearchBar" [(ngModel)]="searchText" (ionInput)="getItems()" showCancelButton="true" (ionCancel)="onCancel()">
+  <ion-searchbar [placeholder]="'Common._Search_' | translate" [hidden]="showSearchBar" [(ngModel)]="searchText" (ionInput)="getItems()"
+    showCancelButton="true" (ionCancel)="onCancel()">
   </ion-searchbar>
   <ion-segment padding mode="ios" [(ngModel)]="selectedTab" color="communication" (ionChange)="segmentChanged($event)">
     <ion-segment-button value="Today">
@@ -41,12 +42,18 @@
             </ion-col>
             <ion-col ion-note>{{item.ImpressionNo}}</ion-col>
           </ion-row>
-          <!-- <ion-row>
+          <ion-row>
             <ion-col>
-              TicketNo
+              {{'CaseStatus._ImpressionDate_' | translate}}
             </ion-col>
-            <ion-col ion-note>{{item.TicketNo}}</ion-col>
-          </ion-row> -->
+            <ion-col ion-note>{{item.formatedImpressionDateTime}}</ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              {{'CaseStatus._DueDate_' | translate}}
+            </ion-col>
+            <ion-col ion-note>{{item.DueDate}}</ion-col>
+          </ion-row>
           <ion-row>
             <ion-col>
               {{'CommunicationPage._ReferenceEntryNo' | translate}}
@@ -59,6 +66,14 @@
             </ion-col>
             <ion-col ion-note [ngClass]="getStatusColor(item.QueryStatus)">{{getStatusLabel(item.QueryStatus)}}</ion-col>
           </ion-row>
+          <ion-row>
+            <ion-col text-left *ngIf="item.Rx && item.Rx !== ''">
+              <button ion-button color="casestatus" icon-left small (click)="openRx(item, i, $event)">
+                <ion-icon name="ios-paper"></ion-icon>
+                {{'CaseStatus._OpenRx_' | translate}}
+              </button>
+            </ion-col>
+          </ion-row>
         </ion-grid>
       </p>
       <ion-icon name="ios-arrow-forward" item-end></ion-icon>
@@ -66,7 +81,7 @@
   </ion-list>
 
   <ion-item-divider text-center color="light" *ngIf="page === -1">
-      {{'Common._NothingToShow_' | translate}}
+    {{'Common._NothingToShow_' | translate}}
   </ion-item-divider>
   <ion-infinite-scroll (ionInfinite)="doInfinite($event)" *ngIf="hasInternet">
     <ion-infinite-scroll-content></ion-infinite-scroll-content>

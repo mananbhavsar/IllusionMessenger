@@ -11,6 +11,7 @@ import { Network } from '@ionic-native/network';
 
 import { CommonProvider } from "../../providers/common/common";
 import { TranslateService } from "@ngx-translate/core";
+import { FileOpsProvider } from "../../providers/file-ops/file-ops";
 
 import * as moment from 'moment';
 
@@ -31,12 +32,14 @@ export class ChatBubbleComponent {
   @Input() message: any;
   @Input() userID: string;
   @Input() ticket: string;
+  @Input() impressNo: string;
   @Input() users: any = {};
   @Input() LoginTypeID: number = 0;
   @Input() myLanguage: string = 'en';
 
   global: any = Global;
 
+  pathIdentifier: string = null;
   basePath: string = '';
   messagePath: string = '';
   statusRef = null;
@@ -59,6 +62,7 @@ export class ChatBubbleComponent {
     private common: CommonProvider,
     private network: Network,
     private translate: TranslateService,
+    private fileOps: FileOpsProvider,
   ) {
     this.global = Global;
     this.isCordova = this.platform.is('cordova');
@@ -81,23 +85,30 @@ export class ChatBubbleComponent {
 
   ngOnInit() {
     this.doTranslate();
-    this.basePath = 'Communications/' + this.ticket + '/';
-    this.messagePath = this.basePath + 'Chat/' + this.message.key;
+    if (Global.work_with_impression_no) {
+      this.pathIdentifier = this.impressNo;
+    } else {
+      this.pathIdentifier = this.ticket;
+    }
+    if (this.pathIdentifier) {
+      this.basePath = 'Communications/' + this.pathIdentifier + '/';
+      this.messagePath = this.basePath + 'Chat/' + this.message.key;
 
-    this.doReading();
+      this.doReading();
 
-    this.common.getDataDirectory().then((path: string) => {
-      this.dataDirectory = path;
+      this.fileOps.getDataDirectory().then((path: string) => {
+        this.dataDirectory = path;
 
-      this.downloadDirectory = this.dataDirectory + this.ticket + '/';
-      this.createIfNotExist();
+        this.downloadDirectory = this.dataDirectory + this.ticket + '/';
+        this.fileOps.createDirectoryIfNotExist(this.dataDirectory, this.ticket);
 
-      this.processFile();
-    }).catch(error => {
-      console.log(error);
-    });
+        this.processFile();
+      }).catch(error => {
+        console.log(error);
+      });
 
-    // this.processBadgeCount();
+      // this.processBadgeCount();
+    }
   }
 
   ngOnDestroy() {
@@ -232,13 +243,13 @@ export class ChatBubbleComponent {
 
   check(file) {
     return new Promise((resolve, reject) => {
-      this.isFileDownloaded(file).then(status => {
+      this.fileOps.isFileDownloaded(file, this.downloadDirectory).then(status => {
         console.log(status);
         resolve(status);
       }).catch(error => {
         this.message.downloading = true;
-        this.downloadFile(file).then((entry: any) => {
-          this.message.nativeURL = this.getNativeURL(file);
+        this.fileOps.downloadFile(file, this.downloadDirectory).then((entry: any) => {
+          this.message.nativeURL = this.fileOps.getNativeURL(file, this.downloadDirectory);
           this.message.downloading = false;
           this.message.downloaded = true;
 
@@ -249,6 +260,8 @@ export class ChatBubbleComponent {
           });
         }).catch(error => {
           this.message.downloading = false;
+          this.message.downloaded = false;
+          this.message['error'] = error;
           this.events.publish('toast:error', error);
           reject(error);
         })
@@ -262,11 +275,11 @@ export class ChatBubbleComponent {
       if (this.isCordova) {
         let file = this.message.URL;
 
-        this.isFileDownloaded(file).then(status => {
+        this.fileOps.isFileDownloaded(file, this.downloadDirectory).then(status => {
           if (status) {
             this.message['downloaded'] = true;
             this.message['downloading'] = false;
-            this.message.nativeURL = this.getNativeURL(file);
+            this.message.nativeURL = this.fileOps.getNativeURL(file, this.downloadDirectory);
 
             this.subscribeToFileDelete(file);
           }
@@ -288,26 +301,15 @@ export class ChatBubbleComponent {
     }
   }
 
-  isFileDownloaded(file) {
-    return new Promise((resolve, reject) => {
 
-      let fileName = this.getFileName(file);
-      //checking if file downloaded
-      this.file.checkFile(this.downloadDirectory, fileName).then(status => {
-        resolve(status);
-      }).catch(error => {
-        reject(error);
-      });
-    });
-  }
 
   downloadMessage() {
     let file = this.message.URL;
     if (this.isCordova) {
       this.message.downloading = true;
-      this.downloadFile(file).then((entry: any) => {
+      this.fileOps.downloadFile(file, this.downloadDirectory).then((entry: any) => {
         this.message.downloaded = true;
-        this.message.nativeURL = this.getNativeURL(entry.nativeURL);
+        this.message.nativeURL = this.fileOps.getNativeURL(entry.nativeURL, this.downloadDirectory);
 
         this.message.downloading = false;
         this.subscribeToFileDelete(file);
@@ -318,57 +320,6 @@ export class ChatBubbleComponent {
         this.message['error'] = error;
       });
     }
-  }
-
-  downloadFile(file) {
-    return new Promise((resolve, reject) => {
-      let fileName = this.getFileName(file);
-
-      const fileTransfer: FileTransferObject = this.transfer.create();
-      fileTransfer.download(file, this.downloadDirectory + fileName).then((entry) => {
-        resolve(entry);
-      }, (error) => {
-        console.log(error);
-        this.message['failed'] = error;
-        this.message.downloaded = false;
-        this.message.downloading = false;
-      }).catch(error => {
-        console.log(error);
-        this.message['failed'] = error;
-        this.message.downloaded = false;
-        this.message.downloading = false;
-      });
-    });
-  }
-
-  getFileName(file) {
-    if (file.indexOf('?') === -1) {
-      file += '?';
-    }
-    file = file.substring(0, file.lastIndexOf('?'));
-
-    return file.substring(file.lastIndexOf('/') + 1);
-  }
-
-  getNativeURL(file) {
-    if (file) {
-      //checking if still http
-      if (file.indexOf('https') === 0) {
-        let fileName = this.getFileName(file);
-        return normalizeURL(this.downloadDirectory + fileName);
-      }
-      return normalizeURL(file);
-    }
-    return file;
-  }
-
-  createIfNotExist() {
-    this.file.checkDir(this.dataDirectory, this.ticket).then(status => {
-    }).catch(error => {
-      if (error.code === 1) {
-        this.file.createDir(this.dataDirectory, this.ticket, false).catch(error => { });
-      }
-    });
   }
 
   getTime(time) {

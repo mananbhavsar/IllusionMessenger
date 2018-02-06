@@ -82,7 +82,6 @@
     "cordova.plugins.diagnostic": {
       "PACKAGE_NAME": "com.illusiondental.app"
     },
-    "cordova-plugin-vibration": {
       "PACKAGE_NAME": "com.illusiondental.app"
     },
     "cordova-plugin-video-editor": {
@@ -97,6 +96,12 @@
     },
     "cordova-plugin-media-capture": {
       "PACKAGE_NAME": "com.illusiondental.app"
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "com.moust.cordova.videoplayer": {
+      "PACKAGE_NAME": "com.illusiondental.app"
+    },
+    "com-sarriaroman-photoviewer": {
     }
   },
   "dependent_plugins": {}

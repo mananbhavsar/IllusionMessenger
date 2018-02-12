@@ -41,33 +41,22 @@ import { MyApp } from './app.component';
 
 import { AboutPageModule } from '../pages/about/about.module';
 import { AccountPageModule } from '../pages/account/account.module';
-import { CaseStatusPageModule } from "../pages/case-status/case-status.module";
-import { CaseStatusModalPageModule } from "../pages/case-status/case-status-modal/case-status-modal.module";
 import { ChangePasswordPageModule } from "../pages/account/change-password/change-password.module";
 import { ChatPageModule } from "../pages/chat/chat.module";
 import { ChatReadModalPageModule } from "../pages/chat/chat-read-modal/chat-read-modal.module";
-import { CommunicationPageModule } from "../pages/communication/communication.module";
 import { ContactUsPageModule } from '../pages/contact-us/contact-us.module';
-import { DashboardPageModule } from "../pages/dashboard/dashboard.module";
 import { EditProfilePageModule } from "../pages/account/edit-profile/edit-profile.module";
 import { ForgotPasswordPageModule } from '../pages/forgot-password/forgot-password.module';
 import { HelpPageModule } from '../pages/help/help.module';
 import { HomePageModule } from '../pages/home/home.module';
-import { InvoicePageModule } from '../pages/invoice/invoice.module';
 import { LoginPageModule } from '../pages/login/login.module';
 import { NotificationPreferencesPageModule } from "../pages/account/notification-preferences/notification-preferences.module";
-import { OfficeListPageModule } from "../pages/office-list/office-list.module";
-import { OfflinePageModule } from '../pages/offline/offline.module';
-import { PaymentsPageModule } from "../pages/payments/payments.module";
-import { PickupPageModule } from "../pages/pickup/pickup.module";
 import { SavedMediaPageModule } from "../pages/chat/saved-media/saved-media.module";
-import { SearchPageModule } from '../pages/search/search.module';
 import { TutorialPageModule } from '../pages/tutorial/tutorial.module';
 import { WelcomePageModule } from '../pages/welcome/welcome.module';
 
 import { ConnectionProvider } from '../providers/connection/connection';
 import { UserProvider } from '../providers/user/user';
-import { OfficeServiceProvider } from '../providers/office-service/office-service';
 import { FirebaseTransactionProvider } from '../providers/firebase-transaction/firebase-transaction';
 import { CommonProvider } from "../providers/common/common";
 import { NotificationsProvider } from "../providers/notifications/notifications";
@@ -86,12 +75,12 @@ import { AngularFireAuthModule } from 'angularfire2/auth';
 import { IonicImageViewerModule } from 'ionic-img-viewer';
 
 export const firebaseConfig = {
-    apiKey: "AIzaSyAeAsx1UOrRVQ9m9zlwvmHiTsCuvLtO-J4",
-    authDomain: "illusion-dental-5d48c.firebaseapp.com",
-    databaseURL: "https://illusion-dental-5d48c.firebaseio.com",
-    projectId: "illusion-dental-5d48c",
-    storageBucket: "illusion-dental-5d48c.appspot.com",
-    messagingSenderId: "7402421237",
+    apiKey: "AIzaSyAFDZ9UPTMiDTjT4qAG0d9uVeOdhL-2PBw",
+    authDomain: "illusion-messenger.firebaseapp.com",
+    databaseURL: "https://illusion-messenger.firebaseio.com",
+    projectId: "illusion-messenger",
+    storageBucket: "",
+    messagingSenderId: "4208850060"
 }
 
 export function createTranslateLoader(http: HttpClient) {
@@ -126,27 +115,17 @@ export function createTranslateLoader(http: HttpClient) {
         IonicImageViewerModule,
         AboutPageModule,
         AccountPageModule,
-        CaseStatusPageModule,
-        CaseStatusModalPageModule,
         ChangePasswordPageModule,
         ChatPageModule,
         ChatReadModalPageModule,
-        CommunicationPageModule,
         ContactUsPageModule,
-        DashboardPageModule,
         EditProfilePageModule,
         ForgotPasswordPageModule,
         HelpPageModule,
         HomePageModule,
-        InvoicePageModule,
         LoginPageModule,
         NotificationPreferencesPageModule,
-        OfficeListPageModule,
-        OfflinePageModule,
-        PaymentsPageModule,
-        PickupPageModule,
         SavedMediaPageModule,
-        SearchPageModule,
         TutorialPageModule,
         WelcomePageModule,
         MomentModule,
@@ -163,7 +142,6 @@ export function createTranslateLoader(http: HttpClient) {
         { provide: ErrorHandler, useClass: IonicErrorHandler },
         ConnectionProvider,
         UserProvider,
-        OfficeServiceProvider,
         AngularFireDatabase,
         FirebaseTransactionProvider,
         Network,
@@ -194,7 +172,7 @@ export function createTranslateLoader(http: HttpClient) {
         NotificationsProvider,
         FileOpener,
         FileOpsProvider,
-	PhotoViewer
+        PhotoViewer
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

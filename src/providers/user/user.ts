@@ -5,7 +5,6 @@ import { Events, Platform, AlertController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { ConnectionProvider } from '../connection/connection';
 import { FirebaseTransactionProvider } from "../firebase-transaction/firebase-transaction";
-import { OfficeServiceProvider } from '../office-service/office-service';
 import { TranslateService } from '@ngx-translate/core';
 
 import { Global } from "../../app/global";
@@ -35,7 +34,6 @@ export class UserProvider {
         private _firebaseTransaction: FirebaseTransactionProvider,
         public platform: Platform,
         public alertCtrl: AlertController,
-        public officeList: OfficeServiceProvider,
         private badge: Badge,
         private angularFireDatabase: AngularFireDatabase,
         private translate: TranslateService,

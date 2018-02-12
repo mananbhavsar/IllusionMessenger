@@ -10,11 +10,6 @@ import { OneSignal } from '@ionic-native/onesignal';
 
 import { Global } from '../../app/global';
 
-import { CommunicationPage } from "../communication/communication";
-import { DashboardPage } from "../dashboard/dashboard";
-import { OfficeListPage } from "../office-list/office-list";
-import { PickupPage } from "../pickup/pickup";
-import { CaseStatusPage } from "../case-status/case-status";
 import { ChatPage } from "../chat/chat";
 import { Storage } from '@ionic/storage';
 
@@ -135,22 +130,6 @@ export class HomePage {
             //setting data for next use
             this._storage.set('OfflineHome', this.data);
         });
-    }
-
-    openDashboard() {
-        this.navCtrl.push(DashboardPage);
-    }
-
-    openPickup() {
-        this.navCtrl.push(PickupPage);
-    }
-
-    openCaseSearch() {
-        this.navCtrl.push(CaseStatusPage);
-    }
-
-    openCommunications() {
-        this.navCtrl.push(CommunicationPage);
     }
 
     openOfficeList() {

@@ -14,19 +14,12 @@ import { Storage } from '@ionic/storage';
 
 import { AboutPage } from '../pages/about/about';
 import { AccountPage } from '../pages/account/account';
-import { CaseStatusPage } from '../pages/case-status/case-status';
 import { ChatPage } from '../pages/chat/chat';
-import { CommunicationPage } from "../pages/communication/communication";
 import { ContactUsPage } from '../pages/contact-us/contact-us';
-import { DashboardPage } from "../pages/dashboard/dashboard";
 import { HelpPage } from '../pages/help/help';
 import { HomePage } from '../pages/home/home';
-import { InvoicePage } from '../pages/invoice/invoice';
 import { LoginPage } from '../pages/login/login';
 import { LogoutPage } from '../pages/logout/logout';
-import { OfflinePage } from '../pages/offline/offline';
-import { PaymentsPage } from "../pages/payments/payments";
-import { PickupPage } from "../pages/pickup/pickup";
 import { ForgotPasswordPage } from '../pages/forgot-password/forgot-password';
 import { TutorialPage } from '../pages/tutorial/tutorial';
 import { WelcomePage } from '../pages/welcome/welcome';
@@ -76,12 +69,6 @@ export class MyApp {
     ];
     loggedInPages: PageInterface[] = [
         { title: 'Home', translate_key: 'HomeScreen._Home_', name: 'HomePage', component: HomePage, icon: 'home' },
-        { title: 'Dashboard', translate_key: 'HomeScreen._Dashboard_', name: 'DashboardPage', component: DashboardPage, icon: '' },
-        { title: 'Pickup', translate_key: 'HomeScreen._PickUp_', name: 'PickupPage', component: PickupPage, icon: '' },
-        { title: 'Case Status', translate_key: 'HomeScreen._CaseStatus_', name: 'CaseStatusPage', component: CaseStatusPage, icon: '' },
-        { title: 'Communication', translate_key: 'HomeScreen._Communication_', name: 'CommunicationPage', component: CommunicationPage, icon: '' },
-        { title: 'Invoice', translate_key: 'HomeScreen._Invoice_', name: 'InvoicePage', component: InvoicePage, icon: '' },
-        { title: 'Payments', translate_key: 'HomeScreen._Payments_', name: 'PaymentsPage', component: PaymentsPage, icon: '' },
     ];
     accountPages: PageInterface[] = [
         { title: 'Account', translate_key: 'Common._Account_', name: 'AccountPage', component: AccountPage, icon: 'user' },

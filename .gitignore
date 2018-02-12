@@ -28,10 +28,10 @@ temp/
 platforms/
 www/
 $RECYCLE.BIN/
-google-services.json
-GoogleService-Info.plist
-config.xml
-src/app/global.ts
+#google-services.json
+#GoogleService-Info.plist
+#config.xml
+#src/app/global.ts
 
 .DS_Store
 Thumbs.db

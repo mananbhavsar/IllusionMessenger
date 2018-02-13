@@ -67,14 +67,15 @@ export class UserProvider {
     }
 
     login(username, password) {
-        this.connection.doPost('Account/login', { UserCode: username, Password: password }, this.logging_you_in_translate + '!').then(
+        this.connection.doPost('Chat/login', { UserCode: username, Password: password }, this.logging_you_in_translate + '!').then(
             response => {
-                this._user = response;
+                this._user = response[0];
                 this.setUser(this._user).then(() => {
                     this.HAS_LOGGED_IN = true;
                     this.events.publish('user:login', this._user);
                 });
             }).catch(error => {
+                console.log(error);
                 this.events.publish('alert:basic', this.login_failed_translate + '!', error);
             });
     };
@@ -113,7 +114,7 @@ export class UserProvider {
 
     setUser(User) {
         //setting
-        User.id = User.CustomerPortalID + '-' + User.LoginTypeID;
+        User.id = User.LoginUserID;
         return this.storage.set('User', User).then((user) => {
             this._user = user;
             return this._user;
@@ -156,7 +157,7 @@ export class UserProvider {
                 this.connection.push_id = push_id;
 
                 //sending to server
-                this.connection.doPost('Account/RegisterDevice', {
+                this.connection.doPost('Chat/RegisterDevice', {
                     DeviceID: push_id,
                     IsLogin: push_id !== '',
                 }, false).then((response: any) => {

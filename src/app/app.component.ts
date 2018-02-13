@@ -284,7 +284,14 @@ export class MyApp {
 
 
         this.events.subscribe('alert:basic', (title, subTitle, buttons) => {
-            if (title.trim() === '' || subTitle.trim() === '') {
+            try {
+                if (typeof title === 'undefined' || title.trim() === '') {
+                    return;
+                }
+                if (typeof subTitle === 'undefined' || subTitle.trim() === '') {
+                    return;
+                }
+            } catch (e) {
                 return;
             }
             buttons = buttons || [this.ok_translate]; //OK
@@ -322,7 +329,27 @@ export class MyApp {
             } else if ([404].indexOf(error.status) > -1) {
                 this.events.publish('toast:create', error.status + ': ' + error.statusText, 'danger');
             } else if (error._body) {
-                let body = error._body ? error._body : JSON.parse(error._body);
+                let body = error._body;
+                if (body) {
+                    try {
+                        body = JSON.parse(error._body);
+                    } catch (e) {
+                        body = error._body;
+                    }
+                }
+
+                //checking if title
+                if (typeof body === 'object') {
+                    if (!('title' in body)) {
+                        //adding statusText
+                        body.title = error.statusText;
+                    }
+                } else {
+                    body = {
+                        title: error.statusText,
+                        message: body
+                    }
+                }
                 this.events.publish('alert:basic', body.title, body.message);
             } else {
                 this.events.publish('toast:create', this.error_translate, 'danger');
@@ -502,7 +529,7 @@ export class MyApp {
         this._oneSignal.endInit();
     }
 
-    processOneSignalId(){
+    processOneSignalId() {
         this._oneSignal.getIds().then((id) => {
             //registering user
             this._oneSignal.setSubscription(true);
@@ -544,7 +571,7 @@ export class MyApp {
             this.nav.setRoot(HomePage);
 
             setTimeout(() => {
-                var full_name = user ? user.Customer : '';
+                let full_name = user ? user.LoginUser : '';
                 this.events.publish('toast:create', this.welcome_translate + ' ' + full_name);
                 this.initPostLoginPlugins();
                 this.events.publish('user:changed');

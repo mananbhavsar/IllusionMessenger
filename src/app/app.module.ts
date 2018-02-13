@@ -106,7 +106,7 @@ export function createTranslateLoader(http: HttpClient) {
         }),
         HttpModule,
         IonicStorageModule.forRoot({
-            name: '__dental_illusion_db',
+            name: '__messenger_illusion_db',
             driverOrder: ['indexeddb', 'sqlite', 'websql']
         }),
         AngularFireModule.initializeApp(firebaseConfig),

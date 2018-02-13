@@ -24,16 +24,9 @@ import { Transition } from 'ionic-angular/transitions/transition';
 })
 export class HomePage {
     global: any = {};
-    data: any = {
-        CaseSearchCount: 0,
-        CommunicationCount: 0,
-        PickUpCount: 0,
-        Total: 0,
-    };
-    loginType: Number = 0;
-    isDentalLogin: Boolean = false;
-    isNormalLogin: Boolean = false;
-    Customer: string = null;
+    groups: Array<any> | -1 = [];
+    badges: any = {};
+
     constructor(
         public navCtrl: NavController,
         public connection: ConnectionProvider,
@@ -48,19 +41,20 @@ export class HomePage {
         this.global = Global;
         //listening to Resume & Pause events
         this.events.subscribe('platform:onResumed', () => {
-            this.initData(null, false);
+            console.log('resume');
+            this.getData();
         });
     }
 
     ionViewDidLoad() {
         //checking if logged in
         if (!_.isEmpty(this.connection.user)) {
-            this.initData(null, false);
+            //this.initData();
         } else {
             //waiting for login
             this.events.subscribe('user:ready', (status) => {
                 if (status) {
-                    this.initData(null, false);
+                    this.initData();
                 }
             });
         }
@@ -77,67 +71,57 @@ export class HomePage {
         }
     }
 
-    initData(event, refresh) {
-        //getting it from offline
-        this._storage.get('OfflineHome').then(home => {
-            if (home) {
-                this.data = home;
-            }
+    initData() {
+        return new Promise((resolve, reject) => {
+            this.getData().then(status => {
+                this.connectToFireBase();
+                resolve(true);
+            }).catch(error => {
+                console.log(error);
+                reject(error);
+            });
         });
+    }
+
+    getData() {
+        return new Promise((resolve, reject) => {
+            this.connection.doPost('Chat/Home').then((groups: Array<any>) => {
+                this.groups = groups;
+                if (this.groups.length === 0) {
+                    this.groups = -1;
+                }
+                console.log(this.groups);
+                resolve(true);
+            }).catch(error => {
+                console.log(error);
+                reject(error);
+            })
+        });
+    }
+
+    refresh(refresher) {
+        this.getData().then(status => {
+            refresher.complete();
+        }).catch(error => {
+            refresher.complete();
+        });
+    }
+
+    connectToFireBase() {
         //user setting
         this.user.getUser().then(user => {
-            this.Customer = user.Customer;
-            this.loginType = user.LoginTypeID;
-            if (this.loginType === Global.LoginType.Group) {
-                this.isDentalLogin = true;
-            } else {
-                this.isNormalLogin = true;
-            }
-            this.connectToFireBase(user.id);
-            this.markRefresherComplete(event);
-        });
-
-
-        //old way remove in next version
-        //getting Data
-        // this.connection.doPost('Dashboard/GetNotificationCount', {}, false).then(response => {
-        //     this.data = response;
-        //     this.markRefresherComplete(event);
-        // }).catch(error => {
-        //     this.data = -1;
-        //     this.markRefresherComplete(event);
-        // });
-    }
-
-    markRefresherComplete(refresher) {
-        if (refresher) {
-            refresher.complete();
-        }
-    }
-
-    connectToFireBase(user_id) {
-        this.angularFireDatabase.object('Badge/' + user_id).snapshotChanges().subscribe(snapshot => {
-            snapshot = snapshot.payload.val();
-            if (snapshot) {
-                this.data = snapshot;
-            } else {
-                this.data = {
-                    PickUpCount: 0,
-                    CaseSearchCount: 0,
-                    CommunicationCount: 0,
+            this.angularFireDatabase.object('Badge/' + user.id).snapshotChanges().subscribe(snapshot => {
+                snapshot = snapshot.payload.val();
+                if (snapshot) {
+                    this.badges = snapshot;
+                } else {
                 }
-            }
-            //setting data for next use
-            this._storage.set('OfflineHome', this.data);
+            });
         });
     }
 
-    openOfficeList() {
-
-    }
-
-    openChat(ticket: string = 'TR-25995-GJ') {
-        this.navCtrl.push(ChatPage, ticket);
+    registerDevice(id) {
+        this.user.registerPushID(id);
     }
 
     useLang(lang) {

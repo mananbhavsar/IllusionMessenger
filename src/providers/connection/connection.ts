@@ -5,6 +5,8 @@ import { Network } from '@ionic-native/network';
 import { Http, Headers, Response, URLSearchParams } from '@angular/http';
 
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/timeout';
+
 import { TranslateService } from "@ngx-translate/core";
 
 import { Global } from '../../app/global';
@@ -136,6 +138,7 @@ export class ConnectionProvider {
         urlSearchParams.append('Manufacturer', this.device.manufacturer);
         urlSearchParams.append('AppVersion', Global.AppVersion);
         //adding user info
+        console.log(this.user);
         if (this.user) {
             urlSearchParams = this.addUserInfo(urlSearchParams);
         }
@@ -149,12 +152,7 @@ export class ConnectionProvider {
     }
 
     addUserInfo(urlSearchParams: URLSearchParams): URLSearchParams {
-        urlSearchParams.append('UserCode', this.user.UserCode);
-        urlSearchParams.append('CustomerID', this.user.CustomerID);
-        urlSearchParams.append('SecureToken', this.user.SecureToken);
-        urlSearchParams.append('OrganizationUnitID', this.user.LoginOUID);
-        urlSearchParams.append('LoginTypeID', this.user.LoginTypeID);
-        urlSearchParams.append('LoginUserID', this.user.CustomerPortalID);
+        urlSearchParams.append('UserCode', this.user.LoginUserID);
         urlSearchParams.append('PushID', this.push_id);
         return urlSearchParams
     }

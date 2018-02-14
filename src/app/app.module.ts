@@ -45,13 +45,17 @@ import { ChangePasswordPageModule } from "../pages/account/change-password/chang
 import { ChatPageModule } from "../pages/chat/chat.module";
 import { ChatReadModalPageModule } from "../pages/chat/chat-read-modal/chat-read-modal.module";
 import { ContactUsPageModule } from '../pages/contact-us/contact-us.module';
+import { CreateTopicPageModule } from '../pages/topic/create-topic/create-topic.module';
 import { EditProfilePageModule } from "../pages/account/edit-profile/edit-profile.module";
 import { ForgotPasswordPageModule } from '../pages/forgot-password/forgot-password.module';
+import { GroupPageModule } from '../pages/group/group.module';
+import { GroupOptionsPageModule } from '../pages/group/group-options/group-options.module';
 import { HelpPageModule } from '../pages/help/help.module';
 import { HomePageModule } from '../pages/home/home.module';
 import { LoginPageModule } from '../pages/login/login.module';
 import { NotificationPreferencesPageModule } from "../pages/account/notification-preferences/notification-preferences.module";
-import { SavedMediaPageModule } from "../pages/chat/saved-media/saved-media.module";
+import { SavedMediaPageModule } from "../pages/chat/saved-media/saved-media.module"
+import { TopicOptionsPageModule } from '../pages/topic/topic-options/topic-options.module';
 import { TutorialPageModule } from '../pages/tutorial/tutorial.module';
 import { WelcomePageModule } from '../pages/welcome/welcome.module';
 
@@ -119,13 +123,17 @@ export function createTranslateLoader(http: HttpClient) {
         ChatPageModule,
         ChatReadModalPageModule,
         ContactUsPageModule,
+        CreateTopicPageModule,
         EditProfilePageModule,
         ForgotPasswordPageModule,
+        GroupPageModule,
+        GroupOptionsPageModule,
         HelpPageModule,
         HomePageModule,
         LoginPageModule,
         NotificationPreferencesPageModule,
         SavedMediaPageModule,
+        TopicOptionsPageModule,
         TutorialPageModule,
         WelcomePageModule,
         MomentModule,

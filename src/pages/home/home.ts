@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, group } from '@angular/core';
 import { IonicPage, NavController, NavParams, Events, Platform } from 'ionic-angular';
 import { DomSanitizer } from '@angular/platform-browser';
 
@@ -16,6 +16,7 @@ import { Storage } from '@ionic/storage';
 import * as _ from 'underscore';
 import { AngularFireDatabase } from 'angularfire2/database';
 import { Transition } from 'ionic-angular/transitions/transition';
+import { GroupPage } from '../group/group';
 
 @IonicPage()
 @Component({
@@ -41,7 +42,6 @@ export class HomePage {
         this.global = Global;
         //listening to Resume & Pause events
         this.events.subscribe('platform:onResumed', () => {
-            console.log('resume');
             this.getData();
         });
     }
@@ -49,7 +49,7 @@ export class HomePage {
     ionViewDidLoad() {
         //checking if logged in
         if (!_.isEmpty(this.connection.user)) {
-            //this.initData();
+            this.initData();
         } else {
             //waiting for login
             this.events.subscribe('user:ready', (status) => {
@@ -85,12 +85,13 @@ export class HomePage {
 
     getData() {
         return new Promise((resolve, reject) => {
-            this.connection.doPost('Chat/Home').then((groups: Array<any>) => {
+            this.connection.doPost('Chat/Home', {
+                UserCode: this.connection.user.UserCode
+            }).then((groups: Array<any>) => {
                 this.groups = groups;
-                if (this.groups.length === 0) {
+                if (groups.length === 0) {
                     this.groups = -1;
                 }
-                console.log(this.groups);
                 resolve(true);
             }).catch(error => {
                 console.log(error);
@@ -112,7 +113,7 @@ export class HomePage {
         this.user.getUser().then(user => {
             this.angularFireDatabase.object('Badge/' + user.id).snapshotChanges().subscribe(snapshot => {
                 snapshot = snapshot.payload.val();
-                if (snapshot) {
+                if (!_.isEmpty(snapshot)) {
                     this.badges = snapshot;
                 } else {
                 }
@@ -127,5 +128,18 @@ export class HomePage {
     useLang(lang) {
         this.translate.use(lang);
         this.user.registerPushID('123456');
+    }
+
+    openGroup(group) {
+        this.navCtrl.push(GroupPage, {
+            group_id: group.GroupID
+        });
+    }
+
+    getBadge(groupCode) {
+        if (groupCode in this.badges) {
+            return this.badges[groupCode];
+        }
+        return false;
     }
 }

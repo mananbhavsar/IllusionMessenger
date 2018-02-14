@@ -6,6 +6,7 @@ import { Http, Headers, Response, URLSearchParams } from '@angular/http';
 
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/timeout';
+import * as _ from 'underscore';
 
 import { TranslateService } from "@ngx-translate/core";
 
@@ -138,8 +139,7 @@ export class ConnectionProvider {
         urlSearchParams.append('Manufacturer', this.device.manufacturer);
         urlSearchParams.append('AppVersion', Global.AppVersion);
         //adding user info
-        console.log(this.user);
-        if (this.user) {
+        if (this.user || !_.isEmpty(this.user)) {
             urlSearchParams = this.addUserInfo(urlSearchParams);
         }
         return urlSearchParams;
@@ -152,7 +152,8 @@ export class ConnectionProvider {
     }
 
     addUserInfo(urlSearchParams: URLSearchParams): URLSearchParams {
-        urlSearchParams.append('UserCode', this.user.LoginUserID);
+        urlSearchParams.append('LoginUserID', this.user.LoginUserID);
+        urlSearchParams.append('UserCode', this.user.UserCode);
         urlSearchParams.append('PushID', this.push_id);
         return urlSearchParams
     }

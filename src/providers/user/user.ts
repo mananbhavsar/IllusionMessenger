@@ -114,7 +114,7 @@ export class UserProvider {
 
     setUser(User) {
         //setting
-        User.id = User.LoginUserID;
+        User.id = User.UserCode;
         return this.storage.set('User', User).then((user) => {
             this._user = user;
             return this._user;
@@ -211,6 +211,7 @@ export class UserProvider {
                             text: 'Update Now',
                             handler: () => {
                                 window.open(this.global.APP_URL[OSName], '_system');
+                                return allowAlertClose;
                             }
                         }
                     ];
@@ -221,7 +222,7 @@ export class UserProvider {
                             role: 'cancel'
                         });
                     }
-                    
+
                     let alert = this.alertCtrl.create({
                         enableBackdropDismiss: allowAlertClose,
                         title: 'Version Update Available',

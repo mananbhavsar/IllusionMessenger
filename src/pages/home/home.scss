@@ -1,20 +1,8 @@
 page-home {
-    .cutomer-name {
-        padding: 5px;
-        text-transform: uppercase;
-        background: gray;
-        color: white;
-        text-align: center;
-    }
-    .homescreenDivision,
-    .homescreenDivision1 {
-        display: flex;
-        justify-content: center;
-    }
-    .homescreenDivision {
-        min-height: 25%;
-    }
-    .homescreenDivision1 {
-        min-height: 50%;
+    ion-list {
+        ion-item {
+            h2 {
+            }
+        }
     }
 }

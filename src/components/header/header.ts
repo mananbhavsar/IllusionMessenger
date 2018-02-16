@@ -79,6 +79,7 @@ export class HeaderComponent {
     }
 
     sendButtonClicked(button, event) {
+        button.event = event;
         this.buttonClicked.emit(button);
     }
 }

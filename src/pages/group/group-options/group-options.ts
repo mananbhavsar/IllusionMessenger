@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { CreateTopicPage } from './../../topic/create-topic/create-topic';
+import { ConnectionProvider } from './../../../providers/connection/connection';
+import { Component, group } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
 /**
@@ -14,12 +16,31 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
   templateUrl: 'group-options.html',
 })
 export class GroupOptionsPage {
-
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  group_id: number = null;
+  participants: Array<any> = [];
+  constructor(
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    private connection: ConnectionProvider,
+  ) {
+    this.group_id = this.navParams.data;
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad GroupOptionsPage');
+  ionViewDidenter() {
+    //this.getParticipants();
   }
 
+  getParticipants() {
+    this.connection.doPost('Chat/', {
+      group_id: this.group_id
+    }).then(response => {
+
+    }).catch(error => {
+
+    });
+  }
+
+  openCreateTopic() {
+    this.navCtrl.push(CreateTopicPage, this.group_id);
+  }
 }

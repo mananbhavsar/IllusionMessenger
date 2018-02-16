@@ -131,9 +131,7 @@ export class HomePage {
     }
 
     openGroup(group) {
-        this.navCtrl.push(GroupPage, {
-            group_id: group.GroupID
-        });
+        this.navCtrl.push(GroupPage, group.GroupID);
     }
 
     getBadge(groupCode) {

@@ -2395,6 +2395,10 @@ ionic-plugin-keyboard@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/ionic-plugin-keyboard/-/ionic-plugin-keyboard-2.2.1.tgz#f2a9e169bbe9b5522400347c9fd6d3467ee3fa12"
 
+ionic2-auto-complete-ng5@^1.0.3-release:
+  version "1.0.3-release"
+  resolved "https://registry.yarnpkg.com/ionic2-auto-complete-ng5/-/ionic2-auto-complete-ng5-1.0.3-release.tgz#9dc678e5c1ad440ff88b8c34f5b1a7f94a7b3f15"
+
 ionicons@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/ionicons/-/ionicons-3.0.0.tgz#40b8daf4fd7a31150bd002160f66496e22a98c3c"

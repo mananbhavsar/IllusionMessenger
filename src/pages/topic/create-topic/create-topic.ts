@@ -1,12 +1,9 @@
+import { Global } from './../../../app/global';
+import { ConnectionProvider } from './../../../providers/connection/connection';
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
-/**
- * Generated class for the CreateTopicPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 
 @IonicPage()
 @Component({
@@ -14,12 +11,54 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
   templateUrl: 'create-topic.html',
 })
 export class CreateTopicPage {
-
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  group_id: number = 0;
+  participants: Array<any> = [];
+  selectedParticipants: Array<any> = [];
+  
+  global: any = {};
+  createForm: FormGroup;
+  constructor(
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    private connection: ConnectionProvider,
+    private formBuilder: FormBuilder,
+  ) {
+    this.group_id = this.navParams.data;
+    this.global = Global;
+    this.createForm = this.formBuilder.group({
+      group_id: [''],
+      private: [''],
+      name: ['', [Validators.required]],
+      participants: ['', [Validators.required]]
+    });
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad CreateTopicPage');
+  ionViewDidEnter() {
+    this.initData();
+  }
+
+  initData() {
+    this.connection.doPost('Chat/GetGroupUserDetail', {
+      GroupID: this.group_id,
+    }).then((response: any) => {
+      this.participants = response.GroupUserList;
+
+    }).catch(error => {
+      console.log(error);
+    })
+  }
+
+  getParticipants(keyword: string) {
+    let results = [];
+    this.participants.forEach((user, index) => {
+      if (user.User.indexOf(keyword) > -1) {
+        results.push({
+          name: user.User,
+          value: user.UserCode
+        });
+      }
+    });
+    return results;
   }
 
 }

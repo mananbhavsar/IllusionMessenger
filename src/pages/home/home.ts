@@ -17,6 +17,7 @@ import * as _ from 'underscore';
 import { AngularFireDatabase } from 'angularfire2/database';
 import { Transition } from 'ionic-angular/transitions/transition';
 import { GroupPage } from '../group/group';
+import { CreateTopicPage } from '../topic/create-topic/create-topic';
 
 @IonicPage()
 @Component({
@@ -42,7 +43,7 @@ export class HomePage {
         this.global = Global;
         //listening to Resume & Pause events
         this.events.subscribe('platform:onResumed', () => {
-            this.getData();
+            this.getData().catch(error=>{});
         });
     }
 
@@ -54,7 +55,7 @@ export class HomePage {
             //waiting for login
             this.events.subscribe('user:ready', (status) => {
                 if (status) {
-                    this.initData();
+                    this.getData().catch(error=>{});
                 }
             });
         }
@@ -77,7 +78,6 @@ export class HomePage {
                 this.connectToFireBase();
                 resolve(true);
             }).catch(error => {
-                console.log(error);
                 reject(error);
             });
         });
@@ -94,7 +94,7 @@ export class HomePage {
                 }
                 resolve(true);
             }).catch(error => {
-                console.log(error);
+                this.groups = -1;
                 reject(error);
             })
         });
@@ -139,5 +139,9 @@ export class HomePage {
             return this.badges[groupCode];
         }
         return false;
+    }
+
+    createTopic(group_id) {
+        this.navCtrl.push(CreateTopicPage, group_id);
     }
 }

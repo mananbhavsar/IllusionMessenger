@@ -1,18 +1,38 @@
-<!--
-  Generated template for the CreateTopicPage page.
-
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
-<ion-header>
-
-  <ion-navbar>
-    <ion-title>createTopic</ion-title>
-  </ion-navbar>
-
+<ion-header no-border>
+  <header title="Create Topic"></header>
 </ion-header>
-
-
 <ion-content padding>
-
+  <ion-grid>
+    <form [formGroup]="createForm">
+      <ion-list>
+        <ion-item>
+          <ion-label>Pepperoni</ion-label>
+          <ion-toggle formControlName="private" value="true" color="secondary"></ion-toggle>
+        </ion-item>
+        <ion-item>
+          <ion-label stacked>Topic Name</ion-label>
+          <ion-input formControlName="name" type="text"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label stacked>Topic Name</ion-label>
+          <ion-auto-complete [dataProvider]="getParticipants"></ion-auto-complete>
+        </ion-item>
+      </ion-list>
+    </form>
+  </ion-grid>
+  <ion-grid>
+    <ion-list>
+      <ion-list-header>
+        Selected Participants
+      </ion-list-header>
+      <ion-item *ngFor="let participant of selectedParticipants">
+        
+      </ion-item>
+    </ion-list>
+  </ion-grid>
 </ion-content>
+<ion-footer>
+  <ion-toolbar>
+    <button ion-button block [disabled]="!createForm.valid">Save</button>
+  </ion-toolbar>
+</ion-footer>

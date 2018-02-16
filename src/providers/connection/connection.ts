@@ -45,11 +45,13 @@ export class ConnectionProvider {
 
         //device id
         platform.ready().then(() => {
-            this.uniqueDeviceID.get()
-                .then((uuid: any) => {
-                    this.uuid = uuid;
-                })
-                .catch((error: any) => console.log(error));
+            if (platform.is('cordova')) {
+                this.uniqueDeviceID.get()
+                    .then((uuid: any) => {
+                        this.uuid = uuid;
+                    })
+                    .catch((error: any) => console.log(error));
+            }
             this.doTranslate();
         });
     }
@@ -98,7 +100,19 @@ export class ConnectionProvider {
                         if (data.objData.trim() === '') {
                             data.objData = data.objData.trim();
                         } else {
-                            data.objData = JSON.parse(data.objData);
+                            try {
+                                data.objData = JSON.parse(data.objData);
+                            } catch (error) {
+                                //trying to remove extra last comma
+                                if (error.toString().indexOf('Unexpected token } in JSON') > -1) {
+                                    try {
+                                        data.objData = JSON.parse(data.objData.replace(', }', '}'));
+                                    } catch (error) {
+                                        reject('Invalid JSON format');
+                                        break;
+                                    }
+                                }
+                            }
                         }
                         resolve(data.objData);
                         break;

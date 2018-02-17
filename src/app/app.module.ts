@@ -1,3 +1,4 @@
+import { UserAutoCompleteService } from './../pages/topic/create-topic/user-auto-complete';
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
@@ -182,7 +183,8 @@ export function createTranslateLoader(http: HttpClient) {
         NotificationsProvider,
         FileOpener,
         FileOpsProvider,
-        PhotoViewer
+        PhotoViewer,
+        UserAutoCompleteService,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

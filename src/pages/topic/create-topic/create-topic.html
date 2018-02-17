@@ -6,33 +6,44 @@
     <form [formGroup]="createForm">
       <ion-list>
         <ion-item>
-          <ion-label>Pepperoni</ion-label>
-          <ion-toggle formControlName="private" value="true" color="secondary"></ion-toggle>
+          <ion-label>Make Private</ion-label>
+          <ion-toggle formControlName="private" value="true" checked="true" color="secondary" mode="ios"></ion-toggle>
+          <p>This will make topic visible to selected users</p>
         </ion-item>
         <ion-item>
-          <ion-label stacked>Topic Name</ion-label>
-          <ion-input formControlName="name" type="text"></ion-input>
+          <ion-label floating>Topic Name</ion-label>
+          <ion-input formControlName="name" type="text" placeholder="Topic Name"></ion-input>
         </ion-item>
         <ion-item>
-          <ion-label stacked>Topic Name</ion-label>
-          <ion-auto-complete [dataProvider]="getParticipants"></ion-auto-complete>
+          <ion-label>Due Date</ion-label>
+          <ion-datetime [min]="getCurrentTime()" mode="ios" displayFormat="MMM DD, YYYY HH:mm" formControlName="due_date"></ion-datetime>
         </ion-item>
+        <ion-item no-lines>
+          <ion-label stacked>Add Participants</ion-label>
+        </ion-item>
+        <div padding-left>
+          <ion-auto-complete #userComplete [dataProvider]="userAutoCompleteService" [options]="{placeholder: 'Enter Name'}" (itemSelected)="participantSelected($event)"></ion-auto-complete>
+        </div>
       </ion-list>
     </form>
   </ion-grid>
-  <ion-grid>
+  <ion-grid *ngIf="createForm.get('private').value && !_.isEmpty(selectedParticipants)">
     <ion-list>
       <ion-list-header>
         Selected Participants
       </ion-list-header>
-      <ion-item *ngFor="let participant of selectedParticipants">
-        
+      <ion-item *ngFor="let user of getSelectedParticipants()">
+        <h2>{{user.name}}</h2>
+        <button ion-button outline item-end color="danger" (click)="removeParticipant(user.id)">
+          <ion-icon name="trash"></ion-icon>&nbsp;
+          Remove
+        </button>
       </ion-item>
     </ion-list>
   </ion-grid>
 </ion-content>
 <ion-footer>
   <ion-toolbar>
-    <button ion-button block [disabled]="!createForm.valid">Save</button>
+    <button (click)="submitForm()" ion-button block [disabled]="!createForm.valid">Save</button>
   </ion-toolbar>
 </ion-footer>

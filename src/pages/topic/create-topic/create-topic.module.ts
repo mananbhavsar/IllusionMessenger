@@ -1,8 +1,9 @@
-import { AutoCompleteModule } from 'ionic2-auto-complete-ng5';
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
 import { CreateTopicPage } from './create-topic';
 import { ComponentsModule } from '../../../components/components.module';
+
+import { AutoCompleteModule } from 'ionic2-auto-complete-ng5';
 
 @NgModule({
   declarations: [
@@ -11,7 +12,7 @@ import { ComponentsModule } from '../../../components/components.module';
   imports: [
     IonicPageModule.forChild(CreateTopicPage),
     ComponentsModule,
-    AutoCompleteModule,
+    AutoCompleteModule
   ],
 })
 export class CreateTopicPageModule {}

@@ -1,9 +1,13 @@
+import { UserAutoCompleteService } from './user-auto-complete';
 import { Global } from './../../../app/global';
 import { ConnectionProvider } from './../../../providers/connection/connection';
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
+
+import * as _ from 'underscore';
+import { AutoCompleteComponent } from 'ionic2-auto-complete-ng5';
 
 @IonicPage()
 @Component({
@@ -13,23 +17,27 @@ import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 export class CreateTopicPage {
   group_id: number = 0;
   participants: Array<any> = [];
-  selectedParticipants: Array<any> = [];
-  
+  selectedParticipants: any = {};
+  _: _.UnderscoreStatic = _;
+
   global: any = {};
   createForm: FormGroup;
+  @ViewChild('userComplete') userComplete: AutoCompleteComponent;
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     private connection: ConnectionProvider,
     private formBuilder: FormBuilder,
+    public userAutoCompleteService: UserAutoCompleteService,
   ) {
     this.group_id = this.navParams.data;
     this.global = Global;
     this.createForm = this.formBuilder.group({
       group_id: [''],
-      private: [''],
+      private: [true],
       name: ['', [Validators.required]],
-      participants: ['', [Validators.required]]
+      participants: [''],
+      due_date: ['']
     });
   }
 
@@ -41,24 +49,65 @@ export class CreateTopicPage {
     this.connection.doPost('Chat/GetGroupUserDetail', {
       GroupID: this.group_id,
     }).then((response: any) => {
-      this.participants = response.GroupUserList;
-
+      this.participants = response.GroupUserList
+      this.userAutoCompleteService.participants = this.participants;
     }).catch(error => {
       console.log(error);
     })
   }
 
-  getParticipants(keyword: string) {
-    let results = [];
-    this.participants.forEach((user, index) => {
-      if (user.User.indexOf(keyword) > -1) {
-        results.push({
-          name: user.User,
-          value: user.UserCode
-        });
-      }
+  participantSelected(user) {
+    this.userComplete.clearValue();
+    this.selectedParticipants[user.UserID] = user.User;
+    this.setSelectedParticipants();
+  }
+
+  removeParticipant(id) {
+    delete this.selectedParticipants[id];
+    this.setSelectedParticipants();
+  }
+
+  setSelectedParticipants() {
+    let selectedParticipantString = '';
+    if (!_.isEmpty(this.selectedParticipants)) {
+      selectedParticipantString = Object.keys(this.selectedParticipants).join(',');
+    }
+    this.createForm.patchValue({
+      'participants': selectedParticipantString
     });
-    return results;
+  }
+
+  getSelectedParticipants() {
+    let participants = [];
+    if (!_.isEmpty(this.selectedParticipants)) {
+      _.each(this.selectedParticipants, (name, id) => {
+        participants.push({
+          id: id,
+          name: name
+        })
+      });
+    }
+    return participants;
+  }
+
+  getCurrentTime(){
+    return new Date().toISOString();
+  }
+
+  submitForm() {
+    if (this.createForm.valid) {
+      this.connection.doPost('Chat/CreateGroupTopic', {
+        Private: this.createForm.get('private').value,
+        Topic: this.createForm.get('name').value,
+        GroupID: this.group_id,
+        DueDate: this.createForm.get('due_date').value,
+        UserList: this.createForm.get('participants').value,
+      }, 'creating topic').then(response => {
+
+      }).catch(error => {
+
+      });
+    }
   }
 
 }

@@ -87,7 +87,6 @@ export class ConnectionProvider {
             }
             //creating request
             let urlSearchParams = this.getURLSearchParams(params);
-
             this.http.post(Global.SERVER_URL + url, urlSearchParams).timeout(60000).map((response: Response) => response.json()).subscribe((data) => {
                 if (loader) {
                     this.events.publish('loading:close');
@@ -95,10 +94,23 @@ export class ConnectionProvider {
                 //Checking for Error Code
                 switch (parseInt(data.ErrorCode)) {
                     case 0:
-                        if (data.objData.trim() === '') {
-                            data.objData = data.objData.trim();
-                        } else {
-                            data.objData = JSON.parse(data.objData);
+                    if (data.objData.trim() === '') {
+                       data.objData = data.objData.trim();
+                    } else {
+                           try{
+                                data.objData = JSON.parse(data.objData);
+                              }catch(error){
+                            //trying to remove extra last comma
+                            if(error.toString().indexOf('Unexpected token } in JSON') > -1){
+                                try{
+                                    data.objData=JSON.parse(data.objData.replace(',}','}'));
+                                }
+                                catch(error){
+                                     reject('Invalid JSON Format');
+                                     break;
+                                    }
+                                } 
+                            }
                         }
                         resolve(data.objData);
                         break;

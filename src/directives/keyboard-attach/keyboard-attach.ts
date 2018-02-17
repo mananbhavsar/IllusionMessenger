@@ -1,7 +1,8 @@
 import { Directive, ElementRef, Input } from '@angular/core';
 import { Content, Platform } from 'ionic-angular';
-import { Keyboard } from '@ionic-native/keyboard';
+/*import { Keyboard } from '@ionic-native/keyboard';
 import { Subscription } from 'rxjs/rx';
+*/
 
 /**
  * @name KeyboardAttachDirective
@@ -38,25 +39,27 @@ import { Subscription } from 'rxjs/rx';
 export class KeyboardAttachDirective {
   @Input('keyboardAttach') content: Content;
 
-  private onShowSubscription: Subscription;
-  private onHideSubscription: Subscription;
+  //private onShowSubscription: Subscription;
+  //private onHideSubscription: Subscription;
 
   private attachTime = 0;
 
   constructor(
     private elementRef: ElementRef,
     private platform: Platform,
-    private keyboard: Keyboard
+    //private keyboard: Keyboard
   ) {
-    if (this.platform.is('cordova') && this.platform.is('ios')) {
+      if (this.platform.is('cordova') && this.platform.is('ios')) {
       this.onShowSubscription = this.keyboard.onKeyboardShow().subscribe(e => this.onShow(e));
-      this.onHideSubscription = this.keyboard.onKeyboardHide().subscribe(() => this.onHide());
+      this.onHideSubscription = this.keyboard.onKeyboardHide().subscribe(() => this.onHide());      
     }
+  
   }
 
   ngOnDestroy() {
-    if (this.onShowSubscription) {
+      if (this.onShowSubscription) {
       this.onShowSubscription.unsubscribe();
+      
     }
     if (this.onHideSubscription) {
       this.onHideSubscription.unsubscribe();

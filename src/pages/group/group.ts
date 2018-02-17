@@ -1,8 +1,12 @@
 import { ConnectionProvider } from './../../providers/connection/connection';
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
-
+import { GroupOptionsPage } from './../group/group-options/group-options';
+import { CloseTopicPage } from '../close-topic/close-topic';
 import * as _ from 'underscore';
+
+import * as  moment from "moment";
+import { locale } from 'moment';
 
 @IonicPage()
 @Component({
@@ -11,32 +15,20 @@ import * as _ from 'underscore';
 })
 export class GroupPage {
   group_id: number = 0;
-  title: string = 'Loading';
+  title: string='';
   group: any = {};
+  badges:Array<any> = [];
+
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    private connection: ConnectionProvider,
-  ) {
-    this.group_id = this.navParams.data;
+    private connection: ConnectionProvider){
+    this.title=this.navParams.data.Group;
+    this.group_id = this.navParams.data.GroupID;
   }
 
   ionViewDidEnter() {
-    this.group = {
-      ActiveTopicList: [{
-        Name: 'Topic 1A',
-        badge: 1,
-      }],
-      SystemTopicList: [{
-        Name: 'Topic 2A',
-        badge: 3,
-      }],
-      ClosedTopicList: [{
-        Name: 'Topic 3A',
-        badge: 0,
-      }],
-    }
-    // this.getGroupDetails();
+     this.getGroupDetails();
   }
 
   getGroupDetails() {
@@ -44,6 +36,7 @@ export class GroupPage {
       this.connection.doPost('Chat/GetGroupDetail', {
         GroupID: this.group_id
       }).then(group => {
+        this.group =group;
         console.log(group);
         resolve(true);
       }).catch(error => {
@@ -51,6 +44,16 @@ export class GroupPage {
       });
     });
   }
+
+  getExpiry(DueDate) {
+    let momentDate = moment(DueDate, 'YYYY/MM/DD');
+      if (moment().diff(momentDate) < 0) {
+      return 'due in ' + momentDate.fromNow(true);
+    } else {
+      return 'expired ' + momentDate.fromNow();
+    }
+  }
+}
 
   refresh(refresher) {
     this.getGroupDetails().then(status => {
@@ -67,15 +70,16 @@ export class GroupPage {
   openTopic(topic) {
 
   }
+  closeTopic(){
+  this.navCtrl.push(CloseTopicPage,this.group_id);
+  }
 
   headerButtonClicked(event) {
     this.openGroupOptions(event);
   }
 
   openGroupOptions(event) {
-    //open Option Group
-    
+    this.navCtrl.push(GroupOptionsPage,this.group_id);    
   }
-
 
 }

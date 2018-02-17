@@ -130,8 +130,8 @@ export class HomePage {
         this.user.registerPushID('123456');
     }
 
-    openGroup(group) {
-        this.navCtrl.push(GroupPage, group.GroupID);
+    openGroup(GroupID,Group) {
+            this.navCtrl.push(GroupPage,{ GroupID, Group});
     }
 
     getBadge(groupCode) {

@@ -1,8 +1,21 @@
 page-home {
+
     ion-list {
         ion-item {
             h2 {
             }
+            ion-row{                   	
+            	.activetopics{
+            		color: color($colors, secondary);
+            		font-style:italic;
+            		}
+            	
+            	.overdue{
+            		color:color($colors, danger);
+            		font-style:italic;
+            	}
+            }
+            
         }
     }
 }

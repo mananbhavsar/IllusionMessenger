@@ -41,6 +41,7 @@ import { MyApp } from './app.component';
 
 import { AboutPageModule } from '../pages/about/about.module';
 import { AccountPageModule } from '../pages/account/account.module';
+import { CloseTopicPageModule } from '../pages/close-topic/close-topic.module';
 import { ChangePasswordPageModule } from "../pages/account/change-password/change-password.module";
 import { ChatPageModule } from "../pages/chat/chat.module";
 import { ChatReadModalPageModule } from "../pages/chat/chat-read-modal/chat-read-modal.module";
@@ -119,6 +120,7 @@ export function createTranslateLoader(http: HttpClient) {
         IonicImageViewerModule,
         AboutPageModule,
         AccountPageModule,
+        CloseTopicPageModule,
         ChangePasswordPageModule,
         ChatPageModule,
         ChatReadModalPageModule,

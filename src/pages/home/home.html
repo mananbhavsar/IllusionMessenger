@@ -10,10 +10,19 @@
     <empty *ngIf="groups === -1"></empty>
     <ng-template #groups_template>
         <ion-list *ngIf="groups !== -1">
-            <ion-item *ngFor="let group of groups" (click)="openGroup(group)">
-                <h2>
+            <ion-item *ngFor="let group of groups" (click)="openGroup(group.GroupID,group.Group)">
+                <h2 >
                     {{group.Group}}
                 </h2>
+                <ion-row>
+                    <ion-col class="activetopics" >
+                            {{group.ActiveTopics}} topics pending
+                    </ion-col>
+                    <ion-col text-end class="overdue" >
+                            {{group.OverDueTopics}} topics due
+                    </ion-col>
+                </ion-row>
+               
                 <ion-badge item-end *ngIf="getBadge(group.GroupCode)">{{badges[group.GroupCode]}}</ion-badge>
                 <ion-icon name="ios-arrow-forward" item-end></ion-icon>
             </ion-item>

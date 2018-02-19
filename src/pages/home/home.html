@@ -15,10 +15,10 @@
                     {{group.Group}}
                 </h2>
                 <ion-row>
-                    <ion-col class="activetopics" >
-                            {{group.ActiveTopics}} topics pending
+                    <ion-col class="activetopics" [hidden]="active" >
+                           {{group.ActiveTopics }} topics pending
                     </ion-col>
-                    <ion-col text-end class="overdue" >
+                    <ion-col text-end class="overdue" [hidden]="overdue">
                             {{group.OverDueTopics}} topics due
                     </ion-col>
                 </ion-row>

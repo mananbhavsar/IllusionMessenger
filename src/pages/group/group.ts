@@ -18,6 +18,9 @@ export class GroupPage {
   title: string='';
   group: any = {};
   badges:Array<any> = [];
+  today:any;
+  active:boolean=false;
+  overdue:boolean=false;
 
   constructor(
     public navCtrl: NavController,
@@ -47,13 +50,17 @@ export class GroupPage {
 
   getExpiry(DueDate) {
     let momentDate = moment(DueDate, 'YYYY/MM/DD');
+     console.log(DueDate);
+     let today=moment().format('YYYY/MM/DD');
+      console.log(today);    
+      console.log(moment().diff(DueDate) < 0);
+     
       if (moment().diff(momentDate) < 0) {
       return 'due in ' + momentDate.fromNow(true);
     } else {
       return 'expired ' + momentDate.fromNow();
     }
   }
-}
 
   refresh(refresher) {
     this.getGroupDetails().then(status => {

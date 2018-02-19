@@ -1,15 +1,11 @@
 import { Component, group } from '@angular/core';
 import { IonicPage, NavController, NavParams, Events, Platform } from 'ionic-angular';
 import { DomSanitizer } from '@angular/platform-browser';
-
 import { ConnectionProvider } from '../../providers/connection/connection';
 import { UserProvider } from '../../providers/user/user';
 import { TranslateService } from "@ngx-translate/core";
-
 import { OneSignal } from '@ionic-native/onesignal';
-
 import { Global } from '../../app/global';
-
 import { ChatPage } from "../chat/chat";
 import { Storage } from '@ionic/storage';
 
@@ -17,6 +13,8 @@ import * as _ from 'underscore';
 import { AngularFireDatabase } from 'angularfire2/database';
 import { Transition } from 'ionic-angular/transitions/transition';
 import { GroupPage } from '../group/group';
+import * as  moment from "moment";
+import { locale } from 'moment';
 
 @IonicPage()
 @Component({
@@ -27,6 +25,8 @@ export class HomePage {
     global: any = {};
     groups: Array<any> | -1 = [];
     badges: any = {};
+    active:boolean=true;
+    overdue:boolean=true;
 
     constructor(
         public navCtrl: NavController,
@@ -98,6 +98,13 @@ export class HomePage {
                 reject(error);
             })
         });
+    }
+
+    topicStatus(){
+    let activedate=moment(ActiveTopics);
+     let today=moment().format('YYYY/MM/DD');
+      console.log(today);    
+      
     }
 
     refresh(refresher) {

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { ConnectionProvider } from '../../providers/connection/connection';
 
 /**
  * Generated class for the CloseTopicPage page.
@@ -20,7 +21,8 @@ export class CloseTopicPage {
 
   constructor(
   public navCtrl: NavController, 
-  public navParams: NavParams) {
+  public navParams: NavParams,
+  public connection: ConnectionProvider) {
   	this.group_id = this.navParams.data;
   	console.log(this.group_id);
   }
@@ -37,7 +39,8 @@ export class CloseTopicPage {
       } else {
           this.connection.doPost('Chat/', {
           GroupID: this.group_id,
-          page: this.page
+          PageNumber: this.page,
+          RowsPerPage:20
         }).then((response: any) => {
          if (response.length > 0) {
             response.forEach(list => {
@@ -59,7 +62,7 @@ export class CloseTopicPage {
 	refresh(refresher) {
     this.page = 1;
     this.closelist = [];
-    this.initData().then(status => {
+    this.getDetails().then(status => {
       refresher.complete();
     }).catch(error => {
       refresher.complete();

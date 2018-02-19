@@ -17,7 +17,7 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class GroupOptionsPage {
   group_id: number = null;
-  title:string='Options';
+  title:string='Group Options';
   userlist: Array<any> = [];
   participants: Array<any> = [];
   constructor(

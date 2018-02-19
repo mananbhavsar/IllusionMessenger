@@ -45,11 +45,13 @@ export class ConnectionProvider {
 
         //device id
         platform.ready().then(() => {
-            this.uniqueDeviceID.get()
-                .then((uuid: any) => {
-                    this.uuid = uuid;
-                })
-                .catch((error: any) => console.log(error));
+            if (platform.is('cordova')) {
+                this.uniqueDeviceID.get()
+                    .then((uuid: any) => {
+                        this.uuid = uuid;
+                    })
+                    .catch((error: any) => console.log(error));
+            }
             this.doTranslate();
         });
     }

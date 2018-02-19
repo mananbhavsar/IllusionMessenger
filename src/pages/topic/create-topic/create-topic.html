@@ -1,18 +1,49 @@
-<!--
-  Generated template for the CreateTopicPage page.
-
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
-<ion-header>
-
-  <ion-navbar>
-    <ion-title>createTopic</ion-title>
-  </ion-navbar>
-
+<ion-header no-border>
+  <header title="Create Topic"></header>
 </ion-header>
-
-
 <ion-content padding>
-
+  <ion-grid>
+    <form [formGroup]="createForm">
+      <ion-list>
+        <ion-item>
+          <ion-label>Make Private</ion-label>
+          <ion-toggle formControlName="private" value="true" checked="true" color="secondary" mode="ios"></ion-toggle>
+          <p>This will make topic visible to selected users</p>
+        </ion-item>
+        <ion-item>
+          <ion-label floating>Topic Name</ion-label>
+          <ion-input formControlName="name" type="text" placeholder="Topic Name"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>Due Date</ion-label>
+          <ion-datetime [min]="getCurrentTime()" mode="ios" displayFormat="MMM DD, YYYY HH:mm" formControlName="due_date"></ion-datetime>
+        </ion-item>
+        <ion-item no-lines *ngIf="!createForm.get('private').value">
+          <ion-label stacked>Add Participants</ion-label>
+        </ion-item>
+        <div padding-left *ngIf="!createForm.get('private').value">
+          <ion-auto-complete #userComplete [dataProvider]="userAutoCompleteService" [options]="{placeholder: 'Enter Name'}" (itemSelected)="participantSelected($event)"></ion-auto-complete>
+        </div>
+      </ion-list>
+    </form>
+  </ion-grid>
+  <ion-grid *ngIf="createForm.get('private').value && !_.isEmpty(selectedParticipants)">
+    <ion-list>
+      <ion-list-header>
+        Selected Participants
+      </ion-list-header>
+      <ion-item *ngFor="let user of getSelectedParticipants()">
+        <h2>{{user.name}}</h2>
+        <button ion-button outline item-end color="danger" (click)="removeParticipant(user.id)">
+          <ion-icon name="trash"></ion-icon>&nbsp;
+          Remove
+        </button>
+      </ion-item>
+    </ion-list>
+  </ion-grid>
 </ion-content>
+<ion-footer>
+  <ion-toolbar>
+    <button (click)="submitForm()" ion-button block [disabled]="!createForm.valid">Save</button>
+  </ion-toolbar>
+</ion-footer>

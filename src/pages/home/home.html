@@ -21,12 +21,12 @@
                     <ion-col text-end class="overdue" [hidden]="overdue">
                             {{group.OverDueTopics}} topics due
                     </ion-col>
-                </ion-row>
-               
+                </ion-row>               
                 <ion-badge item-end *ngIf="getBadge(group.GroupCode)">{{badges[group.GroupCode]}}</ion-badge>
                 <ion-icon name="ios-arrow-forward" item-end></ion-icon>
             </ion-item>
         </ion-list>
     </ng-template>
     <button ion-button full (click)=" registerDevice(123) ">RegisterDevice</button>
+    <button ion-button full color="secondary" (click)="createTopic(1) ">Create Topic</button>
 </ion-content>

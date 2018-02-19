@@ -39,13 +39,6 @@
           <h2>
             {{topic.Topic}}
           </h2>
-           <ion-row>
-                  <ion-col>
-                     {{getExpiry(topic.DueDate | amDateFormat:'YYYY/MM/DD')}}
-                  </ion-col>
-         </ion-row>
-         <p [hidden]="active"> active </p>
-         <p [hidden]="overdue"> overdue</p>
            <!-- <ion-badge item-end *ngIf="getBadge(topic.TopicCode)">{{badges[topic.TopicCode]}}</ion-badge> -->
           <ion-icon name="ios-arrow-forward" item-end></ion-icon>
         </ion-item>

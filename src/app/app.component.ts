@@ -363,7 +363,6 @@ export class MyApp {
         //Network events
         this.events.subscribe('network:offline', () => {
             let time = new Date().getTime();
-            console.log(time, this.lastOfflineMessageShown);
             if ((time - this.lastOfflineMessageShown) < 1000) {
                 return;
             }

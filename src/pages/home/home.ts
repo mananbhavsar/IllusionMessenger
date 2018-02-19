@@ -9,6 +9,7 @@ import { Global } from '../../app/global';
 import { ChatPage } from "../chat/chat";
 import { Storage } from '@ionic/storage';
 
+import { CreateTopicPage } from './../topic/create-topic/create-topic';
 import * as _ from 'underscore';
 import { AngularFireDatabase } from 'angularfire2/database';
 import { Transition } from 'ionic-angular/transitions/transition';
@@ -42,7 +43,7 @@ export class HomePage {
         this.global = Global;
         //listening to Resume & Pause events
         this.events.subscribe('platform:onResumed', () => {
-            this.getData();
+            this.getData().catch(error=>{});
         });
     }
 
@@ -54,7 +55,7 @@ export class HomePage {
             //waiting for login
             this.events.subscribe('user:ready', (status) => {
                 if (status) {
-                    this.initData();
+                    this.getData().catch(error=>{});
                 }
             });
         }
@@ -71,13 +72,13 @@ export class HomePage {
         }
     }
 
+
     initData() {
         return new Promise((resolve, reject) => {
             this.getData().then(status => {
                 this.connectToFireBase();
                 resolve(true);
             }).catch(error => {
-                console.log(error);
                 reject(error);
             });
         });
@@ -89,22 +90,16 @@ export class HomePage {
                 UserCode: this.connection.user.UserCode
             }).then((groups: Array<any>) => {
                 this.groups = groups;
+                              
                 if (groups.length === 0) {
                     this.groups = -1;
                 }
                 resolve(true);
             }).catch(error => {
-                console.log(error);
+                this.groups = -1;
                 reject(error);
             })
         });
-    }
-
-    topicStatus(){
-    let activedate=moment(ActiveTopics);
-     let today=moment().format('YYYY/MM/DD');
-      console.log(today);    
-      
     }
 
     refresh(refresher) {
@@ -113,7 +108,7 @@ export class HomePage {
         }).catch(error => {
             refresher.complete();
         });
-    }
+
 
     connectToFireBase() {
         //user setting
@@ -146,5 +141,9 @@ export class HomePage {
             return this.badges[groupCode];
         }
         return false;
+    }
+
+    createTopic(group_id) {
+       this.navCtrl.push(CreateTopicPage, group_id);
     }
 }

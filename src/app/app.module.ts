@@ -1,3 +1,4 @@
+import { UserAutoCompleteService } from './../pages/topic/create-topic/user-auto-complete';
 import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
@@ -78,6 +79,7 @@ import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabaseModule, AngularFireDatabase } from 'angularfire2/database';
 import { AngularFireAuthModule } from 'angularfire2/auth';
 import { IonicImageViewerModule } from 'ionic-img-viewer';
+import { AutoCompleteModule } from 'ionic2-auto-complete-ng5';
 
 export const firebaseConfig = {
     apiKey: "AIzaSyAFDZ9UPTMiDTjT4qAG0d9uVeOdhL-2PBw",
@@ -114,6 +116,7 @@ export function createTranslateLoader(http: HttpClient) {
             name: '__messenger_illusion_db',
             driverOrder: ['indexeddb', 'sqlite', 'websql']
         }),
+        AutoCompleteModule,
         AngularFireModule.initializeApp(firebaseConfig),
         AngularFireDatabaseModule,
         AngularFireAuthModule,
@@ -182,7 +185,8 @@ export function createTranslateLoader(http: HttpClient) {
         NotificationsProvider,
         FileOpener,
         FileOpsProvider,
-        PhotoViewer
+        PhotoViewer,
+        UserAutoCompleteService,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

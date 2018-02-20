@@ -26,7 +26,6 @@ export class ForgotPasswordPage {
     });
   }
 
-
   doForgotPassword() {
     this.connection.doPost('Chat/ForgotPassword	', {
       UserCode: this.ForgotPassword.login_name,

@@ -7,8 +7,8 @@ import * as mime from 'mime-types';
 import * as firebase from 'firebase';
 import * as moment from 'moment';
 
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Subscription } from 'rxjs/Subscription';
+import { BehaviorSubject } from 'rxjs/Rx';
+import { Subscription } from 'rxjs/Rx';
 import { Http, Headers, Response, URLSearchParams } from '@angular/http';
 import 'rxjs/add/operator/switchMap';
 

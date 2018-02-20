@@ -108,7 +108,7 @@ export class HomePage {
         }).catch(error => {
             refresher.complete();
         });
-
+    }
 
     connectToFireBase() {
         //user setting

@@ -49,7 +49,7 @@ export class CreateTopicPage {
     this.connection.doPost('Chat/GetGroupUserDetail', {
       GroupID: this.group_id,
     }).then((response: any) => {
-      this.participants = response.GroupUserList
+      this.participants = response.UserDetail
       this.userAutoCompleteService.participants = this.participants;
     }).catch(error => {
       console.log(error);

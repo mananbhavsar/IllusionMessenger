@@ -10,7 +10,7 @@
   	<ion-row>
   			<button ion-button full color="danger" (click)="openCreateTopic()">Create Topic</button>
   	</ion-row>
-  	<ion-card  *ngIf="userlist" >
+  	<ion-card  *ngIf="userlist.GroupUserList" >
   		<ion-grid >
   			<ion-row>
   				<ion-col>
@@ -20,7 +20,7 @@
   						<ion-card-header>Tags</ion-card-header>
   				</ion-col>
   			</ion-row>
-  			<ion-row *ngFor="let user of userlist">
+  			<ion-row *ngFor="let user of userlist.GroupUserList">
   				<ion-col>  				
   						{{user.User}}  								
    				</ion-col>

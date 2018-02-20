@@ -70,8 +70,8 @@ export class HomePage {
                 });
             });
         }
+        //this.dateStatus(null);
     }
-
 
     initData() {
         return new Promise((resolve, reject) => {
@@ -87,10 +87,11 @@ export class HomePage {
     getData() {
         return new Promise((resolve, reject) => {
             this.connection.doPost('Chat/Home', {
-                UserCode: this.connection.user.UserCode
-            }).then((groups: Array<any>) => {
+                UserCode: this.connection.user.UserCode,
+             }).then((groups: Array<any>) => {
                 this.groups = groups;
-                              
+                 //dateStatus(this.group.ActiveTopics);
+    
                 if (groups.length === 0) {
                     this.groups = -1;
                 }
@@ -102,14 +103,24 @@ export class HomePage {
         });
     }
 
+    dateStatus(activeTopic)
+    {
+        let today=moment.format('YYYY/MM/DD');
+        console.log(today);
+        let active = moment.duration(activeTopic.diff(today));
+        console.log(active);
+        let days= activeTopic.asDays();
+        console.log(days);        
+    }
+
     refresh(refresher) {
         this.getData().then(status => {
             refresher.complete();
         }).catch(error => {
             refresher.complete();
         });
-
-
+    }
+     
     connectToFireBase() {
         //user setting
         this.user.getUser().then(user => {

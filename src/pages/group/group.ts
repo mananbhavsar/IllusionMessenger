@@ -16,11 +16,12 @@ import { locale } from 'moment';
 export class GroupPage {
   group_id: number = 0;
   title: string='';
-  group: any = {};
+  group:Array<any> = [];
   badges:Array<any> = [];
   today:any;
   active:boolean=false;
   overdue:boolean=false;
+  page:number=0;
 
   constructor(
     public navCtrl: NavController,
@@ -35,20 +36,31 @@ export class GroupPage {
   }
 
   getGroupDetails() {
-    return new Promise((resolve, reject) => {
+     return new Promise((resolve, reject) => {
       this.connection.doPost('Chat/GetGroupDetail', {
-        GroupID: this.group_id
-      }).then(group => {
-        this.group =group;
-        console.log(group);
+         GroupID: this.group_id,
+         PageNumber: this.page,
+         RowsPerPage:20
+        }).then((response: any) => {
+        this.group=response;
         resolve(true);
-      }).catch(error => {
-        reject(error);
+        }).catch(error => {
+           reject(error);
+        });
       });
-    });
+  }
+
+  refresh(refresher) {
+    this.page = 0;
+    this.getGroupDetails().then(status => {
+      refresher.complete();
+    }).catch(error => {
+      refresher.complete();
+    })
   }
 
   getExpiry(DueDate) {
+
     let momentDate = moment(DueDate, 'YYYY/MM/DD');
       if (moment().diff(momentDate) < 0) {
       return 'due in ' + momentDate.fromNow(true);
@@ -56,14 +68,7 @@ export class GroupPage {
       return 'expired ' + momentDate.fromNow();
     }
   }
-
-  refresh(refresher) {
-    this.getGroupDetails().then(status => {
-      refresher.complete();
-    }).catch(error => {
-      refresher.complete();
-    })
-  }
+ 
 
   isEmpty(object) {
     return _.isEmpty(object);
@@ -73,7 +78,7 @@ export class GroupPage {
 
   }
   closeTopic(){
-  this.navCtrl.push(CloseTopicPage,this.group_id);
+    this.navCtrl.push(CloseTopicPage,this.group_id);
   }
 
   headerButtonClicked(event) {

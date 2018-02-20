@@ -46,10 +46,11 @@ export class CreateTopicPage {
   }
 
   initData() {
+    console.log(new Date().toISOString());
     this.connection.doPost('Chat/GetGroupUserDetail', {
       GroupID: this.group_id,
     }).then((response: any) => {
-      this.participants = response.GroupUserList
+      this.participants = response.GroupUserList;
       this.userAutoCompleteService.participants = this.participants;
     }).catch(error => {
       console.log(error);
@@ -57,9 +58,10 @@ export class CreateTopicPage {
   }
 
   participantSelected(user) {
-    this.userComplete.clearValue();
     this.selectedParticipants[user.UserID] = user.User;
     this.setSelectedParticipants();
+    this.userComplete.clearValue();
+    console.log(this.selectedParticipants,user);
   }
 
   removeParticipant(id) {
@@ -101,7 +103,8 @@ export class CreateTopicPage {
         Topic: this.createForm.get('name').value,
         GroupID: this.group_id,
         DueDate: this.createForm.get('due_date').value,
-        UserList: this.createForm.get('participants').value,        
+        UserList: this.createForm.get('participants').value,   
+        StatusID:1     
         }, 'creating topic').then(response => {
 
       }).catch(error => {

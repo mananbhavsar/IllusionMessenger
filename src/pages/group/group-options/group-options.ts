@@ -29,8 +29,8 @@ export class GroupOptionsPage {
   }
 
   ionViewDidEnter() {
-    //this.getParticipants();
-    this.getUserDetails();
+    this.getParticipants();
+    //this.getUserDetails();
   }
 
   getUserDetails()
@@ -64,6 +64,7 @@ export class GroupOptionsPage {
     this.connection.doPost('Chat/GetGroupUserDetail', {
       GroupID: this.group_id
     }).then(response => {
+    this.userlist=response;
       resolve(true);
     }).catch(error => {
       reject(error);

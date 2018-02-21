@@ -14,7 +14,8 @@ export class UserAutoCompleteService implements AutoCompleteService {
     getResults(keyword: string) {
         let results: Array<any> = [];
         this.participants.forEach(user => {
-            if (user.User.toLowerCase().indexOf(keyword) > -1) {
+            user = user.User[0];
+            if (user.User.toLowerCase().indexOf(keyword.toLowerCase()) > -1) {
                 results.push(user);
             }
         });

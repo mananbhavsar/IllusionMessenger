@@ -52,8 +52,7 @@ export class ChatPage {
   global: any = Global;
 
   data: any = {};
-  ticket: string = null;
-  impressNo: string = null;
+  topicCode: string = null;
   title: string = 'loading';
   subTitle: string = null;
   isIOS: boolean = false;
@@ -178,22 +177,10 @@ export class ChatPage {
       console.log(error);
     });
 
-    //checking if param is single string
-    if (typeof this.navParams.data === 'string') {
-      this.navParams.data = {
-        TicketNo: this.navParams.data
-      };
-    }
-    //getting Ticket no
-    if (Global.work_with_impression_no) {
-      this.ticket = this.navParams.data.TicketNo;
-      this.impressNo = this.navParams.data.ImpressionNo;
+    this.topicCode = this.navParams.data.topicCode;
 
-      this.pathIdentifier = this.impressNo;
-    } else {
-      this.ticket = this.navParams.data.TicketNo;
-      this.pathIdentifier = this.ticket;
-    }
+    this.pathIdentifier = this.topicCode;
+
     this.basePath = 'Communications/' + this.pathIdentifier + '/';
 
 
@@ -488,7 +475,7 @@ export class ChatPage {
        * checking if chatting with same ticketNo
        * if not then show in toast with button
        */
-      if (this.ticket !== notification.additionalData.params) {
+      if (this.topicCode !== notification.additionalData.params.topicCode) {
         let chatToast = this._toastCtrl.create({
           message: 'New message from ' + notification.title,
           duration: 5000,
@@ -578,11 +565,8 @@ export class ChatPage {
     return new Promise((resolve, reject) => {
       if (this._network.type !== 'none') {
         let params = {
-          TicketRegisterNo: this.ticket
+          TopicCode: this.topicCode
         };
-        if (Global.work_with_impression_no) {
-          params['ImpressionNo'] = this.impressNo;
-        }
         this.connection.doPost('Communication/GetQueryDetail', params).then((response: any) => {
           this.data = JSON.parse(response.Data);
           console.log(this.data);
@@ -602,16 +586,16 @@ export class ChatPage {
           reject(error);
         });
       } else {
-        this.storage.get('OfflineTickets').then(tickets => {
-          if (_.isEmpty(tickets)) {
-            tickets = {};
+        this.storage.get('OfflineTickets').then(topicCodes => {
+          if (_.isEmpty(topicCodes)) {
+            topicCodes = {};
           }
-          if (!(this.ticket in tickets) || _.size(tickets[this.ticket]) === 0) {
+          if (!(this.topicCode in topicCodes) || _.size(topicCodes[this.topicCode]) === 0) {
             this.events.publish('toast:create', this.offlineMessageText);
             reject(false);
             return;
           }
-          this.data = tickets[this.ticket];
+          this.data = topicCodes[this.topicCode];
           console.log(this.data);
           this.setTitle();
           this.setUsers().then(chatUsersList => {
@@ -776,11 +760,8 @@ export class ChatPage {
           Status: 0,
           URL: url,
           Read: readObject,
-          TicketNo: this.ticket,
+          TopicCode: this.topicCode,
         };
-        if (Global.work_with_impression_no) {
-          values['ImpressionNo'] = this.impressNo;
-        }
 
         this.messagesRef.push(values).then((messageFromFirebase) => {
           let data = {
@@ -1133,11 +1114,8 @@ export class ChatPage {
       LoginUserID: this.user.CustomerPortalID,
       FileName: fileName,
       FileExtension: fileExtension,
-      TicketNo: this.ticket,
+      TopicCode: this.topicCode,
     };
-    if (Global.work_with_impression_no) {
-      params['ImpressionNo'] = this.impressNo;
-    }
 
     let options: FileUploadOptions = {
       fileKey: 'file',
@@ -1177,7 +1155,7 @@ export class ChatPage {
         contents.fr = '🎤 Voice Message';
       }
 
-      this._notifications.send(user.DeviceID, user.title, contents, user.Badge, 'ChatPage', this.ticket, message.URL).catch(error => { });
+      this._notifications.send(user.DeviceID, user.title, contents, user.Badge, 'ChatPage', this.topicCode, message.URL).catch(error => { });
     });
   }
 
@@ -1202,11 +1180,8 @@ export class ChatPage {
       URL: message.URL,
       FileName: fileName,
       FileExtension: fileExtension,
-      TicketNo: this.ticket,
+      TopicCode: this.topicCode,
     };
-    if (Global.work_with_impression_no) {
-      params['ImpressionNo'] = this.impressNo;
-    }
 
     this.connection.doPost('Communication/InsertChat', params, false).then((response: any) => {
       //send Push
@@ -1301,11 +1276,8 @@ export class ChatPage {
 
       let params = {
         UserCode: this.userID,
-        TicketNo: this.ticket,
+        TopicCode: this.topicCode,
       };
-      if (Global.work_with_impression_no) {
-        params['ImpressionNo'] = this.ticket;
-      }
 
       this.connection.doPost('Communication/UpdateChatStatus', params, false).then((response: any) => {
         this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { })
@@ -1346,18 +1318,18 @@ export class ChatPage {
   }
 
   doFoldering() {
-    this.file.checkDir(this.dataDirectory, this.ticket).then(exist => {
+    this.file.checkDir(this.dataDirectory, this.topicCode).then(exist => {
 
     }).catch(error => {
       if (error.code === 1) {
-        this.file.createDir(this.dataDirectory, this.ticket, false).then(entry => { }).catch(error => { });
+        this.file.createDir(this.dataDirectory, this.topicCode, false).then(entry => { }).catch(error => { });
       }
     });
   }
 
   initOffline() {
     return new Promise((resolve, reject) => {
-      this.storage.get('OfflineMessages-' + this.ticket).then(messages => {
+      this.storage.get('OfflineMessages-' + this.topicCode).then(messages => {
         if (_.isEmpty(messages)) {
           messages = {};
         }
@@ -1419,7 +1391,7 @@ export class ChatPage {
 
   saveOfflineData() {
     return new Promise((resolve, reject) => {
-      this.storage.set('OfflineMessages-' + this.ticket, this.offlineMessages).then(status => {
+      this.storage.set('OfflineMessages-' + this.topicCode, this.offlineMessages).then(status => {
         resolve(status);
       }).catch(error => {
         reject(error);
@@ -1429,13 +1401,13 @@ export class ChatPage {
 
   setOfflineTicketList(data) {
     return new Promise((resolve, reject) => {
-      this.storage.get('OfflineTickets').then(tickets => {
-        if (_.isEmpty(tickets)) {
-          tickets = {};
+      this.storage.get('OfflineTickets').then(topicCodes => {
+        if (_.isEmpty(topicCodes)) {
+          topicCodes = {};
         }
-        tickets[this.ticket] = data;
+        topicCodes[this.topicCode] = data;
 
-        this.storage.set('OfflineTickets', tickets).then(status => {
+        this.storage.set('OfflineTickets', topicCodes).then(status => {
           resolve(status);
         }).catch(error => {
           reject(error);
@@ -1456,7 +1428,7 @@ export class ChatPage {
     let params = {
       message: message,
       chatUsers: this.chatUsers,
-      ticket: this.ticket,
+      topicCode: this.topicCode,
       userID: this.userID,
       loginTypeID: this.user.LoginTypeID,
     };
@@ -1470,7 +1442,7 @@ export class ChatPage {
   openSavedMedia(event) {
     let params = {
       path: this.dataDirectory,
-      folder: this.ticket,
+      folder: this.topicCode,
       loginTypeID: this.user.LoginTypeID,
     };
     let savedMediaModal = this.modal.create(SavedMediaPage, params);

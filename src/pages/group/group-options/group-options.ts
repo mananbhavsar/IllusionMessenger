@@ -17,7 +17,7 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class GroupOptionsPage {
   group_id: number = null;
-  title:string='Group Options';
+  title: string = 'Group Options';
   userlist: Array<any> = [];
   participants: Array<any> = [];
   constructor(
@@ -29,13 +29,12 @@ export class GroupOptionsPage {
   }
 
   ionViewDidEnter() {
-    //this.getParticipants();
-    this.getUserDetails();
+    this.getParticipants();
+    //this.getUserDetails();
   }
 
-  getUserDetails()
-  {
-    this.userlist= [{
+  getUserDetails() {
+    this.userlist = [{
       "UserID": 1,
       "UserCode": "1027",
       "User": "Sanjay Panchal",
@@ -60,15 +59,16 @@ export class GroupOptionsPage {
   }
 
   getParticipants() {
-   return new Promise((resolve, reject) => {
-    this.connection.doPost('Chat/GetGroupUserDetail', {
-      GroupID: this.group_id
-    }).then(response => {
-      resolve(true);
-    }).catch(error => {
-      reject(error);
+    return new Promise((resolve, reject) => {
+      this.connection.doPost('Chat/GetGroupUserDetail', {
+        GroupID: this.group_id
+      }).then((response:any) => {
+        this.userlist = response;
+        resolve(true);
+      }).catch(error => {
+        reject(error);
+      });
     });
-  });
   }
 
   openCreateTopic() {

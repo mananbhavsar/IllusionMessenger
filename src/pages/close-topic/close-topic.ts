@@ -53,6 +53,7 @@ export class CloseTopicPage {
             resolve(false);
           }
         }).catch(error => {
+          this.page = -1;
           reject(false);
         });
       }

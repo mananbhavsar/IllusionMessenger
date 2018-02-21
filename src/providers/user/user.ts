@@ -175,7 +175,6 @@ export class UserProvider {
                 }).catch(error => {
                     reject(error);
                 });
-
             } else {
                 //waiting to logged in
                 this.events.subscribe('user:ready', (user) => {

@@ -37,7 +37,7 @@ export class CreateTopicPage {
       private: [true],
       name: ['', [Validators.required]],
       participants: [''],
-      due_date: ['']
+      due_date: [new Date().toISOString()]
     });
   }
 
@@ -46,6 +46,7 @@ export class CreateTopicPage {
   }
 
   initData() {
+    console.log(new Date().toISOString());
     this.connection.doPost('Chat/GetGroupUserDetail', {
       GroupID: this.group_id,
     }).then((response: any) => {
@@ -57,9 +58,11 @@ export class CreateTopicPage {
   }
 
   participantSelected(user) {
-    this.userComplete.clearValue();
+    console.log(user);
     this.selectedParticipants[user.UserID] = user.User;
     this.setSelectedParticipants();
+    this.userComplete.clearValue();
+    console.log(this.selectedParticipants,user);
   }
 
   removeParticipant(id) {
@@ -101,7 +104,8 @@ export class CreateTopicPage {
         Topic: this.createForm.get('name').value,
         GroupID: this.group_id,
         DueDate: this.createForm.get('due_date').value,
-        UserList: this.createForm.get('participants').value,        
+        UserList: this.createForm.get('participants').value,   
+        StatusID:1     
         }, 'creating topic').then(response => {
 
       }).catch(error => {

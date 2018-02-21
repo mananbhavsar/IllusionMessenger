@@ -3368,7 +3368,7 @@ minizlib@^1.1.0:
   dependencies:
     minimist "0.0.8"
 
-moment@^2.16.0, moment@^2.19.1:
+moment@^2.16.0, moment@^2.20.1:
   version "2.20.1"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.20.1.tgz#d6eb1a46cbcc14a2b2f9434112c1ff8907f313fd"
 
@@ -4339,6 +4339,7 @@ rx-lite-aggregates@^4.0.8:
     rx-lite "*"
 
 rx-lite@*, rxjs@^5.5.6:
+  name rx-lite
   version "5.5.6"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-5.5.6.tgz#e31fb96d6fd2ff1fd84bcea8ae9c02d007179c02"
   dependencies:

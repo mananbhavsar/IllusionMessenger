@@ -28,7 +28,7 @@ temp/
 platforms/
 www/
 $RECYCLE.BIN/
-node_modeules
+node_modules
 #google-services.json
 #GoogleService-Info.plist
 #config.xml

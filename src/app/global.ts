@@ -15,7 +15,6 @@ export var Global = {
         invoice: '673AB7',
         payments: '009688'
     },
-    work_with_impression_no: true,
     AppVersion: '0.1.0',
     support: {
         landline: '+91-22-61366301',

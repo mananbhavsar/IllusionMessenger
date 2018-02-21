@@ -20,11 +20,11 @@
           <h2>
             {{topic.Topic}}
           </h2>      
-             <ion-row>
-                  <ion-col>
+              <ion-row>
+                  <ion-col >
                      {{getExpiry(topic.DueDate)}}
                   </ion-col>
-         </ion-row>
+              </ion-row>
            <!--<ion-badge item-end *ngIf="getBadge(topic.TopicCode)">{{badges[topic.TopicCode]}}</ion-badge> -->
           <ion-icon name="ios-arrow-forward" item-end></ion-icon>
         </ion-item>
@@ -34,8 +34,8 @@
         <ion-item-divider color="light">
           System Topics
         </ion-item-divider>
-          <p *ngIf="group.SystemTopicList.length === 0"  text-center>No data Found</p>       
-        <ion-item *ngFor="let topic of group.SystemTopicList" (click)="openTopic(topic)">
+          <p *ngIf="group.SystemTopicList.length === 0"  text-center>No data Found</p> 
+          <ion-item *ngFor="let topic of group.SystemTopicList" (click)="openTopic(topic)">
           <h2>
             {{topic.Topic}}
           </h2>

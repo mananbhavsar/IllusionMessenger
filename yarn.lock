@@ -217,7 +217,7 @@
   version "4.5.3"
   resolved "https://registry.yarnpkg.com/@ionic-native/in-app-browser/-/in-app-browser-4.5.3.tgz#3e94b8aa239449a92d91d2cd02e5f19962a5c823"
 
-"@ionic-native/keyboard@^4.3.2":
+"@ionic-native/keyboard@^4.5.3":
   version "4.5.3"
   resolved "https://registry.yarnpkg.com/@ionic-native/keyboard/-/keyboard-4.5.3.tgz#4d34eb78d3e6055c646416e7274d6f647d49dad0"
 
@@ -472,7 +472,7 @@ android-versions@^1.2.0:
   dependencies:
     semver "^5.4.1"
 
-angular2-moment@^1.7.0:
+angular2-moment@^1.8.0:
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/angular2-moment/-/angular2-moment-1.8.0.tgz#27dd83d98de5d5e0f45412d82c89491a6fa245ca"
   dependencies:
@@ -3368,7 +3368,7 @@ minizlib@^1.1.0:
   dependencies:
     minimist "0.0.8"
 
-moment@^2.16.0, moment@^2.19.1:
+moment@^2.16.0, moment@^2.20.1:
   version "2.20.1"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.20.1.tgz#d6eb1a46cbcc14a2b2f9434112c1ff8907f313fd"
 
@@ -3400,9 +3400,9 @@ ng-elastic@^1.0.0-beta.3:
   version "1.0.0-beta.5"
   resolved "https://registry.yarnpkg.com/ng-elastic/-/ng-elastic-1.0.0-beta.5.tgz#143183920d518820f0d3517ce2b4bdd1baaff133"
 
-ngx-order-pipe@^1.1.1:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/ngx-order-pipe/-/ngx-order-pipe-1.2.0.tgz#90158f1b98df4921534b8c9cec2f948f903b966b"
+ngx-order-pipe@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/ngx-order-pipe/-/ngx-order-pipe-2.0.0.tgz#98fd918c7192b94df4619de3ffe89bb12d5b15e0"
 
 node-gyp@^3.3.1:
   version "3.6.2"
@@ -4322,7 +4322,7 @@ rollup@0.50.0:
   version "0.50.0"
   resolved "https://registry.yarnpkg.com/rollup/-/rollup-0.50.0.tgz#4c158f4e780e6cb33ff0dbfc184a52cc58cd5f3b"
 
-rxjs@^5.5.6:
+rsvp@^3.0.21:
   version "3.6.2"
   resolved "https://registry.yarnpkg.com/rsvp/-/rsvp-3.6.2.tgz#2e96491599a96cde1b515d5674a8f7a91452926a"
 
@@ -4338,14 +4338,16 @@ rx-lite-aggregates@^4.0.8:
   dependencies:
     rx-lite "*"
 
-rx-lite@*, rx-lite@^4.0.8:
-  version "4.0.8"
-  resolved "https://registry.yarnpkg.com/rx-lite/-/rx-lite-4.0.8.tgz#0b1e11af8bc44836f04a6407e92da42467b79444"
-
+rx-lite@*, rxjs@^5.5.6:
+  name rx-lite
   version "5.5.6"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-5.5.6.tgz#e31fb96d6fd2ff1fd84bcea8ae9c02d007179c02"
   dependencies:
     symbol-observable "1.0.1"
+
+rx-lite@^4.0.8:
+  version "4.0.8"
+  resolved "https://registry.yarnpkg.com/rx-lite/-/rx-lite-4.0.8.tgz#0b1e11af8bc44836f04a6407e92da42467b79444"
 
 safe-buffer@5.1.1, safe-buffer@^5.0.1, safe-buffer@^5.1.0, safe-buffer@^5.1.1, safe-buffer@~5.1.0, safe-buffer@~5.1.1:
   version "5.1.1"

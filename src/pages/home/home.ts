@@ -26,8 +26,9 @@ export class HomePage {
     global: any = {};
     groups: Array<any> | -1 = [];
     badges: any = {};
-    active:boolean=true;
-    overdue:boolean=true;
+    active:boolean=false;
+    overdue:boolean=false;
+    list:Array<any> = [];
 
     constructor(
         public navCtrl: NavController,
@@ -90,8 +91,24 @@ export class HomePage {
                 UserCode: this.connection.user.UserCode,
              }).then((groups: Array<any>) => {
                 this.groups = groups;
-                 //dateStatus(this.group.ActiveTopics);
-    
+   
+                   this.groups.forEach(user => {
+                    user=user;
+                    if(user.ActiveTopics > 0 )
+                    {
+                        active:boolean=false;                        
+                    }else{
+                        active:boolean=true;
+                    }
+
+                    if(user.OverDueTopics > 0)
+                    {
+                        overdue:boolean=false;
+                    }else{
+                         overdue:boolean=true;
+                    }
+                });
+
                 if (groups.length === 0) {
                     this.groups = -1;
                 }
@@ -101,16 +118,6 @@ export class HomePage {
                 reject(error);
             })
         });
-    }
-
-    dateStatus(activeTopic)
-    {
-        let today=moment.format('YYYY/MM/DD');
-        console.log(today);
-        let active = moment.duration(activeTopic.diff(today));
-        console.log(active);
-        let days= activeTopic.asDays();
-        console.log(days);        
     }
 
     refresh(refresher) {

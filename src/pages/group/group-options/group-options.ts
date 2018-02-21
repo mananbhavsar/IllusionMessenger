@@ -30,34 +30,7 @@ export class GroupOptionsPage {
 
   ionViewDidEnter() {
     this.getParticipants();
-    //this.getUserDetails();
-  }
-
-  getUserDetails()
-  {
-    this.userlist= [{
-      "UserID": 1,
-      "UserCode": "1027",
-      "User": "Sanjay Panchal",
-      "TagID": 1,
-      "TagCode": "MA",
-      "Tag": "Mobile App Development Team"
-    }, {
-      "UserID": 7,
-      "UserCode": "011",
-      "User": "Roshan",
-      "TagID": 1,
-      "TagCode": "MA",
-      "Tag": "Mobile App Development Team"
-    }, {
-      "UserID": 8,
-      "UserCode": "012",
-      "User": "Lalita",
-      "TagID": 1,
-      "TagCode": "MA",
-      "Tag": "Mobile App Development Team"
-    }]
-  }
+   }
 
   getParticipants() {
    return new Promise((resolve, reject) => {

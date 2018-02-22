@@ -59,12 +59,10 @@ export class CreateTopicPage {
   }
 
   participantSelected(user) {
-    console.log(user);
     this.selectedParticipants[user.UserID] = user.User;
     this.setSelectedParticipants();
     this.userComplete.clearValue();
-    console.log(this.selectedParticipants,user);
-  }
+   }
 
   removeParticipant(id) {
     delete this.selectedParticipants[id];
@@ -106,9 +104,9 @@ export class CreateTopicPage {
         GroupID: this.group_id,
         DueDate: this.createForm.get('due_date').value,
         UserList: this.createForm.get('participants').value,   
-        StatusID:0     
+        StatusID:1     
         }, 'creating topic').then(response => {
-
+          console.log(response);
       }).catch(error => {
 
       });

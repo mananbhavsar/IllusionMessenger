@@ -35,8 +35,13 @@
         <ion-item-divider color="light">
           System Topics
         </ion-item-divider>
+<<<<<<< HEAD
           <p *ngIf="group.SystemTopicList.length === 0"  text-center>No data Found</p> 
-        <ion-item *ngFor="let topic of group.SystemTopicList" (click)="openTopic(topic)">
+          <ion-item *ngFor="let topic of group.SystemTopicList" (click)="openTopic(topic)">
+=======
+          <p *ngIf="group.SystemTopicList.length === 0"  text-center>No data Found</p>       
+        <ion-item *ngFor="let topic of group.SystemTopicList;let i = index;" (click)="openTopic(topic, i, 'SystemTopicList')">
+>>>>>>> a3c9d042e09a303a95fa0a7bec7c0264519c48fc
           <h2>
             {{topic.Topic}}
           </h2>

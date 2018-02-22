@@ -208,17 +208,6 @@ export class MyApp {
      */
     isAuthorized(page: PageInterface) {
         if (this.user && this.user._user) {
-            //for LoginTypeID 3
-            if (this.user._user.LoginTypeID === Global.LoginType.Group) {
-                //for dashboard
-                return ['DashboardPage', 'PickupPage', 'InvoicePage', 'PaymentsPage'].indexOf(page.name) === -1;
-            } else {
-                //for non portal user
-                if (!this.user._user.isPortalAdmin) {
-                    return ['InvoicePage', 'PaymentsPage'].indexOf(page.name) === -1;
-                }
-
-            }
             return true;
         }
         return false;
@@ -538,7 +527,7 @@ export class MyApp {
             this.user.getUser().then(user => {
                 this._oneSignal.sendTags({
                     user_id: user.id,
-                    name: user.Customer
+                    name: user.LoginUser
                 });
             });
         });

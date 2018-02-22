@@ -52,7 +52,12 @@ export class ChatPage {
   global: any = Global;
 
   data: any = {};
+
+  topicID: string = null;
   topicCode: string = null;
+  groupID: string = null;
+  groupCode: string = null;
+  
   title: string = 'loading';
   subTitle: string = null;
   isIOS: boolean = false;
@@ -83,6 +88,8 @@ export class ChatPage {
   chattingInterval = null;
 
   lastTypingTime: number = 0;
+
+  scrollingBottom: boolean = false;
 
   user: any = {};
   userID = null;
@@ -171,18 +178,14 @@ export class ChatPage {
     this.isIOS = this.platform.is('ios');
     this.isCordova = this.platform.is('cordova');
     this.global = Global;
+
+    this.topicID = this.navParams.data.topicID;
+    this.groupID = this.navParams.data.groupID;
+    
     this._fileOps.getDataDirectory().then(path => {
       this.dataDirectory = path;
     }).catch(error => {
-      console.log(error);
     });
-
-    this.topicCode = this.navParams.data.topicCode;
-
-    this.pathIdentifier = this.topicCode;
-
-    this.basePath = 'Communications/' + this.pathIdentifier + '/';
-
 
     this.keyboard.onKeyboardShow().subscribe((data) => {
       this.scrollBottom('keyboard show').catch(error => { });
@@ -204,14 +207,14 @@ export class ChatPage {
 
       this.setFirebaseRef();
       this.listenToFirebaseEvents(true);
-      //make all unread count of this ticket to zero
+      //make all unread count of this topics to zero
       this.clearBadgeCountIfAny();
     });
     this.events.subscribe('network:offline', () => {
       this.hasInternet = false;
     });
 
-    //making folder with this ticket number to save files
+    //making folder with this topics code to save files
     this.doFoldering();
   }
 
@@ -273,7 +276,7 @@ export class ChatPage {
         this.checkForNoMoreMessages();
         //saving first message key
         this.data.firstMessageKey = this.firstMessageKey;
-        this.setOfflineTicketList(this.data);
+        this.setOfflineTopicList(this.data);
       }
     });
   }
@@ -309,7 +312,7 @@ export class ChatPage {
             this.checkForNoMoreMessages();
             //saving first message key
             this.data.firstMessageKey = this.firstMessageKey;
-            this.setOfflineTicketList(this.data);
+            this.setOfflineTopicList(this.data);
           }
 
           setTimeout(() => {
@@ -445,7 +448,7 @@ export class ChatPage {
   initUser() {
     //setting current User
     this.user = this.connection.user;
-    this.userID = this.user.id;
+    this.userID = this.user.LoginUserID;
   }
 
   listenToEvents() {
@@ -458,7 +461,7 @@ export class ChatPage {
     this.events.subscribe('platform:onResumed', () => {
       this.setFirebaseRef();
       this.listenToFirebaseEvents(true);
-      //make all unread count of this ticket to zero
+      //make all unread count of this topic to zero
       this.clearBadgeCountIfAny();
     });
 
@@ -472,7 +475,7 @@ export class ChatPage {
         this.lastcalled = false;
       }, 100);
       /**
-       * checking if chatting with same ticketNo
+       * checking if chatting with same TopicCode
        * if not then show in toast with button
        */
       if (this.topicCode !== notification.additionalData.params.topicCode) {
@@ -535,7 +538,6 @@ export class ChatPage {
   ionViewDidEnter() {
     this.doTranslate();
     //checking if user logged in
-
     if (!_.isEmpty(this.connection.user)) {
       this.initUser();
       //get Chat info before we load
@@ -565,14 +567,19 @@ export class ChatPage {
     return new Promise((resolve, reject) => {
       if (this._network.type !== 'none') {
         let params = {
-          TopicCode: this.topicCode
+          TopicID: this.topicID,
+          GroupID: this.groupID,
         };
-        this.connection.doPost('Communication/GetQueryDetail', params).then((response: any) => {
+        this.connection.doPost('Chat/GetTopicDetail', params).then((response: any) => {
           this.data = JSON.parse(response.Data);
           console.log(this.data);
-          this.setOfflineTicketList(this.data);
-          this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { });
-
+          this.topicCode = this.data.TopicCode;
+          this.groupCode = this.data.GroupCode;
+          this.setPath();
+          this.setOfflineTopicList(this.data);
+          if(response.FireBaseTransaction){
+            this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { });
+          }
           this.setTitle();
           this.setUsers().then((chatUsersList) => {
             this.connectFireBase();
@@ -586,7 +593,7 @@ export class ChatPage {
           reject(error);
         });
       } else {
-        this.storage.get('OfflineTickets').then(topicCodes => {
+        this.storage.get('OfflineTopics').then(topicCodes => {
           if (_.isEmpty(topicCodes)) {
             topicCodes = {};
           }
@@ -609,12 +616,35 @@ export class ChatPage {
     });
   }
 
+
+  setPath(){
+    this.pathIdentifier = this.groupCode + '/' + this.topicCode;
+
+    this.basePath = 'Communications/' + this.pathIdentifier + '/';
+  }
+
   /**
    * sets title for Chat
    */
   setTitle() {
-    this.title = this.data.Query[0].Patient;
-    this.subTitle = this.doctor_translate + ': ' + this.data.Query[0].Doctor + ', ' + this.impression_no_translate + ': ' + this.data.Query[0].ImpNo;
+    this.title = this.data.Topic;
+    this.subTitle = '';
+
+    let now = moment();
+    let creationDate = moment(this.data.CreationDate,'MM/DD/YYYY h/mm/ss a');
+    let dueDate = moment(this.data.DueDate,'MM/DD/YYYY h/mm/ss a');
+    if(creationDate.isValid()){
+      this.subTitle += 'Created: ' + moment(this.data.CreationDate,'MM/DD/YYYY h/mm/ss a').fromNow();
+    }
+    if(dueDate.isValid()){
+      this.subTitle += ', ' +  'Due: ';
+      console.log(dueDate, dueDate.isSameOrAfter(now));
+      if(dueDate.isSameOrAfter(now)){
+        this.subTitle += dueDate.fromNow(); 
+      }else{
+        this.subTitle += dueDate.toNow();
+      }
+    }
   }
 
   /**
@@ -623,22 +653,12 @@ export class ChatPage {
   setUsers() {
     return new Promise((resolve, reject) => {
       if (this.data && this.data.User.length) {
-        this.data.User[0].Dentist.forEach(user => {
+        this.data.User.forEach(user => {
           //for typing
-          this.userTyping[user.LoginUserID] = user.UserName;
+          this.userTyping[user.UserID] = user.User;
 
           //actual user
-          this.chatUsers[user.LoginUserID] = { Name: user.UserName, LoginTypeID: user.LoginTypeID };
-
-          //adding lang
-          this.addLang(user);
-        });
-        this.data.User[0].GroupUser.forEach(user => {
-          //for typing
-          this.userTyping[user.LoginUserID] = user.UserName;
-
-          //actual user
-          this.chatUsers[user.LoginUserID] = { Name: user.UserName, LoginTypeID: user.LoginTypeID };
+          this.chatUsers[user.UserID] = { Name: user.User, UserID: user.UserID };
 
           //adding lang
           this.addLang(user);
@@ -651,12 +671,15 @@ export class ChatPage {
   }
 
   addLang(user) {
+    if(!('MyLanguage' in user)){
+      user['MyLanguage'] = 'en';
+    }
     //adding to group languages
     if (this.chatLanguages.indexOf(user.MyLanguage) === -1) {
       this.chatLanguages.push(user.MyLanguage);
     }
     //setting my own lang
-    if (user.LoginUserID === this.userID) {
+    if (user.UserID === this.userID) {
       this.myLanguage = user.MyLanguage;
     }
   }
@@ -754,9 +777,8 @@ export class ChatPage {
           CreateAt: firebase.database.ServerValue.TIMESTAMP,
           MessageType: type,
           HasAttachment: type !== 'Text',
-          From: this.user.Customer,
+          From: this.user.LoginUser,
           UserID: this.userID,
-          LoginTypeID: this.user.LoginTypeID,
           Status: 0,
           URL: url,
           Read: readObject,
@@ -880,6 +902,8 @@ export class ChatPage {
           this.chattingRef.child(this.userID).set(firebase.database.ServerValue.TIMESTAMP).then(value => {
             resolve();
           });
+        } else {
+          resolve(true);
         }
       } else {
         // reject('No ref');
@@ -894,20 +918,33 @@ export class ChatPage {
         reject(false);
         return;
       }
+      if (this.scrollingBottom) {
+        reject(false);
+        return;
+      }
+      this.scrollingBottom = true;
       if (typeof this.content !== 'undefined') {
         let animate = 300;
         this.contentResize();
         if (this.content && typeof this.content.scrollToBottom === 'function' && this.content._scroll) {
           const wait = this.content.isScrolling ? 150 : null;
           setTimeout(() => {
-            this.content.scrollToBottom(animate).then(value => {
-              resolve(value);
-            }).catch(error => {
+            try {
+              this.content.scrollToBottom(animate).then(value => {
+                this.scrollingBottom = false;
+                resolve(value);
+              }).catch(error => {
+                this.scrollingBottom = false;
+                reject(error);
+              });
+            } catch (error) {
+              this.scrollingBottom = false;
               reject(error);
-            });
+            }
           });
         }
       } else {
+        this.scrollingBottom = false;
         reject('no content');
       }
     });
@@ -1107,11 +1144,7 @@ export class ChatPage {
     let fileExtension = file.substring(file.lastIndexOf('.') + 1);
 
     let params = {
-      CustomerID: this.user.CustomerID,
-      SecureToken: this.user.SecureToken,
-      OrganizationUnitID: this.user.LoginOUID,
-      LoginTypeID: this.user.LoginTypeID,
-      LoginUserID: this.user.CustomerPortalID,
+      UserID: this.user.UserID,
       FileName: fileName,
       FileExtension: fileExtension,
       TopicCode: this.topicCode,
@@ -1373,13 +1406,13 @@ export class ChatPage {
     if (index === -1) {
       if (pushFlag) {
         index = this.messages.push(item);
-        //adding ticketno
+        //adding TopicCode
         this.messagesKeys.push(key);
         //offline messages
         this.offlineMessages.push(item);
       } else {
         index = this.messages.unshift(item);
-        //adding ticketno
+        //adding TopicCode
         this.messagesKeys.unshift(key);
         //offline messages
         this.offlineMessages.unshift(item);
@@ -1399,15 +1432,15 @@ export class ChatPage {
     });
   }
 
-  setOfflineTicketList(data) {
+  setOfflineTopicList(data) {
     return new Promise((resolve, reject) => {
-      this.storage.get('OfflineTickets').then(topicCodes => {
+      this.storage.get('OfflineTopics').then(topicCodes => {
         if (_.isEmpty(topicCodes)) {
           topicCodes = {};
         }
         topicCodes[this.topicCode] = data;
 
-        this.storage.set('OfflineTickets', topicCodes).then(status => {
+        this.storage.set('OfflineTopics', topicCodes).then(status => {
           resolve(status);
         }).catch(error => {
           reject(error);
@@ -1421,16 +1454,15 @@ export class ChatPage {
     if ((time - this.lastReadingTime) < 1000) {
       return;
     }
-    if ([Global.LoginType.Doctor, Global.LoginType.Parent].indexOf(this.user.LoginTypeID) > -1) {
-      return;
-    }
     this.lastReadingTime = time;
     let params = {
       message: message,
       chatUsers: this.chatUsers,
+      topicID:this.topicID,
       topicCode: this.topicCode,
+      groupID:this.groupID,
+      groupCode: this.groupCode,
       userID: this.userID,
-      loginTypeID: this.user.LoginTypeID,
     };
     let chatReadModal = this.modal.create(ChatReadModalPage, params);
     chatReadModal.onDidDismiss(data => {
@@ -1443,7 +1475,6 @@ export class ChatPage {
     let params = {
       path: this.dataDirectory,
       folder: this.topicCode,
-      loginTypeID: this.user.LoginTypeID,
     };
     let savedMediaModal = this.modal.create(SavedMediaPage, params);
     savedMediaModal.onDidDismiss(data => {

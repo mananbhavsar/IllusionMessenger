@@ -13,8 +13,10 @@ export class ChatReadModalPage {
   message: any = {};
   chatUsers: any = {};
   userID = null;
-  ticket: string = null;
-  loginTypeID = null;
+  topicID: string = null;
+  topicCode: string = null;
+  groupID: string = null;
+  groupCode: string = null;
 
   messageReadRef: firebase.database.Query;
 
@@ -26,12 +28,14 @@ export class ChatReadModalPage {
   ) {
     this.message = this.navParams.data.message;
     this.chatUsers = this.navParams.data.chatUsers;
-    this.ticket = this.navParams.data.ticket;
+    this.topicID = this.navParams.data.topicID;
+    this.topicCode = this.navParams.data.topicCode;
+    this.groupID = this.navParams.data.groupID;
+    this.groupCode = this.navParams.data.groupCode;
     this.userID = this.navParams.data.userID;
-    this.loginTypeID = this.navParams.data.loginTypeID;
 
     //listen for read event
-    this.messageReadRef = firebase.database().ref('Communications/' + this.ticket + '/' + 'Chat/Read');
+    this.messageReadRef = firebase.database().ref('Communications/' + this.groupCode + '/' + this.topicCode + '/Chat/Read');
   }
 
   ionViewDidLoad() {

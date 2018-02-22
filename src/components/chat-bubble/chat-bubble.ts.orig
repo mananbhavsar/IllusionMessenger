@@ -86,9 +86,16 @@ export class ChatBubbleComponent {
 
   ngOnInit() {
     this.doTranslate();
+<<<<<<< HEAD
    /* if (Global.work_with_impression_no) {
-
+      this.pathIdentifier = this.impressNo;
+    } else {
+      this.pathIdentifier = this.ticket;
     }*/
+=======
+    this.pathIdentifier = this.groupCode+'/'+this.topicCode;
+
+>>>>>>> a3c9d042e09a303a95fa0a7bec7c0264519c48fc
     if (this.pathIdentifier) {
       this.basePath = 'Communications/' + this.pathIdentifier + '/';
       this.messagePath = this.basePath + 'Chat/' + this.message.key;

@@ -1,24 +1,24 @@
 <ion-header>
   <ion-toolbar ion-text color="primary">
     <ion-title>
-        {{'ChatScreen._MessageInfo_' | translate}}
+      {{'ChatScreen._MessageInfo_' | translate}}
     </ion-title>
     <ion-buttons end>
       <button color="light" ion-button outline (click)="dismiss(null)">
-          {{'ChatScreen._Close_' | translate}}
+        {{'ChatScreen._Close_' | translate}}
       </button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 <ion-content>
   <div class="chat">
-    <chat-bubble [id]="'message-'+message.key" class="message-wrapper" [message]="message" [userID]="userID" [ticket]="ticket"
-      [users]="chatUsers" [LoginTypeID]="loginTypeID"></chat-bubble>
+    <chat-bubble [id]="'message-'+message.key" class="message-wrapper" [message]="message" [userID]="userID" [topicID]="topicID" [topicCode]="topicCode" [groupID]="groupID" [groupCode]="groupCode"
+      [users]="chatUsers"></chat-bubble>
   </div>
   <ion-list>
     <ion-list-header>
       <h2 class="read">
-          {{'ChatScreen._ReadBy_' | translate}}
+        {{'ChatScreen._ReadBy_' | translate}}
       </h2>
     </ion-list-header>
     <ion-item *ngFor="let read of reads | orderBy:'time':true">
@@ -34,7 +34,7 @@
   <ion-list>
     <ion-list-header>
       <h2 class="unread">
-          {{'ChatScreen._UnreadBy' | translate}}
+        {{'ChatScreen._UnreadBy' | translate}}
       </h2>
     </ion-list-header>
     <ion-item *ngFor="let userId of chatUsers | keys" [hidden]="inRead(userId)">

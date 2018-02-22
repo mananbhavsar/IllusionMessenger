@@ -20,6 +20,7 @@ export class GroupPage {
   group: Array<any> = [];
   badges: Array<any> = [];
   page: number = 0;
+  color:boolean;
 
   constructor(
     public navCtrl: NavController,
@@ -57,14 +58,21 @@ export class GroupPage {
     })
   }
 
-  getExpiry(DueDate) {
-    let momentDate = moment(DueDate, 'YYYY/MM/DD');
-      if (moment().diff(momentDate) < 0) {
-      return 'Due in ' + momentDate.fromNow(true);
-      } else { 
-      return 'Expired ' + momentDate.fromNow();
-     }
-  }
+  getExpiry(dueDate) {
+    let title = '';
+    let now = moment();
+    let dueDates = moment(dueDate,'YYYY-MM-DD hh:mm:ss a'); 
+
+     if(dueDates.isValid()){       
+      title = 'Due ';
+      if(dueDates.isSameOrAfter(now)){
+        title += dueDates.fromNow(); 
+      }else{
+        title += dueDates.toNow();
+      }
+    }
+    return title;
+ }
 
   isEmpty(object) {
     return _.isEmpty(object);

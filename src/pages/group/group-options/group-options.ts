@@ -44,9 +44,9 @@ export class GroupOptionsPage {
         reject(error);
       });
     });
-  }
+  }s
 
-  openCreateTopic() {
+  CreateTopic() {
     this.navCtrl.push(CreateTopicPage, this.group_id);
   }
 }

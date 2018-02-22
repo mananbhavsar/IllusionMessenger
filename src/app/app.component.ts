@@ -71,7 +71,7 @@ export class MyApp {
         { title: 'Home', translate_key: 'HomeScreen._Home_', name: 'HomePage', component: HomePage, icon: 'home' },
     ];
     accountPages: PageInterface[] = [
-        { title: 'Account', translate_key: 'Common._Account_', name: 'AccountPage', component: AccountPage, icon: 'user' },
+       /* { title: 'Account', translate_key: 'Common._Account_', name: 'AccountPage', component: AccountPage, icon: 'user' },*/
         { title: 'Logout', translate_key: 'Common._LogOut_', name: 'LogoutPage', component: LogoutPage, icon: 'log-out', logsOut: true }
     ];
     loggedOutPages: PageInterface[] = [

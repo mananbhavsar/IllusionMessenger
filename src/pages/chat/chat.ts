@@ -634,11 +634,10 @@ export class ChatPage {
     let creationDate = moment(this.data.CreationDate,'MM/DD/YYYY h/mm/ss a');
     let dueDate = moment(this.data.DueDate,'MM/DD/YYYY h/mm/ss a');
     if(creationDate.isValid()){
-      this.subTitle += 'Created: ' + moment(this.data.CreationDate,'MM/DD/YYYY h/mm/ss a').fromNow();
+      this.subTitle += 'Created: ' + creationDate.fromNow();
     }
     if(dueDate.isValid()){
       this.subTitle += ', ' +  'Due: ';
-      console.log(dueDate, dueDate.isSameOrAfter(now));
       if(dueDate.isSameOrAfter(now)){
         this.subTitle += dueDate.fromNow(); 
       }else{

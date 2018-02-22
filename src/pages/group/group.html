@@ -22,8 +22,11 @@
             {{topic.Topic}}
           </h2>      
               <ion-row>
-                <ion-col>
+                <ion-col >
                      {{getExpiry(topic.DueDate)}}
+                </ion-col>
+                <ion-col >
+                    Created On {{topic.CreationDate | amDateFormat:'DD/MM/YYYY' }}
                   </ion-col>
               </ion-row>
            <!--<ion-badge item-end *ngIf="getBadge(topic.TopicCode)">{{badges[topic.TopicCode]}}</ion-badge> -->
@@ -56,7 +59,7 @@
           </h2>
           <ion-row>
             <ion-col>
-              {{topic.CreationDate | amDateFormat:'YYYY/MM/DD'}}
+              {{topic.CreationDate | amDateFormat:'DD/MM/YYYY'}}
             </ion-col>
           </ion-row>
           <!-- <ion-badge item-end *ngIf="getBadge(topic.TopicCode)">{{badges[topic.TopicCode]}}</ion-badge> -->

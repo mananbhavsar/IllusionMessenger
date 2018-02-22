@@ -16,7 +16,7 @@
           Active Topics
         </ion-item-divider>
          <p *ngIf="group.ActiveTopicList.length === 0" text-center>No data Found</p>   
-        <ion-item *ngFor="let topic of group.ActiveTopicList" (click)="openTopic(topic)">
+        <ion-item *ngFor="let topic of group.ActiveTopicList;let i = index;" (click)="openTopic(topic, i, 'ActiveTopicList')">
           <h2>
             {{topic.Topic}}
           </h2>      
@@ -35,7 +35,7 @@
           System Topics
         </ion-item-divider>
           <p *ngIf="group.SystemTopicList.length === 0"  text-center>No data Found</p>       
-        <ion-item *ngFor="let topic of group.SystemTopicList" (click)="openTopic(topic)">
+        <ion-item *ngFor="let topic of group.SystemTopicList;let i = index;" (click)="openTopic(topic, i, 'SystemTopicList')">
           <h2>
             {{topic.Topic}}
           </h2>
@@ -49,7 +49,7 @@
           Closed Topics
         </ion-item-divider>
         <p *ngIf="group.ClosedTopicList.length === 0"  text-center>No data Found</p>
-        <ion-item *ngFor="let topic of group.ClosedTopicList" (click)="openTopic(topic)">
+        <ion-item *ngFor="let topic of group.ClosedTopicList; let i = index;" (click)="openTopic(topic, i , 'ClosedTopicList')">
           <h2>
             {{topic.Topic}}
           </h2>

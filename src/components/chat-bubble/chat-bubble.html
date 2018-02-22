@@ -1,9 +1,9 @@
 <div class="message" [ngClass]="message.UserID === userID ? 'message-mine' : 'message-other'">
-  <div class="message-header" *ngIf="LoginTypeID === global.LoginType.Group && message.UserID !== userID">
+  <div class="message-header" *ngIf="message.UserID !== userID">
     <div class="message-user">{{message.From}}</div>
   </div>
   <div class="message-body" (click)="openFile()">
-    <div class="download" *ngIf="message.downloaded === false" [ngClass]="{'message-other': LoginTypeID === global.LoginType.Group && message.UserID !== userID }">
+    <div class="download" *ngIf="message.downloaded === false" [ngClass]="{'message-other': message.UserID !== userID }">
       <ion-icon name="md-download" *ngIf="!message.downloading"></ion-icon>
       <ion-spinner name="crescent" *ngIf="message.downloading"></ion-spinner>
     </div>
@@ -26,7 +26,7 @@
     <div class="message-status" [ngClass]="'status-' + message.Status" [hidden]="isHidden()">
       <ng-container [ngSwitch]="message.Status">
         <ion-icon *ngSwitchCase="0" name="md-checkmark"></ion-icon>
-        <ion-icon *ngSwitchCase="1" [name]="[global.LoginType.Doctor, global.LoginType.Parent].indexOf(message.LoginTypeID) > -1 ? 'md-done-all' : 'md-checkmark'"></ion-icon>
+        <ion-icon *ngSwitchCase="1" name="md-checkmark"></ion-icon>
         <ion-icon *ngSwitchCase="2" name="md-done-all"></ion-icon>
       </ng-container>
     </div>

@@ -24,12 +24,6 @@ export var Global = {
         email: 'labtech@illusiondentallab.com',
         address: '402, Akruti Arcade J. P. Road,Opp. A. H. Wadia School, Near Andheri Sport Complex, Andheri (W), Mumbai- 400053.',
     },
-    LoginType: {
-        LabGuru: 0,
-        Doctor: 1,
-        Parent: 2,
-        Group: 3,
-    },
     OneSignal: {
         key: '88b19d42-ea0e-4fa7-b35a-cf754a5ce4aa',
         android: '4208850060',

@@ -82,7 +82,7 @@ export class UserProvider {
 
     logout() {
         return new Promise((resolve, reject) => {
-            let name = this._user.Customer;
+            let name = this._user.LoginUser;
             this.registerPushID('').then(response => {
                 //removing from Storage
                 this.storage.remove('User').then(response => {
@@ -161,17 +161,25 @@ export class UserProvider {
                     DeviceID: push_id,
                     IsLogin: push_id !== '',
                 }, false).then((response: any) => {
-
-                    //now doing firebase transaction
-                    this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => {
-                        resolve(response);
-                    }).catch(error => {
-                        if (error == 'Empty') {
-                            resolve(response);
-                        } else {
-                            reject(error);
+                    //LogOutForcefully
+                    if (response.Data.LogOutForcefully) {
+                        if (response.Data.Message) {
+                            this.events.publish('alert:basic', 'Logged Out!', response.Data.Message);
                         }
-                    });
+                        this.logout();
+                        reject(false);
+                    } else {
+                        //now doing firebase transaction
+                        this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => {
+                            resolve(response);
+                        }).catch(error => {
+                            if (error == 'Empty') {
+                                resolve(response);
+                            } else {
+                                reject(error);
+                            }
+                        });
+                    }
                 }).catch(error => {
                     reject(error);
                 });

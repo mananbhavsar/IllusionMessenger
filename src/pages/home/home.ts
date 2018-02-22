@@ -26,8 +26,9 @@ export class HomePage {
     global: any = {};
     groups: Array<any> | -1 = [];
     badges: any = {};
-    active:boolean=true;
-    overdue:boolean=true;
+    active: boolean = true;
+    overdue: boolean = true;
+    firebaseConnected: boolean = false;
 
     constructor(
         public navCtrl: NavController,
@@ -43,7 +44,7 @@ export class HomePage {
         this.global = Global;
         //listening to Resume & Pause events
         this.events.subscribe('platform:onResumed', () => {
-            this.getData().catch(error=>{});
+            this.getData().catch(error => { });
         });
     }
 
@@ -55,7 +56,7 @@ export class HomePage {
             //waiting for login
             this.events.subscribe('user:ready', (status) => {
                 if (status) {
-                    this.getData().catch(error=>{});
+                    this.initData().catch(error => { });
                 }
             });
         }
@@ -76,7 +77,10 @@ export class HomePage {
     initData() {
         return new Promise((resolve, reject) => {
             this.getData().then(status => {
-                this.connectToFireBase();
+                if(this.firebaseConnected === false){
+                    this.connectToFireBase();
+                    this.firebaseConnected = true;
+                }
                 resolve(true);
             }).catch(error => {
                 reject(error);
@@ -88,10 +92,10 @@ export class HomePage {
         return new Promise((resolve, reject) => {
             this.connection.doPost('Chat/Home', {
                 UserCode: this.connection.user.UserCode,
-             }).then((groups: Array<any>) => {
+            }).then((groups: Array<any>) => {
                 this.groups = groups;
-                 //dateStatus(this.group.ActiveTopics);
-    
+                //dateStatus(this.group.ActiveTopics);
+
                 if (groups.length === 0) {
                     this.groups = -1;
                 }
@@ -103,14 +107,13 @@ export class HomePage {
         });
     }
 
-    dateStatus(activeTopic)
-    {
-        let today=moment.format('YYYY/MM/DD');
+    dateStatus(activeTopic) {
+        let today = moment().format('YYYY/MM/DD');
         console.log(today);
         let active = moment.duration(activeTopic.diff(today));
         console.log(active);
-        let days= activeTopic.asDays();
-        console.log(days);        
+        let days = activeTopic.asDays();
+        console.log(days);
     }
 
     refresh(refresher) {
@@ -120,11 +123,11 @@ export class HomePage {
             refresher.complete();
         });
     }
-     
+
     connectToFireBase() {
         //user setting
         this.user.getUser().then(user => {
-            this.angularFireDatabase.object('Badge/' + user.id).snapshotChanges().subscribe(snapshot => {
+            this.angularFireDatabase.object('Badge/' + user.id + '/Groups').snapshotChanges().subscribe(snapshot => {
                 snapshot = snapshot.payload.val();
                 if (!_.isEmpty(snapshot)) {
                     this.badges = snapshot;
@@ -143,18 +146,18 @@ export class HomePage {
         this.user.registerPushID('123456');
     }
 
-    openGroup(GroupID,Group) {
-            this.navCtrl.push(GroupPage,{ GroupID, Group});
+    openGroup(GroupID, Group) {
+        this.navCtrl.push(GroupPage, { GroupID, Group });
     }
 
     getBadge(groupCode) {
         if (groupCode in this.badges) {
-            return this.badges[groupCode];
+            return this.badges[groupCode].Total;
         }
         return false;
     }
 
     createTopic(group_id) {
-       this.navCtrl.push(CreateTopicPage, group_id);
+        this.navCtrl.push(CreateTopicPage, group_id);
     }
 }

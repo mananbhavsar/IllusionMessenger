@@ -107,7 +107,7 @@ export class CreateTopicPage {
         UserList: this.createForm.get('participants').value,   
         StatusID:1     
         }, 'creating topic').then(response => {
-
+          console.log(response);
       }).catch(error => {
 
       });

@@ -1,5 +1,5 @@
 <ion-header no-border (touchstart)="closeKeyboard($event)">
-  <header [title]="title" [buttons]="[{icon:'archive'}]" (buttonClicked)="openSavedMedia($event)"></header>
+  <header [title]="title" [buttons]="headerButtons" (buttonClicked)="openSavedMedia($event)"></header>
   <ion-toolbar class="sub-header">
     <ion-title>{{getSubTitle()}}</ion-title>
   </ion-toolbar>
@@ -20,7 +20,7 @@
     <div class="typing" *ngFor="let typingUserId of userTyping | keys" [hidden]="typingUserId === userID || !isWithinRange(userTyping[typingUserId])">{{'ChatScreen._Typing_' | translate:{name:getName(typingUserId)} }}</div>
   </div>
 </ion-content>
-<ion-footer [keyboardAttach]="content" class="bar-stable footer-chat item-input-inset">
+<ion-footer [keyboardAttach]="content" class="bar-stable footer-chat item-input-inset" *ngIf="data && data.StatusID !== 2">
   <ng-container *ngIf="hasInternet && messagesLoaded === false">
     <ion-spinner name="dots"></ion-spinner>
   </ng-container>

@@ -37,6 +37,7 @@ import { VideoEditor } from '@ionic-native/video-editor';
 import { LogoutPage } from '../logout/logout';
 import { retry } from 'rxjs/operators/retry';
 import { HomePage } from '../home/home';
+import { CloseTopicPage } from '../close-topic/close-topic';
 import { ChatReadModalPage } from "../../pages/chat/chat-read-modal/chat-read-modal";
 import { SavedMediaPage } from "../../pages/chat/saved-media/saved-media";
 
@@ -138,6 +139,7 @@ export class ChatPage {
   myLanguage: string = null;
   chatLanguages: Array<string> = [];
   translating: boolean = false;
+  headerButtons: Array<any> = [];
 
   doctor_translate: string = 'Doctor';
   impression_no_translate: string = 'Imp No.';
@@ -573,6 +575,11 @@ export class ChatPage {
         this.connection.doPost('Chat/GetTopicDetail', params).then((response: any) => {
           console.log(response);
           this.data = JSON.parse(response.Data);
+          this.headerButtons = [{ icon: 'archive', name: 'open-media' }];
+          if (this.data.StatusID === 1) {
+            this.headerButtons.push({ icon: 'close', name: 'options' });
+          }
+
           console.log(this.data);
           this.topicCode = this.data.TopicCode;
           this.groupCode = this.data.GroupCode;
@@ -1476,16 +1483,50 @@ export class ChatPage {
   }
 
   openSavedMedia(event) {
-    let params = {
-      path: this.dataDirectory,
-      folder: this.topicCode,
-    };
-    let savedMediaModal = this.modal.create(SavedMediaPage, params);
-    savedMediaModal.onDidDismiss(data => {
+    console.log(event);
+    switch (event.name) {
+      case 'open-media':
+        let params = {
+          path: this.dataDirectory,
+          folder: this.topicCode,
+        };
+        let savedMediaModal = this.modal.create(SavedMediaPage, params);
+        savedMediaModal.onDidDismiss(data => {
 
-    });
-    savedMediaModal.present();
+        });
+        savedMediaModal.present();
+        break;
 
+      case 'options':
+        let actionSheet = this.actionSheetCtrl.create({
+          title: 'Do You Want to Close ',
+          buttons: [
+            {
+              text: 'Close it now!',
+              role: 'destructive',
+              handler: () => {
+                this.connection.doPost('Chat/UpdateTopicStatus', {
+                  GroupID: this.groupID,
+                  TopicID: this.topicID,
+                  StatusID: 2
+                }).then((response: any) => {
+                  if (response.Message) {
+                    this.events.publish('toast:create', response.Message);
+                  }
+                  delete this.headerButtons[1];
+                }).catch(error => {
+                  console.log(error);
+                });
+              }
+            }, {
+              text: 'Cancel',
+              role: 'cancel',
+            }]
+        });
+
+        actionSheet.present();
+        break;
+    }
   }
 
   goToElement(id) {

@@ -265,10 +265,6 @@
   version "4.5.3"
   resolved "https://registry.yarnpkg.com/@ionic-native/status-bar/-/status-bar-4.5.3.tgz#e48d7a638e52887f59c761adff5ed5cf6d8fdb58"
 
-"@ionic-native/streaming-media@^4.4.2":
-  version "4.5.3"
-  resolved "https://registry.yarnpkg.com/@ionic-native/streaming-media/-/streaming-media-4.5.3.tgz#8ea46d1747a0163e1d8103d283c03f91ed98c5c2"
-
 "@ionic-native/unique-device-id@^4.4.2":
   version "4.5.3"
   resolved "https://registry.yarnpkg.com/@ionic-native/unique-device-id/-/unique-device-id-4.5.3.tgz#a632aa6538bd5ab24fff38ea6e974950fadb6ac2"
@@ -1345,6 +1341,10 @@ cordova-plugin-badge@^0.8.6:
   version "0.8.7"
   resolved "https://registry.yarnpkg.com/cordova-plugin-badge/-/cordova-plugin-badge-0.8.7.tgz#fe4942aa24af6822da85c01ccce6a831afff5931"
 
+cordova-plugin-call-number@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/cordova-plugin-call-number/-/cordova-plugin-call-number-1.0.1.tgz#dd9643bfa2b334a6c68b1e64aa9629e6227c59f1"
+
 cordova-plugin-camera@^4.0.1:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/cordova-plugin-camera/-/cordova-plugin-camera-4.0.2.tgz#309410927ef40adc6bebd4b0e91df2c8c644f38a"
@@ -1407,10 +1407,6 @@ cordova-plugin-statusbar@^2.4.1:
   version "2.4.1"
   resolved "https://registry.yarnpkg.com/cordova-plugin-statusbar/-/cordova-plugin-statusbar-2.4.1.tgz#222628a78aa54d34d4c927990020d0a3bace5545"
 
-cordova-plugin-streaming-media@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/cordova-plugin-streaming-media/-/cordova-plugin-streaming-media-1.0.2.tgz#d36848015325208a0f997fba4ce98067d92d2ccb"
-
 cordova-plugin-uniquedeviceid@^1.3.2:
   version "1.3.2"
   resolved "https://registry.yarnpkg.com/cordova-plugin-uniquedeviceid/-/cordova-plugin-uniquedeviceid-1.3.2.tgz#be05947af2fd1815cb8e3407d72df68c8522fa96"
@@ -1426,10 +1422,6 @@ cordova-plugin-video-capture-plus@^1.0.0:
 cordova-plugin-video-editor@^1.1.3:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/cordova-plugin-video-editor/-/cordova-plugin-video-editor-1.1.3.tgz#a5fdd2548c1d7e20d33650ca258913ba18fbfcd6"
-
-"cordova-plugin-video-player@git+https://github.com/moust/cordova-plugin-videoplayer.git":
-  version "1.0.1"
-  resolved "git+https://github.com/moust/cordova-plugin-videoplayer.git#6574c1ce2c04ab7bdba420ced31e4288b6836ab3"
 
 cordova-plugin-whitelist@^1.3.3:
   version "1.3.3"

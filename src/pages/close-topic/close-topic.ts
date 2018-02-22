@@ -17,7 +17,7 @@ import { ConnectionProvider } from '../../providers/connection/connection';
 export class CloseTopicPage {
 	group_id:number=null;
   closelist: Array<any> = [];
-  page:number=1;
+  page:number=0;
 
   constructor(
   public navCtrl: NavController, 
@@ -29,7 +29,7 @@ export class CloseTopicPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad CloseTopicPage');
-    //getDetails();
+    this.getDetails();
   }
 
   getDetails(){
@@ -37,14 +37,19 @@ export class CloseTopicPage {
       if (this.page === -1) {
         reject(false);
       } else {
-          this.connection.doPost('Chat/', {
+          this.connection.doPost('Chat/GetClosedTopicDetail', {
           GroupID: this.group_id,
+          StatusID:1,
+          DisablePaging:true,
           PageNumber: this.page,
           RowsPerPage:20
         }).then((response: any) => {
+        console.log(response);
+        console.log(response.length);
          if (response.length > 0) {
             response.forEach(list => {
               this.closelist.push(list);
+              console.log(this.closelist);
             });
             this.page++;
             resolve(true);
@@ -61,7 +66,7 @@ export class CloseTopicPage {
   }
 
 	refresh(refresher) {
-    this.page = 1;
+    this.page = 0;
     this.closelist = [];
     this.getDetails().then(status => {
       refresher.complete();

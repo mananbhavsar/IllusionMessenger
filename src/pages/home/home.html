@@ -15,10 +15,10 @@
                     {{group.Group}}
                 </h2>
                 <ion-row>
-                    <ion-col class="activetopics"  [hidden]="active" >
+                    <ion-col class="activetopics" *ngIf="group.ActiveTopics > 0">
                            {{group.ActiveTopics }} topics pending
                     </ion-col>
-                    <ion-col text-end class="overdue"  [hidden]="overdue">
+                    <ion-col text-end class="overdue" *ngIf="group.OverDueTopics > 0" >
                             {{group.OverDueTopics }} topics due
                     </ion-col>
                 </ion-row>               

@@ -106,7 +106,7 @@ export class CreateTopicPage {
         GroupID: this.group_id,
         DueDate: this.createForm.get('due_date').value,
         UserList: this.createForm.get('participants').value,   
-        StatusID:1     
+        StatusID:0     
         }, 'creating topic').then(response => {
 
       }).catch(error => {

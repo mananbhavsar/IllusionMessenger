@@ -20,12 +20,13 @@ export class GroupOptionsPage {
   title: string = 'Group Options';
   userlist: Array<any> = [];
   participants: Array<any> = [];
+  flash:boolean=true;
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     private connection: ConnectionProvider,
   ) {
-    this.group_id = this.navParams.data;
+      this.group_id = this.navParams.data;
   }
 
   ionViewDidEnter() {

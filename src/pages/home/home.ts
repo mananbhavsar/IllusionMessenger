@@ -26,10 +26,7 @@ export class HomePage {
     global: any = {};
     groups: Array<any> | -1 = [];
     badges: any = {};
-    active:boolean=false;
-    overdue:boolean=false;
-    list:Array<any> = [];
-
+    
     constructor(
         public navCtrl: NavController,
         public connection: ConnectionProvider,
@@ -90,26 +87,8 @@ export class HomePage {
             this.connection.doPost('Chat/Home', {
                 UserCode: this.connection.user.UserCode,
              }).then((groups: Array<any>) => {
-                this.groups = groups;
-   
-                   this.groups.forEach(user => {
-                    user=user;
-                    if(user.ActiveTopics > 0 )
-                    {
-                        active:boolean=false;                        
-                    }else{
-                        active:boolean=true;
-                    }
-
-                    if(user.OverDueTopics > 0)
-                    {
-                        overdue:boolean=false;
-                    }else{
-                         overdue:boolean=true;
-                    }
-                });
-
-                if (groups.length === 0) {
+                this.groups = groups;                  
+                 if (groups.length === 0) {
                     this.groups = -1;
                 }
                 resolve(true);

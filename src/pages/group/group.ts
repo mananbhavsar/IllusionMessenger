@@ -18,9 +18,6 @@ export class GroupPage {
   title: string='';
   group:Array<any> = [];
   badges:Array<any> = [];
-  today:any;
-  active:boolean=false;
-  overdue:boolean=false;
   page:number=0;
 
   constructor(
@@ -60,15 +57,13 @@ export class GroupPage {
   }
 
   getExpiry(DueDate) {
-
     let momentDate = moment(DueDate, 'YYYY/MM/DD');
-      if (moment().diff(momentDate) < 0) {
-      return 'due in ' + momentDate.fromNow(true);
-    } else {
-      return 'expired ' + momentDate.fromNow();
-    }
+      if (moment().diff(momentDate) < 0) {     
+      return 'Due in ' + momentDate.fromNow(true);
+      } else { 
+      return 'Expired ' + momentDate.fromNow();
+     }
   }
- 
 
   isEmpty(object) {
     return _.isEmpty(object);

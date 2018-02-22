@@ -642,10 +642,10 @@ export class ChatPage {
     }
     if (dueDate.isValid()) {
       subTitle += ', ' + 'Due: ';
-      if (dueDate.isSameOrAfter(now)) {
-        subTitle += dueDate.toNow();
+      if ((now.toDate().getTime() - dueDate.toDate().getTime()) > 0) {
+        subTitle += dueDate.from(now);
       } else {
-        subTitle += dueDate.fromNow();
+        subTitle += dueDate.from(now);
       }
     }
     return subTitle;

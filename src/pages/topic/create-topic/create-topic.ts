@@ -123,7 +123,6 @@ export class CreateTopicPage {
         participants.push({
           id: id,
           name: name,
-          selected: false,
         })
       });
     }
@@ -131,19 +130,12 @@ export class CreateTopicPage {
   }
 
   tagClicked(tag_id, index) {
-    if (this.tags[index].selected) {
-      for (let userID in this.userTagsMap[tag_id]) {
-        this.removeParticipant(userID);
-      }
-    } else {
-      //selecting users
-      for (let userID in this.userTagsMap[tag_id]) {
-        let indexInParticipants = this.userTagsMap[tag_id][userID];
-        let user = this.participants[indexInParticipants];
-        this.participantSelected(user.User[0]);
-      }
+    //selecting users
+    for (let userID in this.userTagsMap[tag_id]) {
+      let indexInParticipants = this.userTagsMap[tag_id][userID];
+      let user = this.participants[indexInParticipants];
+      this.participantSelected(user.User[0]);
     }
-    this.tags[index].selected = !this.tags[index].selected;
   }
 
   getCurrentTime() {

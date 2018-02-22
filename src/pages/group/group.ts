@@ -9,6 +9,7 @@ import * as _ from 'underscore';
 
 import * as  moment from "moment";
 import { locale } from 'moment';
+import { AngularFireDatabase } from 'angularfire2/database';
 
 @IonicPage()
 @Component({
@@ -19,14 +20,16 @@ export class GroupPage {
   group_id: number = 0;
   title: string = '';
   group: Array<any> = [];
-  badges: Array<any> = [];
+  badges: any = {};
   page: number = 0;
-  color:boolean;
+  color: boolean;
 
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    private connection: ConnectionProvider) {
+    private connection: ConnectionProvider,
+    public angularFireDatabase: AngularFireDatabase,
+  ) {
     this.title = this.navParams.data.Group;
     this.group_id = this.navParams.data.GroupID;
   }
@@ -43,11 +46,29 @@ export class GroupPage {
         RowsPerPage: 20
       }).then((response: any) => {
         this.group = response;
+
+        this.setForBadge();
         resolve(true);
       }).catch(error => {
         reject(error);
       });
     });
+  }
+
+  setForBadge() {
+    this.angularFireDatabase.object('Badge/' + this.connection.user.id + '/Groups/' + this.group['GroupDetail'][0].GroupCode + '/Topics').snapshotChanges().subscribe(snapshot => {
+      snapshot = snapshot.payload.val();
+      if (!_.isEmpty(snapshot)) {
+        this.badges = snapshot;
+      }
+    });
+  }
+
+  getBadge(topicCode) {
+    if (!(topicCode in this.badges)) {
+      this.badges[topicCode] = 0;
+    }
+    return this.badges[topicCode];
   }
 
   refresh(refresher) {
@@ -59,21 +80,25 @@ export class GroupPage {
     })
   }
 
-  getExpiry(dueDate) {
-    let title = '';
-    let now = moment();
-    let dueDates = moment(dueDate,'YYYY-MM-DD hh:mm:ss a'); 
-
-     if(dueDates.isValid()){       
-      title = 'Due ';
-      if(dueDates.isSameOrAfter(now)){
-        title += dueDates.fromNow(); 
-      }else{
-        title += dueDates.toNow();
-      }
+  isExpired(date) {
+    if (moment(date).isValid() && Math.abs(moment().diff(moment(date), 'years')) < 20) {
+      return (new Date().getTime() - moment(date).toDate().getTime()) > 0;
     }
-    return title;
- }
+    return null;
+  }
+
+  getExpiry(dueDate) {
+    switch (this.isExpired(dueDate)) {
+      case null:
+        return '';
+
+      case true:
+        return moment(dueDate).from(moment());
+
+      case false:
+        return moment(dueDate).from(moment());
+    }
+  }
 
   isEmpty(object) {
     return _.isEmpty(object);

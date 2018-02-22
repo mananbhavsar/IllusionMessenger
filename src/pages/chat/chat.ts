@@ -55,7 +55,7 @@ export class ChatPage {
 
   topicID: string = null;
   topicCode: string = null;
-  groudID: string = null;
+  groupID: string = null;
   groupCode: string = null;
   
   title: string = 'loading';

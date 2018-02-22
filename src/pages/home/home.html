@@ -15,11 +15,11 @@
                     {{group.Group}}
                 </h2>
                 <ion-row>
-                    <ion-col class="activetopics" [hidden]="active" >
-                           {{group.ActiveTopics | amDateFormat:'YYYY/MM/DD' }} topics pending
+                    <ion-col class="activetopics" *ngIf="group.ActiveTopics > 0">
+                           {{group.ActiveTopics }} topics pending
                     </ion-col>
-                    <ion-col text-end class="overdue" [hidden]="overdue">
-                            {{group.OverDueTopics}} topics due
+                    <ion-col text-end class="overdue" *ngIf="group.OverDueTopics > 0" >
+                            {{group.OverDueTopics }} topics due
                     </ion-col>
                 </ion-row>               
                 <ion-badge item-end *ngIf="getBadge(group.GroupCode)">{{badges[group.GroupCode].Total}}</ion-badge>
@@ -27,6 +27,4 @@
             </ion-item>
         </ion-list>
     </ng-template>
-    <button ion-button full (click)=" registerDevice(123) ">RegisterDevice</button>
-    <button ion-button full color="secondary" (click)="createTopic(1) ">Create Topic</button>
-  </ion-content>
+    </ion-content>

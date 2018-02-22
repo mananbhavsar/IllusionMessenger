@@ -1,3 +1,19 @@
 page-group {
-
+ion-content{
+	ion-grid{
+		ion-item{
+			ion-row{
+				ion-col{
+						.secondary{
+						color:color($colors, secondary);
+						}
+						.danger{
+						color:color($colors, danger);
+						}
+						font-size:12px;
+					}
+				}
+			}
+		}
+	}
 }

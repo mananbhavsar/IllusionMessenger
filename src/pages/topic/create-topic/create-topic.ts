@@ -8,6 +8,8 @@ import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 
 import * as _ from 'underscore';
 import { AutoCompleteComponent } from 'ionic2-auto-complete-ng5';
+import * as  moment from "moment";
+import { locale } from 'moment';
 
 @IonicPage()
 @Component({
@@ -45,8 +47,7 @@ export class CreateTopicPage {
     this.initData();
   }
 
-  initData() {
-    console.log(new Date().toISOString());
+  initData() {    
     this.connection.doPost('Chat/GetGroupUserDetail', {
       GroupID: this.group_id,
     }).then((response: any) => {
@@ -58,12 +59,10 @@ export class CreateTopicPage {
   }
 
   participantSelected(user) {
-    console.log(user);
     this.selectedParticipants[user.UserID] = user.User;
     this.setSelectedParticipants();
     this.userComplete.clearValue();
-    console.log(this.selectedParticipants,user);
-  }
+   }
 
   removeParticipant(id) {
     delete this.selectedParticipants[id];
@@ -94,7 +93,7 @@ export class CreateTopicPage {
   }
 
   getCurrentTime(){
-    return new Date().toISOString();
+     return new Date().toISOString();
   }
 
   submitForm() {

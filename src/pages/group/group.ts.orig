@@ -16,10 +16,20 @@ import { locale } from 'moment';
 })
 export class GroupPage {
   group_id: number = 0;
+<<<<<<< HEAD
+  title: string='';
+  group:Array<any> = [];
+  badges:Array<any> = [];
+  page:number=0;
+=======
   title: string = '';
   group: Array<any> = [];
   badges: Array<any> = [];
+  today: any;
+  active: boolean = false;
+  overdue: boolean = false;
   page: number = 0;
+>>>>>>> a3c9d042e09a303a95fa0a7bec7c0264519c48fc
 
   constructor(
     public navCtrl: NavController,
@@ -59,12 +69,22 @@ export class GroupPage {
 
   getExpiry(DueDate) {
     let momentDate = moment(DueDate, 'YYYY/MM/DD');
-      if (moment().diff(momentDate) < 0) {
+<<<<<<< HEAD
+      if (moment().diff(momentDate) < 0) {     
       return 'Due in ' + momentDate.fromNow(true);
       } else { 
       return 'Expired ' + momentDate.fromNow();
      }
   }
+=======
+    if (moment().diff(momentDate) < 0) {
+      return 'due in ' + momentDate.fromNow(true);
+    } else {
+      return 'expired ' + momentDate.fromNow();
+    }
+  }
+
+>>>>>>> a3c9d042e09a303a95fa0a7bec7c0264519c48fc
 
   isEmpty(object) {
     return _.isEmpty(object);

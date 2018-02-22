@@ -37,6 +37,7 @@ import { VideoEditor } from '@ionic-native/video-editor';
 import { LogoutPage } from '../logout/logout';
 import { retry } from 'rxjs/operators/retry';
 import { HomePage } from '../home/home';
+import { CloseTopicPage } from '../close-topic/close-topic';
 import { ChatReadModalPage } from "../../pages/chat/chat-read-modal/chat-read-modal";
 import { SavedMediaPage } from "../../pages/chat/saved-media/saved-media";
 
@@ -1476,16 +1477,48 @@ export class ChatPage {
   }
 
   openSavedMedia(event) {
-    let params = {
-      path: this.dataDirectory,
-      folder: this.topicCode,
-    };
-    let savedMediaModal = this.modal.create(SavedMediaPage, params);
-    savedMediaModal.onDidDismiss(data => {
+  console.log(event);
+    switch(event.name){
+        case 'open-media':
+              let params = {
+              path: this.dataDirectory,
+              folder: this.topicCode,
+            };
+             let savedMediaModal = this.modal.create(SavedMediaPage, params);
+            savedMediaModal.onDidDismiss(data => {
 
-    });
-    savedMediaModal.present();
+        });
+      savedMediaModal.present();
+      break;
 
+      case 'options': 
+      let actionSheet = this.actionSheetCtrl.create({
+      title:'Do You Want to Close ',
+      buttons:[
+      {
+        text:'Close it now',
+        role:'destructive',
+        handler:()=>{
+            this.connection.doPost('Chat/UpdateTopicStatus',{
+              GroupID:this.groupID,
+              TopicID:this.topicID,
+              StatusID:2
+              }).then((response: any) => {
+              console.log(response);
+              resolve(true);
+            }).catch(error => {
+              reject(error);
+            });
+        }
+      },{
+        text:'Cancel',
+        role:'cancel',
+      }]
+      });
+
+      actionSheet.present();
+      break;
+    }
   }
 
   goToElement(id) {

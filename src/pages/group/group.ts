@@ -67,9 +67,9 @@ export class GroupPage {
      if(dueDates.isValid()){       
       title = 'Due ';
       if(dueDates.isSameOrAfter(now)){
-        title += dueDates.fromNow(); 
+        title += dueDates.toNow(); 
       }else{
-        title += dueDates.toNow();
+        title += dueDates.fromNow();
       }
     }
     return title;

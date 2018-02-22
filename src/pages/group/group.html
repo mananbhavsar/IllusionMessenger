@@ -16,7 +16,8 @@
         <ion-item-divider color="light">
           Active Topics
         </ion-item-divider>
-         <p *ngIf="group.ActiveTopicList.length === 0" text-center>No data Found</p>   
+         <p *ngIf="group.ActiveTopicList.length === 0" text-center>No data Found</p> 
+           
         <ion-item *ngFor="let topic of group.ActiveTopicList;let i = index;" (click)="openTopic(topic, i, 'ActiveTopicList')">
           <h2>
             {{topic.Topic}}

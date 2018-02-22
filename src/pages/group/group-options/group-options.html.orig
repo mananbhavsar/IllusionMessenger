@@ -1,0 +1,54 @@
+<ion-header no-border>
+	<ion-navbar color="primary">
+		<ion-title>Options</ion-title>
+	</ion-navbar>
+</ion-header>
+<ion-content padding>
+<<<<<<< HEAD
+	<ion-row>
+		<button ion-button full color="secondary" [hidden]="flash">Add Flash News</button>
+	</ion-row>
+	<ion-row>
+		<button ion-button full color="danger" (click)="createTopic()">Create Topic</button>
+	</ion-row>
+	<ion-card *ngIf="userlist.UserDetail">
+		<ion-list>
+			<ion-item *ngFor="let user of userlist.UserDetail">
+				<h2>
+					{{user.User[0].User}}
+				</h2>
+				<p text-left text-small small text-wrap>
+					<ion-badge *ngFor="let tag of user.Tag" [ngClass]="getTagColor(tag.TagID)">{{tag.Tag}}</ion-badge>
+				</p>
+			</ion-item>
+		</ion-list>
+	</ion-card>
+=======
+	<ion-row>		
+  			<button ion-button full color="secondary" [hidden]="flash">Add Flash News</button>
+  	</ion-row>
+  	<ion-row>
+  			<button ion-button full color="danger" (click)="CreateTopic()">Create Topic</button>
+  	</ion-row>
+  	<ion-card  *ngIf="userlist.UserDetail" >
+  		<ion-grid >
+  			<ion-row>
+  				<ion-col>
+  						<ion-card-header text-left>Name</ion-card-header>
+  				</ion-col>
+  				<ion-col>
+  						<ion-card-header>Tags</ion-card-header>
+  				</ion-col>
+  			</ion-row>
+  			<ion-row *ngFor="let user of userlist.UserDetail">
+  				<ion-col>  				
+  						{{user.User[0].User}}  								
+   				</ion-col>
+          <ion-col text-center>
+            <ion-badge *ngFor="let tag of user.Tag" class="tags"> {{tag.TagCode}}</ion-badge>
+          </ion-col>
+  			</ion-row>
+  		</ion-grid>
+  	</ion-card>
+>>>>>>> fd348c33c11e2031a66cd92c07ff583c468b871e
+</ion-content>

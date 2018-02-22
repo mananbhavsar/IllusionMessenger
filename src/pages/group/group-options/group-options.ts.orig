@@ -46,7 +46,11 @@ export class GroupOptionsPage {
     });
   }s
 
+<<<<<<< HEAD
   createTopic() {
+=======
+  CreateTopic() {
+>>>>>>> fd348c33c11e2031a66cd92c07ff583c468b871e
     this.navCtrl.push(CreateTopicPage, this.group_id);
   }
 

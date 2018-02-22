@@ -23,7 +23,7 @@ export class CloseTopicPage {
   public navCtrl: NavController, 
   public navParams: NavParams,
   public connection: ConnectionProvider) {
-  	this.group_id = this.navParams.data.groupID;
+  	this.group_id = this.navParams.data;
   	console.log(this.group_id);
   }
 
@@ -44,6 +44,7 @@ export class CloseTopicPage {
           PageNumber: this.page,
           RowsPerPage:20
         }).then((response: any) => {
+        console.log(response);
         console.log(response.length);
          if (response.length > 0) {
             response.forEach(list => {

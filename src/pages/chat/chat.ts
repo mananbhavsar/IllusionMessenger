@@ -139,6 +139,7 @@ export class ChatPage {
   myLanguage: string = null;
   chatLanguages: Array<string> = [];
   translating: boolean = false;
+  headerButtons:Array<any>=[];
 
   doctor_translate: string = 'Doctor';
   impression_no_translate: string = 'Imp No.';
@@ -574,6 +575,11 @@ export class ChatPage {
         this.connection.doPost('Chat/GetTopicDetail', params).then((response: any) => {
           console.log(response);
           this.data = JSON.parse(response.Data);
+          this.headerButtons = [{icon:'archive',name:'open-media'}];
+          if(this.data.StatusID === 1){
+            this.headerButtons.push({icon:'close',name:'options'});
+          }
+
           console.log(this.data);
           this.topicCode = this.data.TopicCode;
           this.groupCode = this.data.GroupCode;
@@ -1505,9 +1511,12 @@ export class ChatPage {
               StatusID:2
               }).then((response: any) => {
               console.log(response);
-              resolve(true);
+              if(response.Message){
+                this.events.publish('toast:create', response.Message);
+              }
+              delete this.headerButtons[1];
             }).catch(error => {
-              reject(error);
+              console.log(error);
             });
         }
       },{

@@ -46,6 +46,16 @@ $colors: (
     invoice:#673AB7,
     payments: #009688,
 );
+//tags
+$i: 0;
+$refcolors: #55A46A, #9BD385, #D9EA79, #E4EE77, #F2E975, #F2D368, #F0AB55, #ED7943, #EA4E38, #E80D19;
+
+@each $c in $refcolors {
+    .tag-#{$i} {
+        background-color: $c !important;
+    }   
+    $i: $i + 1;
+}
 //also change in components/header.ts
 
 // App iOS Variables

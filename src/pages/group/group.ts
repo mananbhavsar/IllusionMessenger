@@ -1,3 +1,4 @@
+import { CreateTopicPage } from './../topic/create-topic/create-topic';
 import { ChatPage } from './../chat/chat';
 import { ConnectionProvider } from './../../providers/connection/connection';
 import { Component } from '@angular/core';
@@ -59,11 +60,11 @@ export class GroupPage {
 
   getExpiry(DueDate) {
     let momentDate = moment(DueDate, 'YYYY/MM/DD');
-      if (moment().diff(momentDate) < 0) {
+    if (moment().diff(momentDate) < 0) {
       return 'Due in ' + momentDate.fromNow(true);
-      } else { 
+    } else {
       return 'Expired ' + momentDate.fromNow();
-     }
+    }
   }
 
   isEmpty(object) {
@@ -86,7 +87,15 @@ export class GroupPage {
   }
 
   headerButtonClicked(event) {
-    this.openGroupOptions(event);
+    switch (event.name) {
+      case 'options':
+        this.openGroupOptions(event);
+        break;
+
+      case 'create-topic':
+        this.navCtrl.push(CreateTopicPage, this.group_id);
+        break
+    }
   }
 
   openGroupOptions(event) {

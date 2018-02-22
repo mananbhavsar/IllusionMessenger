@@ -16,13 +16,15 @@
         </ion-item>
         <ion-item>
           <ion-label>Due Date</ion-label>
-          <ion-datetime [min]="getCurrentTime()" [max]="2050" mode="ios" displayFormat=" MMM DD, YYYY HH:mm" formControlName="due_date" ></ion-datetime>
+          <ion-datetime [min]="getCurrentTime()" [max]="2050" mode="ios" displayFormat=" MMM DD, YYYY HH:mm" formControlName="due_date"></ion-datetime>
         </ion-item>
         <ion-item no-lines *ngIf="createForm.get('private').value">
           <ion-label stacked>Add Participants</ion-label>
         </ion-item>
-        <div padding-left *ngIf="createForm.get('private').value">
+        <div *ngIf="createForm.get('private').value">
           <ion-auto-complete #userComplete [dataProvider]="userAutoCompleteService" [options]="{placeholder: 'Enter Name'}" (itemSelected)="participantSelected($event)"></ion-auto-complete>
+          <button type="button" small ion-button *ngFor="let tag of tags;let i=index;" (click)="tagClicked(tag.id,i)"
+            [ngClass]="getTagColor(tag.id)">{{tag.name}}</button>
         </div>
       </ion-list>
     </form>
@@ -35,8 +37,7 @@
       <ion-item *ngFor="let user of getSelectedParticipants()">
         <h2>{{user.name}}</h2>
         <button ion-button outline item-end color="danger" (click)="removeParticipant(user.id)">
-          <ion-icon name="trash"></ion-icon>&nbsp;
-          Remove
+          <ion-icon name="trash"></ion-icon>&nbsp; Remove
         </button>
       </ion-item>
     </ion-list>

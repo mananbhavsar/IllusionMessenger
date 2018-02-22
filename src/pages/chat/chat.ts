@@ -57,9 +57,8 @@ export class ChatPage {
   topicCode: string = null;
   groupID: string = null;
   groupCode: string = null;
-  
+
   title: string = 'loading';
-  subTitle: string = null;
   isIOS: boolean = false;
   isCordova: boolean = false;
   keyboardHeight: number = 0;
@@ -181,7 +180,7 @@ export class ChatPage {
 
     this.topicID = this.navParams.data.topicID;
     this.groupID = this.navParams.data.groupID;
-    
+
     this._fileOps.getDataDirectory().then(path => {
       this.dataDirectory = path;
     }).catch(error => {
@@ -544,6 +543,7 @@ export class ChatPage {
       this.initData().then(status => {
         this.listenToEvents();
       }).catch(error => {
+        console.log(error);
         this.navCtrl.pop();
       });
     } else {
@@ -571,13 +571,14 @@ export class ChatPage {
           GroupID: this.groupID,
         };
         this.connection.doPost('Chat/GetTopicDetail', params).then((response: any) => {
+          console.log(response);
           this.data = JSON.parse(response.Data);
           console.log(this.data);
           this.topicCode = this.data.TopicCode;
           this.groupCode = this.data.GroupCode;
           this.setPath();
           this.setOfflineTopicList(this.data);
-          if(response.FireBaseTransaction){
+          if (response.FireBaseTransaction) {
             this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { });
           }
           this.setTitle();
@@ -617,7 +618,7 @@ export class ChatPage {
   }
 
 
-  setPath(){
+  setPath() {
     this.pathIdentifier = this.groupCode + '/' + this.topicCode;
 
     this.basePath = 'Communications/' + this.pathIdentifier + '/';
@@ -628,23 +629,26 @@ export class ChatPage {
    */
   setTitle() {
     this.title = this.data.Topic;
-    this.subTitle = '';
+  }
+
+  getSubTitle() {
+    let subTitle = '';
 
     let now = moment();
-    let creationDate = moment(this.data.CreationDate,'MM/DD/YYYY h/mm/ss a');
-    let dueDate = moment(this.data.DueDate,'MM/DD/YYYY h/mm/ss a');
-    if(creationDate.isValid()){
-      this.subTitle += 'Created: ' + moment(this.data.CreationDate,'MM/DD/YYYY h/mm/ss a').fromNow();
+    let creationDate = moment(this.data.CreationDate, 'MM/DD/YYYY h/mm/ss a');
+    let dueDate = moment(this.data.DueDate, 'MM/DD/YYYY h/mm/ss a');
+    if (creationDate.isValid()) {
+      subTitle += 'Created: ' + moment(this.data.CreationDate, 'MM/DD/YYYY h/mm/ss a').fromNow();
     }
-    if(dueDate.isValid()){
-      this.subTitle += ', ' +  'Due: ';
-      console.log(dueDate, dueDate.isSameOrAfter(now));
-      if(dueDate.isSameOrAfter(now)){
-        this.subTitle += dueDate.fromNow(); 
-      }else{
-        this.subTitle += dueDate.toNow();
+    if (dueDate.isValid()) {
+      subTitle += ', ' + 'Due: ';
+      if (dueDate.isSameOrAfter(now)) {
+        subTitle += dueDate.toNow();
+      } else {
+        subTitle += dueDate.fromNow();
       }
     }
+    return subTitle;
   }
 
   /**
@@ -671,7 +675,7 @@ export class ChatPage {
   }
 
   addLang(user) {
-    if(!('MyLanguage' in user)){
+    if (!('MyLanguage' in user)) {
       user['MyLanguage'] = 'en';
     }
     //adding to group languages
@@ -1458,9 +1462,9 @@ export class ChatPage {
     let params = {
       message: message,
       chatUsers: this.chatUsers,
-      topicID:this.topicID,
+      topicID: this.topicID,
       topicCode: this.topicCode,
-      groupID:this.groupID,
+      groupID: this.groupID,
       groupCode: this.groupCode,
       userID: this.userID,
     };

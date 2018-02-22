@@ -1,3 +1,23 @@
 page-create-topic {
-
+    ion-content {
+        ion-grid {
+            ion-list {
+                ion-item {
+                    &.item-md {
+                        padding-left: 0;
+                    }
+                }
+                ion-auto-complete {
+                    max-width: 100%;
+                    ul {
+                        left: 20px;
+                    }
+                }
+                button {
+                    padding: 5px;
+                    margin-right: 5px;
+                }
+            }
+        }
+    }
 }

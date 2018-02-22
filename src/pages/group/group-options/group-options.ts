@@ -20,24 +20,24 @@ export class GroupOptionsPage {
   title: string = 'Group Options';
   userlist: Array<any> = [];
   participants: Array<any> = [];
-  flash:boolean=true;
+  flash: boolean = true;
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     private connection: ConnectionProvider,
   ) {
-      this.group_id = this.navParams.data;
+    this.group_id = this.navParams.data;
   }
 
   ionViewDidEnter() {
     this.getParticipants();
-   }
+  }
 
   getParticipants() {
     return new Promise((resolve, reject) => {
       this.connection.doPost('Chat/GetGroupUserDetail', {
         GroupID: this.group_id
-      }).then((response:any) => {
+      }).then((response: any) => {
         this.userlist = response;
         resolve(true);
       }).catch(error => {
@@ -46,7 +46,11 @@ export class GroupOptionsPage {
     });
   }
 
-  openCreateTopic() {
+  createTopic() {
     this.navCtrl.push(CreateTopicPage, this.group_id);
+  }
+
+  getTagColor(id) {
+    return 'tag-' + (id % 10);
   }
 }

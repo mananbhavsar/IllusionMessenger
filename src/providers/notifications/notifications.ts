@@ -15,8 +15,20 @@ export class NotificationsProvider {
 
   }
 
+  sends(notifications, page = null, params = null, image_url = null) {
+    if (notifications && notifications.length) {
+      notifications.forEach(notification => {
+        this.send(notification.DeviceID, notification.Title, notification.Message, notification.Badge, page, params, image_url).catch(error => { });
+      });
+    }
+  }
+
   send(player_ids, headings, contents, badge, page = null, params = null, image_url = null) {
     return new Promise((resolve, reject) => {
+      if (player_ids === null) {
+        reject('Player Id is required');
+        return;
+      }
       //checking if its an string
       if (typeof player_ids === 'string') {
         player_ids = [player_ids];

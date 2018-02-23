@@ -106,14 +106,6 @@ export class GroupPage {
     }
   }
 
-  getBadge(topicCode) {
-        if (topicCode in this.badges) {
-        console.log(this.badges);
-        return this.badges[topicCode].Total;
-        console.log(this.badges[topicCode].Total)
-        }
-        return false;
-    }
 
   openGroupOptions(event) {
     this.navCtrl.push(GroupOptionsPage, this.group_id);

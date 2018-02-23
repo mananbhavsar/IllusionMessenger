@@ -1216,7 +1216,7 @@ export class ChatPage {
     }
 
     let params = {
-      LiveUsersOnChat: activeUserList,
+      LiveUsersOnChat:activeUserList,
       ChattingUsers: this.common.build_query(this.userChatting),
       TimeOnPhone: moment().utc().valueOf(),
       Message: message.Message ? message.Message : '',
@@ -1227,7 +1227,7 @@ export class ChatPage {
       TopicCode: this.topicCode,
     };
 
-    this.connection.doPost('Communication/InsertChat', params, false).then((response: any) => {
+    this.connection.doPost('Chat/InsertChat', params, false).then((response: any) => {
       //send Push
       if (Global.Push.OneSignal) {
         this.sendPushNotification(message, response.Data);

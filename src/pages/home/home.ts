@@ -92,6 +92,7 @@ export class HomePage {
         return new Promise((resolve, reject) => {
             this.connection.doPost('Chat/Home', {
                 UserCode: this.connection.user.UserCode,
+                
             }).then((groups: Array<any>) => {
                 this.groups = groups;                  
                  if (groups.length === 0) {

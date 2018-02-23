@@ -86,9 +86,8 @@ export class ChatBubbleComponent {
 
   ngOnInit() {
     this.doTranslate();
-   /* if (Global.work_with_impression_no) {
+    this.pathIdentifier = this.groupCode + '/' + this.topicCode;
 
-    }*/
     if (this.pathIdentifier) {
       this.basePath = 'Communications/' + this.pathIdentifier + '/';
       this.messagePath = this.basePath + 'Chat/' + this.message.key;
@@ -155,11 +154,11 @@ export class ChatBubbleComponent {
     if (this.message.UserID !== this.userID) { //avoid same user type also
       let status = -1;
       //checking if read by all
-        if (_.size(this.message.Read) === _.size(this.users)) {
-          status = 2;
-        } else {
-          status = 1;
-        }
+      if (_.size(this.message.Read) === _.size(this.users)) {
+        status = 2;
+      } else {
+        status = 1;
+      }
       if (status > 0) {
         this.angularFireDB.object(this.messagePath + '/Status').set(status);
       }

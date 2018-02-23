@@ -131,6 +131,7 @@ export class GroupPage {
     }
   }
 
+
   openGroupOptions(event) {
     this.navCtrl.push(GroupOptionsPage, this.group_id);
   }

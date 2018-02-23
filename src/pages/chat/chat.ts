@@ -214,9 +214,6 @@ export class ChatPage {
     this.events.subscribe('network:offline', () => {
       this.hasInternet = false;
     });
-
-    //making folder with this topics code to save files
-    this.doFoldering();
   }
 
   setFirebaseRef() {
@@ -629,6 +626,9 @@ export class ChatPage {
     this.pathIdentifier = this.groupCode + '/' + this.topicCode;
 
     this.basePath = 'Communications/' + this.pathIdentifier + '/';
+
+    //making folder with this topics code to save files
+    this.doFoldering();
   }
 
   /**
@@ -644,16 +644,24 @@ export class ChatPage {
     let now = moment();
     let creationDate = moment(this.data.CreationDate, 'MM/DD/YYYY h/mm/ss a');
     let dueDate = moment(this.data.DueDate, 'MM/DD/YYYY h/mm/ss a');
-    if (creationDate.isValid()) {
+    let closedDate = moment(this.data.CloseDatime, 'MM/DD/YYYY h/mm/ss a');
+
+    //creation date
+    if (creationDate.isValid() && this.data.StatusID !== 0) {
       subTitle += 'Created: ' + moment(this.data.CreationDate, 'MM/DD/YYYY h/mm/ss a').fromNow();
     }
-    if (dueDate.isValid()) {
+    //due
+    if (dueDate.isValid() && this.data.StatusID === 1) {
       subTitle += ', ' + 'Due: ';
       if ((now.toDate().getTime() - dueDate.toDate().getTime()) > 0) {
         subTitle += dueDate.from(now);
       } else {
         subTitle += dueDate.from(now);
       }
+    }
+    //closed 
+    if (closedDate.isValid() && this.data.StatusID === 2) {
+      subTitle += ', ' + 'Closed: ' + closedDate.from(now);
     }
     return subTitle;
   }
@@ -1117,7 +1125,7 @@ export class ChatPage {
         const fileTransfer: FileTransferObject = this.transfer.create();
         let options = this.setFileOptions(file);
 
-        fileTransfer.upload(file, Global.SERVER_URL + 'Communication/InsertChat_Attachement', options)
+        fileTransfer.upload(file, Global.SERVER_URL + 'Chat/InsertChat_Attachement', options)
           .then((data) => {
             this.progressPercent = 0;
             //getting URL from XML
@@ -1156,9 +1164,11 @@ export class ChatPage {
 
     let params = {
       UserID: this.user.UserID,
+      TopicID: this.topicID,
+      GroupID: this.groupID,
+      TopicCode: this.topicCode,
       FileName: fileName,
       FileExtension: fileExtension,
-      TopicCode: this.topicCode,
     };
 
     let options: FileUploadOptions = {
@@ -1225,9 +1235,11 @@ export class ChatPage {
       FileName: fileName,
       FileExtension: fileExtension,
       TopicCode: this.topicCode,
+      TopicID: this.topicID,
+      GroupID: this.groupID,
     };
 
-    this.connection.doPost('Communication/InsertChat', params, false).then((response: any) => {
+    this.connection.doPost('Chat/InsertChat', params, false).then((response: any) => {
       //send Push
       if (Global.Push.OneSignal) {
         this.sendPushNotification(message, response.Data);
@@ -1321,9 +1333,11 @@ export class ChatPage {
       let params = {
         UserCode: this.userID,
         TopicCode: this.topicCode,
+        TopicID: this.topicID,
+        GroupID: this.groupID,
       };
 
-      this.connection.doPost('Communication/UpdateChatStatus', params, false).then((response: any) => {
+      this.connection.doPost('Chat/UpdateChatStatus', params, false).then((response: any) => {
         this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { })
       }).catch(error => {
         console.log(error);

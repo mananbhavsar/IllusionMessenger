@@ -1,6 +1,6 @@
 <ion-header no-border (touchstart)="closeKeyboard($event)">
   <header [title]="title" [buttons]="headerButtons" (buttonClicked)="openSavedMedia($event)"></header>
-  <ion-toolbar class="sub-header">
+  <ion-toolbar class="sub-header" *ngIf="data && data.StatusID !== 0">
     <ion-title>{{getSubTitle()}}</ion-title>
   </ion-toolbar>
 </ion-header>

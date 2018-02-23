@@ -1389,9 +1389,9 @@ cordova-plugin-media-capture@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/cordova-plugin-media-capture/-/cordova-plugin-media-capture-3.0.1.tgz#c1a71796ccfc1071f0975b1274d7968f478fd3b5"
 
-cordova-plugin-media@^5.0.1:
-  version "5.0.2"
-  resolved "https://registry.yarnpkg.com/cordova-plugin-media/-/cordova-plugin-media-5.0.2.tgz#3345769c07e6a46a71c97e1bb434dacca5c8d80b"
+cordova-plugin-media@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/cordova-plugin-media/-/cordova-plugin-media-3.0.1.tgz#5e46e76cfa77d4ed28a87598cb0728e4ebab6f27"
 
 cordova-plugin-network-information@^2.0.1:
   version "2.0.1"
@@ -1403,7 +1403,7 @@ cordova-plugin-photo-library@^2.1.0:
   dependencies:
     async "^2.1.4"
 
-cordova-plugin-splashscreen@^5.0.1:
+cordova-plugin-splashscreen@^5.0.2:
   version "5.0.2"
   resolved "https://registry.yarnpkg.com/cordova-plugin-splashscreen/-/cordova-plugin-splashscreen-5.0.2.tgz#747e74f56e201cd585bc62d14bca19f6867ff1ed"
 
@@ -1443,9 +1443,9 @@ cordova-sqlite-storage-dependencies@1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/cordova-sqlite-storage-dependencies/-/cordova-sqlite-storage-dependencies-1.1.0.tgz#dda143d7f341a93cefa3333a5d1111fad86988a9"
 
-cordova-sqlite-storage@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/cordova-sqlite-storage/-/cordova-sqlite-storage-2.2.0.tgz#00b382af852d2e345c2c4aeea70b2bcd61db37f1"
+cordova-sqlite-storage@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/cordova-sqlite-storage/-/cordova-sqlite-storage-2.2.1.tgz#641f93714ee57839354eef910f567d4634ead33c"
   dependencies:
     cordova-sqlite-storage-dependencies "1.1.0"
 

@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { ConnectionProvider } from '../../providers/connection/connection';
+import * as  moment from "moment";
+import { locale } from 'moment';
 
 /**
  * Generated class for the CloseTopicPage page.
@@ -37,19 +39,18 @@ export class CloseTopicPage {
       if (this.page === -1) {
         reject(false);
       } else {
-          this.connection.doPost('Chat/GetClosedTopicDetail', {
-          GroupID: this.group_id,
-          StatusID:1,
-          DisablePaging:true,
-          PageNumber: this.page,
-          RowsPerPage:20
-        }).then((response: any) => {
-        console.log(response);
-        console.log(response.length);
-         if (response.length > 0) {
-            response.forEach(list => {
+        this.connection.doPost('Chat/GetClosedTopicDetail', {
+              GroupID: this.group_id,
+              StatusID:1,
+              DisablePaging:true,
+              PageNumber: this.page,
+              RowsPerPage:20
+          }).then((response: any) => {
+
+          let data=response.ClosedTopicList;
+          if (data.length > 0) {
+            data.forEach(list => {
               this.closelist.push(list);
-              console.log(this.closelist);
             });
             this.page++;
             resolve(true);

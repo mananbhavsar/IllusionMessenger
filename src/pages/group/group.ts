@@ -19,7 +19,7 @@ export class GroupPage {
   group_id: number = 0;
   title: string = '';
   group: Array<any> = [];
-  badges: Array<any> = [];
+  badges: any = {};
   page: number = 0;
   color:boolean;
 
@@ -105,6 +105,15 @@ export class GroupPage {
         break
     }
   }
+
+  getBadge(topicCode) {
+        if (topicCode in this.badges) {
+        console.log(this.badges);
+        return this.badges[topicCode].Total;
+        console.log(this.badges[topicCode].Total)
+        }
+        return false;
+    }
 
   openGroupOptions(event) {
     this.navCtrl.push(GroupOptionsPage, this.group_id);

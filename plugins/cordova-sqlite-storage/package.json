@@ -1,28 +1,28 @@
 {
-  "_from": "cordova-sqlite-storage",
-  "_id": "cordova-sqlite-storage@2.2.0",
+  "_from": "cordova-sqlite-storage@^2.2.0",
+  "_id": "cordova-sqlite-storage@2.2.1",
   "_inBundle": false,
-  "_integrity": "sha512-PxmPVxum8Wqjb0J/dcAPm9nd+Or6m6GY6lsKwyHzvojm7rXut7tdDE3MUlgXDcXhtFAOTIcWpG2mGegLK+gmUg==",
+  "_integrity": "sha512-NVaUtq5XDhbdV62lQiEEW/1WOyZYfNKKhEaFJZsvKsZ6461re4E85AvJCaPSo5dD91Qi/3WG5mwR/M1ixrfSww==",
   "_location": "/cordova-sqlite-storage",
   "_phantomChildren": {},
   "_requested": {
-    "type": "tag",
+    "type": "range",
     "registry": true,
-    "raw": "cordova-sqlite-storage",
+    "raw": "cordova-sqlite-storage@^2.2.0",
     "name": "cordova-sqlite-storage",
     "escapedName": "cordova-sqlite-storage",
-    "rawSpec": "",
+    "rawSpec": "^2.2.0",
     "saveSpec": null,
-    "fetchSpec": "latest"
+    "fetchSpec": "^2.2.0"
   },
   "_requiredBy": [
     "#USER",
     "/"
   ],
-  "_resolved": "https://registry.npmjs.org/cordova-sqlite-storage/-/cordova-sqlite-storage-2.2.0.tgz",
-  "_shasum": "00b382af852d2e345c2c4aeea70b2bcd61db37f1",
-  "_spec": "cordova-sqlite-storage",
-  "_where": "/Users/Mubasshir/Documents/ionic/SignatureSmiles/illusion-dental",
+  "_resolved": "https://registry.npmjs.org/cordova-sqlite-storage/-/cordova-sqlite-storage-2.2.1.tgz",
+  "_shasum": "641f93714ee57839354eef910f567d4634ead33c",
+  "_spec": "cordova-sqlite-storage@^2.2.0",
+  "_where": "/Users/Mubasshir/Documents/ionic/SignatureSmiles/IllusionMessenger",
   "author": {
     "name": "various"
   },
@@ -65,5 +65,5 @@
   "scripts": {
     "start": "node scripts/prepareSpec.js"
   },
-  "version": "2.2.0"
+  "version": "2.2.1"
 }

@@ -8,8 +8,8 @@ page-group {
 					}
 					ion-row {
 						ion-col {
-							&.primary {
-								color: color($colors, primary);
+							&.pickup {
+								color: color($colors, pickup);
 							}
 							&.secondary {
 								color: color($colors, secondary);

@@ -16,7 +16,7 @@
         </ion-item>
         <ion-item>
           <ion-label>Due Date</ion-label>
-          <ion-datetime [min]="getCurrentTime()" [max]="2050" mode="ios" displayFormat=" MMM DD, YYYY h:mm A" formControlName="due_date"></ion-datetime>
+          <ion-datetime [min]="getCurrentTime()" [max]="2050" mode="ios" displayFormat="DD MMM YYYY, HH:mm" formControlName="due_date"></ion-datetime>
         </ion-item>
         <ion-item no-lines *ngIf="createForm.get('private').value">
           <ion-label stacked>Add Participants</ion-label>

@@ -1,3 +1,27 @@
 page-close-topic {
-
+    ion-content {
+        ion-grid {
+            ion-item {
+                ion-label {
+                    &.label-md {
+                        margin: 3px 3px 3px 0;
+                    }
+                    ion-row {
+                        ion-col {
+                            &.pickup {
+                                color: color($colors, pickup);
+                            }
+                            &.secondary {
+                                color: color($colors, secondary);
+                            }
+                            &.danger {
+                                color: color($colors, danger);
+                            }
+                            font-size:12px;
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

@@ -92,7 +92,7 @@ export class ChatPage {
   scrollingBottom: boolean = false;
 
   user: any = {};
-  userID = null;
+  userID: string = null;
   chatUsers: any = {};
 
   lastcalled: boolean = false;
@@ -352,7 +352,6 @@ export class ChatPage {
     this.typingRef.on('value', snapshot => {
       this.userTyping = snapshot.val();
       if (this.typingRefLoaded) {
-
         setTimeout(() => {
           this.scrollBottom('typing ref init').catch(error => { });
         }, 100);
@@ -570,7 +569,6 @@ export class ChatPage {
           GroupID: this.groupID,
         };
         this.connection.doPost('Chat/GetTopicDetail', params).then((response: any) => {
-          console.log(response);
           this.data = JSON.parse(response.Data);
           this.headerButtons = [{ icon: 'archive', name: 'open-media' }];
           if (this.data.StatusID === 1) {
@@ -608,7 +606,7 @@ export class ChatPage {
             return;
           }
           this.data = topicCodes[this.topicCode];
-          console.log(this.data);
+
           this.setTitle();
           this.setUsers().then(chatUsersList => {
             this.initOffline();
@@ -1242,10 +1240,12 @@ export class ChatPage {
     this.connection.doPost('Chat/InsertChat', params, false).then((response: any) => {
       //send Push
       if (Global.Push.OneSignal) {
-        this.sendPushNotification(message, response.Data);
+        this.sendPushNotification(message, response.OneSignalTransaction);
       }
       //managing firebase count
-      this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { })
+      if (response.FireBaseTransaction) {
+        this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { })
+      }
     }).catch(error => {
 
     });
@@ -1343,20 +1343,6 @@ export class ChatPage {
         console.log(error);
       });
     }
-  }
-
-  showDoctorTyping() {
-    for (let typingUserId in this.userTyping) {
-      //avoiding self
-      if (typingUserId === this.userID) {
-        continue;
-      }
-      //checking if in range
-      if (this.isWithinRange(this.userTyping[typingUserId])) {
-        return true;
-      }
-    }
-    return false;
   }
 
   getName(userID) {
@@ -1497,7 +1483,6 @@ export class ChatPage {
   }
 
   openSavedMedia(event) {
-    console.log(event);
     switch (event.name) {
       case 'open-media':
         let params = {
@@ -1524,10 +1509,24 @@ export class ChatPage {
                   TopicID: this.topicID,
                   StatusID: 2
                 }).then((response: any) => {
-                  if (response.Message) {
-                    this.events.publish('toast:create', response.Message);
+                  this.data.StatusID = 2;
+                  this.headerButtons.pop();
+
+                  if (response.Data.Message) {
+                    this.events.publish('toast:create', response.Data.Message);
                   }
-                  delete this.headerButtons[1];
+                  //firebase 
+                  if (response.FireBaseTransaction) {
+                    this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { });
+                  }
+
+                  //send notification
+                  if (response.OneSignalTransaction) {
+                    this._notifications.sends(response.OneSignalTransaction, 'ChatPage', {
+                      topicID: this.topicID,
+                      groupID: this.groupID,
+                    });
+                  }
                 }).catch(error => {
                   console.log(error);
                 });

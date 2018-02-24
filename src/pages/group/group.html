@@ -21,7 +21,7 @@
             {{topic.Topic}}
           </h2>
           <ion-row>
-            <ion-col text-left color="primary">
+            <ion-col text-left class="pickup">
               Created {{topic.CreationDate | amTimeAgo }}
             </ion-col>
             <ion-col text-right *ngIf="isExpired(topic.DueDate) !== null" [ngClass]="isExpired(topic.DueDate) ? 'danger' : 'secondary'">
@@ -57,10 +57,10 @@
             {{topic.Topic}}
           </h2>
           <ion-row>
-            <ion-col text-left color="primary">
+            <ion-col text-left class="pickup">
               Created {{topic.CreationDate | amTimeAgo }}
             </ion-col>
-            <ion-col text-right color="danger">
+            <ion-col text-right class="danger">
               Closed {{topic.CloseDatime | amTimeAgo }}
             </ion-col>
           </ion-row>

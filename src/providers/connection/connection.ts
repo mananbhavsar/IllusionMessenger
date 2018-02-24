@@ -167,7 +167,6 @@ export class ConnectionProvider {
 
     addUserInfo(urlSearchParams: URLSearchParams): URLSearchParams {
         urlSearchParams.append('LoginUserID', this.user.LoginUserID);
-        urlSearchParams.append('UserCode', this.user.UserCode);
         urlSearchParams.append('PushID', this.push_id);
         return urlSearchParams
     }

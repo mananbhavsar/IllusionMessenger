@@ -10,7 +10,8 @@
         </ion-refresher-content>
 	</ion-refresher>
         <ion-list *ngIf="closelist">
-        	<ion-grid *ngFor="let list of closelist" >
+            <p *ngIf="closelist.length === 0" text-center>No data Found</p>
+        	<ion-grid *ngFor="let list of closelist" >                
         		<ion-item>
         			<h2>
         				{{list.Topic}}

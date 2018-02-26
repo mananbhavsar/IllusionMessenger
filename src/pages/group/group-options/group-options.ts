@@ -21,6 +21,7 @@ export class GroupOptionsPage {
   userlist: Array<any> = [];
   participants: Array<any> = [];
   flash: boolean = true;
+  
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,

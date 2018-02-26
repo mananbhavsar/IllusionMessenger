@@ -26,8 +26,6 @@ export class HomePage {
     global: any = {};
     groups: Array<any> | -1 = [];
     badges: any = {};
-    active: boolean = true;
-    overdue: boolean = true;
     firebaseConnected: boolean = false;
     
     constructor(
@@ -91,8 +89,7 @@ export class HomePage {
     getData() {
         return new Promise((resolve, reject) => {
             this.connection.doPost('Chat/Home', {
-                UserCode: this.connection.user.UserCode,
-                
+                UserCode: this.connection.user.UserCode,                
             }).then((groups: Array<any>) => {
                 this.groups = groups;                  
                  if (groups.length === 0) {

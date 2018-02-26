@@ -26,7 +26,6 @@ export class CloseTopicPage {
   public navParams: NavParams,
   public connection: ConnectionProvider) {
   	this.group_id = this.navParams.data;
-  	console.log(this.group_id);
   }
 
   ionViewDidLoad() {
@@ -35,22 +34,21 @@ export class CloseTopicPage {
   }
 
   getDetails(){
-	return new Promise((resolve, reject) => {
+	 return new Promise((resolve, reject) => {
       if (this.page === -1) {
         reject(false);
       } else {
-        this.connection.doPost('Chat/GetClosedTopicDetail', {
-              GroupID: this.group_id,
-              StatusID:1,
-              DisablePaging:true,
-              PageNumber: this.page,
-              RowsPerPage:20
+          this.connection.doPost('Chat/GetClosedTopicDetail', {
+            GroupID: this.group_id,
+            StatusID:1,
+            DisablePaging:true,
+            PageNumber: this.page,
+            RowsPerPage:20
           }).then((response: any) => {
-
           let data=response.ClosedTopicList;
-          if (data.length > 0) {
-            data.forEach(list => {
-              this.closelist.push(list);
+           if (data.length > 0) {
+              data.forEach(list => {
+                this.closelist.push(list);
             });
             this.page++;
             resolve(true);

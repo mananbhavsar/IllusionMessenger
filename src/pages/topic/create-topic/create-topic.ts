@@ -63,7 +63,6 @@ export class CreateTopicPage {
     }).then((response: any) => {
       this.participants = response.UserDetail;
       this.userAutoCompleteService.participants = this.participants;
-
       this.setTags();
     }).catch(error => {
       console.log(error);

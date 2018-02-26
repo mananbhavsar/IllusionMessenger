@@ -21,7 +21,6 @@ export class GroupPage {
   group: Array<any> = [];
   badges: any = {};
   page: number = 0;
-  color:boolean;
 
   constructor(
     public navCtrl: NavController,
@@ -105,7 +104,6 @@ export class GroupPage {
         break
     }
   }
-
 
   openGroupOptions(event) {
     this.navCtrl.push(GroupOptionsPage, this.group_id);

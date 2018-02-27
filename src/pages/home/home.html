@@ -11,20 +11,20 @@
     <ng-template #groups_template>
         <ion-list *ngIf="groups !== -1">
             <ion-item *ngFor="let group of groups" (click)="openGroup(group.GroupID,group.Group)">
-                <h2 >
+                <h2>
                     {{group.Group}}
                 </h2>
                 <ion-row>
                     <ion-col class="activetopics" *ngIf="group.ActiveTopics > 0">
-                           {{group.ActiveTopics }} topics pending
+                        {{group.ActiveTopics + ' topic' + (group.ActiveTopics > 1 ? 's' : '')}} pending
                     </ion-col>
-                    <ion-col text-end class="overdue" *ngIf="group.OverDueTopics > 0" >
-                            {{group.OverDueTopics }} topics due
+                    <ion-col text-end class="overdue" *ngIf="group.OverDueTopics > 0">
+                        {{group.OverDueTopics+ ' topic' + (group.OverDueTopics > 1 ? 's' : '')}} due
                     </ion-col>
-                </ion-row>               
+                </ion-row>
                 <!--<ion-badge item-end *ngIf="getBadge(group.GroupCode)">{{badges[group.GroupCode].Total}}</ion-badge>-->
                 <ion-icon name="ios-arrow-forward" item-end></ion-icon>
             </ion-item>
         </ion-list>
     </ng-template>
-    </ion-content>
+</ion-content>

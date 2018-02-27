@@ -18,7 +18,7 @@
   "cordova-sqlite-storage": {
     "source": {
       "type": "registry",
-      "id": "cordova-sqlite-storage@^2.2.0"
+      "id": "cordova-sqlite-storage@^2.2.1"
     },
     "is_top_level": true,
     "variables": {}
@@ -34,7 +34,7 @@
   "cordova-plugin-splashscreen": {
     "source": {
       "type": "registry",
-      "id": "cordova-plugin-splashscreen@^5.0.1"
+      "id": "cordova-plugin-splashscreen@^5.0.2"
     },
     "is_top_level": true,
     "variables": {}
@@ -63,10 +63,26 @@
     "is_top_level": true,
     "variables": {}
   },
+  "cordova-plugin-file": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-file@^5.0.0"
+    },
+    "is_top_level": true,
+    "variables": {}
+  },
   "cordova-plugin-add-swift-support": {
     "source": {
       "type": "registry",
-      "id": "cordova-plugin-file@^4.3.3"
+      "id": "cordova-plugin-add-swift-support@^1.7.1"
+    },
+    "is_top_level": true,
+    "variables": {}
+  },
+  "cordova-plugin-media": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-media@^3.0.1"
     },
     "is_top_level": true,
     "variables": {}
@@ -103,6 +119,14 @@
     "is_top_level": true,
     "variables": {}
   },
+  "cordova-plugin-file-transfer": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-file-transfer@^1.7.0"
+    },
+    "is_top_level": true,
+    "variables": {}
+  },
   "cordova-plugin-media-capture": {
     "source": {
       "type": "registry",
@@ -135,14 +159,6 @@
     "is_top_level": true,
     "variables": {}
   },
-  "call-number": {
-    "source": {
-      "type": "registry",
-      "id": "call-number@^1.0.1"
-    },
-    "is_top_level": true,
-    "variables": {}
-  },
   "cordova-plugin-video-editor": {
     "source": {
       "type": "registry",
@@ -159,18 +175,28 @@
     "is_top_level": true,
     "variables": {}
   },
+  "cordova-plugin-globalization": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-globalization@^1.0.9"
+    },
+    "is_top_level": true,
+    "variables": {}
+  },
   "cordova-plugin-photo-library": {
     "source": {
       "type": "registry",
       "id": "cordova-plugin-photo-library@^2.1.0"
     },
     "is_top_level": true,
-    "variables": {}
+    "variables": {
+      "PHOTO_LIBRARY_USAGE_DESCRIPTION": "To save files in Library"
+    }
   },
   "onesignal-cordova-plugin": {
     "source": {
       "type": "registry",
-      "id": "onesignal-cordova-plugin@^2.2.5"
+      "id": "onesignal-cordova-plugin@^2.3.1"
     },
     "is_top_level": true,
     "variables": {}
@@ -183,54 +209,6 @@
     "is_top_level": true,
     "variables": {}
   },
-  "cordova-plugin-media": {
-    "source": {
-      "type": "registry",
-      "id": "cordova-plugin-media@^5.0.1"
-    },
-    "is_top_level": true,
-    "variables": {}
-  },
-  "com.hutchind.cordova.plugins.streamingmedia": {
-    "source": {
-      "type": "registry",
-      "id": "com.hutchind.cordova.plugins.streamingmedia@~0.1.4"
-    },
-    "is_top_level": true,
-    "variables": {}
-  },
-  "nl.x-services.plugins.videocaptureplus": {
-    "source": {
-      "type": "registry",
-      "id": "nl.x-services.plugins.videocaptureplus@~1.0.0"
-    },
-    "is_top_level": true,
-    "variables": {}
-  },
-  "cordova-plugin-file-opener2": {
-    "source": {
-      "type": "registry",
-      "id": "cordova-plugin-file-opener2"
-    },
-    "is_top_level": true,
-    "variables": {}
-  },
-  "cordova-plugin-file-transfer": {
-    "source": {
-      "type": "registry",
-      "id": "cordova-plugin-file-transfer"
-    },
-    "is_top_level": true,
-    "variables": {}
-  },
-  "cordova-plugin-file": {
-    "source": {
-      "type": "registry",
-      "id": "cordova-plugin-file@^5.0.0"
-    },
-    "is_top_level": true,
-    "variables": {}
-  },
   "cordova-plugin-file-opener2": {
     "source": {
       "type": "registry",
@@ -239,10 +217,50 @@
     "is_top_level": true,
     "variables": {}
   },
+  "cordova-plugin-call-number": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-call-number@^1.0.1"
+    },
+    "is_top_level": true,
+    "variables": {}
+  },
+  "com.hutchind.cordova.plugins.streamingmedia": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-streaming-media@^1.0.2"
+    },
+    "is_top_level": true,
+    "variables": {}
+  },
+  "nl.x-services.plugins.videocaptureplus": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-video-capture-plus@^1.0.0"
+    },
+    "is_top_level": true,
+    "variables": {}
+  },
   "com-sarriaroman-photoviewer": {
     "source": {
       "type": "registry",
-      "id": "com-sarriaroman-photoviewer"
+      "id": "com-sarriaroman-photoviewer@^1.1.11"
+    },
+    "is_top_level": true,
+    "variables": {}
+  },
+  "mx.ferreyra.callnumber": {
+    "source": {
+      "type": "registry",
+      "id": "call-number@^1.0.1"
+    },
+    "is_top_level": true,
+    "variables": {}
+  },
+  "com.moust.cordova.videoplayer": {
+    "source": {
+      "type": "registry",
+      "id": "https://github.com/moust/cordova-plugin-videoplayer.git"
     },
     "is_top_level": true,
     "variables": {}

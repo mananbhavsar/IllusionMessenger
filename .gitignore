@@ -26,6 +26,7 @@ dist/
 tmp/
 temp/
 platforms/
+plugins/
 www/
 $RECYCLE.BIN/
 node_modules

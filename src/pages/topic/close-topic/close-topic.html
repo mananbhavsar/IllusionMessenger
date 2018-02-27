@@ -1,0 +1,28 @@
+<ion-header>
+	<ion-navbar color="primary">
+		<ion-title>Close Topics</ion-title>
+	</ion-navbar>
+</ion-header>
+
+<ion-content padding>
+	<ion-refresher (ionRefresh)="refresh($event)">
+		<ion-refresher-content pullingIcon="arrow-round-down" pullingText="Pull to refresh" refreshingSpinner="crescent" refreshingText="Refreshing...">
+		</ion-refresher-content>
+	</ion-refresher>
+	<ion-grid *ngIf="topics" no-padding>
+        <p *ngIf="topics.length === 0" text-center>No data Found</p>
+         <ion-item no-padding *ngFor="let topic of topics; let i = index;" (click)="openTopic(topic, i , 'ClosedTopicList')">
+				<h2>
+					{{topic.Topic}}
+				</h2>
+				<ion-row>
+					<ion-col text-left class="pickup">
+						Created {{topic.CreationDate | amTimeAgo }}
+					</ion-col>
+					<ion-col text-right class="danger">
+						Closed {{topic.CloseDatime | amTimeAgo }}
+					</ion-col>
+				</ion-row>
+			</ion-item>
+	</ion-grid>
+</ion-content>

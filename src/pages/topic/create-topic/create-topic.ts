@@ -5,14 +5,13 @@ import { UserAutoCompleteService } from './user-auto-complete';
 import { Global } from './../../../app/global';
 import { ConnectionProvider } from './../../../providers/connection/connection';
 import { Component, ViewChild } from '@angular/core';
-import { IonicPage, NavController, NavParams, Events } from 'ionic-angular';
-
+import { IonicPage, NavController, NavParams, Events, ModalController } from 'ionic-angular';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
-
 import * as _ from 'underscore';
 import { AutoCompleteComponent } from 'ionic2-auto-complete-ng5';
 import * as  moment from "moment";
 import { locale } from 'moment';
+import { ManageParticipantsPage } from "../../manage-participants/manage-participants";
 
 @IonicPage()
 @Component({
@@ -23,13 +22,17 @@ export class CreateTopicPage {
   group_id: number = 0;
   participants: Array<any> = [];
   selectedParticipants: any = {};
+  selectedUsers:Array<any> = [];
   _: _.UnderscoreStatic = _;
-
+  tempUser:Array<any> = [];
+  users:Array<any>=[];
   tags: Array<any> = [];
   tagsIdMap: Array<string> = [];
   userTagsMap: any = {};
-
+  selectedParticipantsID:any={};
+  selectedUser:Array<string> = [];
   global: any = {};
+  
   createForm: FormGroup;
   @ViewChild('userComplete') userComplete: AutoCompleteComponent;
   constructor(
@@ -39,6 +42,7 @@ export class CreateTopicPage {
     private formBuilder: FormBuilder,
     public userAutoCompleteService: UserAutoCompleteService,
     private _firebaseTransaction: FirebaseTransactionProvider,
+    public modalCtrl:ModalController ,
     private events: Events,
     private notifications: NotificationsProvider,
   ) {
@@ -62,7 +66,6 @@ export class CreateTopicPage {
       GroupID: this.group_id,
     }).then((response: any) => {
       this.participants = response.UserDetail;
-      this.userAutoCompleteService.participants = this.participants;
       this.setTags();
     }).catch(error => {
       console.log(error);
@@ -95,6 +98,7 @@ export class CreateTopicPage {
       this.selectedParticipants[user.UserID] = user.User;
       this.setSelectedParticipants();
       this.userComplete.clearValue();
+      console.log(user.User);
     }
   }
 
@@ -122,7 +126,6 @@ export class CreateTopicPage {
         participants.push({
           id: id,
           name: name,
-          selected: false,
         })
       });
     }
@@ -130,19 +133,12 @@ export class CreateTopicPage {
   }
 
   tagClicked(tag_id, index) {
-    if (this.tags[index].selected) {
-      for (let userID in this.userTagsMap[tag_id]) {
-        this.removeParticipant(userID);
-      }
-    } else {
-      //selecting users
-      for (let userID in this.userTagsMap[tag_id]) {
-        let indexInParticipants = this.userTagsMap[tag_id][userID];
-        let user = this.participants[indexInParticipants];
-        this.participantSelected(user.User[0]);
-      }
+    //selecting users
+    for (let userID in this.userTagsMap[tag_id]) {
+      let indexInParticipants = this.userTagsMap[tag_id][userID];
+      let user = this.participants[indexInParticipants];
+      this.participantSelected(user.User[0]);
     }
-    this.tags[index].selected = !this.tags[index].selected;
   }
 
   getCurrentTime() {
@@ -188,4 +184,20 @@ export class CreateTopicPage {
     return 'tag-' + (id % 10);
   }
 
+  addParticipants(){
+    let modal = this.modalCtrl.create(ManageParticipantsPage,{
+      participants:this.participants,
+    });
+
+      modal.onDidDismiss(data=>{
+       console.log(data);
+       this.selectedParticipantsID=data;        
+       this.participants.forEach(user=>{
+          user=user.User[0];
+          this.users.push(user);
+       });
+       console.log(this.users);
+      });
+     modal.present();
+  }
 }

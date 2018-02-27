@@ -1,0 +1,100 @@
+<ion-header>
+  <header title={{title}} [buttons]="[{icon:'ios-add-circle',name:'create-topic'},{icon:'more',name:'options'}]" (buttonClicked)="headerButtonClicked($event)"></header>
+</ion-header>
+<ion-content no-padding>
+  <ion-refresher (ionRefresh)="refresh($event)">
+    <ion-refresher-content pullingIcon="arrow-round-down" pullingText="Pull to refresh" refreshingSpinner="crescent" refreshingText="Refreshing...">
+    </ion-refresher-content>
+  </ion-refresher>
+  <center-spinner *ngIf="group !== -1 && isEmpty(group);else group_template"></center-spinner>
+  <empty *ngIf="group === -1"></empty>
+  <ng-template #group_template>
+    <ion-grid *ngIf="group !== -1">
+      <ion-item-group *ngIf="group.ActiveTopicList">
+        <ion-item-divider color="light">
+          Active Topics
+        </ion-item-divider>
+<<<<<<< HEAD
+         <p *ngIf="group.ActiveTopicList.length === 0" text-center>No data Found</p>
+          <ion-item *ngFor="let topic of group.ActiveTopicList;let i = index;" (click)="openTopic(topic, i, 'ActiveTopicList')">
+          <h2>
+            {{topic.Topic}}
+          </h2>      
+              <ion-row>
+                <ion-col >
+                     {{getExpiry(topic.DueDate)}}
+                </ion-col>
+                <ion-col >
+                    Created On {{topic.CreationDate | amDateFormat:'DD/MM/YYYY' }}
+                  </ion-col>
+              </ion-row>
+                  <!--<ion-badge item-end *ngIf="getBadge(topic.TopicCode)">{{badges[topic.TopicCode]}}</ion-badge>--> 
+          <ion-icon name="ios-arrow-forward" item-end></ion-icon>
+        </ion-item>
+      </ion-item-group>
+     <ion-item-group *ngIf="group.SystemTopicList">
+        <ion-item-divider color="light">
+          System Topics
+        </ion-item-divider>
+        <p *ngIf="group.SystemTopicList.length === 0"  text-center>No data Found</p> 
+=======
+        <p *ngIf="group.ActiveTopicList.length === 0" text-center>No Topics Found</p>
+
+        <ion-item *ngFor="let topic of group.ActiveTopicList;let i = index;" (click)="openTopic(topic, i, 'ActiveTopicList')">
+          <h2>
+            {{topic.Topic}}
+          </h2>
+          <ion-row>
+            <ion-col text-left class="pickup">
+              Created {{topic.CreationDate | amTimeAgo }}
+            </ion-col>
+            <ion-col text-right *ngIf="isExpired(topic.DueDate) !== null" [ngClass]="isExpired(topic.DueDate) ? 'danger' : 'secondary'">
+              Due {{getExpiry(topic.DueDate)}}
+            </ion-col>
+          </ion-row>
+          <ion-badge item-end *ngIf="getBadge(topic.TopicCode)">{{getBadge(topic.TopicCode)}}</ion-badge>
+          <ion-icon name="ios-arrow-forward" item-end></ion-icon>
+        </ion-item>
+      </ion-item-group>
+
+      <ion-item-group *ngIf="group.SystemTopicList">
+        <ion-item-divider color="light">
+          System Topics
+        </ion-item-divider>
+        <p *ngIf="group.SystemTopicList.length === 0" text-center>No Topics Found</p>
+>>>>>>> 5c8221182ea3e2d5a6d979684474f9d85a077a9f
+        <ion-item *ngFor="let topic of group.SystemTopicList" (click)="openTopic(topic)">
+          <h2>
+            {{topic.Topic}}
+          </h2>
+          <ion-badge item-end *ngIf="getBadge(topic.TopicCode)">{{getBadge(topic.TopicCode)}}</ion-badge>
+          <ion-icon name="ios-arrow-forward" item-end></ion-icon>
+        </ion-item>
+      </ion-item-group>
+      <ion-item-group *ngIf="group.ClosedTopicList">
+        <ion-item-divider color="light">
+          Closed Topics
+        </ion-item-divider>
+        <p *ngIf="group.ClosedTopicList.length === 0" text-center>No Topics Found</p>
+        <ion-item *ngFor="let topic of group.ClosedTopicList; let i = index;" (click)="openTopic(topic, i , 'ClosedTopicList')">
+          <h2>
+            {{topic.Topic}}
+          </h2>
+          <ion-row>
+            <ion-col text-left class="pickup">
+              Created {{topic.CreationDate | amTimeAgo }}
+            </ion-col>
+            <ion-col text-right class="danger">
+              Closed {{topic.CloseDatime | amTimeAgo }}
+            </ion-col>
+          </ion-row>
+          <ion-badge item-end *ngIf="getBadge(topic.TopicCode)">{{getBadge(topic.TopicCode)}}</ion-badge>
+          <ion-icon name="ios-arrow-forward" item-end></ion-icon>
+        </ion-item>
+        <ion-item color="light" text-center (click)="closeTopic()">
+          View All
+        </ion-item>
+      </ion-item-group>
+    </ion-grid>
+  </ng-template>
+</ion-content>

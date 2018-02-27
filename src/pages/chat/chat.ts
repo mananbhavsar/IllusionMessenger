@@ -37,7 +37,7 @@ import { VideoEditor } from '@ionic-native/video-editor';
 import { LogoutPage } from '../logout/logout';
 import { retry } from 'rxjs/operators/retry';
 import { HomePage } from '../home/home';
-import { CloseTopicPage } from '../close-topic/close-topic';
+import { CloseTopicPage } from './../topic/close-topic/close-topic';
 import { ChatReadModalPage } from "../../pages/chat/chat-read-modal/chat-read-modal";
 import { SavedMediaPage } from "../../pages/chat/saved-media/saved-media";
 
@@ -92,7 +92,7 @@ export class ChatPage {
   scrollingBottom: boolean = false;
 
   user: any = {};
-  userID = null;
+  userID: string = null;
   chatUsers: any = {};
 
   lastcalled: boolean = false;
@@ -139,7 +139,7 @@ export class ChatPage {
   myLanguage: string = null;
   chatLanguages: Array<string> = [];
   translating: boolean = false;
-  headerButtons:Array<any>=[];
+  headerButtons: Array<any> = [];
 
   doctor_translate: string = 'Doctor';
   impression_no_translate: string = 'Imp No.';
@@ -214,9 +214,6 @@ export class ChatPage {
     this.events.subscribe('network:offline', () => {
       this.hasInternet = false;
     });
-
-    //making folder with this topics code to save files
-    this.doFoldering();
   }
 
   setFirebaseRef() {
@@ -355,7 +352,6 @@ export class ChatPage {
     this.typingRef.on('value', snapshot => {
       this.userTyping = snapshot.val();
       if (this.typingRefLoaded) {
-
         setTimeout(() => {
           this.scrollBottom('typing ref init').catch(error => { });
         }, 100);
@@ -573,11 +569,10 @@ export class ChatPage {
           GroupID: this.groupID,
         };
         this.connection.doPost('Chat/GetTopicDetail', params).then((response: any) => {
-          console.log(response);
           this.data = JSON.parse(response.Data);
-          this.headerButtons = [{icon:'archive',name:'open-media'}];
-          if(this.data.StatusID === 1){
-            this.headerButtons.push({icon:'close',name:'options'});
+          this.headerButtons = [{ icon: 'archive', name: 'open-media' }];
+          if (this.data.StatusID === 1) {
+            this.headerButtons.push({ icon: 'close', name: 'options' });
           }
 
           console.log(this.data);
@@ -611,7 +606,7 @@ export class ChatPage {
             return;
           }
           this.data = topicCodes[this.topicCode];
-          console.log(this.data);
+
           this.setTitle();
           this.setUsers().then(chatUsersList => {
             this.initOffline();
@@ -629,6 +624,9 @@ export class ChatPage {
     this.pathIdentifier = this.groupCode + '/' + this.topicCode;
 
     this.basePath = 'Communications/' + this.pathIdentifier + '/';
+
+    //making folder with this topics code to save files
+    this.doFoldering();
   }
 
   /**
@@ -644,16 +642,24 @@ export class ChatPage {
     let now = moment();
     let creationDate = moment(this.data.CreationDate, 'MM/DD/YYYY h/mm/ss a');
     let dueDate = moment(this.data.DueDate, 'MM/DD/YYYY h/mm/ss a');
-    if (creationDate.isValid()) {
+    let closedDate = moment(this.data.CloseDatime, 'MM/DD/YYYY h/mm/ss a');
+
+    //creation date
+    if (creationDate.isValid() && this.data.StatusID !== 0) {
       subTitle += 'Created: ' + moment(this.data.CreationDate, 'MM/DD/YYYY h/mm/ss a').fromNow();
     }
-    if (dueDate.isValid()) {
+    //due
+    if (dueDate.isValid() && this.data.StatusID === 1) {
       subTitle += ', ' + 'Due: ';
-      if (dueDate.isSameOrAfter(now)) {
-        subTitle += dueDate.toNow();
+      if ((now.toDate().getTime() - dueDate.toDate().getTime()) > 0) {
+        subTitle += dueDate.from(now);
       } else {
-        subTitle += dueDate.fromNow();
+        subTitle += dueDate.from(now);
       }
+    }
+    //closed 
+    if (closedDate.isValid() && this.data.StatusID === 2) {
+      subTitle += ', ' + 'Closed: ' + closedDate.from(now);
     }
     return subTitle;
   }
@@ -1117,7 +1123,7 @@ export class ChatPage {
         const fileTransfer: FileTransferObject = this.transfer.create();
         let options = this.setFileOptions(file);
 
-        fileTransfer.upload(file, Global.SERVER_URL + 'Communication/InsertChat_Attachement', options)
+        fileTransfer.upload(file, Global.SERVER_URL + 'Chat/InsertChat_Attachement', options)
           .then((data) => {
             this.progressPercent = 0;
             //getting URL from XML
@@ -1156,9 +1162,11 @@ export class ChatPage {
 
     let params = {
       UserID: this.user.UserID,
+      TopicID: this.topicID,
+      GroupID: this.groupID,
+      TopicCode: this.topicCode,
       FileName: fileName,
       FileExtension: fileExtension,
-      TopicCode: this.topicCode,
     };
 
     let options: FileUploadOptions = {
@@ -1216,7 +1224,7 @@ export class ChatPage {
     }
 
     let params = {
-      LiveUsersOnChat:activeUserList,
+      LiveUsersOnChat: activeUserList,
       ChattingUsers: this.common.build_query(this.userChatting),
       TimeOnPhone: moment().utc().valueOf(),
       Message: message.Message ? message.Message : '',
@@ -1225,15 +1233,19 @@ export class ChatPage {
       FileName: fileName,
       FileExtension: fileExtension,
       TopicCode: this.topicCode,
+      TopicID: this.topicID,
+      GroupID: this.groupID,
     };
 
     this.connection.doPost('Chat/InsertChat', params, false).then((response: any) => {
       //send Push
       if (Global.Push.OneSignal) {
-        this.sendPushNotification(message, response.Data);
+        this.sendPushNotification(message, response.OneSignalTransaction);
       }
       //managing firebase count
-      this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { })
+      if (response.FireBaseTransaction) {
+        this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { })
+      }
     }).catch(error => {
 
     });
@@ -1321,28 +1333,16 @@ export class ChatPage {
       let params = {
         UserCode: this.userID,
         TopicCode: this.topicCode,
+        TopicID: this.topicID,
+        GroupID: this.groupID,
       };
 
-      this.connection.doPost('Communication/UpdateChatStatus', params, false).then((response: any) => {
+      this.connection.doPost('Chat/UpdateChatStatus', params, false).then((response: any) => {
         this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { })
       }).catch(error => {
         console.log(error);
       });
     }
-  }
-
-  showDoctorTyping() {
-    for (let typingUserId in this.userTyping) {
-      //avoiding self
-      if (typingUserId === this.userID) {
-        continue;
-      }
-      //checking if in range
-      if (this.isWithinRange(this.userTyping[typingUserId])) {
-        return true;
-      }
-    }
-    return false;
   }
 
   getName(userID) {
@@ -1483,50 +1483,62 @@ export class ChatPage {
   }
 
   openSavedMedia(event) {
-  console.log(event);
-    switch(event.name){
-        case 'open-media':
-              let params = {
-              path: this.dataDirectory,
-              folder: this.topicCode,
-            };
-             let savedMediaModal = this.modal.create(SavedMediaPage, params);
-            savedMediaModal.onDidDismiss(data => {
+    switch (event.name) {
+      case 'open-media':
+        let params = {
+          path: this.dataDirectory,
+          folder: this.topicCode,
+        };
+        let savedMediaModal = this.modal.create(SavedMediaPage, params);
+        savedMediaModal.onDidDismiss(data => {
 
         });
-      savedMediaModal.present();
-      break;
+        savedMediaModal.present();
+        break;
 
-      case 'options': 
-      let actionSheet = this.actionSheetCtrl.create({
-      title:'Do You Want to Close ',
-      buttons:[
-      {
-        text:'Close it now',
-        role:'destructive',
-        handler:()=>{
-            this.connection.doPost('Chat/UpdateTopicStatus',{
-              GroupID:this.groupID,
-              TopicID:this.topicID,
-              StatusID:2
-              }).then((response: any) => {
-              console.log(response);
-              if(response.Message){
-                this.events.publish('toast:create', response.Message);
+      case 'options':
+        let actionSheet = this.actionSheetCtrl.create({
+          title: 'Do You Want to Close ',
+          buttons: [
+            {
+              text: 'Close it now!',
+              role: 'destructive',
+              handler: () => {
+                this.connection.doPost('Chat/UpdateTopicStatus', {
+                  GroupID: this.groupID,
+                  TopicID: this.topicID,
+                  StatusID: 2
+                }).then((response: any) => {
+                  this.data.StatusID = 2;
+                  this.headerButtons.pop();
+
+                  if (response.Data.Message) {
+                    this.events.publish('toast:create', response.Data.Message);
+                  }
+                  //firebase 
+                  if (response.FireBaseTransaction) {
+                    this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { });
+                  }
+
+                  //send notification
+                  if (response.OneSignalTransaction) {
+                    this._notifications.sends(response.OneSignalTransaction, 'ChatPage', {
+                      topicID: this.topicID,
+                      groupID: this.groupID,
+                    });
+                  }
+                }).catch(error => {
+                  console.log(error);
+                });
               }
-              delete this.headerButtons[1];
-            }).catch(error => {
-              console.log(error);
-            });
-        }
-      },{
-        text:'Cancel',
-        role:'cancel',
-      }]
-      });
+            }, {
+              text: 'Cancel',
+              role: 'cancel',
+            }]
+        });
 
-      actionSheet.present();
-      break;
+        actionSheet.present();
+        break;
     }
   }
 

@@ -16,31 +16,27 @@
         </ion-item>
         <ion-item>
           <ion-label>Due Date</ion-label>
-          <ion-datetime [min]="getCurrentTime()" [max]="2050" mode="ios" displayFormat=" MMM DD, YYYY HH:mm" formControlName="due_date"></ion-datetime>
+          <ion-datetime [min]="getCurrentTime()" [max]="2050" mode="ios" displayFormat="DD MMM YYYY, HH:mm" formControlName="due_date"></ion-datetime>
         </ion-item>
         <ion-item no-lines *ngIf="createForm.get('private').value">
           <ion-label stacked>Add Participants</ion-label>
+          <button ion-button item-end (click)="addParticipants()">Add</button>
         </ion-item>
-        <div *ngIf="createForm.get('private').value">
-          <ion-auto-complete #userComplete [dataProvider]="userAutoCompleteService" [options]="{placeholder: 'Enter Name'}" (itemSelected)="participantSelected($event)"></ion-auto-complete>
-          <button type="button" small ion-button *ngFor="let tag of tags;let i=index;" (click)="tagClicked(tag.id,i)"
-            [ngClass]="getTagColor(tag.id)">{{tag.name}}</button>
-        </div>
+         <div *ngIf="createForm.get('private').value">
+          <ion-list *ngIf="users">
+            <ion-list-header>
+              Selected Participants
+            </ion-list-header>
+          <ion-item *ngFor="let user of participants;let i of index">
+            {{user.User[0].User}}
+            <button ion-button outline item-end color="danger">
+               <ion-icon name="trash"></ion-icon>&nbsp; Remove
+            </button>
+          </ion-item>
+         </ion-list>   
+        </div>     
       </ion-list>
     </form>
-  </ion-grid>
-  <ion-grid *ngIf="createForm.get('private').value && !_.isEmpty(selectedParticipants)">
-    <ion-list>
-      <ion-list-header>
-        Selected Participants
-      </ion-list-header>
-      <ion-item *ngFor="let user of getSelectedParticipants()">
-        <h2>{{user.name}}</h2>
-        <button ion-button outline item-end color="danger" (click)="removeParticipant(user.id)">
-          <ion-icon name="trash"></ion-icon>&nbsp; Remove
-        </button>
-      </ion-item>
-    </ion-list>
   </ion-grid>
 </ion-content>
 <ion-footer>

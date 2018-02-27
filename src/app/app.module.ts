@@ -7,7 +7,6 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 
-
 import { Network } from '@ionic-native/network';
 import { StatusBar } from '@ionic-native/status-bar';
 import { Keyboard } from '@ionic-native/keyboard';
@@ -42,7 +41,7 @@ import { MyApp } from './app.component';
 
 import { AboutPageModule } from '../pages/about/about.module';
 import { AccountPageModule } from '../pages/account/account.module';
-import { CloseTopicPageModule } from '../pages/close-topic/close-topic.module';
+import { CloseTopicPageModule } from '../pages/topic/close-topic/close-topic.module';
 import { ChangePasswordPageModule } from "../pages/account/change-password/change-password.module";
 import { ChatPageModule } from "../pages/chat/chat.module";
 import { ChatReadModalPageModule } from "../pages/chat/chat-read-modal/chat-read-modal.module";
@@ -56,6 +55,7 @@ import { HelpPageModule } from '../pages/help/help.module';
 import { HomePageModule } from '../pages/home/home.module';
 import { LoginPageModule } from '../pages/login/login.module';
 import { NotificationPreferencesPageModule } from "../pages/account/notification-preferences/notification-preferences.module";
+import { ManageParticipantsPageModule } from "../pages/manage-participants/manage-participants.module";
 import { SavedMediaPageModule } from "../pages/chat/saved-media/saved-media.module"
 import { TopicOptionsPageModule } from '../pages/topic/topic-options/topic-options.module';
 import { TutorialPageModule } from '../pages/tutorial/tutorial.module';
@@ -136,6 +136,7 @@ export function createTranslateLoader(http: HttpClient) {
         HelpPageModule,
         HomePageModule,
         LoginPageModule,
+        ManageParticipantsPageModule,
         NotificationPreferencesPageModule,
         SavedMediaPageModule,
         TopicOptionsPageModule,

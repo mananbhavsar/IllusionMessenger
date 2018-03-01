@@ -61,6 +61,20 @@ export class CreateTopicPage {
       GroupID: this.group_id,
     }).then((response: any) => {
       this.participants = response.UserDetail;
+      //removing self
+      if (this.participants.length) {
+        let index = -1;
+        this.participants.every((user, i) => {
+          if (user.User[0].UserID === this.connection.user.id) {
+            index = i;
+            return false;
+          }
+          return true;
+        });
+        if (index > -1) {
+          this.participants.splice(index, 1);
+        }
+      }
     }).catch(error => {
       console.log(error);
     })

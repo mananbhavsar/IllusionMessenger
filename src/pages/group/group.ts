@@ -45,14 +45,21 @@ export class GroupPage {
         PageNumber: this.page,
         RowsPerPage: 20
       }).then((response: any) => {
-        this.group = response;
+        //convert Time to local
+        response = this.toLocal(response);
 
+        this.group = response;
+        
         this.setForBadge();
         resolve(true);
       }).catch(error => {
         reject(error);
       });
     });
+  }
+
+  toLocal(response){
+    return response;
   }
 
   setForBadge() {

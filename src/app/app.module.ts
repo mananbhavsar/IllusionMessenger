@@ -55,7 +55,7 @@ import { HelpPageModule } from '../pages/help/help.module';
 import { HomePageModule } from '../pages/home/home.module';
 import { LoginPageModule } from '../pages/login/login.module';
 import { NotificationPreferencesPageModule } from "../pages/account/notification-preferences/notification-preferences.module";
-import { ManageParticipantsPageModule } from "../pages/manage-participants/manage-participants.module";
+import { ManageParticipantsPageModule } from "../pages/topic/create-topic/manage-participants/manage-participants.module";
 import { SavedMediaPageModule } from "../pages/chat/saved-media/saved-media.module"
 import { TopicOptionsPageModule } from '../pages/topic/topic-options/topic-options.module';
 import { TutorialPageModule } from '../pages/tutorial/tutorial.module';
@@ -79,7 +79,6 @@ import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabaseModule, AngularFireDatabase } from 'angularfire2/database';
 import { AngularFireAuthModule } from 'angularfire2/auth';
 import { IonicImageViewerModule } from 'ionic-img-viewer';
-import { AutoCompleteModule } from 'ionic2-auto-complete-ng5';
 
 export const firebaseConfig = {
     apiKey: "AIzaSyAFDZ9UPTMiDTjT4qAG0d9uVeOdhL-2PBw",
@@ -116,7 +115,6 @@ export function createTranslateLoader(http: HttpClient) {
             name: '__messenger_illusion_db',
             driverOrder: ['indexeddb', 'sqlite', 'websql']
         }),
-        AutoCompleteModule,
         AngularFireModule.initializeApp(firebaseConfig),
         AngularFireDatabaseModule,
         AngularFireAuthModule,

@@ -19,22 +19,21 @@
           <ion-datetime [min]="getCurrentTime()" [max]="2050" mode="ios" displayFormat="DD MMM YYYY, HH:mm" formControlName="due_date"></ion-datetime>
         </ion-item>
         <ion-item no-lines *ngIf="createForm.get('private').value">
-          <ion-label stacked>Add Participants</ion-label>
-          <button ion-button item-end (click)="addParticipants()">Add</button>
+          <button ion-button block (click)="addParticipants()">Add Participants</button>
         </ion-item>
-         <div *ngIf="createForm.get('private').value">
-          <ion-list *ngIf="users">
+        <div *ngIf="createForm.get('private').value">
+          <ion-list *ngIf="!_.isEmpty(selectedParticipants)">
             <ion-list-header>
               Selected Participants
             </ion-list-header>
-          <ion-item *ngFor="let user of participants;let i of index">
-            {{user.User[0].User}}
-            <button ion-button outline item-end color="danger">
-               <ion-icon name="trash"></ion-icon>&nbsp; Remove
-            </button>
-          </ion-item>
-         </ion-list>   
-        </div>     
+            <ion-item *ngFor="let userID of selectedParticipantIDs">
+              {{getUserName(userID)}}
+              <button ion-button outline item-end color="danger" (click)="removeParticipant(userID)">
+                <ion-icon name="trash"></ion-icon>&nbsp; Remove
+              </button>
+            </ion-item>
+          </ion-list>
+        </div>
       </ion-list>
     </form>
   </ion-grid>

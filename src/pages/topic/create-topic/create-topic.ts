@@ -11,7 +11,7 @@ import * as _ from 'underscore';
 import { AutoCompleteComponent } from 'ionic2-auto-complete-ng5';
 import * as  moment from "moment";
 import { locale } from 'moment';
-import { ManageParticipantsPage } from "../../manage-participants/manage-participants";
+import { ManageParticipantsPage } from "./manage-participants/manage-participants";
 
 @IonicPage()
 @Component({
@@ -21,18 +21,13 @@ import { ManageParticipantsPage } from "../../manage-participants/manage-partici
 export class CreateTopicPage {
   group_id: number = 0;
   participants: Array<any> = [];
-  selectedParticipants: any = {};
-  selectedUsers:Array<any> = [];
+  selectedParticipantIDs: Array<number> = [];
+  selectedParticipants: any = {}; //id:index 
   _: _.UnderscoreStatic = _;
-  tempUser:Array<any> = [];
-  users:Array<any>=[];
-  tags: Array<any> = [];
-  tagsIdMap: Array<string> = [];
-  userTagsMap: any = {};
-  selectedParticipantsID:any={};
-  selectedUser:Array<string> = [];
+
+
   global: any = {};
-  
+
   createForm: FormGroup;
   @ViewChild('userComplete') userComplete: AutoCompleteComponent;
   constructor(
@@ -42,7 +37,7 @@ export class CreateTopicPage {
     private formBuilder: FormBuilder,
     public userAutoCompleteService: UserAutoCompleteService,
     private _firebaseTransaction: FirebaseTransactionProvider,
-    public modalCtrl:ModalController ,
+    public modalCtrl: ModalController,
     private events: Events,
     private notifications: NotificationsProvider,
   ) {
@@ -66,45 +61,15 @@ export class CreateTopicPage {
       GroupID: this.group_id,
     }).then((response: any) => {
       this.participants = response.UserDetail;
-      this.setTags();
     }).catch(error => {
       console.log(error);
     })
   }
 
-  setTags() {
-    this.participants.forEach((user, index) => {
-      if (user.Tag.length) {
-        user.Tag.forEach(tag => {
-          if (this.tagsIdMap.indexOf(tag.TagID) === -1) {
-            this.tagsIdMap.push(tag.TagID);
-            this.tags.push({
-              id: tag.TagID,
-              name: tag.Tag
-            });
-          }
-          //adding to userMap
-          if (!(tag.TagID in this.userTagsMap)) {
-            this.userTagsMap[tag.TagID] = {};
-          }
-          this.userTagsMap[tag.TagID][user.User[0].UserID] = index;
-        });
-      }
-    });
-  }
-
-  participantSelected(user) {
-    if (!(user.UserID in this.selectedParticipants)) {
-      this.selectedParticipants[user.UserID] = user.User;
-      this.setSelectedParticipants();
-      this.userComplete.clearValue();
-      console.log(user.User);
-    }
-  }
-
-  removeParticipant(id) {
-    if (id in this.selectedParticipants) {
-      delete this.selectedParticipants[id];
+  removeParticipant(userID) {
+    if (userID in this.selectedParticipants) {
+      delete this.selectedParticipants[userID];
+      this.selectedParticipantIDs.splice(this.selectedParticipantIDs.indexOf(userID), 1);
       this.setSelectedParticipants();
     }
   }
@@ -119,26 +84,12 @@ export class CreateTopicPage {
     });
   }
 
-  getSelectedParticipants() {
-    let participants = [];
-    if (!_.isEmpty(this.selectedParticipants)) {
-      _.each(this.selectedParticipants, (name, id) => {
-        participants.push({
-          id: id,
-          name: name,
-        })
-      });
+  getUserName(userID) {
+    let index = this.selectedParticipants[userID];
+    if (this.participants[index]) {
+      return this.participants[index].User[0].User;
     }
-    return participants;
-  }
-
-  tagClicked(tag_id, index) {
-    //selecting users
-    for (let userID in this.userTagsMap[tag_id]) {
-      let indexInParticipants = this.userTagsMap[tag_id][userID];
-      let user = this.participants[indexInParticipants];
-      this.participantSelected(user.User[0]);
-    }
+    return '';
   }
 
   getCurrentTime() {
@@ -180,24 +131,19 @@ export class CreateTopicPage {
     }
   }
 
-  getTagColor(id) {
-    return 'tag-' + (id % 10);
-  }
 
-  addParticipants(){
-    let modal = this.modalCtrl.create(ManageParticipantsPage,{
-      participants:this.participants,
+  addParticipants() {
+    let modal = this.modalCtrl.create(ManageParticipantsPage, {
+      participants: this.participants,
+      selectedParticipants: this.selectedParticipants,
+      selectedParticipantIDs: this.selectedParticipantIDs,
     });
 
-      modal.onDidDismiss(data=>{
-       console.log(data);
-       this.selectedParticipantsID=data;        
-       this.participants.forEach(user=>{
-          user=user.User[0];
-          this.users.push(user);
-       });
-       console.log(this.users);
-      });
-     modal.present();
+    modal.onDidDismiss(data => {
+      this.selectedParticipants = data.selectedParticipants;
+      this.selectedParticipantIDs = data.selectedParticipantIDs;
+      this.setSelectedParticipants();
+    });
+    modal.present();
   }
 }

@@ -1,0 +1,21 @@
+<ion-header>
+	<ion-navbar color="danger">
+		<!-- <ion-title>Manage Participants</ion-title> -->
+		<ion-searchbar placeholder="Search" (ionInput)="getData($event)" (ionCancel)="onCancel($event)" (ionClear)="onClear($event)"></ion-searchbar>
+		<ion-buttons end>
+			<button color="light" ion-button outline (click)="dismiss(null)">Create</button>
+		</ion-buttons>
+	</ion-navbar>
+</ion-header>
+
+<ion-content>
+	<div class="header-divider">Available Tags</div>
+	<button type="button" small ion-button *ngFor="let tag of tags;let i=index;" (click)="tagClicked(tag.id,i)" [ngClass]="getTagColor(tag.id)">{{tag.name}}</button>
+	<div class="header-divider">Select Participants</div>
+	<ion-list *ngIf="participants.length">
+		<ion-item *ngFor="let user of participants;let i = index;" (click)="setParticipants(user.User[0].UserID, i)">
+			{{user.User[0].User}}
+			<ion-icon name="checkmark" item-end *ngIf="inSelectedParticipants(user.User[0].UserID)"></ion-icon>
+		</ion-item>
+	</ion-list>
+</ion-content>

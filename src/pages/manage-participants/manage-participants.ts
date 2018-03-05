@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams ,ViewController} from 'ionic-angular';
-
+import { FormGroup ,FormBuilder ,FormControl } from '@angular/forms';
 /**
  * Generated class for the ManageParticipantsPage page.
  *
@@ -17,14 +17,21 @@ export class ManageParticipantsPage {
 	participants:Array<any>=[];
 	users:Array<any>=[];
 	selectedUser:Array<any>=[];
-	selectedParticipantsID:any={};
-	selectedParticipants:boolean;
+  manageForm:FormGroup;
+  selectedUsers:Array<any>=[];
 
   constructor(public navCtrl: NavController, 
   	public navParams: NavParams,
+    public formBuilder:FormBuilder,
   	public viewCtrl:ViewController) {
   	this.participants=this.navParams.data.participants;
   	this.users=this.participants;
+    this.selectedUsers=this.navParams.data.users;
+    this.manageForm=this.formBuilder.group({
+
+    });
+
+    // this.setValue();
   }
 
   ionViewDidLoad() {
@@ -46,15 +53,15 @@ export class ManageParticipantsPage {
       }
   }
 
-  setParticipants(user_id,index){
-	if(this.selectedUser.indexOf(user_id) === -1){
-		this.selectedUser.push(user_id);
-	}else{
-		this.selectedUser.splice(this.selectedUser.indexOf(user_id),1);
-	}
+  setParticipants(user_id,users,index){
+	   if(this.selectedUser.indexOf(user_id) === -1){
+  		    this.selectedUser.push(user_id,users);
+        }else{
+  	   	  this.selectedUser.splice(this.selectedUser.indexOf(user_id),1);
+    	}
   }
 
-   initializeItems() {
+  initializeItems() {
     this.participants = this.users;
   }
 
@@ -66,9 +73,15 @@ export class ManageParticipantsPage {
    this.initializeItems();
   }
 
-  dismiss(data){
-  	this.selectedParticipantsID=this.selectedUser;
-  	console.log(this.selectedParticipantsID);
-  	this.viewCtrl.dismiss(this.selectedParticipantsID);
+  setValue(){
+    this.manageForm.patchValue({
+      
+    });
+          
+   }
+
+  onCreate(){  	
+    console.log(this.selectedUser);
+  	this.viewCtrl.dismiss(this.selectedUser);
   }
 }

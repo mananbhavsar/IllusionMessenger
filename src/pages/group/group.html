@@ -34,7 +34,7 @@
       </ion-item-group>
       <ion-item-group *ngIf="group.SystemTopicList">
         <ion-item-divider color="light">
-          System Topics
+          General Topics
         </ion-item-divider>
         <p *ngIf="group.SystemTopicList.length === 0" text-center>No Topics Found</p>
         <ion-item *ngFor="let topic of group.SystemTopicList" (click)="openTopic(topic)">

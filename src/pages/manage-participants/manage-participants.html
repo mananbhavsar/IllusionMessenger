@@ -8,17 +8,20 @@
 <ion-navbar color="danger">
   	<ion-title>Manage Participants</ion-title> 
   	 <ion-buttons end>  
-  	 	<button color="light" ion-button outline (click)="dismiss(null)">Create</button>
+  	 	<button color="light" ion-button outline (click)="onCreate()">Create</button>
   	 </ion-buttons>
   </ion-navbar>  
 </ion-header>
 
 <ion-content padding>
+	<form [formGroup]="manageForm">
 	<ion-searchbar placeholder="Enter Name" (ionInput)="getData($event)" (ionCancel)="onCancel($event)" (ionClear)="onClear($event)"></ion-searchbar>
 	 <ion-list *ngIf="participants.length" > 
-   		<ion-item *ngFor="let user of participants;let i of index" (click)="setParticipants(user.User[0].UserID,i)">
-   			{{user.User[0].User}}
+   		<ion-item *ngFor="let user of participants;let i of index" (click)="setParticipants(user.User[0].UserID,user.User[0],i)">
+   			<ion-label>{{user.User[0].User}}</ion-label>   			
    		 <ion-icon name="checkmark" item-end *ngIf="selectedUser.indexOf(user.User[0].UserID) > -1"></ion-icon>
+   		 <!-- <ion-checkbox item-start (ionChange)="setParticipants(user.User[0],i)" [checked]="selectedUser && selectedUser.indexOf(user.User[0].UserID) > -1"></ion-checkbox> -->
    		</ion-item>
     </ion-list>
+</form>
 </ion-content>

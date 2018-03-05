@@ -29,10 +29,10 @@ export class CreateTopicPage {
   tags: Array<any> = [];
   tagsIdMap: Array<string> = [];
   userTagsMap: any = {};
-  selectedParticipantsID:any={};
+  selectedParticipant:Array<string> = [];
   selectedUser:Array<string> = [];
   global: any = {};
-  
+
   createForm: FormGroup;
   @ViewChild('userComplete') userComplete: AutoCompleteComponent;
   constructor(
@@ -102,11 +102,8 @@ export class CreateTopicPage {
     }
   }
 
-  removeParticipant(id) {
-    if (id in this.selectedParticipants) {
-      delete this.selectedParticipants[id];
-      this.setSelectedParticipants();
-    }
+  removeParticipant(index) {
+    this.users.splice(index,1);
   }
 
   setSelectedParticipants() {
@@ -175,7 +172,7 @@ export class CreateTopicPage {
 
         this.navCtrl.push(ChatPage, params);
       }).catch(error => {
-
+            
       });
     }
   }
@@ -188,15 +185,16 @@ export class CreateTopicPage {
     let modal = this.modalCtrl.create(ManageParticipantsPage,{
       participants:this.participants,
     });
+    console.log(this.participants);
 
       modal.onDidDismiss(data=>{
-       console.log(data);
-       this.selectedParticipantsID=data;        
-       this.participants.forEach(user=>{
-          user=user.User[0];
-          this.users.push(user);
-       });
-       console.log(this.users);
+        this.selectedParticipant=data;
+        console.log(this.selectedParticipant);
+        this.selectedParticipant.forEach(user=>{
+            console.log(user);
+            this.users.push(user);
+        });
+        console.log(this.users);     
       });
      modal.present();
   }

@@ -2,7 +2,11 @@
 	<ion-navbar color="primary">
 		<ion-title>Close Topics</ion-title>
 	</ion-navbar>
+	 <ion-toolbar ion-text color="primary">
+		<ion-searchbar placeholder="Enter Name" (ionInput)="getData($event)" (ionCancel)="onCancel($event)" (ionClear)="onClear($event)"></ion-searchbar>
+	</ion-toolbar>
 </ion-header>
+
 
 <ion-content padding>
 	<ion-refresher (ionRefresh)="refresh($event)">

@@ -535,6 +535,7 @@ export class MyApp {
 
     initBadge() {
         this.user.getUser().then(user => {
+            console.log(user);
             this.angularFireDatabase.object('Badge/' + user.id + '/Total').snapshotChanges().subscribe(snapshot => {
                 let total = snapshot.payload.val();
                 console.log('total:' + total);

@@ -40,6 +40,7 @@ import { HomePage } from '../home/home';
 import { CloseTopicPage } from './../topic/close-topic/close-topic';
 import { ChatReadModalPage } from "../../pages/chat/chat-read-modal/chat-read-modal";
 import { SavedMediaPage } from "../../pages/chat/saved-media/saved-media";
+import { ChatOptionsPage } from "../chat-options/chat-options";
 
 import { Modal } from 'ionic-angular/components/modal/modal';
 @IonicPage()
@@ -570,10 +571,10 @@ export class ChatPage {
         };
         this.connection.doPost('Chat/GetTopicDetail', params).then((response: any) => {
           this.data = JSON.parse(response.Data);
-          this.headerButtons = [{ icon: 'archive', name: 'open-media' }];
-          if (this.data.StatusID === 1) {
+          this.headerButtons = [{ icon:'more' , name: 'more-option'}];
+          /*if (this.data.StatusID === 1) {
             this.headerButtons.push({ icon: 'close', name: 'options' });
-          }
+          }*/
 
           console.log(this.data);
           this.topicCode = this.data.TopicCode;
@@ -1480,6 +1481,15 @@ export class ChatPage {
 
     });
     chatReadModal.present();
+  }
+
+  openChatOptions(){
+    let params ={
+      user:this.data,
+      path:this.dataDirectory,
+      folder:this.topicCode,
+    }
+    this.navCtrl.push(ChatOptionsPage,params);
   }
 
   openSavedMedia(event) {

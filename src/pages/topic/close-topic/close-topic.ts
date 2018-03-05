@@ -21,18 +21,38 @@ export class CloseTopicPage {
 	group_id:number=null;
   topics: Array<any> = [];
   page:number=0;
+  list:Array<any>=[];
 
   constructor(
   public navCtrl: NavController, 
   public navParams: NavParams,
   public connection: ConnectionProvider,
   public modalCtrl: ModalController) {
-  	this.group_id = this.navParams.data;
+  this.group_id = this.navParams.data;
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad CloseTopicPage');
     this.getDetails();
+    this.initializeItems();
+    console.log(this.topics);
+
+    for(let topic of this.topics){
+      this.list.push(topic);
+    }
+    console.log(this.list);
+  }
+
+  getData(event) {
+      this.initializeItems();
+      let val = event.target.value;
+      console.log(val);
+     
+      if (val && val.trim() != '') {
+       this.topics = this.topics.filter((item) => {
+          return (item.Topic.toLowerCase().indexOf(val.toLowerCase()) > -1);
+        });     
+      } 
   }
 
   getDetails(){
@@ -49,7 +69,6 @@ export class CloseTopicPage {
           }).then((response: any) => {
           let data=response.ClosedTopicList;
           console.log(data);
-          console.log(data.length);
            if (data.length > 0) {
               data.forEach(list => {
                 this.topics.push(list);                
@@ -68,6 +87,19 @@ export class CloseTopicPage {
     });
   }
 
+  initializeItems(){
+    this.page=0;
+    this.topics=[];
+
+  }
+
+  onCancel(){
+    this.initializeItems();
+  }
+
+  onClear(){
+    this.initializeItems();
+  }
 
 	refresh(refresher) {
     this.page = 0;

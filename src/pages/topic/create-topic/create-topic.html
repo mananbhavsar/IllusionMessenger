@@ -12,7 +12,7 @@
         </ion-item>
         <ion-item>
           <ion-label floating>Topic Name</ion-label>
-          <ion-input formControlName="name" type="text" placeholder="Topic Name"></ion-input>
+           <ion-input formControlName="name" type="text" placeholder="Topic Name"></ion-input>
         </ion-item>
         <ion-item>
           <ion-label>Due Date</ion-label>
@@ -27,11 +27,11 @@
             <ion-list-header>
               Selected Participants
             </ion-list-header>
-          <ion-item *ngFor="let user of participants;let i of index">
-            {{user.User[0].User}}
-            <button ion-button outline item-end color="danger">
+           <ion-item *ngFor="let user of users;let i of index">
+             {{user.User}} 
+              <button ion-button outline item-end color="danger" (click)="removeParticipant(i)">
                <ion-icon name="trash"></ion-icon>&nbsp; Remove
-            </button>
+            </button> 
           </ion-item>
          </ion-list>   
         </div>     

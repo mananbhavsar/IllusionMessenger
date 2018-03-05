@@ -56,7 +56,8 @@ import { HomePageModule } from '../pages/home/home.module';
 import { LoginPageModule } from '../pages/login/login.module';
 import { NotificationPreferencesPageModule } from "../pages/account/notification-preferences/notification-preferences.module";
 import { ManageParticipantsPageModule } from "../pages/manage-participants/manage-participants.module";
-import { SavedMediaPageModule } from "../pages/chat/saved-media/saved-media.module"
+import { SavedMediaPageModule } from "../pages/chat/saved-media/saved-media.module";
+import { ChatOptionsPageModule } from "../pages/chat-options/chat-options.module";
 import { TopicOptionsPageModule } from '../pages/topic/topic-options/topic-options.module';
 import { TutorialPageModule } from '../pages/tutorial/tutorial.module';
 import { WelcomePageModule } from '../pages/welcome/welcome.module';
@@ -139,6 +140,7 @@ export function createTranslateLoader(http: HttpClient) {
         ManageParticipantsPageModule,
         NotificationPreferencesPageModule,
         SavedMediaPageModule,
+        ChatOptionsPageModule,
         TopicOptionsPageModule,
         TutorialPageModule,
         WelcomePageModule,

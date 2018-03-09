@@ -22,6 +22,7 @@ export class CloseTopicPage {
   topics: Array<any> = [];
   page:number=0;
   list:Array<any>=[];
+  query:string=null;
 
   constructor(
   public navCtrl: NavController, 
@@ -34,13 +35,7 @@ export class CloseTopicPage {
   ionViewDidLoad() {
     console.log('ionViewDidLoad CloseTopicPage');
     this.getDetails();
-    this.initializeItems();
-    console.log(this.topics);
-
-    for(let topic of this.topics){
-      this.list.push(topic);
-    }
-    console.log(this.list);
+    this.initializeItems();    
   }
 
   getData(event) {
@@ -49,9 +44,14 @@ export class CloseTopicPage {
       console.log(val);
      
       if (val && val.trim() != '') {
-       this.topics = this.topics.filter((item) => {
-          return (item.Topic.toLowerCase().indexOf(val.toLowerCase()) > -1);
-        });     
+        this.query=val;
+        this.page=0;
+        this.topics=[];
+        this.getDetails().catch(error=>{
+          
+        });
+      } else {
+        this.query = null;     
       } 
   }
 
@@ -61,6 +61,7 @@ export class CloseTopicPage {
         reject(false);
       } else {
           this.connection.doPost('Chat/GetClosedTopicDetail', {
+            query:this.query,
             GroupID: this.group_id,
             StatusID:1,
             DisablePaging:true,

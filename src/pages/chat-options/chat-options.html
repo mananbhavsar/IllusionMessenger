@@ -4,8 +4,7 @@
   </ion-navbar>
 </ion-header>
 
-
-<ion-content padding  *ngIf="participants.User !==-1">
+<ion-content padding *ngIf="participants.User !==-1">
 		<ion-list>
 			<ion-list-header>Media</ion-list-header>
 			<ion-item (click)="openSavedMedia()">
@@ -14,14 +13,14 @@
 			</ion-item>
 		</ion-list>
 
-		<ion-list>
+		<ion-list >
 			<ion-list-header>Participants</ion-list-header>
 			<ion-item *ngFor="let participant of participants.User">
 				{{participant.User}}
 			</ion-item>
 		</ion-list>
 
-		<ion-list *ngIf="participants.StatusID === 1">
+		<ion-list [hidden]="closeButton" *ngIf="participants.StatusID === 1">
 			<ion-item (click)="closeGroup()">
 				Close Group
 				<ion-icon name="close" item-end></ion-icon>

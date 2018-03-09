@@ -52,6 +52,7 @@ export class SavedMediaPage {
   ) {
     this.path = this.navParams.data.path;
     this.folder = this.navParams.data.folder;
+    console.log(this.path,this.folder);
 
     this.selectedTab = 'image';
   }

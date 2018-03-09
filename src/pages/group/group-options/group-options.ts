@@ -2,13 +2,7 @@ import { CreateTopicPage } from './../../topic/create-topic/create-topic';
 import { ConnectionProvider } from './../../../providers/connection/connection';
 import { Component, group } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
-
-/**
- * Generated class for the GroupOptionsPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import { AddFlashPage } from '../../add-flash/add-flash';
 
 @IonicPage()
 @Component({
@@ -20,14 +14,14 @@ export class GroupOptionsPage {
   title: string = 'Group Options';
   userlist: Array<any> = [];
   participants: Array<any> = [];
-  flash: boolean = true;
+  group: Array<any> = [];
   
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    private connection: ConnectionProvider,
-  ) {
+    private connection: ConnectionProvider) {
     this.group_id = this.navParams.data;
+    console.log(this.group_id);
   }
 
   ionViewDidEnter() {
@@ -40,6 +34,7 @@ export class GroupOptionsPage {
         GroupID: this.group_id
       }).then((response: any) => {
         this.userlist = response;
+        console.log(this.userlist);
         resolve(true);
       }).catch(error => {
         reject(error);
@@ -48,7 +43,11 @@ export class GroupOptionsPage {
   }s
 
   createTopic() {
-    this.navCtrl.push(CreateTopicPage, this.group_id);
+    this.navCtrl.push(CreateTopicPage,this.group_id);
+  }
+
+  addFlashNews(){
+    this.navCtrl.push(AddFlashPage,this.group_id);
   }
 
   getTagColor(id) {

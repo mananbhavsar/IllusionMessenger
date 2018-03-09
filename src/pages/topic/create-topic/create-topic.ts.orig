@@ -24,9 +24,18 @@ export class CreateTopicPage {
   selectedParticipantIDs: Array<number> = [];
   selectedParticipants: any = {}; //id:index 
   _: _.UnderscoreStatic = _;
-
-
+<<<<<<< HEAD
+  tempUser:Array<any> = [];
+  users:Array<any>=[];
+  tags: Array<any> = [];
+  tagsIdMap: Array<string> = [];
+  userTagsMap: any = {};
   selectedParticipant:Array<string> = [];
+  selectedUser:Array<string> = [];
+=======
+
+
+>>>>>>> 77f4fde1fc0001d4d31d0e5d043eafd9faafd391
   global: any = {};
 
   createForm: FormGroup;
@@ -81,12 +90,18 @@ export class CreateTopicPage {
     })
   }
 
+<<<<<<< HEAD
+  removeParticipant(index) {
+    this.users.splice(index,1);
+=======
   removeParticipant(userID) {
     if (userID in this.selectedParticipants) {
       delete this.selectedParticipants[userID];
       this.selectedParticipantIDs.splice(this.selectedParticipantIDs.indexOf(userID), 1);
+      this.setSelectedParticipants();
+    }
+>>>>>>> 77f4fde1fc0001d4d31d0e5d043eafd9faafd391
   }
-}
 
   setSelectedParticipants() {
     let selectedParticipantString = '';
@@ -137,6 +152,7 @@ export class CreateTopicPage {
         this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { })
         //send notification
         this.notifications.sends(response.OneSignalTransaction, 'ChatPage', params);
+
         this.navCtrl.push(ChatPage, params);
       }).catch(error => {
             
@@ -153,11 +169,24 @@ export class CreateTopicPage {
     });
     console.log(this.participants);
 
+<<<<<<< HEAD
+      modal.onDidDismiss(data=>{
+        this.selectedParticipant=data;
+        console.log(this.selectedParticipant);
+        this.selectedParticipant.forEach(user=>{
+            console.log(user);
+            this.users.push(user);
+        });
+        console.log(this.users);     
+      });
+     modal.present();
+=======
     modal.onDidDismiss(data => {
       this.selectedParticipants = data.selectedParticipants;
       this.selectedParticipantIDs = data.selectedParticipantIDs;
       this.setSelectedParticipants();
     });
     modal.present();
+>>>>>>> 77f4fde1fc0001d4d31d0e5d043eafd9faafd391
   }
 }

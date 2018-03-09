@@ -40,7 +40,6 @@ import { IonicStorageModule } from '@ionic/storage';
 import { MyApp } from './app.component';
 
 import { AboutPageModule } from '../pages/about/about.module';
-import { AddFlashPageModule } from '../pages/add-flash/add-flash.module';
 import { AccountPageModule } from '../pages/account/account.module';
 import { CloseTopicPageModule } from '../pages/topic/close-topic/close-topic.module';
 import { ChangePasswordPageModule } from "../pages/account/change-password/change-password.module";
@@ -56,9 +55,14 @@ import { HelpPageModule } from '../pages/help/help.module';
 import { HomePageModule } from '../pages/home/home.module';
 import { LoginPageModule } from '../pages/login/login.module';
 import { NotificationPreferencesPageModule } from "../pages/account/notification-preferences/notification-preferences.module";
-import { ManageParticipantsPageModule } from "../pages/topic/create-topic/manage-participants/manage-participants.module";
+<<<<<<< HEAD
+import { ManageParticipantsPageModule } from "../pages/manage-participants/manage-participants.module";
 import { SavedMediaPageModule } from "../pages/chat/saved-media/saved-media.module";
 import { ChatOptionsPageModule } from "../pages/chat-options/chat-options.module";
+=======
+import { ManageParticipantsPageModule } from "../pages/topic/create-topic/manage-participants/manage-participants.module";
+import { SavedMediaPageModule } from "../pages/chat/saved-media/saved-media.module"
+>>>>>>> 77f4fde1fc0001d4d31d0e5d043eafd9faafd391
 import { TopicOptionsPageModule } from '../pages/topic/topic-options/topic-options.module';
 import { TutorialPageModule } from '../pages/tutorial/tutorial.module';
 import { WelcomePageModule } from '../pages/welcome/welcome.module';
@@ -122,7 +126,6 @@ export function createTranslateLoader(http: HttpClient) {
         AngularFireAuthModule,
         IonicImageViewerModule,
         AboutPageModule,
-        AddFlashPageModule,
         AccountPageModule,
         CloseTopicPageModule,
         ChangePasswordPageModule,

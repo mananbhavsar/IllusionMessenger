@@ -5,6 +5,7 @@ import { ConnectionProvider } from '../../providers/connection/connection';
 import { FirebaseTransactionProvider } from '../../providers/firebase-transaction/firebase-transaction';
 import { NotificationsProvider } from "../../providers/notifications/notifications";
 import { Storage } from '@ionic/storage';
+import { UserProvider } from '../../providers/user/user';
 /**
  * Generated class for the ChatOptionsPage page.
  *
@@ -27,13 +28,14 @@ export class ChatOptionsPage {
   groupID: string = null;
   statusID:number;
   data: any = {};
-  closeButton:Array<any>=[];
-  
+  closeButton:boolean = false;
+
   constructor(public navCtrl: NavController,
    public navParams: NavParams,
    private modal: ModalController,
    public actionSheetCtrl:ActionSheetController,   
    public connection: ConnectionProvider,
+   public user: UserProvider,
    public events: Events,   
    private _firebaseTransaction: FirebaseTransactionProvider,   
    private _notifications: NotificationsProvider,
@@ -44,15 +46,13 @@ export class ChatOptionsPage {
     this.topicID = this.navParams.data.user.TopicID;
     this.groupID = this.navParams.data.user.GroupCode;
     this.statusID=this.navParams.data.user.StatusID;
-    console.log(this.statusID);
+    this.topicCode=this.navParams.data.folder;
+    this.dataDirectory=this.navParams.data.dataDirectory;
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad ChatOptionsPage');
-    if (this.data.StatusID === 1) {
-          
-        }
-  }
+   }
 
   openSavedMedia(){
   let params = {
@@ -62,7 +62,7 @@ export class ChatOptionsPage {
   
   let savedMediaModal = this.modal.create(SavedMediaPage, params);
         savedMediaModal.onDidDismiss(data => {
-
+        
         });
         savedMediaModal.present();
   }
@@ -80,8 +80,12 @@ export class ChatOptionsPage {
                   TopicID: this.topicID,
                   StatusID: 2
                 }).then((response: any) => {
+                  console.log(response);
                   this.data.StatusID = 2;
-
+                  console.log(this.data.StatusID);
+                  if(this.data.StatusID = 2){
+                    this.closeButton = true;
+                  }
                   if (response.Data.Message) {
                     this.events.publish('toast:create', response.Data.Message);
                   }
@@ -89,7 +93,6 @@ export class ChatOptionsPage {
                   if (response.FireBaseTransaction) {
                     this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { });
                   }
-
                   //send notification
                   if (response.OneSignalTransaction) {
                     this._notifications.sends(response.OneSignalTransaction, 'ChatPage', {

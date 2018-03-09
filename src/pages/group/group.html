@@ -6,16 +6,21 @@
     <ion-refresher-content pullingIcon="arrow-round-down" pullingText="Pull to refresh" refreshingSpinner="crescent" refreshingText="Refreshing...">
     </ion-refresher-content>
   </ion-refresher>
-  <center-spinner *ngIf="group !== -1 && isEmpty(group);else group_template"></center-spinner>
+  <center-spinner *ngIf="group !== -1 && isEmpty(group);else group_template">
+  </center-spinner>
   <empty *ngIf="group === -1"></empty>
   <ng-template #group_template>
     <ion-grid *ngIf="group !== -1">
+      <ion-list *ngIf="group.FlashNews !== -1">
+        <ion-list-header *ngFor="let flashnews of group.FlashNews" text-center>
+            {{flashnews.Flash}}
+        </ion-list-header>
+      </ion-list>
       <ion-item-group *ngIf="group.ActiveTopicList">
         <ion-item-divider color="light">
           Active Topics
         </ion-item-divider>
         <p *ngIf="group.ActiveTopicList.length === 0" text-center>No Topics Found</p>
-
           <ion-item *ngFor="let topic of group.ActiveTopicList;let i = index;" (click)="openTopic(topic, i, 'ActiveTopicList')">
           <h2>
             {{topic.Topic}}
@@ -47,7 +52,7 @@
       </ion-item-group>
       <ion-item-group *ngIf="group.ClosedTopicList">
         <ion-item-divider color="light">
-          Closed Topics
+          Recent Closed
         </ion-item-divider>
         <p *ngIf="group.ClosedTopicList.length === 0" text-center>No Topics Found</p>
         <ion-item *ngFor="let topic of group.ClosedTopicList; let i = index;" (click)="openTopic(topic, i , 'ClosedTopicList')">
@@ -66,7 +71,7 @@
           <ion-icon name="ios-arrow-forward" item-end></ion-icon>
         </ion-item>
         <ion-item color="light" text-center (click)="closeTopic()">
-          View All
+          View All Archived
         </ion-item>
       </ion-item-group>
     </ion-grid>

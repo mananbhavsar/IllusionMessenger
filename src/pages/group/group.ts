@@ -6,7 +6,6 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { GroupOptionsPage } from './../group/group-options/group-options';
 import { CloseTopicPage } from './../topic/close-topic/close-topic';
 import * as _ from 'underscore';
-
 import * as  moment from "moment";
 import { locale } from 'moment';
 import { AngularFireDatabase } from 'angularfire2/database';
@@ -22,14 +21,12 @@ export class GroupPage {
   group: Array<any> = [];
   badges: any = {};
   page: number = 0;
-  color: boolean;
 
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     private connection: ConnectionProvider,
-    public angularFireDatabase: AngularFireDatabase,
-  ) {
+    public angularFireDatabase: AngularFireDatabase){
     this.title = this.navParams.data.Group;
     this.group_id = this.navParams.data.GroupID;
   }
@@ -45,14 +42,20 @@ export class GroupPage {
         PageNumber: this.page,
         RowsPerPage: 20
       }).then((response: any) => {
-        this.group = response;
-
+        //convert Time to local
+        response = this.toLocal(response);
+        this.group = response;     
+        console.log(this.group);   
         this.setForBadge();
         resolve(true);
       }).catch(error => {
         reject(error);
       });
     });
+  }
+
+  toLocal(response){
+    return response;
   }
 
   setForBadge() {
@@ -132,7 +135,6 @@ export class GroupPage {
   }
 
   openGroupOptions(event) {
-    this.navCtrl.push(GroupOptionsPage, this.group_id);
+    this.navCtrl.push(GroupOptionsPage,this.group_id);
   }
-
 }

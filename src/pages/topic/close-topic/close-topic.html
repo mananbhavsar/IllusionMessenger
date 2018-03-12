@@ -2,7 +2,7 @@
 	<ion-navbar color="primary">
 		<ion-title>Close Topics</ion-title>
 	</ion-navbar>
-	 <ion-toolbar ion-text color="primary">
+	<ion-toolbar ion-text color="primary">
 		<ion-searchbar placeholder="Enter Name" (ionInput)="getData($event)" (ionCancel)="onCancel($event)" (ionClear)="onClear($event)"></ion-searchbar>
 	</ion-toolbar>
 </ion-header>
@@ -14,21 +14,21 @@
 		</ion-refresher-content>
 	</ion-refresher>
 	<ion-grid *ngIf="topics" no-padding>
-        <p *ngIf="topics.length === 0" text-center>No data Found</p>
-         <ion-item no-padding *ngFor="let topic of topics; let i = index;" (click)="openTopic(topic, i , 'ClosedTopicList')">
-				<h2>
-					{{topic.Topic}}
-				</h2>
-				<ion-row>
-					<ion-col text-left class="pickup">
-						Created {{topic.CreationDate | amTimeAgo }}
-					</ion-col>
-					<ion-col text-right class="danger">
-						Closed {{topic.CloseDatime | amTimeAgo }}
-					</ion-col>
-				</ion-row>
-			</ion-item>
+		<p *ngIf="topics.length === 0" text-center>No data Found</p>
+		<ion-item no-padding *ngFor="let topic of topics; let i = index;" (click)="openTopic(topic, i)">
+			<h2>
+				{{topic.Topic}}
+			</h2>
+			<ion-row>
+				<ion-col text-left class="pickup">
+					Created {{topic.CreationDate_UTC | timeAge }}
+				</ion-col>
+				<ion-col text-right class="danger">
+					Closed {{topic.CloseDatime_UTC | timeAge }}
+				</ion-col>
+			</ion-row>
+		</ion-item>
 		<ion-infinite-scroll (ionInfinite)="paginate($event)" *ngIf="page !== -1">
-	    </ion-infinite-scroll>
+		</ion-infinite-scroll>
 	</ion-grid>
 </ion-content>

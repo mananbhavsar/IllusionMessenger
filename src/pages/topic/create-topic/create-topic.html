@@ -1,5 +1,14 @@
-<ion-header no-border>
-  <header title="Create Topic"></header>
+<ion-header>
+  <ion-toolbar ion-text color="primary">
+    <ion-title>
+      Create Topic
+    </ion-title>
+    <ion-buttons end>
+      <button color="light" ion-button outline (click)="dismiss(null)">
+        Close
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
 </ion-header>
 <ion-content padding>
   <ion-grid>
@@ -12,7 +21,7 @@
         </ion-item>
         <ion-item>
           <ion-label floating>Topic Name</ion-label>
-           <ion-input formControlName="name" type="text" placeholder="Topic Name"></ion-input>
+          <ion-input formControlName="name" type="text" placeholder="Topic Name"></ion-input>
         </ion-item>
         <ion-item>
           <ion-label>Due Date</ion-label>
@@ -26,7 +35,7 @@
             <ion-list-header>
               Selected Participants
             </ion-list-header>
-            <ion-item *ngFor="let userID of selectedParticipantIDs">
+            <ion-item *ngFor="let userID of selectedParticipantIDs" [hidden]="isMe(userID)">
               {{getUserName(userID)}}
               <button ion-button outline item-end color="danger" (click)="removeParticipant(userID)">
                 <ion-icon name="trash"></ion-icon>&nbsp; Remove
@@ -40,6 +49,6 @@
 </ion-content>
 <ion-footer>
   <ion-toolbar>
-    <button (click)="submitForm()" ion-button block [disabled]="!createForm.valid">Save</button>
+    <button (click)="submitForm()" ion-button block [disabled]="!createForm.valid || (createForm.get('private').value && selectedParticipantIDs.length === 0)">Save</button>
   </ion-toolbar>
 </ion-footer>

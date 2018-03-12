@@ -1,3 +1,4 @@
+import { PipesModule } from './../../pipes/pipes.module';
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
 import { GroupPage } from './group';
@@ -11,7 +12,8 @@ import { MomentModule } from 'angular2-moment';
   imports: [
     IonicPageModule.forChild(GroupPage),
     ComponentsModule,
-    MomentModule
+    MomentModule,
+    PipesModule,
   ],
 })
 export class GroupPageModule {}

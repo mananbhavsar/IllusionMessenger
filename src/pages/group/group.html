@@ -1,5 +1,5 @@
 <ion-header>
-  <header title={{title}} [buttons]="[{icon:'ios-add-circle',name:'create-topic'},{icon:'more',name:'options'}]" (buttonClicked)="headerButtonClicked($event)"></header>
+  <header title={{title}} [buttons]="[{icon:'more',name:'options'}]" (buttonClicked)="headerButtonClicked($event)"></header>
 </ion-header>
 <ion-content no-padding>
   <ion-refresher (ionRefresh)="refresh($event)">
@@ -11,26 +11,38 @@
   <empty *ngIf="group === -1"></empty>
   <ng-template #group_template>
     <ion-grid *ngIf="group !== -1">
-      <ion-list *ngIf="group.FlashNews !== -1">
-        <ion-list-header *ngFor="let flashnews of group.FlashNews" text-center>
-            {{flashnews.Flash}}
-        </ion-list-header>
-      </ion-list>
+      <ion-slides *ngIf="group.FlashNews && group.FlashNews.length" autoplay="5000" loop="true" pager="true">
+        <ion-slide *ngFor="let flashnews of group.FlashNews" [hidden]="isHiddenNews(flashnews)">
+          <h1>{{flashnews.Flash}}</h1>
+          <p>
+            <ion-row>
+              <ion-col text-left>
+                <ion-icon name="ios-person"></ion-icon>
+                {{flashnews.CreatedBy}}
+              </ion-col>
+              <ion-col text-right>
+                <ion-icon name="ios-clock"></ion-icon>
+                {{flashnews.EndDate_UTC | timeAge}}
+              </ion-col>
+            </ion-row>
+          </p>
+        </ion-slide>
+      </ion-slides>
       <ion-item-group *ngIf="group.ActiveTopicList">
         <ion-item-divider color="light">
           Active Topics
         </ion-item-divider>
         <p *ngIf="group.ActiveTopicList.length === 0" text-center>No Topics Found</p>
-          <ion-item *ngFor="let topic of group.ActiveTopicList;let i = index;" (click)="openTopic(topic, i, 'ActiveTopicList')">
+        <ion-item *ngFor="let topic of group.ActiveTopicList;let i = index;" (click)="openTopic(topic, i, 'ActiveTopicList')">
           <h2>
             {{topic.Topic}}
           </h2>
           <ion-row>
             <ion-col text-left class="pickup">
-              Created {{topic.CreationDate | amTimeAgo }}
+              Created {{topic.CreationDate_UTC | timeAge }}
             </ion-col>
             <ion-col text-right *ngIf="isExpired(topic.DueDate) !== null" [ngClass]="isExpired(topic.DueDate) ? 'danger' : 'secondary'">
-              Due {{getExpiry(topic.DueDate)}}
+              Due {{getExpiry(topic.DueDate_UTC)}}
             </ion-col>
           </ion-row>
           <ion-badge item-end *ngIf="getBadge(topic.TopicCode)">{{getBadge(topic.TopicCode)}}</ion-badge>
@@ -61,10 +73,10 @@
           </h2>
           <ion-row>
             <ion-col text-left class="pickup">
-              Created {{topic.CreationDate | amTimeAgo }}
+              Created {{topic.CreationDate_UTC | timeAge }}
             </ion-col>
             <ion-col text-right class="danger">
-              Closed {{topic.CloseDatime | amTimeAgo }}
+              Closed {{topic.CloseDatime_UTC | timeAge }}
             </ion-col>
           </ion-row>
           <ion-badge item-end *ngIf="getBadge(topic.TopicCode)">{{getBadge(topic.TopicCode)}}</ion-badge>

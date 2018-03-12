@@ -1,8 +1,9 @@
+import { DateProvider } from './../../providers/date/date';
 import { CreateTopicPage } from './../topic/create-topic/create-topic';
 import { ChatPage } from './../chat/chat';
 import { ConnectionProvider } from './../../providers/connection/connection';
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ModalController } from 'ionic-angular';
 import { GroupOptionsPage } from './../group/group-options/group-options';
 import { CloseTopicPage } from './../topic/close-topic/close-topic';
 import * as _ from 'underscore';
@@ -26,7 +27,10 @@ export class GroupPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     private connection: ConnectionProvider,
-    public angularFireDatabase: AngularFireDatabase){
+    public angularFireDatabase: AngularFireDatabase,
+    private _date: DateProvider,
+    private modalController: ModalController,
+  ) {
     this.title = this.navParams.data.Group;
     this.group_id = this.navParams.data.GroupID;
   }
@@ -44,8 +48,7 @@ export class GroupPage {
       }).then((response: any) => {
         //convert Time to local
         response = this.toLocal(response);
-        this.group = response;     
-        console.log(this.group);   
+        this.group = response;
         this.setForBadge();
         resolve(true);
       }).catch(error => {
@@ -54,7 +57,7 @@ export class GroupPage {
     });
   }
 
-  toLocal(response){
+  toLocal(response) {
     return response;
   }
 
@@ -96,10 +99,10 @@ export class GroupPage {
         return '';
 
       case true:
-        return moment(dueDate).from(moment());
+        return this._date.fromServerFormat(dueDate).from(moment());
 
       case false:
-        return moment(dueDate).from(moment());
+        return this._date.fromServerFormat(dueDate).from(moment());
     }
   }
 
@@ -119,7 +122,15 @@ export class GroupPage {
   }
 
   closeTopic() {
-    this.navCtrl.push(CloseTopicPage, this.group_id);
+    let createTopicModal = this.modalController.create(CreateTopicPage, {
+      group_id: this.group_id,
+    });
+    createTopicModal.onDidDismiss(data => {
+      if (data) {
+        this.navCtrl.pop();
+      }
+    });
+    createTopicModal.present();
   }
 
   headerButtonClicked(event) {
@@ -135,6 +146,14 @@ export class GroupPage {
   }
 
   openGroupOptions(event) {
-    this.navCtrl.push(GroupOptionsPage,this.group_id);
+    this.navCtrl.push(GroupOptionsPage, this.group_id);
+  }
+
+  isHiddenNews(flash) {
+    let start = this._date.fromServerFormat(flash.StartDate_UTC);
+    let end = this._date.fromServerFormat(flash.EndDate_UTC);
+    let now = moment();
+    return false;//!now.isBetween(start, end);
   }
 }
+

@@ -1,8 +1,8 @@
 import { CreateTopicPage } from './../../topic/create-topic/create-topic';
 import { ConnectionProvider } from './../../../providers/connection/connection';
 import { Component, group } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import { AddFlashPage } from '../../add-flash/add-flash';
+import { IonicPage, NavController, NavParams, ModalController } from 'ionic-angular';
+import { AddFlashPage } from '../add-flash/add-flash';
 
 @IonicPage()
 @Component({
@@ -15,13 +15,14 @@ export class GroupOptionsPage {
   userlist: Array<any> = [];
   participants: Array<any> = [];
   group: Array<any> = [];
-  
+
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    private connection: ConnectionProvider) {
+    private connection: ConnectionProvider,
+    private modalController: ModalController
+  ) {
     this.group_id = this.navParams.data;
-    console.log(this.group_id);
   }
 
   ionViewDidEnter() {
@@ -40,14 +41,30 @@ export class GroupOptionsPage {
         reject(error);
       });
     });
-  }s
-
-  createTopic() {
-    this.navCtrl.push(CreateTopicPage,this.group_id);
   }
 
-  addFlashNews(){
-    this.navCtrl.push(AddFlashPage,this.group_id);
+  createTopic() {
+    let createTopicModal = this.modalController.create(CreateTopicPage, {
+      group_id: this.group_id,
+    });
+    createTopicModal.onDidDismiss(data => {
+      if (data) {
+        this.navCtrl.pop();
+      }
+    });
+    createTopicModal.present();
+  }
+
+  addFlashNews() {
+    let flashModal = this.modalController.create(AddFlashPage, {
+      group_id: this.group_id,
+    });
+    flashModal.onDidDismiss(data => {
+      if (data) {
+        this.navCtrl.pop();
+      }
+    });
+    flashModal.present();
   }
 
   getTagColor(id) {

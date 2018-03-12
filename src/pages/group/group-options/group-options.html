@@ -4,15 +4,27 @@
 	</ion-navbar>
 </ion-header>
 <ion-content padding>
-	<ion-row>
-		<button ion-button full color="secondary" (click)="addFlashNews()">Add Flash News</button>
-	</ion-row>
-	<ion-row>
-		<button ion-button full color="primary" (click)="createTopic()">Create Topic</button>
+	<ion-row class="buttons-container">
+		<ion-col>
+			<button ion-button full color="secondary" (click)="addFlashNews()">
+				<div>
+					<ion-icon name="ios-flash"></ion-icon>
+					<label>Add Flash News</label>
+				</div>
+			</button>
+		</ion-col>
+		<ion-col>
+			<button ion-button full color="primary" (click)="createTopic()">
+				<div>
+					<ion-icon name="ios-chatboxes"></ion-icon>
+					<label>Create Topic</label>
+				</div>
+			</button>
+		</ion-col>
 	</ion-row>
 	<ion-card *ngIf="userlist.UserDetail">
 		<ion-list>
-			<ion-list-header>Participants In Group</ion-list-header>
+			<ion-list-header color="light">Participants In Group</ion-list-header>
 			<ion-item *ngFor="let user of userlist.UserDetail">
 				<h2>
 					{{user.User[0].User}}

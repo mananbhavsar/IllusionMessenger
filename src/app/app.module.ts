@@ -40,7 +40,7 @@ import { IonicStorageModule } from '@ionic/storage';
 import { MyApp } from './app.component';
 
 import { AboutPageModule } from '../pages/about/about.module';
-import { AddFlashPageModule } from '../pages/add-flash/add-flash.module';
+import { AddFlashPageModule } from '../pages/group/add-flash/add-flash.module';
 import { AccountPageModule } from '../pages/account/account.module';
 import { CloseTopicPageModule } from '../pages/topic/close-topic/close-topic.module';
 import { ChangePasswordPageModule } from "../pages/account/change-password/change-password.module";
@@ -81,6 +81,7 @@ import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabaseModule, AngularFireDatabase } from 'angularfire2/database';
 import { AngularFireAuthModule } from 'angularfire2/auth';
 import { IonicImageViewerModule } from 'ionic-img-viewer';
+import { DateProvider } from '../providers/date/date';
 
 export const firebaseConfig = {
     apiKey: "AIzaSyAFDZ9UPTMiDTjT4qAG0d9uVeOdhL-2PBw",
@@ -190,6 +191,7 @@ export function createTranslateLoader(http: HttpClient) {
         FileOpsProvider,
         PhotoViewer,
         UserAutoCompleteService,
+        DateProvider,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

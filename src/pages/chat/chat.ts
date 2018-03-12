@@ -15,6 +15,8 @@ import 'rxjs/add/operator/switchMap';
 import { ConnectionProvider } from '../../providers/connection/connection';
 import { NotificationsProvider } from "../../providers/notifications/notifications";
 import { UserProvider } from '../../providers/user/user';
+import { DateProvider } from './../../providers/date/date';
+
 import { FirebaseTransactionProvider } from '../../providers/firebase-transaction/firebase-transaction';
 import { CommonProvider } from "../../providers/common/common";
 import { TranslateService } from "@ngx-translate/core";
@@ -175,6 +177,7 @@ export class ChatPage {
     private translate: TranslateService,
     private _notifications: NotificationsProvider,
     private _fileOps: FileOpsProvider,
+    private _date: DateProvider,
   ) {
     //init
     this.isIOS = this.platform.is('ios');
@@ -570,8 +573,10 @@ export class ChatPage {
           GroupID: this.groupID,
         };
         this.connection.doPost('Chat/GetTopicDetail', params).then((response: any) => {
-          this.data = JSON.parse(response.Data);
-          this.headerButtons = [{ icon:'more' , name: 'more-option'}];
+          this.data = response.Data;
+          this.data.GroupID = this.groupID;
+
+          this.headerButtons = [{ icon: 'more', name: 'more-option' }];
           /*if (this.data.StatusID === 1) {
             this.headerButtons.push({ icon: 'close', name: 'options' });
           }*/
@@ -641,13 +646,13 @@ export class ChatPage {
     let subTitle = '';
 
     let now = moment();
-    let creationDate = moment(this.data.CreationDate, 'MM/DD/YYYY h/mm/ss a');
-    let dueDate = moment(this.data.DueDate, 'MM/DD/YYYY h/mm/ss a');
-    let closedDate = moment(this.data.CloseDatime, 'MM/DD/YYYY h/mm/ss a');
+    let creationDate = this._date.fromServerFormat(this.data.CreationDate_UTC);
+    let dueDate = this._date.fromServerFormat(this.data.DueDate_UTC);
+    let closedDate = this._date.fromServerFormat(this.data.CloseDatime_UTC);
 
     //creation date
     if (creationDate.isValid() && this.data.StatusID !== 0) {
-      subTitle += 'Created: ' + moment(this.data.CreationDate, 'MM/DD/YYYY h/mm/ss a').fromNow();
+      subTitle += 'Created: ' + creationDate.fromNow();
     }
     //due
     if (dueDate.isValid() && this.data.StatusID === 1) {
@@ -1483,13 +1488,18 @@ export class ChatPage {
     chatReadModal.present();
   }
 
-  openChatOptions(){
-    let params ={
-      user:this.data,
-      path:this.dataDirectory,
-      folder:this.topicCode,
+  openChatOptions() {
+    let params = {
+      user: this.data,
+      path: this.dataDirectory,
+      folder: this.topicCode,
+
     }
-    this.navCtrl.push(ChatOptionsPage,params);
+    let chatOptionModal = this.modal.create(ChatOptionsPage, params);
+    chatOptionModal.onDidDismiss(data => {
+
+    });
+    chatOptionModal.present();
   }
 
   openSavedMedia(event) {

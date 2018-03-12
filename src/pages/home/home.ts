@@ -1,3 +1,4 @@
+import { DateProvider } from './../../providers/date/date';
 import { Component, group } from '@angular/core';
 import { IonicPage, NavController, NavParams, Events, Platform } from 'ionic-angular';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -27,7 +28,7 @@ export class HomePage {
     groups: Array<any> | -1 = [];
     badges: any = {};
     firebaseConnected: boolean = false;
-    
+
     constructor(
         public navCtrl: NavController,
         public connection: ConnectionProvider,
@@ -38,6 +39,7 @@ export class HomePage {
         private translate: TranslateService,
         private _oneSignal: OneSignal,
         private platform: Platform,
+        private _date: DateProvider,
     ) {
         this.global = Global;
         //listening to Resume & Pause events
@@ -75,7 +77,7 @@ export class HomePage {
     initData() {
         return new Promise((resolve, reject) => {
             this.getData().then(status => {
-                if(this.firebaseConnected === false){
+                if (this.firebaseConnected === false) {
                     this.connectToFireBase();
                     this.firebaseConnected = true;
                 }
@@ -90,8 +92,8 @@ export class HomePage {
         return new Promise((resolve, reject) => {
             this.connection.doPost('Chat/Home', {
             }).then((groups: Array<any>) => {
-                this.groups = groups;                  
-                 if (groups.length === 0) {
+                this.groups = groups;
+                if (groups.length === 0) {
                     this.groups = -1;
                 }
                 resolve(true);

@@ -1,5 +1,15 @@
 header {
-    .bar-button{
+    .bar-button {
         font-size: 2rem;
+    }
+    ion-title {
+        .toolbar-title {
+            line-height: 1em;
+            div {
+            }
+            small {
+                font-size: 11px;
+            }
+        }
     }
 }

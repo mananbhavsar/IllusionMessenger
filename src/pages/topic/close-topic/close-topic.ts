@@ -1,17 +1,12 @@
 import { ChatPage } from './../../chat/chat';
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
 import { ConnectionProvider } from '../../../providers/connection/connection';
+
 import * as  moment from "moment";
 import { locale } from 'moment';
 import { ModalController } from 'ionic-angular';
 
-/**
- * Generated class for the CloseTopicPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
 
 @IonicPage()
 @Component({
@@ -20,17 +15,24 @@ import { ModalController } from 'ionic-angular';
 })
 export class CloseTopicPage {
   group_id: number = null;
+  group_name: string = 'loading';
+
   topics: Array<any> = [];
   page: number = 0;
   list: Array<any> = [];
   query: string = null;
 
+  showSearch: boolean = false;
+
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     public connection: ConnectionProvider,
-    public modalCtrl: ModalController) {
-    this.group_id = this.navParams.data;
+    public modalCtrl: ModalController,
+    private viewController: ViewController,
+  ) {
+    this.group_id = this.navParams.data.group_id;
+    this.group_name = this.navParams.data.group_name;
   }
 
   ionViewDidLoad() {
@@ -60,7 +62,7 @@ export class CloseTopicPage {
         reject(false);
       } else {
         this.connection.doPost('Chat/GetClosedTopicDetail', {
-          query: this.query,
+          Query: this.query,
           GroupID: this.group_id,
           StatusID: 1,
           DisablePaging: true,
@@ -119,7 +121,6 @@ export class CloseTopicPage {
         paginator.enable(false);
       }
     }).catch(error => {
-      console.log(error);
       paginator.enable(false);
     });
   }
@@ -133,6 +134,14 @@ export class CloseTopicPage {
       topicID: topic.TopicID,
       groupID: this.group_id
     });
+  }
+
+  dismiss(data) {
+    this.viewController.dismiss(data);
+  }
+
+  toggleSearch() {
+    this.showSearch = !this.showSearch;
   }
 
 }

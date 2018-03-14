@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
 import { ChatOptionsPage } from './chat-options';
 import { MomentModule } from 'angular2-moment';
-import { PipesModule } from '../../pipes/pipes.module';
+import { PipesModule } from '../../../pipes/pipes.module';
 
 @NgModule({
   declarations: [
@@ -14,4 +14,4 @@ import { PipesModule } from '../../pipes/pipes.module';
     PipesModule,
   ],
 })
-export class ChatOptionsPageModule {}
+export class ChatOptionsPageModule { }

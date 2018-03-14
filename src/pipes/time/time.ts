@@ -3,15 +3,15 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 import * as moment from 'moment';
 @Pipe({
-  name: 'timeAge',
+  name: 'time',
 })
-export class TimeAgePipe implements PipeTransform {
+export class TimePipe implements PipeTransform {
   constructor(
     private _date: DateProvider,
   ) {
 
   }
   transform(value: string, avoidExtra: boolean = false) {
-    return this._date.fromServerFormat(value).fromNow(avoidExtra);
+    return this._date.get(value);
   }
 }

@@ -18,12 +18,14 @@ export class ManageParticipantsPage {
   tagsIdMap: Array<string> = [];
   userTagsMap: any = {};
 
+  group_name: string = 'loading';
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     public viewCtrl: ViewController,
     private connection: ConnectionProvider,
   ) {
+    this.group_name = this.navParams.data.group_name;
 
     this.participants = this.navParams.data.participants;
     this.participantsCopy = this.navParams.data.participants;
@@ -122,12 +124,15 @@ export class ManageParticipantsPage {
     this.initializeItems();
   }
 
-  dismiss() {
-    this.viewCtrl.dismiss(
-      {
-        selectedParticipants: this.selectedParticipants,
-        selectedParticipantIDs: this.selectedParticipantIDs,
-      });
+  create() {
+    this.dismiss({
+      selectedParticipants: this.selectedParticipants,
+      selectedParticipantIDs: this.selectedParticipantIDs,
+    });
+  }
+
+  dismiss(data) {
+    this.viewCtrl.dismiss(data);
   }
 
   isHidden(user_id) {

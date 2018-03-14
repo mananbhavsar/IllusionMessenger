@@ -14,6 +14,11 @@ page-chat-options {
                             color: color($colors, danger);
                         }
                     }
+                    button {
+                        height: 1.1em;
+                        font-size: 1rem;
+                        padding: 1em;
+                    }
                 }
             }
             ion-item-divider {

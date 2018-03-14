@@ -1,3 +1,4 @@
+import { DateValidator } from './../../../validators/date-validator';
 import { DateProvider } from './../../../providers/date/date';
 import { NotificationsProvider } from './../../../providers/notifications/notifications';
 import { ChatPage } from './../../chat/chat';
@@ -7,12 +8,13 @@ import { Global } from './../../../app/global';
 import { ConnectionProvider } from './../../../providers/connection/connection';
 import { Component, ViewChild } from '@angular/core';
 import { IonicPage, NavController, NavParams, Events, ModalController, ViewController } from 'ionic-angular';
-import { Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import * as _ from 'underscore';
 import { AutoCompleteComponent } from 'ionic2-auto-complete-ng5';
 import * as  moment from "moment";
 import { locale } from 'moment';
 import { ManageParticipantsPage } from "./manage-participants/manage-participants";
+
 
 @IonicPage()
 @Component({
@@ -21,6 +23,8 @@ import { ManageParticipantsPage } from "./manage-participants/manage-participant
 })
 export class CreateTopicPage {
   group_id: number = 0;
+  group_name: string = 'loading';
+
   participants: Array<any> = [];
   selectedParticipantIDs: Array<number> = [];
   selectedParticipants: any = {}; //id:index 
@@ -28,6 +32,7 @@ export class CreateTopicPage {
 
 
   selectedParticipant: Array<string> = [];
+  responsibles: Array<any> = [];
   global: any = {};
 
   createForm: FormGroup;
@@ -46,6 +51,7 @@ export class CreateTopicPage {
     private viewController: ViewController,
   ) {
     this.group_id = this.navParams.data.group_id;
+    this.group_name = this.navParams.data.group_name;
 
     this.global = Global;
     this.createForm = this.formBuilder.group({
@@ -53,11 +59,11 @@ export class CreateTopicPage {
       private: [true],
       name: ['', [Validators.required]],
       participants: [''],
-      due_date: [moment().format()]
+      due_date: new FormControl(moment().local().format())
     });
   }
 
-  ionViewDidEnter() {
+  ionViewDidLoad() {
     this.initData();
   }
 
@@ -115,25 +121,31 @@ export class CreateTopicPage {
   }
 
   getCurrentTime() {
-    return moment().format();
+    let valid = [{
+      'after': moment().add(-1, 'days').format('YYYY-MM-DD HH:MM')
+    }];
+    return valid;
   }
 
   submitForm() {
     if (this.createForm.valid) {
       //adding myself if private
-      let userList = '';
+      let userList = [];
       if (this.createForm.get('private').value) {
-        userList = this.createForm.get('participants').value;
+        userList = this.createForm.get('participants').value.split(',');
         //adding logged in user
-        userList += ',' + this.connection.user.LoginUserID;
+        if (userList.indexOf(this.connection.user.LoginUserID) === -1) {
+          userList.push(this.connection.user.LoginUserID);
+        }
       }
       this.connection.doPost('Chat/CreateGroupTopic', {
         Private: this.createForm.get('private').value,
         Topic: this.createForm.get('name').value,
         GroupID: this.group_id,
         DueDate: this._date.toUTCISOString(this.createForm.get('due_date').value),
-        UserList: userList,
-        StatusID: 1
+        UserList: _.uniq(userList).join(','),
+        StatusID: 1,
+        Responsibles: _.uniq(this.responsibles).join(','),
       }, 'creating topic').then((response: any) => {
         let data = response.Data;
         let params = {
@@ -142,7 +154,7 @@ export class CreateTopicPage {
         };
 
         if (data.Message) {
-          this.events.publish('toast:created', data.Message);
+          this.events.publish('toast:create', data.Message);
         }
         //update in Firebase/Badge
         this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { })
@@ -161,12 +173,16 @@ export class CreateTopicPage {
       participants: this.participants,
       selectedParticipants: this.selectedParticipants,
       selectedParticipantIDs: this.selectedParticipantIDs,
+      group_name: this.group_name
     });
 
     modal.onDidDismiss(data => {
-      this.selectedParticipants = data.selectedParticipants;
-      this.selectedParticipantIDs = data.selectedParticipantIDs;
-      this.setSelectedParticipants();
+      if (data) {
+        this.selectedParticipants = data.selectedParticipants;
+        this.selectedParticipantIDs = data.selectedParticipantIDs;
+        this.responsibles = [];
+        this.setSelectedParticipants();
+      }
     });
     modal.present();
   }
@@ -177,5 +193,18 @@ export class CreateTopicPage {
 
   dismiss(data) {
     this.viewController.dismiss(data);
+  }
+
+  makeResponsible(user_id) {
+    if (this.responsibles.indexOf(user_id) === -1) {
+      this.responsibles.push(user_id);
+    }
+  }
+
+  removeResponsible(user_id) {
+    let index = this.responsibles.indexOf(user_id);
+    if (index > -1) {
+      this.responsibles.splice(index, 1);
+    }
   }
 }

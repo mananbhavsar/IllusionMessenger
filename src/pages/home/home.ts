@@ -12,9 +12,10 @@ import { Storage } from '@ionic/storage';
 
 import { CreateTopicPage } from './../topic/create-topic/create-topic';
 import * as _ from 'underscore';
-import { AngularFireDatabase } from 'angularfire2/database';
 import { Transition } from 'ionic-angular/transitions/transition';
 import { GroupPage } from '../group/group';
+
+import firebase from 'firebase';
 import * as  moment from "moment";
 import { locale } from 'moment';
 
@@ -34,7 +35,6 @@ export class HomePage {
         public connection: ConnectionProvider,
         public user: UserProvider,
         public events: Events,
-        public angularFireDatabase: AngularFireDatabase,
         private _storage: Storage,
         private translate: TranslateService,
         private _oneSignal: OneSignal,
@@ -107,6 +107,7 @@ export class HomePage {
     refresh(refresher) {
         this.getData().then(status => {
             refresher.complete();
+            this.connectToFireBase();
         }).catch(error => {
             refresher.complete();
         });
@@ -115,13 +116,21 @@ export class HomePage {
     connectToFireBase() {
         //user setting
         this.user.getUser().then(user => {
-            this.angularFireDatabase.object('Badge/' + user.id + '/Groups').snapshotChanges().subscribe(snapshot => {
-                snapshot = snapshot.payload.val();
-                if (!_.isEmpty(snapshot)) {
-                    this.badges = snapshot;
-                } else {
-                }
-            });
+            if (this.groups) {
+                this.groups.forEach((group, index) => {
+                    let ref = firebase.database().ref('Badge/' + user.id + '/Groups/' + group.GroupCode + '/Total');
+                    ref.off('value');
+                    ref.on('value', (snapshot) => {
+                        let total = snapshot.val();
+                        console.log(total);
+                        if (total) {
+                            this.badges[group.GroupCode] = total;
+                        } else {
+                            this.badges[group.GroupCode] = 0;
+                        }
+                    });
+                });
+            }
         });
     }
 
@@ -140,7 +149,7 @@ export class HomePage {
 
     getBadge(groupCode) {
         if (groupCode in this.badges) {
-            return this.badges[groupCode].Total;
+            return this.badges[groupCode];
         }
         return false;
     }

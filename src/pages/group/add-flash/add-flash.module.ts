@@ -1,3 +1,4 @@
+import { DatetimePickerModule } from 'ion-datetime-picker';
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
 import { AddFlashPage } from './add-flash';
@@ -9,7 +10,8 @@ import { MomentModule } from 'angular2-moment';
   ],
   imports: [
     IonicPageModule.forChild(AddFlashPage),
-    MomentModule
+    MomentModule,
+    DatetimePickerModule,
   ],
 })
 export class AddFlashPageModule {}

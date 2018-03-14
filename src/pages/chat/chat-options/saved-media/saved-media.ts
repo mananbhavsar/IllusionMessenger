@@ -9,7 +9,7 @@ import { StreamingMedia, StreamingVideoOptions } from '@ionic-native/streaming-m
 import * as _ from 'underscore';
 import * as mime from 'mime-types';
 import * as moment from 'moment';
-import { Global } from '../../../app/global';
+import { Global } from '../../../../app/global';
 import { UUID } from 'angular2-uuid';
 import { TranslateService } from "@ngx-translate/core";
 
@@ -25,6 +25,8 @@ export class SavedMediaPage {
   filesInitiated: boolean = false;
   path: string = '';
   folder: string = '';
+
+  topic_group_name: string = 'loading';
 
   selectedTab: string = null;
 
@@ -52,7 +54,9 @@ export class SavedMediaPage {
   ) {
     this.path = this.navParams.data.path;
     this.folder = this.navParams.data.folder;
-    console.log(this.path,this.folder);
+    this.topic_group_name = this.navParams.data.topic_group_name;
+
+    console.log(this.path, this.folder);
 
     this.selectedTab = 'image';
   }

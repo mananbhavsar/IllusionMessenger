@@ -2,20 +2,20 @@ import { NgModule } from '@angular/core';
 import { KeysPipe } from './../pipes/keys/keys';
 import { FilterPipe } from './filter/filter';
 import { ObjectFilterPipe } from './object-filter/object-filter';
-import { TimeAgePipe } from './time-age/time-age';
+import { TimePipe } from './time/time';
 @NgModule({
 	declarations: [
 		KeysPipe,
 		FilterPipe,
 		ObjectFilterPipe,
-		TimeAgePipe
+		TimePipe
 	],
 	imports: [],
 	exports: [
 		KeysPipe,
 		FilterPipe,
 		ObjectFilterPipe,
-		TimeAgePipe
+		TimePipe
 	]
 })
 export class PipesModule { }

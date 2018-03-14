@@ -16,7 +16,7 @@ import { HomePage } from '../../home/home';
 export class AddFlashPage {
   addFlashForm: FormGroup;
   group_id: number = 0;
-  group: Array<any> = [];
+  group_name: string = 'loading';
 
   constructor(
     public navCtrl: NavController,
@@ -29,7 +29,8 @@ export class AddFlashPage {
     private events: Events
   ) {
     this.group_id = this.navParams.data.group_id;
-    console.log(this.group_id);
+    this.group_name = this.navParams.data.group_name;
+
     this.addFlashForm = this.formBuilder.group({
       flash_message: ['', [Validators.required, Validators.maxLength(160)]],
       start_date: [moment().format()],
@@ -38,7 +39,10 @@ export class AddFlashPage {
   }
 
   getCurrentTime() {
-    return moment().format();
+    let valid = [{
+      'after': moment().add(-1, 'days').format('YYYY-MM-DD HH:MM')
+    }];
+    return valid;
   }
 
   addFlash() {

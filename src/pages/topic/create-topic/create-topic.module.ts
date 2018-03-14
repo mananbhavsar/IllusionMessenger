@@ -5,6 +5,8 @@ import { CreateTopicPage } from './create-topic';
 import { ComponentsModule } from '../../../components/components.module';
 import { MomentModule } from 'angular2-moment';
 
+import { DatetimePickerModule } from 'ion-datetime-picker';
+
 @NgModule({
   declarations: [
     CreateTopicPage,
@@ -14,6 +16,7 @@ import { MomentModule } from 'angular2-moment';
     ComponentsModule,
     MomentModule,
     PipesModule,
+    DatetimePickerModule,
   ],
 })
 export class CreateTopicPageModule { }

@@ -1,5 +1,8 @@
 <ion-header no-border (touchstart)="closeKeyboard($event)">
-  <header [title]="title" [buttons]="headerButtons" (buttonClicked)="openChatOptions()"></header>
+  <header [title]="title" [subTitle]="getTyping()" [buttons]="headerButtons" (buttonClicked)="openChatOptions()"></header>
+  <ion-toolbar class="group-header">
+    <ion-title>{{group_name}}</ion-title>
+  </ion-toolbar>
   <ion-toolbar class="sub-header" *ngIf="data && data.StatusID !== 0">
     <ion-title>{{getSubTitle()}}</ion-title>
   </ion-toolbar>
@@ -16,11 +19,11 @@
     <chat-bubble [id]="'message-'+message.key" *ngFor="let message of messages | orderBy:'CreateAt'" class="message-wrapper"
       [message]="message" [userID]="userID" [topicCode]="topicCode" [users]="chatUsers" [myLanguage]="myLanguage" (press)="openReading($event, message, false)"></chat-bubble>
   </div>
-  <div class="typing-container">
+  <!-- <div class="typing-container">
     <div class="typing" *ngFor="let typingUserId of userTyping | keys" [hidden]="typingUserId == userID || !isWithinRange(userTyping[typingUserId])">
       {{'ChatScreen._Typing_' | translate:{name:getName(typingUserId)} }}
     </div>
-  </div>
+  </div> -->
 </ion-content>
 <ion-footer [keyboardAttach]="content" class="bar-stable footer-chat item-input-inset" *ngIf="data && data.StatusID !== 2">
   <ng-container *ngIf="hasInternet && messagesLoaded === false">

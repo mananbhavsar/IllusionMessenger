@@ -1,24 +1,27 @@
 <ion-header no-border>
   <ion-toolbar ion-text color="primary">
     <ion-title>
-        {{'ChatScreen._SavedMedia_' | translate}}
+      {{'ChatScreen._SavedMedia_' | translate}}
     </ion-title>
     <ion-buttons end>
       <button color="light" ion-button outline (click)="dismiss(null)">
-          {{'ChatScreen._Close_' | translate}}
+        {{'ChatScreen._Close_' | translate}}
       </button>
     </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar class="group-header">
+    <ion-title>{{topic_group_name}}</ion-title>
   </ion-toolbar>
   <ion-toolbar>
     <ion-segment padding mode="ios" [(ngModel)]="selectedTab" color="primary" (ionChange)="segmentChanged($event)">
       <ion-segment-button value="image">
-          {{'ChatScreen._Images_' | translate}}
+        {{'ChatScreen._Images_' | translate}}
       </ion-segment-button>
       <ion-segment-button value="video">
-          {{'ChatScreen._Videos_' | translate}}
+        {{'ChatScreen._Videos_' | translate}}
       </ion-segment-button>
       <ion-segment-button value="audio">
-          {{'ChatScreen._Audios_' | translate}}
+        {{'ChatScreen._Audios_' | translate}}
       </ion-segment-button>
     </ion-segment>
   </ion-toolbar>
@@ -26,9 +29,8 @@
 <ion-content>
   <center-spinner [hidden]="filesInitiated"></center-spinner>
   <div class="medias" padding>
-    <div class="media" *ngFor="let file of files;let i = index" [hidden]="isHidden(file)" (click)="openFile(file, i)"
-      (press)="takeAction(file, i)">
-      <img [src]="file.thumbnail" [id]="'message-file-' + file.uuid"/>
+    <div class="media" *ngFor="let file of files;let i = index" [hidden]="isHidden(file)" (click)="openFile(file, i)" (press)="takeAction(file, i)">
+      <img [src]="file.thumbnail" [id]="'message-file-' + file.uuid" />
     </div>
   </div>
 </ion-content>

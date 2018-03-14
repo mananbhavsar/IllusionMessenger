@@ -9,18 +9,29 @@
 			</button>
 		</ion-buttons>
 	</ion-toolbar>
+	<ion-toolbar class="group-header">
+		<ion-title>{{group_name}}</ion-title>
+	</ion-toolbar>
 </ion-header>
 <ion-content padding>
 	<form [formGroup]="addFlashForm" (ngSubmit)="addFlash()">
-		<ion-textarea placeholder="Enter Flash/News" type="text" formControlName="flash_message" maxLength="160"></ion-textarea>
-		<div class="danger" *ngIf="addFlashForm.controls.flash_message.errors && (addFlashForm.controls.flash_message.dirty || addFlashForm.controls.flash_message.touched)">
-			<span *ngIf="addFlashForm.controls.flash_message.errors.required">Enter Message</span>
-			<span *ngIf="addFlashForm.controls.flash_message.errors.maxlength">Max 160 Characters</span>
-		</div>
-		<ion-item>
-			<ion-label>End Date</ion-label>
-			<ion-datetime [min]="getCurrentTime()" [max]="2050" mode="ios" displayFormat="DD/MMM/YYYY, HH:mm" formControlName="end_date"></ion-datetime>
-		</ion-item>
-		<button ion-button full [disabled]="!addFlashForm.valid">Add Flash</button>
+		<ion-list>
+			<ion-item>
+				<ion-label stacked>Enter Flash/News</ion-label>
+				<ion-textarea placeholder="Enter here" type="text" formControlName="flash_message" maxLength="160"></ion-textarea>
+			</ion-item>
+			<div text-right class="italic-small-grey">
+				({{addFlashForm.get('flash_message').value.length}}/160)
+			</div>
+			<div class="error-message-block" *ngIf="addFlashForm.controls.flash_message.errors && (addFlashForm.controls.flash_message.dirty || addFlashForm.controls.flash_message.touched)">
+				<span *ngIf="addFlashForm.controls.flash_message.errors.required">Enter Message</span>
+				<span *ngIf="addFlashForm.controls.flash_message.errors.maxlength">Max 160 Characters</span>
+			</div>
+			<ion-item>
+				<ion-label>End Date</ion-label>
+				<ion-datetime picker mondayFirst="true" amPm="true" [onlyValid]="getCurrentTime()" displayFormat="DD MMM YYYY, hh:mm A" formControlName="end_date"></ion-datetime>
+			</ion-item>
+			<button ion-button full [disabled]="!addFlashForm.valid">Add Flash</button>
+		</ion-list>
 	</form>
 </ion-content>

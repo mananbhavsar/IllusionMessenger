@@ -3,8 +3,8 @@
     src: url('../assets/fonts/Open Sans/OpenSans.ttf') format('truetype');
     font-weight: 300;
 }
-@import "../../node_modules/ionic2-auto-complete-ng5/auto-complete";
 
+@import "../../node_modules/ionic2-auto-complete-ng5/auto-complete";
 /*
 Platform Wide styles
 */
@@ -151,10 +151,31 @@ ion-app.md {
     color: white;
     text-align: center;
 }
-.sub-heading{
+
+.sub-heading {
     padding: 3px;
     text-transform: uppercase;
     background: rgb(144, 144, 144);
     color: white;
     text-align: center;
+}
+
+.magin-bottom-5 {
+    margin-bottom: 5px;
+}
+
+.group-header {
+    padding: 3px;
+    min-height: 25px;
+    .toolbar-background {
+        background: #646464;
+    }
+    ion-title {
+        div {
+            text-transform: uppercase;
+            text-align: center;
+            color: white;
+            font-size: 12px;
+        }
+    }
 }

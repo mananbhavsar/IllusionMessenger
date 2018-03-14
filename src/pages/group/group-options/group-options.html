@@ -1,7 +1,15 @@
 <ion-header no-border>
 	<ion-navbar color="primary">
-		<ion-title>Options</ion-title>
+		<ion-title>{{title}}</ion-title>
+		<ion-buttons end>
+			<button color="light" ion-button outline (click)="dismiss(null)">
+				Close
+			</button>
+		</ion-buttons>
 	</ion-navbar>
+	<ion-toolbar class="group-header">
+		<ion-title>{{group_name}}</ion-title>
+	</ion-toolbar>
 </ion-header>
 <ion-content padding>
 	<ion-row class="buttons-container">

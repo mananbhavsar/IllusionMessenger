@@ -1,12 +1,20 @@
 <ion-header>
 	<ion-navbar color="primary">
-		<ion-title>Close Topics</ion-title>
+		<ion-title>Archived Topics</ion-title>
+		<ion-buttons end>
+			<button color="light" ion-button icon-only (click)="toggleSearch()">
+				<ion-icon name="search"></ion-icon>
+			</button>
+			<button color="light" ion-button outline (click)="dismiss(null)">Close</button>
+		</ion-buttons>
 	</ion-navbar>
-	<ion-toolbar ion-text color="primary">
+	<ion-toolbar ion-text color="primary" *ngIf="showSearch">
 		<ion-searchbar placeholder="Enter Name" (ionInput)="getData($event)" (ionCancel)="onCancel($event)" (ionClear)="onClear($event)"></ion-searchbar>
 	</ion-toolbar>
+	<ion-toolbar class="group-header">
+		<ion-title>{{group_name}}</ion-title>
+	</ion-toolbar>
 </ion-header>
-
 
 <ion-content padding>
 	<ion-refresher (ionRefresh)="refresh($event)">
@@ -21,10 +29,10 @@
 			</h2>
 			<ion-row>
 				<ion-col text-left class="pickup">
-					Created {{topic.CreationDate_UTC | timeAge }}
+					Created: {{topic.CreationDate_UTC | time }}
 				</ion-col>
 				<ion-col text-right class="danger">
-					Closed {{topic.CloseDatime_UTC | timeAge }}
+					Closed: {{topic.CloseDatime_UTC | time }}
 				</ion-col>
 			</ion-row>
 		</ion-item>

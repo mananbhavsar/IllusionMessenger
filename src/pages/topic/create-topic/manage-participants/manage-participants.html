@@ -1,11 +1,14 @@
 <ion-header>
 	<ion-navbar color="danger">
-		<!-- <ion-title>Manage Participants</ion-title> -->
 		<ion-searchbar placeholder="Search" (ionInput)="getData($event)" (ionCancel)="onCancel($event)" (ionClear)="onClear($event)"></ion-searchbar>
 		<ion-buttons end>
-			<button color="light" ion-button outline (click)="dismiss(null)">Create</button>
+			<button color="light" ion-button outline *ngIf="selectedParticipantIDs.length === 0" (click)="dismiss(null)">Close</button>
+			<button color="light" ion-button outline *ngIf="selectedParticipantIDs.length" (click)="create()">Create</button>
 		</ion-buttons>
 	</ion-navbar>
+	<ion-toolbar class="group-header">
+		<ion-title>{{group_name}}</ion-title>
+	</ion-toolbar>
 </ion-header>
 
 <ion-content>

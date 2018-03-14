@@ -15,8 +15,8 @@ import { DatetimePickerModule } from 'ion-datetime-picker';
     IonicPageModule.forChild(CreateTopicPage),
     ComponentsModule,
     MomentModule,
-    PipesModule,
     DatetimePickerModule,
+    PipesModule,
   ],
 })
 export class CreateTopicPageModule { }

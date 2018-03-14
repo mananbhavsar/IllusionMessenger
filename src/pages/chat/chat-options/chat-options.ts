@@ -1,3 +1,4 @@
+import { DateProvider } from './../../../providers/date/date';
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, ModalController, ActionSheetController, Events, ViewController } from 'ionic-angular';
 import { SavedMediaPage } from "./saved-media/saved-media";
@@ -6,6 +7,8 @@ import { FirebaseTransactionProvider } from '../../../providers/firebase-transac
 import { NotificationsProvider } from "../../../providers/notifications/notifications";
 import { Storage } from '@ionic/storage';
 import { UserProvider } from '../../../providers/user/user';
+
+import * as moment from 'moment';
 
 @IonicPage()
 @Component({
@@ -40,6 +43,7 @@ export class ChatOptionsPage {
     private _notifications: NotificationsProvider,
     public storage: Storage,
     private viewController: ViewController,
+    private _date: DateProvider,
   ) {
     console.log(this.navParams.data);
     this.participants = this.navParams.data.user;
@@ -106,6 +110,7 @@ export class ChatOptionsPage {
 
               if (this.data.StatusID = 2) {
                 this.closeButton = true;
+                this.participants.CloseDatime_UTC = this._date.toUTCISOString(new Date());
               }
               if (response.Data.Message) {
                 this.events.publish('toast:create', response.Data.Message);
@@ -244,5 +249,15 @@ export class ChatOptionsPage {
     }).catch(error => {
 
     });
+  }
+
+  isExpired(due_date, close_date) {
+    if(moment(close_date).isValid()){
+      close_date = this._date.toUTCISOString(new Date());
+    }
+    if (moment(due_date).isValid() && moment(close_date).isValid() && Math.abs(moment().diff(moment(due_date), 'years')) < 20) {
+      return (this._date.fromServerFormat(close_date).toDate().getTime() - this._date.fromServerFormat(due_date).toDate().getTime()) > 0;
+    }
+    return null;
   }
 }

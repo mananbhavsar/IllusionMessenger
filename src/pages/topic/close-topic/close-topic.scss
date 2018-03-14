@@ -1,5 +1,11 @@
 page-close-topic {
     ion-content {
+        //extra top when search shown
+        &.extraTop {
+            .scroll-content {
+                margin-top: 136px !important;
+            }
+        }
         ion-grid {
             ion-item {
                 ion-label {

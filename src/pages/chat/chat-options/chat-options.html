@@ -40,7 +40,7 @@
 		<p color="pickup">
 			Created: {{participants.CreationDate_UTC | time}}
 		</p>
-		<p color="secondary">
+		<p [ngClass]="isExpired(participants.DueDate_UTC, participants.CloseDatime_UTC) ? 'danger' : 'secondary'">
 			Due: {{participants.DueDate_UTC | time}}
 		</p>
 		<p *ngIf="participants.StatusID === 2" color="danger">

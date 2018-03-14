@@ -16,8 +16,8 @@
 	</ion-toolbar>
 </ion-header>
 
-<ion-content padding>
-	<ion-refresher (ionRefresh)="refresh($event)">
+<ion-content padding [ngClass]="{extraTop: showSearch}">
+	<ion-refresher (ionRefresh)="refresh($event)" *ngIf="showSearch === false">
 		<ion-refresher-content pullingIcon="arrow-round-down" pullingText="Pull to refresh" refreshingSpinner="crescent" refreshingText="Refreshing...">
 		</ion-refresher-content>
 	</ion-refresher>

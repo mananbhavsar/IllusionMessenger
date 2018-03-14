@@ -1583,7 +1583,7 @@ export class ChatPage {
   getTyping() {
     let typingUsers: Array<string> = [];
     for (let typingUserId in this.userTyping) {
-      if (typingUserId !== this.userID && this.isWithinRange(this.userTyping[typingUserId])) {
+      if (typingUserId && typingUserId !== (this.userID + '') && this.isWithinRange(this.userTyping[typingUserId])) {
         typingUsers.push(this.getName(typingUserId));
       }
     }

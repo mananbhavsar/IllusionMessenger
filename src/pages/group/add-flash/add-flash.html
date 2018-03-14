@@ -29,7 +29,8 @@
 			</div>
 			<ion-item>
 				<ion-label>End Date</ion-label>
-				<ion-datetime picker mondayFirst="true" amPm="true" [onlyValid]="getCurrentTime()" displayFormat="DD MMM YYYY, hh:mm A" formControlName="end_date"></ion-datetime>
+				<!-- [onlyValid]="getCurrentTime()" -->
+				<ion-datetime picker mondayFirst="true" amPm="true"  displayFormat="DD MMM YYYY, hh:mm A" formControlName="end_date"></ion-datetime>
 			</ion-item>
 			<button ion-button full [disabled]="!addFlashForm.valid">Add Flash</button>
 		</ion-list>

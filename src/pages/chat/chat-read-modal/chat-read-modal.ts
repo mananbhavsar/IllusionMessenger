@@ -48,9 +48,12 @@ export class ChatReadModalPage {
   makeList() {
     this.reads = [];
     if (this.message.Read) {
-      for (let userId in this.message.Read) {
+      let userId: any;
+      for (userId in this.message.Read) {
+        if (typeof userId === 'string') {
+          userId = parseInt(userId);
+        }
         //not adding for self
-        console.log(this.chatUsers);
         if (userId !== this.message.UserID && userId !== this.userID) {//sent by or me
           //escaping if no name present
           if (userId in this.chatUsers) {
@@ -101,6 +104,9 @@ export class ChatReadModalPage {
   }
 
   inRead(userId) {
+    if (typeof userId === 'string') {
+      userId = parseInt(userId);
+    }
     //checking if its logged in user
     if (userId === this.message.UserID) {
       return true;

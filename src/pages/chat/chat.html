@@ -17,7 +17,8 @@
       <ion-infinite-scroll-content></ion-infinite-scroll-content>
     </ion-infinite-scroll>
     <chat-bubble [id]="'message-'+message.key" *ngFor="let message of messages | orderBy:'CreateAt'" class="message-wrapper"
-      [message]="message" [userID]="userID" [topicCode]="topicCode" [users]="chatUsers" [myLanguage]="myLanguage" (press)="openReading($event, message, false)"></chat-bubble>
+      [message]="message" [userID]="userID" [topicID]="topicID" [topicCode]="topicCode" [groupID]="groupID" [groupCode]="groupCode"
+      [users]="groupCode" [myLanguage]="myLanguage" (press)="openReading($event, message, false)"></chat-bubble>
   </div>
   <!-- <div class="typing-container">
     <div class="typing" *ngFor="let typingUserId of userTyping | keys" [hidden]="typingUserId == userID || !isWithinRange(userTyping[typingUserId])">

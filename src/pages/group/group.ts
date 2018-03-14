@@ -75,10 +75,8 @@ export class GroupPage {
   }
 
   setForBadge() {
-    console.log('Badge/' + this.connection.user.id + '/Groups/' + this.group['GroupDetail'][0].GroupCode + '/Topics');
     this.angularFireDatabase.object('Badge/' + this.connection.user.id + '/Groups/' + this.group['GroupDetail'][0].GroupCode + '/Topics').snapshotChanges().subscribe(snapshot => {
       snapshot = snapshot.payload.val();
-      console.log(snapshot);
       if (!_.isEmpty(snapshot)) {
         this.badges = snapshot;
       }
@@ -103,7 +101,7 @@ export class GroupPage {
 
   isExpired(date) {
     if (moment(date).isValid() && Math.abs(moment().diff(moment(date), 'years')) < 20) {
-      return (new Date().getTime() - moment(date).toDate().getTime()) > 0;
+      return (new Date().getTime() - this._date.fromServerFormat(date).toDate().getTime()) > 0;
     }
     return null;
   }

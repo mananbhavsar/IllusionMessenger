@@ -117,12 +117,12 @@ export class HomePage {
         //user setting
         this.user.getUser().then(user => {
             if (this.groups) {
-                this.groups.forEach((group, index) => {
+                let groupsTemp: any = this.groups;
+                groupsTemp.forEach((group, index) => {
                     let ref = firebase.database().ref('Badge/' + user.id + '/Groups/' + group.GroupCode + '/Total');
                     ref.off('value');
                     ref.on('value', (snapshot) => {
                         let total = snapshot.val();
-                        console.log(total);
                         if (total) {
                             this.badges[group.GroupCode] = total;
                         } else {
@@ -130,6 +130,7 @@ export class HomePage {
                         }
                     });
                 });
+
             }
         });
     }

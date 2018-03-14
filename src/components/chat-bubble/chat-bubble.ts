@@ -87,7 +87,7 @@ export class ChatBubbleComponent {
   ngOnInit() {
     this.doTranslate();
     this.pathIdentifier = this.groupCode + '/' + this.topicCode;
-
+    
     if (this.pathIdentifier) {
       this.basePath = 'Communications/' + this.pathIdentifier + '/';
       this.messagePath = this.basePath + 'Chat/' + this.message.key;

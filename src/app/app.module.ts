@@ -103,6 +103,7 @@ export function createTranslateLoader(http: HttpClient) {
         MyApp,
     ],
     imports: [
+        DatetimePickerModule,
         BrowserModule,
         IonicModule.forRoot(MyApp, {
             mode: 'md',
@@ -150,7 +151,6 @@ export function createTranslateLoader(http: HttpClient) {
         MomentModule,
         ElasticModule,
         OrderModule,
-        DatetimePickerModule,
     ],
     bootstrap: [IonicApp],
     entryComponents: [

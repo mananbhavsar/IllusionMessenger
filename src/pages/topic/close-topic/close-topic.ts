@@ -44,16 +44,10 @@ export class CloseTopicPage {
     this.initializeItems();
     let val = event.target.value;
 
-    if (val && val.trim() != '') {
-      this.query = val;
-      this.page = 0;
-      this.topics = [];
-      this.getDetails().catch(error => {
-
-      });
-    } else {
-      this.query = null;
-    }
+    this.query = val.trim();
+    this.getDetails().catch(error => {
+      
+    });
   }
 
   getDetails() {
@@ -61,14 +55,17 @@ export class CloseTopicPage {
       if (this.page === -1) {
         reject(false);
       } else {
-        this.connection.doPost('Chat/GetClosedTopicDetail', {
-          Query: this.query,
+        let params = {
           GroupID: this.group_id,
           StatusID: 1,
           DisablePaging: true,
           PageNumber: this.page,
           RowsPerPage: 20
-        }).then((response: any) => {
+        };
+        if (this.query) {
+          params['Query'] = this.query;
+        }
+        this.connection.doPost('Chat/GetClosedTopicDetail', params, false).then((response: any) => {
           let data = response.ClosedTopicList;
 
           if (data.length > 0) {
@@ -92,15 +89,18 @@ export class CloseTopicPage {
   initializeItems() {
     this.page = 0;
     this.topics = [];
-
   }
 
   onCancel() {
     this.initializeItems();
+    console.log('cancel');
   }
 
   onClear() {
     this.initializeItems();
+    console.log('clear');
+    this.query = '';
+    this.getDetails();
   }
 
   refresh(refresher) {

@@ -57,7 +57,7 @@
             <ion-col text-left class="pickup">
               Created: {{topic.CreationDate_UTC | time }}
             </ion-col>
-            <ion-col text-right *ngIf="isExpired(topic.DueDate) !== null" [ngClass]="isExpired(topic.DueDate) ? 'danger' : 'secondary'">
+            <ion-col text-right *ngIf="isExpired(topic.DueDate_UTC) !== null" [ngClass]="isExpired(topic.DueDate_UTC) ? 'danger' : 'secondary'">
               Due: {{topic.DueDate_UTC | time }}
             </ion-col>
           </ion-row>

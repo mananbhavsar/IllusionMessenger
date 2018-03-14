@@ -1,3 +1,4 @@
+import { DatetimePickerModule } from 'ion-datetime-picker';
 import { MomentModule } from 'angular2-moment';
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
@@ -28,6 +29,7 @@ import { TranslateModule } from "@ngx-translate/core";
     ],
     imports: [
         MomentModule,
+        DatetimePickerModule,
         IonicImageViewerModule,
         IonicPageModule.forChild(EmptyComponent),
         IonicPageModule.forChild(ReachUsComponent),

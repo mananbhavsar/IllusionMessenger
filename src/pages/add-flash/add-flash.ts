@@ -42,9 +42,9 @@ export class AddFlashPage {
 
   addFlash(){
     let startDate=this.addFlashForm.get('start_date').value;
-      startDate=moment(startDate).format('DD/MM/YYYY, HH:mm:ss A');
+      startDate=moment(startDate).format('M/D/YYYY HH:mm:ss A');
     let endDate=this.addFlashForm.get('end_date').value;
-      endDate=moment(endDate).format('DD/MM/YYYY, HH:mm:ss A');
+      endDate=moment(endDate).format('M/D/YYYY HH:mm:ss A');
   	
     return new Promise((resolve, reject) => {
       this.connection.doPost('Chat/CreateFlashNews', {

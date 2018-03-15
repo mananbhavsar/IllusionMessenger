@@ -11,11 +11,11 @@
   <empty *ngIf="group === -1"></empty>
   <ng-template #group_template>
     <ion-grid *ngIf="group !== -1">
-      <ion-list *ngIf="group.FlashNews !== -1">
-        <ion-list-header *ngFor="let flashnews of group.FlashNews" text-center>
-            {{flashnews.Flash}}
-        </ion-list-header>
-      </ion-list>
+            <ion-slides *ngIf="group.FlashNews !== -1" autoplay="3000" loop="true">
+              <ion-slide *ngFor="let flashnews of group.FlashNews" text-center>
+                    <h4>{{flashnews.Flash}}</h4>
+              </ion-slide>
+          </ion-slides>
       <ion-item-group *ngIf="group.ActiveTopicList">
         <ion-item-divider color="light">
           Active Topics

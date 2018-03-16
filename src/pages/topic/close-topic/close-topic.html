@@ -1,34 +1,42 @@
 <ion-header>
 	<ion-navbar color="primary">
-		<ion-title>Close Topics</ion-title>
+		<ion-title>Archived Topics</ion-title>
+		<ion-buttons end>
+			<button color="light" ion-button icon-only (click)="toggleSearch()">
+				<ion-icon name="search"></ion-icon>
+			</button>
+			<button color="light" ion-button outline (click)="dismiss(null)">Close</button>
+		</ion-buttons>
 	</ion-navbar>
-	 <ion-toolbar ion-text color="primary">
+	<ion-toolbar ion-text color="primary" *ngIf="showSearch">
 		<ion-searchbar placeholder="Enter Name" (ionInput)="getData($event)" (ionCancel)="onCancel($event)" (ionClear)="onClear($event)"></ion-searchbar>
+	</ion-toolbar>
+	<ion-toolbar class="group-header">
+		<ion-title>{{group_name}}</ion-title>
 	</ion-toolbar>
 </ion-header>
 
-
-<ion-content padding>
-	<ion-refresher (ionRefresh)="refresh($event)">
+<ion-content padding [ngClass]="{extraTop: showSearch}">
+	<ion-refresher (ionRefresh)="refresh($event)" *ngIf="showSearch === false">
 		<ion-refresher-content pullingIcon="arrow-round-down" pullingText="Pull to refresh" refreshingSpinner="crescent" refreshingText="Refreshing...">
 		</ion-refresher-content>
 	</ion-refresher>
 	<ion-grid *ngIf="topics" no-padding>
-        <p *ngIf="topics.length === 0" text-center>No data Found</p>
-         <ion-item no-padding *ngFor="let topic of topics; let i = index;" (click)="openTopic(topic, i , 'ClosedTopicList')">
-				<h2>
-					{{topic.Topic}}
-				</h2>
-				<ion-row>
-					<ion-col text-left class="pickup">
-						Created {{topic.CreationDate | amTimeAgo }}
-					</ion-col>
-					<ion-col text-right class="danger">
-						Closed {{topic.CloseDatime | amTimeAgo }}
-					</ion-col>
-				</ion-row>
-			</ion-item>
+		<p *ngIf="topics.length === 0" text-center>No data Found</p>
+		<ion-item no-padding *ngFor="let topic of topics; let i = index;" (click)="openTopic(topic, i)">
+			<h2>
+				{{topic.Topic}}
+			</h2>
+			<ion-row>
+				<ion-col text-left class="pickup">
+					Created: {{topic.CreationDate_UTC | time }}
+				</ion-col>
+				<ion-col text-right class="danger">
+					Closed: {{topic.CloseDatime_UTC | time }}
+				</ion-col>
+			</ion-row>
+		</ion-item>
 		<ion-infinite-scroll (ionInfinite)="paginate($event)" *ngIf="page !== -1">
-	    </ion-infinite-scroll>
+		</ion-infinite-scroll>
 	</ion-grid>
 </ion-content>

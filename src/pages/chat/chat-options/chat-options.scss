@@ -1,0 +1,41 @@
+page-chat-options {
+    ion-content {
+        &.content-md {
+            background-color: color($colors, light);
+            font-size: 12px;
+            ion-list {
+                margin-bottom: 0;
+                ion-item {
+                    ion-label {
+                        margin: 8px;
+                    }
+                    &.close-topic {
+                        ion-label {
+                            color: color($colors, danger);
+                        }
+                    }
+                    button {
+                        height: 1.1em;
+                        font-size: 1rem;
+                        padding: 1em;
+                    }
+                }
+            }
+            ion-item-divider {
+                border-bottom: 0;
+                ion-label {
+                    margin: 8px;
+                }
+            }
+            p {
+                margin: 0 16px 5px;
+                &.danger {
+                    color: color($colors, danger);
+                }
+                &.secondary {
+                    color: color($colors, secondary);
+                }
+            }
+        }
+    }
+}

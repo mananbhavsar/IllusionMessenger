@@ -40,7 +40,7 @@ import { IonicStorageModule } from '@ionic/storage';
 import { MyApp } from './app.component';
 
 import { AboutPageModule } from '../pages/about/about.module';
-import { AddFlashPageModule } from '../pages/add-flash/add-flash.module';
+import { AddFlashPageModule } from '../pages/group/add-flash/add-flash.module';
 import { AccountPageModule } from '../pages/account/account.module';
 import { CloseTopicPageModule } from '../pages/topic/close-topic/close-topic.module';
 import { ChangePasswordPageModule } from "../pages/account/change-password/change-password.module";
@@ -57,8 +57,8 @@ import { HomePageModule } from '../pages/home/home.module';
 import { LoginPageModule } from '../pages/login/login.module';
 import { NotificationPreferencesPageModule } from "../pages/account/notification-preferences/notification-preferences.module";
 import { ManageParticipantsPageModule } from "../pages/topic/create-topic/manage-participants/manage-participants.module";
-import { SavedMediaPageModule } from "../pages/chat/saved-media/saved-media.module";
-import { ChatOptionsPageModule } from "../pages/chat-options/chat-options.module";
+import { SavedMediaPageModule } from "../pages/chat/chat-options/saved-media/saved-media.module";
+import { ChatOptionsPageModule } from "../pages/chat/chat-options/chat-options.module";
 import { TopicOptionsPageModule } from '../pages/topic/topic-options/topic-options.module';
 import { TutorialPageModule } from '../pages/tutorial/tutorial.module';
 import { WelcomePageModule } from '../pages/welcome/welcome.module';
@@ -76,12 +76,11 @@ import { DirectivesModule } from "../directives/directives.module";
 import { MomentModule } from 'angular2-moment';
 import { ElasticModule } from 'ng-elastic';
 import { OrderModule } from 'ngx-order-pipe';
-
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabaseModule, AngularFireDatabase } from 'angularfire2/database';
 import { AngularFireAuthModule } from 'angularfire2/auth';
 import { IonicImageViewerModule } from 'ionic-img-viewer';
-
+import { DateProvider } from '../providers/date/date';
 export const firebaseConfig = {
     apiKey: "AIzaSyAFDZ9UPTMiDTjT4qAG0d9uVeOdhL-2PBw",
     authDomain: "illusion-messenger.firebaseapp.com",
@@ -100,6 +99,7 @@ export function createTranslateLoader(http: HttpClient) {
         MyApp,
     ],
     imports: [
+    
         BrowserModule,
         IonicModule.forRoot(MyApp, {
             mode: 'md',
@@ -190,6 +190,7 @@ export function createTranslateLoader(http: HttpClient) {
         FileOpsProvider,
         PhotoViewer,
         UserAutoCompleteService,
+        DateProvider,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

@@ -3,8 +3,9 @@
         <ion-col>{{_text}}</ion-col>
     </ion-row>
     <ion-row>
-        <ion-col>
-            <button ion-button color="primary" (click)="openSearch()">Search</button>
+        <ion-col [hidden]="_text">
+            Nothing to show
+            <!-- <button ion-button color="primary" (click)="openSearch()">Search</button> -->
         </ion-col>
     </ion-row>
 </div>

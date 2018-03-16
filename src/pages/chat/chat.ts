@@ -15,6 +15,8 @@ import 'rxjs/add/operator/switchMap';
 import { ConnectionProvider } from '../../providers/connection/connection';
 import { NotificationsProvider } from "../../providers/notifications/notifications";
 import { UserProvider } from '../../providers/user/user';
+import { DateProvider } from './../../providers/date/date';
+
 import { FirebaseTransactionProvider } from '../../providers/firebase-transaction/firebase-transaction';
 import { CommonProvider } from "../../providers/common/common";
 import { TranslateService } from "@ngx-translate/core";
@@ -39,8 +41,8 @@ import { retry } from 'rxjs/operators/retry';
 import { HomePage } from '../home/home';
 import { CloseTopicPage } from './../topic/close-topic/close-topic';
 import { ChatReadModalPage } from "../../pages/chat/chat-read-modal/chat-read-modal";
-import { SavedMediaPage } from "../../pages/chat/saved-media/saved-media";
-import { ChatOptionsPage } from "../chat-options/chat-options";
+import { SavedMediaPage } from "./chat-options/saved-media/saved-media";
+import { ChatOptionsPage } from "./chat-options/chat-options";
 
 import { Modal } from 'ionic-angular/components/modal/modal';
 @IonicPage()
@@ -59,6 +61,7 @@ export class ChatPage {
   topicCode: string = null;
   groupID: string = null;
   groupCode: string = null;
+  group_name: string = 'loading';
 
   title: string = 'loading';
   isIOS: boolean = false;
@@ -175,6 +178,7 @@ export class ChatPage {
     private translate: TranslateService,
     private _notifications: NotificationsProvider,
     private _fileOps: FileOpsProvider,
+    private _date: DateProvider,
   ) {
     //init
     this.isIOS = this.platform.is('ios');
@@ -570,8 +574,11 @@ export class ChatPage {
           GroupID: this.groupID,
         };
         this.connection.doPost('Chat/GetTopicDetail', params).then((response: any) => {
-          this.data = JSON.parse(response.Data);
-          this.headerButtons = [{ icon:'more' , name: 'more-option'}];
+          this.data = response.Data;
+          this.data.GroupID = this.groupID;
+          this.group_name = this.data.Group;
+
+          this.headerButtons = [{ icon: 'more', name: 'more-option' }];
           /*if (this.data.StatusID === 1) {
             this.headerButtons.push({ icon: 'close', name: 'options' });
           }*/
@@ -641,26 +648,26 @@ export class ChatPage {
     let subTitle = '';
 
     let now = moment();
-    let creationDate = moment(this.data.CreationDate, 'MM/DD/YYYY h/mm/ss a');
-    let dueDate = moment(this.data.DueDate, 'MM/DD/YYYY h/mm/ss a');
-    let closedDate = moment(this.data.CloseDatime, 'MM/DD/YYYY h/mm/ss a');
+    let creationDate = this._date.fromServerFormat(this.data.CreationDate_UTC);
+    let dueDate = this._date.fromServerFormat(this.data.DueDate_UTC);
+    let closedDate = this._date.fromServerFormat(this.data.CloseDatime_UTC);
 
     //creation date
     if (creationDate.isValid() && this.data.StatusID !== 0) {
-      subTitle += 'Created: ' + moment(this.data.CreationDate, 'MM/DD/YYYY h/mm/ss a').fromNow();
+      subTitle += 'Created: ' + this._date.format(creationDate);
     }
     //due
     if (dueDate.isValid() && this.data.StatusID === 1) {
       subTitle += ', ' + 'Due: ';
       if ((now.toDate().getTime() - dueDate.toDate().getTime()) > 0) {
-        subTitle += dueDate.from(now);
+        subTitle += this._date.format(dueDate);
       } else {
-        subTitle += dueDate.from(now);
+        subTitle += this._date.format(dueDate);
       }
     }
     //closed 
     if (closedDate.isValid() && this.data.StatusID === 2) {
-      subTitle += ', ' + 'Closed: ' + closedDate.from(now);
+      subTitle += ', ' + 'Closed: ' + this._date.format(closedDate);
     }
     return subTitle;
   }
@@ -1309,7 +1316,7 @@ export class ChatPage {
           }
         } else {
           //checking if now is less than a sec which can be considered as online & chatting
-          if ((nowTime - value) <= 1000) {
+          if ((nowTime - value) <= 1500) {
             currentChattingUsers.push(userID);
           }
         }
@@ -1483,13 +1490,18 @@ export class ChatPage {
     chatReadModal.present();
   }
 
-  openChatOptions(){
-    let params ={
-      user:this.data,
-      path:this.dataDirectory,
-      folder:this.topicCode,
+  openChatOptions() {
+    let params = {
+      user: this.data,
+      path: this.dataDirectory,
+      folder: this.topicCode,
+      group_name: this.group_name,
     }
-    this.navCtrl.push(ChatOptionsPage,params);
+    let chatOptionModal = this.modal.create(ChatOptionsPage, params);
+    chatOptionModal.onDidDismiss(data => {
+
+    });
+    chatOptionModal.present();
   }
 
   openSavedMedia(event) {
@@ -1566,5 +1578,19 @@ export class ChatPage {
         }
       });
     });
+  }
+
+  getTyping() {
+    let typingUsers: Array<string> = [];
+    for (let typingUserId in this.userTyping) {
+      if (typingUserId && typingUserId !== (this.userID + '') && this.isWithinRange(this.userTyping[typingUserId])) {
+        typingUsers.push(this.getName(typingUserId));
+      }
+    }
+    if (typingUsers.length) {
+      return typingUsers.join(', ') + ' typing';
+    }
+
+    return null;
   }
 }

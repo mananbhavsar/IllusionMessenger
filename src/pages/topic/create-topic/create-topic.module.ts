@@ -5,6 +5,7 @@ import { CreateTopicPage } from './create-topic';
 import { ComponentsModule } from '../../../components/components.module';
 import { MomentModule } from 'angular2-moment';
 
+
 @NgModule({
   declarations: [
     CreateTopicPage,
@@ -13,7 +14,7 @@ import { MomentModule } from 'angular2-moment';
     IonicPageModule.forChild(CreateTopicPage),
     ComponentsModule,
     MomentModule,
-    PipesModule,
+     PipesModule,
   ],
 })
 export class CreateTopicPageModule { }

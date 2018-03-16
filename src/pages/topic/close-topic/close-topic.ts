@@ -1,16 +1,12 @@
+import { ChatPage } from './../../chat/chat';
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
 import { ConnectionProvider } from '../../../providers/connection/connection';
+
 import * as  moment from "moment";
 import { locale } from 'moment';
 import { ModalController } from 'ionic-angular';
 
-/**
- * Generated class for the CloseTopicPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
 
 @IonicPage()
 @Component({
@@ -18,62 +14,64 @@ import { ModalController } from 'ionic-angular';
   templateUrl: 'close-topic.html',
 })
 export class CloseTopicPage {
-	group_id:number=null;
+  group_id: number = null;
+  group_name: string = 'loading';
+
   topics: Array<any> = [];
-  page:number=0;
-  list:Array<any>=[];
-  query:string=null;
+  page: number = 0;
+  list: Array<any> = [];
+  query: string = null;
+
+  showSearch: boolean = false;
 
   constructor(
-  public navCtrl: NavController, 
-  public navParams: NavParams,
-  public connection: ConnectionProvider,
-  public modalCtrl: ModalController) {
-  this.group_id = this.navParams.data;
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    public connection: ConnectionProvider,
+    public modalCtrl: ModalController,
+    private viewController: ViewController,
+  ) {
+    this.group_id = this.navParams.data.group_id;
+    this.group_name = this.navParams.data.group_name;
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad CloseTopicPage');
     this.getDetails();
-    this.initializeItems();    
+    this.initializeItems();
   }
 
   getData(event) {
-      this.initializeItems();
-      let val = event.target.value;
-      console.log(val);
-     
-      if (val && val.trim() != '') {
-        this.query=val;
-        this.page=0;
-        this.topics=[];
-        this.getDetails().catch(error=>{
-          
-        });
-      } else {
-        this.query = null;     
-      } 
+    this.initializeItems();
+    let val = event.target.value;
+
+    this.query = val.trim();
+    this.getDetails().catch(error => {
+      
+    });
   }
 
-  getDetails(){
-	 return new Promise((resolve, reject) => {
+  getDetails() {
+    return new Promise((resolve, reject) => {
       if (this.page === -1) {
         reject(false);
       } else {
-          this.connection.doPost('Chat/GetClosedTopicDetail', {
-            query:this.query,
-            GroupID: this.group_id,
-            StatusID:1,
-            DisablePaging:true,
-            PageNumber: this.page,
-            RowsPerPage:20
-          }).then((response: any) => {
-          let data=response.ClosedTopicList;
-          console.log(data);
-           if (data.length > 0) {
-              data.forEach(list => {
-                this.topics.push(list);                
-             });
+        let params = {
+          GroupID: this.group_id,
+          StatusID: 1,
+          DisablePaging: true,
+          PageNumber: this.page,
+          RowsPerPage: 20
+        };
+        if (this.query) {
+          params['Query'] = this.query;
+        }
+        this.connection.doPost('Chat/GetClosedTopicDetail', params, false).then((response: any) => {
+          let data = response.ClosedTopicList;
+
+          if (data.length > 0) {
+            data.forEach(list => {
+              this.topics.push(list);
+            });
             this.page++;
             resolve(true);
           } else {
@@ -88,21 +86,24 @@ export class CloseTopicPage {
     });
   }
 
-  initializeItems(){
-    this.page=0;
-    this.topics=[];
-
+  initializeItems() {
+    this.page = 0;
+    this.topics = [];
   }
 
-  onCancel(){
+  onCancel() {
     this.initializeItems();
+    console.log('cancel');
   }
 
-  onClear(){
+  onClear() {
     this.initializeItems();
+    console.log('clear');
+    this.query = '';
+    this.getDetails();
   }
 
-	refresh(refresher) {
+  refresh(refresher) {
     this.page = 0;
     this.topics = [];
     this.getDetails().then(status => {
@@ -111,8 +112,8 @@ export class CloseTopicPage {
       refresher.complete();
     })
   }
-  
-	paginate(paginator) {
+
+  paginate(paginator) {
     this.getDetails().then(status => {
       if (status) {
         paginator.complete();
@@ -120,9 +121,27 @@ export class CloseTopicPage {
         paginator.enable(false);
       }
     }).catch(error => {
-      console.log(error);
       paginator.enable(false);
     });
+  }
+
+  openTopic(topic, index) {
+    if (topic.Count) {
+      topic.Count = 0;
+      this.topics[index].Count = 0;
+    }
+    this.navCtrl.push(ChatPage, {
+      topicID: topic.TopicID,
+      groupID: this.group_id
+    });
+  }
+
+  dismiss(data) {
+    this.viewController.dismiss(data);
+  }
+
+  toggleSearch() {
+    this.showSearch = !this.showSearch;
   }
 
 }

@@ -1,0 +1,50 @@
+<ion-header no-border>
+	<ion-toolbar ion-text color="primary">
+		<ion-title>{{title}}</ion-title>
+		<ion-buttons end>
+			<button color="light" ion-button outline (click)="dismiss(null)">
+				Close
+			</button>
+		</ion-buttons>
+	</ion-toolbar>
+	<ion-toolbar class="group-header">
+		<ion-title>{{group_name}}</ion-title>
+	</ion-toolbar>
+</ion-header>
+<ion-content no-padding *ngIf="participants.User !==-1">
+	<ion-list>
+		<ion-item-divider color="light"></ion-item-divider>
+		<ion-item (click)="openSavedMedia()">
+			<ion-icon name="archive" item-start color="pickup"></ion-icon>
+			Saved Media
+			<ion-icon name="ios-arrow-forward" item-end></ion-icon>
+		</ion-item>
+		<ion-item-divider color="light">Participants</ion-item-divider>
+
+		<ion-item *ngFor="let participant of participants.User;let i = index" (click)="userOptionsClicked(participant, i)">
+			{{participant.User}}
+			<button ion-button item-end small outline color="casestatus" *ngIf="participant.IsAdmin">Admin</button>
+			<button ion-button item-end small outline color="pickup" *ngIf="participant.IsResponsible">Responsible</button>
+		</ion-item>
+	</ion-list>
+	<div *ngIf="amIAdmin">
+		<ion-item-divider color="light"></ion-item-divider>
+		<ion-list [hidden]="closeButton" *ngIf="participants.StatusID === 1">
+			<ion-item (click)="closeGroup()" class="close-topic">
+				<h2 color="danger">Close Topic</h2>
+			</ion-item>
+		</ion-list>
+	</div>
+	<div class="background-grey" *ngIf="participants.StatusID !== 0">
+		<ion-item-divider color="light"></ion-item-divider>
+		<p color="pickup">
+			Created: {{participants.CreationDate_UTC | time}}
+		</p>
+		<p [ngClass]="isExpired(participants.DueDate_UTC, participants.CloseDatime_UTC) ? 'danger' : 'secondary'">
+			Due: {{participants.DueDate_UTC | time}}
+		</p>
+		<p *ngIf="participants.StatusID === 2" color="danger">
+			Closed: {{participants.CloseDatime_UTC | time}}
+		</p>
+	</div>
+</ion-content>

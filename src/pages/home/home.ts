@@ -1,3 +1,4 @@
+import { DateProvider } from './../../providers/date/date';
 import { Component, group } from '@angular/core';
 import { IonicPage, NavController, NavParams, Events, Platform } from 'ionic-angular';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -11,9 +12,10 @@ import { Storage } from '@ionic/storage';
 
 import { CreateTopicPage } from './../topic/create-topic/create-topic';
 import * as _ from 'underscore';
-import { AngularFireDatabase } from 'angularfire2/database';
 import { Transition } from 'ionic-angular/transitions/transition';
 import { GroupPage } from '../group/group';
+
+import firebase from 'firebase';
 import * as  moment from "moment";
 import { locale } from 'moment';
 
@@ -27,17 +29,17 @@ export class HomePage {
     groups: Array<any> | -1 = [];
     badges: any = {};
     firebaseConnected: boolean = false;
-    
+
     constructor(
         public navCtrl: NavController,
         public connection: ConnectionProvider,
         public user: UserProvider,
         public events: Events,
-        public angularFireDatabase: AngularFireDatabase,
         private _storage: Storage,
         private translate: TranslateService,
         private _oneSignal: OneSignal,
         private platform: Platform,
+        private _date: DateProvider,
     ) {
         this.global = Global;
         //listening to Resume & Pause events
@@ -75,7 +77,7 @@ export class HomePage {
     initData() {
         return new Promise((resolve, reject) => {
             this.getData().then(status => {
-                if(this.firebaseConnected === false){
+                if (this.firebaseConnected === false) {
                     this.connectToFireBase();
                     this.firebaseConnected = true;
                 }
@@ -90,8 +92,8 @@ export class HomePage {
         return new Promise((resolve, reject) => {
             this.connection.doPost('Chat/Home', {
             }).then((groups: Array<any>) => {
-                this.groups = groups;                  
-                 if (groups.length === 0) {
+                this.groups = groups;
+                if (groups.length === 0) {
                     this.groups = -1;
                 }
                 resolve(true);
@@ -105,6 +107,7 @@ export class HomePage {
     refresh(refresher) {
         this.getData().then(status => {
             refresher.complete();
+            this.connectToFireBase();
         }).catch(error => {
             refresher.complete();
         });
@@ -113,13 +116,22 @@ export class HomePage {
     connectToFireBase() {
         //user setting
         this.user.getUser().then(user => {
-            this.angularFireDatabase.object('Badge/' + user.id + '/Groups').snapshotChanges().subscribe(snapshot => {
-                snapshot = snapshot.payload.val();
-                if (!_.isEmpty(snapshot)) {
-                    this.badges = snapshot;
-                } else {
-                }
-            });
+            if (this.groups) {
+                let groupsTemp: any = this.groups;
+                groupsTemp.forEach((group, index) => {
+                    let ref = firebase.database().ref('Badge/' + user.id + '/Groups/' + group.GroupCode + '/Total');
+                    ref.off('value');
+                    ref.on('value', (snapshot) => {
+                        let total = snapshot.val();
+                        if (total) {
+                            this.badges[group.GroupCode] = total;
+                        } else {
+                            this.badges[group.GroupCode] = 0;
+                        }
+                    });
+                });
+
+            }
         });
     }
 
@@ -138,7 +150,7 @@ export class HomePage {
 
     getBadge(groupCode) {
         if (groupCode in this.badges) {
-            return this.badges[groupCode].Total;
+            return this.badges[groupCode];
         }
         return false;
     }

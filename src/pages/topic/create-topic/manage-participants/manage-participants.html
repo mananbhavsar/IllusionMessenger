@@ -1,11 +1,14 @@
 <ion-header>
 	<ion-navbar color="danger">
-		<!-- <ion-title>Manage Participants</ion-title> -->
 		<ion-searchbar placeholder="Search" (ionInput)="getData($event)" (ionCancel)="onCancel($event)" (ionClear)="onClear($event)"></ion-searchbar>
 		<ion-buttons end>
-			<button color="light" ion-button outline (click)="dismiss(null)">Create</button>
+			<button color="light" ion-button outline *ngIf="selectedParticipantIDs.length === 0" (click)="dismiss(null)">Close</button>
+			<button color="light" ion-button outline *ngIf="selectedParticipantIDs.length" (click)="create()">Create</button>
 		</ion-buttons>
 	</ion-navbar>
+	<ion-toolbar class="group-header">
+		<ion-title>{{group_name}}</ion-title>
+	</ion-toolbar>
 </ion-header>
 
 <ion-content>
@@ -13,7 +16,7 @@
 	<button type="button" small ion-button *ngFor="let tag of tags;let i=index;" (click)="tagClicked(tag.id,i)" [ngClass]="getTagColor(tag.id)">{{tag.name}}</button>
 	<div class="header-divider">Select Participants</div>
 	<ion-list *ngIf="participants.length">
-		<ion-item *ngFor="let user of participants;let i = index;" (click)="setParticipants(user.User[0].UserID, i)">
+		<ion-item *ngFor="let user of participants;let i = index;" (click)="setParticipants(user.User[0].UserID, i)" [hidden]="isHidden(user.User[0].UserID)">
 			{{user.User[0].User}}
 			<ion-icon name="checkmark" item-end *ngIf="inSelectedParticipants(user.User[0].UserID)"></ion-icon>
 		</ion-item>

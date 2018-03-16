@@ -1,3 +1,4 @@
+import { ConnectionProvider } from './../../../../providers/connection/connection';
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
 
@@ -17,10 +18,14 @@ export class ManageParticipantsPage {
   tagsIdMap: Array<string> = [];
   userTagsMap: any = {};
 
-  constructor(public navCtrl: NavController,
+  group_name: string = 'loading';
+  constructor(
+    public navCtrl: NavController,
     public navParams: NavParams,
     public viewCtrl: ViewController,
+    private connection: ConnectionProvider,
   ) {
+    this.group_name = this.navParams.data.group_name;
 
     this.participants = this.navParams.data.participants;
     this.participantsCopy = this.navParams.data.participants;
@@ -56,6 +61,11 @@ export class ManageParticipantsPage {
   tagClicked(tag_id, index) {
     //selecting users
     for (let userID in this.userTagsMap[tag_id]) {
+      //escape for logged in user
+      if (this.connection.user.LoginUserID === userID) {
+        continue;
+      }
+
       let indexInParticipants = this.userTagsMap[tag_id][userID];
       let user = this.participantsCopy[indexInParticipants];
       this.participantSelected(user.User[0].UserID, indexInParticipants);
@@ -114,11 +124,18 @@ export class ManageParticipantsPage {
     this.initializeItems();
   }
 
-  dismiss() {
-    this.viewCtrl.dismiss(
-      {
-        selectedParticipants: this.selectedParticipants,
-        selectedParticipantIDs: this.selectedParticipantIDs,
-      });
+  create() {
+    this.dismiss({
+      selectedParticipants: this.selectedParticipants,
+      selectedParticipantIDs: this.selectedParticipantIDs,
+    });
+  }
+
+  dismiss(data) {
+    this.viewCtrl.dismiss(data);
+  }
+
+  isHidden(user_id) {
+    return this.connection.user.LoginUserID === user_id;
   }
 }

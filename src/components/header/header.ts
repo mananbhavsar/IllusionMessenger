@@ -9,6 +9,7 @@ import { Global } from "../../app/global";
     templateUrl: 'header.html'
 })
 export class HeaderComponent {
+    @Input() subTitle: string = null;
     @Input() buttons: any = null;
     @Output() buttonClicked = new EventEmitter();
     _title: string;

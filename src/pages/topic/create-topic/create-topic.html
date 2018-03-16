@@ -1,5 +1,17 @@
-<ion-header no-border>
-  <header title="Create Topic"></header>
+<ion-header>
+  <ion-toolbar ion-text color="primary">
+    <ion-title>
+      Create Topic
+    </ion-title>
+    <ion-buttons end>
+      <button color="light" ion-button outline (click)="dismiss(null)">
+        Close
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar class="group-header">
+    <ion-title>{{group_name}}</ion-title>
+  </ion-toolbar>
 </ion-header>
 <ion-content padding>
   <ion-grid>
@@ -12,12 +24,19 @@
         </ion-item>
         <ion-item>
           <ion-label floating>Topic Name</ion-label>
-           <ion-input formControlName="name" type="text" placeholder="Topic Name"></ion-input>
+          <ion-input formControlName="name" type="text" placeholder="Topic Name"></ion-input>
         </ion-item>
+        <div class="error-message-block" *ngIf="createForm.controls.name.errors && (createForm.controls.name.dirty || createForm.controls.name.touched)">
+          <span *ngIf="createForm.controls.name.errors.required">Name is required</span>
+        </div>
         <ion-item>
           <ion-label>Due Date</ion-label>
-          <ion-datetime [min]="getCurrentTime()" [max]="2050" mode="ios" displayFormat="DD MMM YYYY, HH:mm" formControlName="due_date"></ion-datetime>
+          <!-- [onlyValid]="getCurrentTime()" -->
+          <ion-datetime picker mondayFirst="true" amPm="true"  displayFormat="DD MMM YYYY, h A" formControlName="due_date"></ion-datetime>
         </ion-item>
+        <div class="error-message-block" *ngIf="createForm.controls.due_date.errors && (createForm.controls.due_date.dirty || createForm.controls.due_date.touched)">
+          <span *ngIf="createForm.controls.due_date.errors?.InvalidDatetime">Due date should be more than NOW</span>
+        </div>
         <ion-item no-lines *ngIf="createForm.get('private').value">
           <button ion-button block (click)="addParticipants()">Add Participants</button>
         </ion-item>
@@ -26,8 +45,14 @@
             <ion-list-header>
               Selected Participants
             </ion-list-header>
-            <ion-item *ngFor="let userID of selectedParticipantIDs">
+            <ion-item *ngFor="let userID of selectedParticipantIDs" [hidden]="isMe(userID)">
               {{getUserName(userID)}}
+              <button ion-button outline item-end color="pickup" *ngIf="responsibles && responsibles.indexOf(userID) === -1" (click)="makeResponsible(userID)">
+                <ion-icon name="add-circle"></ion-icon>&nbsp; Mark Responsible
+              </button>
+              <button ion-button item-end color="pickup" *ngIf="responsibles && responsibles.indexOf(userID) > -1" (click)="removeResponsible(userID)">
+                <ion-icon name="ios-checkmark-circle"></ion-icon>&nbsp; Marked Responsible
+              </button>
               <button ion-button outline item-end color="danger" (click)="removeParticipant(userID)">
                 <ion-icon name="trash"></ion-icon>&nbsp; Remove
               </button>
@@ -40,6 +65,6 @@
 </ion-content>
 <ion-footer>
   <ion-toolbar>
-    <button (click)="submitForm()" ion-button block [disabled]="!createForm.valid">Save</button>
+    <button (click)="submitForm()" ion-button block [disabled]="!createForm.valid || (createForm.get('private').value && selectedParticipantIDs.length === 0)">Save</button>
   </ion-toolbar>
 </ion-footer>

@@ -1,15 +1,15 @@
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
-import { ChatOptionsPage } from './chat-options';
+import { AddFlashPage } from './add-flash';
 import { MomentModule } from 'angular2-moment';
 
 @NgModule({
   declarations: [
-    ChatOptionsPage,
+    AddFlashPage,
   ],
   imports: [
-    IonicPageModule.forChild(ChatOptionsPage),
-    MomentModule
+    IonicPageModule.forChild(AddFlashPage),
+    MomentModule,
   ],
 })
-export class ChatOptionsPageModule {}
+export class AddFlashPageModule { }

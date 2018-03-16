@@ -1,17 +1,17 @@
-import { PipesModule } from './../../../pipes/pipes.module';
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
-import { CloseTopicPage } from './close-topic';
+import { ChatOptionsPage } from './chat-options';
 import { MomentModule } from 'angular2-moment';
+import { PipesModule } from '../../../pipes/pipes.module';
 
 @NgModule({
   declarations: [
-    CloseTopicPage,
+    ChatOptionsPage,
   ],
   imports: [
-    IonicPageModule.forChild(CloseTopicPage),
+    IonicPageModule.forChild(ChatOptionsPage),
     MomentModule,
     PipesModule,
   ],
 })
-export class CloseTopicPageModule { }
+export class ChatOptionsPageModule { }

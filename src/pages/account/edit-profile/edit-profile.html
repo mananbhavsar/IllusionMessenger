@@ -34,7 +34,8 @@
         <ion-label ion-text color="primary" floating>
           Mobile Number
         </ion-label>
-        <ion-input required minLength="10" maxLength="10" formControlName="mobile_number" type="tel" placeholder="Mobile Number" name="mobile_number"></ion-input>
+        <ion-input required minLength="10" maxLength="10" formControlName="mobile_number" type="tel" placeholder="Mobile Number"
+          name="mobile_number"></ion-input>
       </ion-item>
       <div class="error-message-block" *ngIf="editProfileForm.controls.mobile_number.errors && (editProfileForm.controls.mobile_number.dirty || editProfileForm.controls.mobile_number.touched)">
         <span *ngIf="editProfileForm.controls.mobile_number.errors.required">Mobile Number is required</span>

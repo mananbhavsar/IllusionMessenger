@@ -102,7 +102,7 @@
     "firebase": "^4.10.1",
     "font-awesome": "^4.7.0",
     "i": "^0.3.6",
-    "ion-datetime-picker": "^0.5.2-ionic3-1",
+    "ion-datetime-picker": "git+https://github.com/jbarbede/ion-datetime-picker.git#aot",
     "ionic-angular": "^3.9.2",
     "ionic-img-viewer": "^2.9.0",
     "ionic-plugin-keyboard": "^2.2.1",

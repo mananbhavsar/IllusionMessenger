@@ -2935,9 +2935,9 @@ invert-kv@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/invert-kv/-/invert-kv-1.0.0.tgz#104a8e4aaca6d3d8cd157a8ef8bfab2d7a3ffdb6"
 
-ion-datetime-picker@^0.5.2-ionic3-1:
-  version "0.5.2"
-  resolved "https://registry.yarnpkg.com/ion-datetime-picker/-/ion-datetime-picker-0.5.2.tgz#99826bf22f428ac09195e7e6b534091b6f3be64a"
+"ion-datetime-picker@https://github.com/jbarbede/ion-datetime-picker.git#aot":
+  version "0.5.2-ionic3-1"
+  resolved "https://github.com/jbarbede/ion-datetime-picker.git#c2c11769aeda177c87cae23c2d400a2f894a466d"
 
 ionic-angular@^3.9.2:
   version "3.9.2"

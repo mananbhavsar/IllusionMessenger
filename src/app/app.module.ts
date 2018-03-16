@@ -76,15 +76,11 @@ import { DirectivesModule } from "../directives/directives.module";
 import { MomentModule } from 'angular2-moment';
 import { ElasticModule } from 'ng-elastic';
 import { OrderModule } from 'ngx-order-pipe';
-
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabaseModule, AngularFireDatabase } from 'angularfire2/database';
 import { AngularFireAuthModule } from 'angularfire2/auth';
 import { IonicImageViewerModule } from 'ionic-img-viewer';
 import { DateProvider } from '../providers/date/date';
-
-import { DatetimePickerModule } from 'ion-datetime-picker';
-
 export const firebaseConfig = {
     apiKey: "AIzaSyAFDZ9UPTMiDTjT4qAG0d9uVeOdhL-2PBw",
     authDomain: "illusion-messenger.firebaseapp.com",
@@ -103,7 +99,7 @@ export function createTranslateLoader(http: HttpClient) {
         MyApp,
     ],
     imports: [
-        DatetimePickerModule,
+    
         BrowserModule,
         IonicModule.forRoot(MyApp, {
             mode: 'md',

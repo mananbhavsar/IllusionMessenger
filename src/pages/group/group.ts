@@ -45,7 +45,7 @@ export class GroupPage {
         }, 30000);
       }
     }).catch(error => {
-
+        
     });
   }
 

@@ -30,7 +30,8 @@
 			<ion-item>
 				<ion-label>End Date</ion-label>
 				<!-- [onlyValid]="getCurrentTime()" -->
-				<ion-datetime picker mondayFirst="true" amPm="true"  displayFormat="DD MMM YYYY, hh:mm A" formControlName="end_date"></ion-datetime>
+				<ion-datetime displayFormat="DD MMM YYYY, h A" formControlName="end_date" max="2050">
+				</ion-datetime>
 			</ion-item>
 			<button ion-button full [disabled]="!addFlashForm.valid">Add Flash</button>
 		</ion-list>

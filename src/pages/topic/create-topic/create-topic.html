@@ -32,7 +32,7 @@
         <ion-item>
           <ion-label>Due Date</ion-label>
           <!-- [onlyValid]="getCurrentTime()" -->
-          <ion-datetime picker mondayFirst="true" amPm="true"  displayFormat="DD MMM YYYY, hh:mm A" formControlName="due_date"></ion-datetime>
+          <ion-datetime picker mondayFirst="true" amPm="true"  displayFormat="DD MMM YYYY, h A" formControlName="due_date"></ion-datetime>
         </ion-item>
         <div class="error-message-block" *ngIf="createForm.controls.due_date.errors && (createForm.controls.due_date.dirty || createForm.controls.due_date.touched)">
           <span *ngIf="createForm.controls.due_date.errors?.InvalidDatetime">Due date should be more than NOW</span>

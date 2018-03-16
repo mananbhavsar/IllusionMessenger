@@ -3,9 +3,9 @@
   <ion-toolbar class="group-header">
     <ion-title>{{group_name}}</ion-title>
   </ion-toolbar>
-  <ion-toolbar class="sub-header" *ngIf="data && data.StatusID !== 0">
+<!--   <ion-toolbar class="sub-header" *ngIf="data && data.StatusID !== 0">
     <ion-title>{{getSubTitle()}}</ion-title>
-  </ion-toolbar>
+  </ion-toolbar> -->
 </ion-header>
 <ion-content class="chat" delegate-handle="chatScroll" (touchstart)="closeKeyboard($event)">
   <div class="message-list">

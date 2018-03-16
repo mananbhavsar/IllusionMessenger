@@ -14,7 +14,7 @@ import { MomentModule } from 'angular2-moment';
     IonicPageModule.forChild(CreateTopicPage),
     ComponentsModule,
     MomentModule,
-     PipesModule,
+    PipesModule,
   ],
 })
 export class CreateTopicPageModule { }

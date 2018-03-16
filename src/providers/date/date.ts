@@ -30,23 +30,30 @@ export class DateProvider {
     return date;
   }
 
-  toUTC(date) {
+  toUTC(date, minuteFlag: boolean = true) {
     if (date && moment(date).isValid()) {
       if (!moment.isMoment(date)) {
         date = moment(date);
-        date.set({ second: 0, millisecond: 0 })
+        let zeroParams = {
+          second: 0,
+          millisecond: 0
+        };
+        if (minuteFlag) {
+          zeroParams['minute'] = 0;
+        }
+        date.set(zeroParams);
       }
       return date.utc();
     }
     return date;
   }
 
-  toUTCISOString(date) {
+  toUTCISOString(date, minuteFlag: boolean = true) {
     if (date && moment(date).isValid()) {
       if (typeof date === 'string') {
         date = this.replaceTZ(date);
       }
-      return this.toUTC(date).toISOString() + '';
+      return this.toUTC(date, minuteFlag).toISOString() + '';
     }
     return date;
   }

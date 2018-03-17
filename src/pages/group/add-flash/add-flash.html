@@ -1,16 +1,14 @@
 <ion-header>
 	<ion-toolbar ion-text color="primary">
 		<ion-title>
-			Add Flash News
+			<div>Add Flash News</div>
+			<small>{{group_name}}</small>
 		</ion-title>
 		<ion-buttons end>
 			<button color="light" ion-button outline (click)="dismiss(null)">
 				Close
 			</button>
 		</ion-buttons>
-	</ion-toolbar>
-	<ion-toolbar class="group-header">
-		<ion-title>{{group_name}}</ion-title>
 	</ion-toolbar>
 </ion-header>
 <ion-content padding>
@@ -29,10 +27,12 @@
 			</div>
 			<ion-item>
 				<ion-label>End Date</ion-label>
-				<!-- [onlyValid]="getCurrentTime()" -->
 				<ion-datetime displayFormat="DD MMM YYYY, h A" formControlName="end_date" max="2050">
 				</ion-datetime>
 			</ion-item>
+			<div class="error-message-block" *ngIf="addFlashForm.controls.end_date.errors && (addFlashForm.controls.end_date.dirty || addFlashForm.controls.end_date.touched)">
+				<span *ngIf="addFlashForm.controls.end_date.errors?.InvalidDatetime">End date should be more than current time</span>
+			</div>
 			<button ion-button full [disabled]="!addFlashForm.valid">Add Flash</button>
 		</ion-list>
 	</form>

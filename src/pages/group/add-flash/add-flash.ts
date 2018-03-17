@@ -34,15 +34,8 @@ export class AddFlashPage {
     this.addFlashForm = this.formBuilder.group({
       flash_message: ['', [Validators.required, Validators.maxLength(160)]],
       start_date: [moment().format()],
-      end_date: [moment().format()],
+      end_date: [moment().add(2, 'hours').format()],
     });
-  }
-
-  getCurrentTime() {
-    let valid = [{
-      'after': moment().add(-1, 'days').format('YYYY-MM-DD HH:MM')
-    }];
-    return valid;
   }
 
   addFlash() {
@@ -50,9 +43,13 @@ export class AddFlashPage {
       GroupID: this.group_id,
       Flash: this.addFlashForm.get('flash_message').value,
       StartDate: this._date.toUTCISOString(new Date(), false),
-      EndDate: this._date.toUTCISOString(this.addFlashForm.get('end_date').value),
+      EndDate: this._date.toUTCISOString(this.addFlashForm.get('end_date').value, true),
     }).then((response: any) => {
-      this.dismiss(response);
+      if (('Status' in response) && response.Status === 0) {
+        this.events.publish('toast:error', response.Message);
+      } else {
+        this.dismiss(response);
+      }
     }).catch(error => {
       this.events.publish('toast:error', error);
     });

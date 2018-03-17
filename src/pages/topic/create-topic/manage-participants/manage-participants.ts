@@ -14,6 +14,8 @@ export class ManageParticipantsPage {
   selectedParticipants: any = {};
   selectedParticipantIDs: Array<number> = [];
 
+  assigned: number = 0;
+
   tags: Array<any> = [];
   tagsIdMap: Array<string> = [];
   userTagsMap: any = {};
@@ -33,6 +35,7 @@ export class ManageParticipantsPage {
     this.selectedParticipants = this.navParams.data.selectedParticipants;
     this.selectedParticipantIDs = this.navParams.data.selectedParticipantIDs;
 
+    this.assigned = this.navParams.data.assigned;
     this.setTags();
   }
 
@@ -105,6 +108,10 @@ export class ManageParticipantsPage {
     } else {
       this.selectedParticipantIDs.splice(this.selectedParticipantIDs.indexOf(user_id), 1);
       delete this.selectedParticipants[user_id];
+      //checking if this user was assigned
+      if (this.assigned === user_id) {
+        this.assigned = 0;
+      }
     }
   }
 
@@ -114,6 +121,18 @@ export class ManageParticipantsPage {
 
   initializeItems() {
     this.participants = this.participantsCopy;
+  }
+
+  toggleAssign(user_id, event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    //checking if same user selected
+    if (this.assigned === user_id) {
+      this.assigned = 0;
+    } else {
+      this.assigned = user_id;
+    }
   }
 
   onCancel() {
@@ -128,6 +147,7 @@ export class ManageParticipantsPage {
     this.dismiss({
       selectedParticipants: this.selectedParticipants,
       selectedParticipantIDs: this.selectedParticipantIDs,
+      assigned: this.assigned,
     });
   }
 

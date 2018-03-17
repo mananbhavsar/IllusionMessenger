@@ -14,6 +14,7 @@ page-close-topic {
                     }
                     ion-row {
                         ion-col {
+                            font-size: 11px;
                             &.pickup {
                                 color: color($colors, pickup);
                             }
@@ -23,7 +24,6 @@ page-close-topic {
                             &.danger {
                                 color: color($colors, danger);
                             }
-                            font-size:12px;
                         }
                     }
                 }

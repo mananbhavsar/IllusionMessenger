@@ -1,6 +1,9 @@
 <ion-header>
 	<ion-navbar color="primary">
-		<ion-title>Archived Topics</ion-title>
+		<ion-title>
+			<div>Archived Topics</div>
+			<small>{{group_name}}</small>
+		</ion-title>
 		<ion-buttons end>
 			<button color="light" ion-button icon-only (click)="toggleSearch()">
 				<ion-icon name="search"></ion-icon>
@@ -10,9 +13,6 @@
 	</ion-navbar>
 	<ion-toolbar ion-text color="primary" *ngIf="showSearch">
 		<ion-searchbar placeholder="Enter Name" (ionInput)="getData($event)" (ionCancel)="onCancel($event)" (ionClear)="onClear($event)"></ion-searchbar>
-	</ion-toolbar>
-	<ion-toolbar class="group-header">
-		<ion-title>{{group_name}}</ion-title>
 	</ion-toolbar>
 </ion-header>
 

@@ -32,7 +32,7 @@ export class CreateTopicPage {
 
 
   selectedParticipant: Array<string> = [];
-  responsibles: Array<any> = [];
+  assigned: number = 0;
   global: any = {};
 
   createForm: FormGroup;
@@ -56,11 +56,14 @@ export class CreateTopicPage {
     this.global = Global;
     this.createForm = this.formBuilder.group({
       group_id: [''],
+      assigned: [''],
       private: [true],
       name: ['', [Validators.required]],
       participants: [''],
-      due_date: new FormControl(moment().local().format())
-    });
+      due_date: new FormControl(moment().local().add(3, 'hours').format())
+    }, {
+        validator: DateValidator.isBefore
+      });
   }
 
   ionViewDidLoad() {
@@ -95,6 +98,11 @@ export class CreateTopicPage {
     if (userID in this.selectedParticipants) {
       delete this.selectedParticipants[userID];
       this.selectedParticipantIDs.splice(this.selectedParticipantIDs.indexOf(userID), 1);
+
+      //checking if this was assined
+      if (userID === this.assigned) {
+        this.assigned = 0;
+      }
     }
   }
 
@@ -120,13 +128,6 @@ export class CreateTopicPage {
     return '';
   }
 
-  getCurrentTime() {
-    let valid = [{
-      'after': moment().add(-1, 'days').format('YYYY-MM-DD HH:MM')
-    }];
-    return valid;
-  }
-
   submitForm() {
     if (this.createForm.valid) {
       //adding myself if private
@@ -145,22 +146,26 @@ export class CreateTopicPage {
         DueDate: this._date.toUTCISOString(this.createForm.get('due_date').value),
         UserList: _.uniq(userList).join(','),
         StatusID: 1,
-        Responsibles: _.uniq(this.responsibles).join(','),
+        Responsibles: this.assigned,
       }, 'creating topic').then((response: any) => {
-        let data = response.Data;
-        let params = {
-          topicID: data.TopicID,
-          groupID: this.group_id
-        };
+        if (('Status' in response) && response.Status === 0) {
+          this.events.publish('toast:error', response.Message);
+        } else {
+          let data = response.Data;
+          let params = {
+            topicID: data.TopicID,
+            groupID: this.group_id
+          };
 
-        if (data.Message) {
-          this.events.publish('toast:create', data.Message);
+          if (data.Message) {
+            this.events.publish('toast:create', data.Message);
+          }
+          //update in Firebase/Badge
+          this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { })
+          //send notification
+          this.notifications.sends(response.OneSignalTransaction, 'ChatPage', params);
+          this.dismiss(params);
         }
-        //update in Firebase/Badge
-        this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { })
-        //send notification
-        this.notifications.sends(response.OneSignalTransaction, 'ChatPage', params);
-        this.dismiss(params);
       }).catch(error => {
 
       });
@@ -171,6 +176,7 @@ export class CreateTopicPage {
   addParticipants() {
     let modal = this.modalCtrl.create(ManageParticipantsPage, {
       participants: this.participants,
+      assigned: this.assigned,
       selectedParticipants: this.selectedParticipants,
       selectedParticipantIDs: this.selectedParticipantIDs,
       group_name: this.group_name
@@ -180,7 +186,7 @@ export class CreateTopicPage {
       if (data) {
         this.selectedParticipants = data.selectedParticipants;
         this.selectedParticipantIDs = data.selectedParticipantIDs;
-        this.responsibles = [];
+        this.assigned = data.assigned;
         this.setSelectedParticipants();
       }
     });
@@ -193,18 +199,5 @@ export class CreateTopicPage {
 
   dismiss(data) {
     this.viewController.dismiss(data);
-  }
-
-  makeResponsible(user_id) {
-    if (this.responsibles.indexOf(user_id) === -1) {
-      this.responsibles.push(user_id);
-    }
-  }
-
-  removeResponsible(user_id) {
-    let index = this.responsibles.indexOf(user_id);
-    if (index > -1) {
-      this.responsibles.splice(index, 1);
-    }
   }
 }

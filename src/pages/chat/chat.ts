@@ -71,6 +71,7 @@ export class ChatPage {
   pathIdentifier: string = '';
   basePath: string = '';
   path: string = '';
+  topicClosePath: string = '';
 
   messagesRef: firebase.database.Reference;
   newMessagesRef: firebase.database.Query;
@@ -233,6 +234,18 @@ export class ChatPage {
 
     //keyboard disable
     this.keyboard.disableScroll(true);
+
+    //listening to Close Topic
+    firebase.database().ref(this.topicClosePath).on('value', snapshot => {
+      let closedTime = snapshot.val();
+      if (closedTime && moment(closedTime).isValid()) {
+        this.data.StatusID = 2;
+        this.data.CloseDatime_UTC = closedTime;
+
+        firebase.database().ref(this.topicClosePath).remove();
+        firebase.database().ref(this.topicClosePath).off('value');
+      }
+    });
   }
 
   connectFireBase() {
@@ -632,6 +645,9 @@ export class ChatPage {
     this.pathIdentifier = this.groupCode + '/' + this.topicCode;
 
     this.basePath = 'Communications/' + this.pathIdentifier + '/';
+
+    //Chat close event
+    this.topicClosePath = 'CloseTopics/' + this.pathIdentifier + '/' + this.userID;
 
     //making folder with this topics code to save files
     this.doFoldering();
@@ -1221,7 +1237,10 @@ export class ChatPage {
 
   sendMessageToServer(message) {
     // get live chat users
-    var activeUserList = this.getLiveChatUsers();
+    let userChattingNow = this.userChatting;
+    let nowTime = moment().utc().valueOf();
+
+    var activeUserList = this.getLiveChatUsers(userChattingNow, nowTime);
 
     let fileName = null;
     let fileExtension = null;
@@ -1233,8 +1252,8 @@ export class ChatPage {
 
     let params = {
       LiveUsersOnChat: activeUserList,
-      ChattingUsers: this.common.build_query(this.userChatting),
-      TimeOnPhone: moment().utc().valueOf(),
+      ChattingUsers: this.common.build_query(userChattingNow),
+      TimeOnPhone: nowTime,
       Message: message.Message ? message.Message : '',
       MessageType: message.MessageType,
       URL: message.URL,
@@ -1286,6 +1305,7 @@ export class ChatPage {
     }
 
     if (messageNull) {
+
       this.messages = [];
       this.messagesKeys = [];
       this.offlineMessages = [];
@@ -1294,20 +1314,23 @@ export class ChatPage {
       this.events.unsubscribe('notification:chat');
       this.events.unsubscribe('network:online');
       this.events.unsubscribe('network:offline');
+
+      if (this.topicClosePath) {
+        firebase.database().ref(this.topicClosePath).off('value');
+      }
     }
 
     this.events.unsubscribe('user:ready');
     this.keyboard.disableScroll(false);
   }
 
-  getLiveChatUsers() {
+  getLiveChatUsers(userChattingNow, nowTime) {
     var activeUserList = '';
     let currentChattingUsers = [];
-    let nowTime = moment().utc().valueOf();
 
-    if (!_.isEmpty(this.userChatting)) {
-      for (let userID in this.userChatting) {
-        let value = this.userChatting[userID];
+    if (!_.isEmpty(userChattingNow)) {
+      for (let userID in userChattingNow) {
+        let value = userChattingNow[userID];
         //checking if boolean, older version
         if (typeof value === 'boolean') {
           //if true
@@ -1316,7 +1339,7 @@ export class ChatPage {
           }
         } else {
           //checking if now is less than a sec which can be considered as online & chatting
-          if ((nowTime - value) <= 1500) {
+          if ((nowTime - value) <= 2000) {
             currentChattingUsers.push(userID);
           }
         }
@@ -1469,30 +1492,32 @@ export class ChatPage {
   }
 
   openReading(event, message) {
-    let time = new Date().getTime();
-    if ((time - this.lastReadingTime) < 1000) {
-      return;
-    }
-    this.lastReadingTime = time;
-    let params = {
-      message: message,
-      chatUsers: this.chatUsers,
-      topicID: this.topicID,
-      topicCode: this.topicCode,
-      groupID: this.groupID,
-      groupCode: this.groupCode,
-      userID: this.userID,
-    };
-    let chatReadModal = this.modal.create(ChatReadModalPage, params);
-    chatReadModal.onDidDismiss(data => {
+    if (this.userID === message.UserID) {
+      let time = new Date().getTime();
+      if ((time - this.lastReadingTime) < 1000) {
+        return;
+      }
+      this.lastReadingTime = time;
+      let params = {
+        message: message,
+        chatUsers: this.chatUsers,
+        topicID: this.topicID,
+        topicCode: this.topicCode,
+        groupID: this.groupID,
+        groupCode: this.groupCode,
+        userID: this.userID,
+      };
+      let chatReadModal = this.modal.create(ChatReadModalPage, params);
+      chatReadModal.onDidDismiss(data => {
 
-    });
-    chatReadModal.present();
+      });
+      chatReadModal.present();
+    }
   }
 
   openChatOptions() {
     let params = {
-      user: this.data,
+      data: this.data,
       path: this.dataDirectory,
       folder: this.topicCode,
       group_name: this.group_name,

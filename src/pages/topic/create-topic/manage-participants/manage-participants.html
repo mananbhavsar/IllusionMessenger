@@ -6,9 +6,9 @@
 			<button color="light" ion-button outline *ngIf="selectedParticipantIDs.length" (click)="create()">Create</button>
 		</ion-buttons>
 	</ion-navbar>
-	<ion-toolbar class="group-header">
+	<!-- <ion-toolbar class="group-header">
 		<ion-title>{{group_name}}</ion-title>
-	</ion-toolbar>
+	</ion-toolbar> -->
 </ion-header>
 
 <ion-content>
@@ -18,7 +18,14 @@
 	<ion-list *ngIf="participants.length">
 		<ion-item *ngFor="let user of participants;let i = index;" (click)="setParticipants(user.User[0].UserID, i)" [hidden]="isHidden(user.User[0].UserID)">
 			{{user.User[0].User}}
-			<ion-icon name="checkmark" item-end *ngIf="inSelectedParticipants(user.User[0].UserID)"></ion-icon>
+
+			<ion-icon item-end name="ios-checkmark-circle-outline" *ngIf="!inSelectedParticipants(user.User[0].UserID);else selectedParticipant"></ion-icon>
+			<ng-template #selectedParticipant>
+				<button item-end ion-button clear icon-only (click)="toggleAssign(user.User[0].UserID, $event)">
+					<ion-icon color="pickup" [name]="assigned === user.User[0].UserID ? 'ios-star':'ios-star-outline'"></ion-icon>
+				</button>
+				<ion-icon item-end name="ios-checkmark-circle" color="dashboard" item-end></ion-icon>
+			</ng-template>
 		</ion-item>
 	</ion-list>
 </ion-content>

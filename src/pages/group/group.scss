@@ -29,13 +29,27 @@ page-group {
 					}
 				}
 			}
+			ion-item-divider {
+				ion-label {
+					vertical-align: middle;
+					ion-icon {
+						font-size: 2em;
+					}
+				}
+			}
 			ion-item {
+				ion-badge {
+					position: absolute;
+					top: 0;
+					right: 25px;
+				}
 				ion-label {
 					&.label-md {
 						margin: 3px 3px 3px 0;
 					}
 					ion-row {
 						ion-col {
+							font-size: 11px;
 							&.pickup {
 								color: color($colors, pickup);
 							}
@@ -45,7 +59,6 @@ page-group {
 							&.danger {
 								color: color($colors, danger);
 							}
-							font-size:12px;
 						}
 					}
 				}

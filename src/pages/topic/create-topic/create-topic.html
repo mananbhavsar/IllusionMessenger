@@ -1,16 +1,14 @@
 <ion-header>
   <ion-toolbar ion-text color="primary">
     <ion-title>
-      Create Topic
+      <div>Create Topic</div>
+      <small>{{group_name}}</small>
     </ion-title>
     <ion-buttons end>
       <button color="light" ion-button outline (click)="dismiss(null)">
         Close
       </button>
     </ion-buttons>
-  </ion-toolbar>
-  <ion-toolbar class="group-header">
-    <ion-title>{{group_name}}</ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content padding>
@@ -31,11 +29,10 @@
         </div>
         <ion-item>
           <ion-label>Due Date</ion-label>
-          <!-- [onlyValid]="getCurrentTime()" -->
-          <ion-datetime picker mondayFirst="true" amPm="true"  displayFormat="DD MMM YYYY, h A" formControlName="due_date"></ion-datetime>
+          <ion-datetime displayFormat="DD MMM YYYY, h A" formControlName="due_date" max="2050"></ion-datetime>
         </ion-item>
         <div class="error-message-block" *ngIf="createForm.controls.due_date.errors && (createForm.controls.due_date.dirty || createForm.controls.due_date.touched)">
-          <span *ngIf="createForm.controls.due_date.errors?.InvalidDatetime">Due date should be more than NOW</span>
+          <span *ngIf="createForm.controls.due_date.errors?.InvalidDatetime">Due date should be more than current time</span>
         </div>
         <ion-item no-lines *ngIf="createForm.get('private').value">
           <button ion-button block (click)="addParticipants()">Add Participants</button>
@@ -47,15 +44,8 @@
             </ion-list-header>
             <ion-item *ngFor="let userID of selectedParticipantIDs" [hidden]="isMe(userID)">
               {{getUserName(userID)}}
-              <button ion-button outline item-end color="pickup" *ngIf="responsibles && responsibles.indexOf(userID) === -1" (click)="makeResponsible(userID)">
-                <ion-icon name="add-circle"></ion-icon>&nbsp; Mark Responsible
-              </button>
-              <button ion-button item-end color="pickup" *ngIf="responsibles && responsibles.indexOf(userID) > -1" (click)="removeResponsible(userID)">
-                <ion-icon name="ios-checkmark-circle"></ion-icon>&nbsp; Marked Responsible
-              </button>
-              <button ion-button outline item-end color="danger" (click)="removeParticipant(userID)">
-                <ion-icon name="trash"></ion-icon>&nbsp; Remove
-              </button>
+              <ion-icon item-end color="pickup" *ngIf="assigned === userID" name="ios-star"></ion-icon>
+              <ion-icon item-end color="danger" name="ios-trash" (click)="removeParticipant(userID)"></ion-icon>
             </ion-item>
           </ion-list>
         </div>

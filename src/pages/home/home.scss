@@ -1,4 +1,20 @@
 page-home {
+    .device-register {
+        text-align: center;
+        span {
+            color: white;
+            display: block;
+            &.gray {
+                background-color: gray;
+            }
+            &.secondary {
+                background-color: color($colors, secondary);
+            }
+            &.pickup {
+                background-color: color($colors, pickup);
+            }
+        }
+    }
     ion-list {
         ion-item {
             ion-label {
@@ -7,6 +23,9 @@ page-home {
                 }
                 h2 {}
                 ion-row {
+                    ion-col {
+                        font-size: 11px;
+                    }
                     .activetopics {
                         color: color($colors, secondary);
                         font-style: italic;

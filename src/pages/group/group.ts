@@ -2,8 +2,8 @@ import { DateProvider } from './../../providers/date/date';
 import { CreateTopicPage } from './../topic/create-topic/create-topic';
 import { ChatPage } from './../chat/chat';
 import { ConnectionProvider } from './../../providers/connection/connection';
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ModalController } from 'ionic-angular';
+import { Component, ViewChild } from '@angular/core';
+import { IonicPage, NavController, NavParams, ModalController, Slides } from 'ionic-angular';
 import { GroupOptionsPage } from './../group/group-options/group-options';
 import { CloseTopicPage } from './../topic/close-topic/close-topic';
 import * as _ from 'underscore';
@@ -17,6 +17,8 @@ import { AngularFireDatabase } from 'angularfire2/database';
   templateUrl: 'group.html',
 })
 export class GroupPage {
+  @ViewChild('slides') slides: Slides;
+
   group_id: number = 0;
   title: string = '';
   group: any = {};
@@ -24,6 +26,8 @@ export class GroupPage {
   page: number = 0;
 
   flashTimer = null;
+  flashes: Array<any> = [];
+  flashesID: any = {};
 
   constructor(
     public navCtrl: NavController,
@@ -42,10 +46,10 @@ export class GroupPage {
       if (this.flashTimer === null) {
         this.flashTimer = setInterval(() => {
           this.processForRange();
-        }, 30000);
+        }, 15000);
       }
     }).catch(error => {
-        
+
     });
   }
 
@@ -63,8 +67,11 @@ export class GroupPage {
         PageNumber: this.page,
         RowsPerPage: 20,
         Query: '',
-      }).then((response: any) => {
+      }, false).then((response: any) => {
         this.group = response;
+
+        this.updateSlider(this.group.FlashNews);
+
         this.setForBadge();
         this.processForRange();
         resolve(true);
@@ -177,14 +184,30 @@ export class GroupPage {
   }
 
   processForRange() {
-    if (this.group && this.group.FlashNews.length) {
-      this.group.FlashNews = this.group.FlashNews.filter(flash => {
+    let tmpFlashes: Array<any> = [];
+    if (this.flashes && this.flashes.length) {
+      this.flashes.forEach(flash => {
         let start = this._date.fromServerFormat(flash.StartDate_UTC).toDate().getTime();
         let end = this._date.fromServerFormat(flash.EndDate_UTC).toDate().getTime();
         let now = new Date().getTime();
-        return (start <= now && now <= end);
+        if (start <= now && now <= end) {
+          tmpFlashes.push(flash);
+        }
       });
+      this.updateSlider(tmpFlashes);
     }
+  }
+
+  updateSlider(tmpFlashes) {
+    setTimeout(() => {
+      this.flashes = [];
+      if (this.slides) {
+        this.slides.update();
+      }
+      setTimeout(() => {
+        this.flashes = tmpFlashes;
+      });
+    });
   }
 }
 

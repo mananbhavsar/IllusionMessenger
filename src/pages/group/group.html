@@ -11,12 +11,13 @@
   <empty *ngIf="group === -1"></empty>
   <ng-template #group_template>
     <ion-grid *ngIf="group !== -1">
-      <div *ngIf="group.FlashNews && group.FlashNews.length">
+      <div *ngIf="flashes && flashes.length">
         <ion-item-divider color="light">
+          <!-- <ion-icon name="ios-flash"></ion-icon> -->
           Flash News
         </ion-item-divider>
-        <ion-slides autoplay="5000" loop="true" pager="true">
-          <ion-slide *ngFor="let flashnews of group.FlashNews">
+        <ion-slides autoplay="5000" [loop]="flashes.length > 1" pager="true" #slides>
+          <ion-slide *ngFor="let flashnews of flashes;trackBy:FlashID">
             <h1>{{flashnews.Flash}}</h1>
             <p>
               <ion-row>
@@ -44,6 +45,7 @@
       </ion-item-group>
       <ion-item-group *ngIf="group.ActiveTopicList">
         <ion-item-divider color="light">
+          <!-- <ion-icon name="ios-folder-open"></ion-icon> -->
           Active Topics
           <!-- <ion-icon item-end name="ios-options" color="pickup"></ion-icon> -->
         </ion-item-divider>
@@ -68,6 +70,7 @@
 
       <ion-item-group *ngIf="group.ClosedTopicList">
         <ion-item-divider color="light">
+          <!-- <ion-icon name="ios-archive"></ion-icon> -->
           Recent Closed
         </ion-item-divider>
         <p *ngIf="group.ClosedTopicList.length === 0" text-center>No Topics Found</p>

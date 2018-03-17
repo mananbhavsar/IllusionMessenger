@@ -30,6 +30,12 @@ export class HomePage {
     badges: any = {};
     firebaseConnected: boolean = false;
 
+    /**
+     * 0 => not connected
+     * 1 => connecting
+     * 2 => connected
+     */
+    deviceRegsiter: number = 0;
     constructor(
         public navCtrl: NavController,
         public connection: ConnectionProvider,
@@ -48,10 +54,11 @@ export class HomePage {
         });
     }
 
-    ionViewDidLoad() {
+    //keep it enter only
+    ionViewDidEnter() {
         //checking if logged in
         if (!_.isEmpty(this.connection.user)) {
-            this.initData();
+            this.initData().catch(error => { });
         } else {
             //waiting for login
             this.events.subscribe('user:ready', (status) => {
@@ -60,18 +67,6 @@ export class HomePage {
                 }
             });
         }
-    }
-
-    ionViewDidEnter() {
-        if (this.platform.is('cordova')) {
-            setTimeout(() => {
-                this._oneSignal.getIds().then((id) => {
-                    //updating user ID
-                    this.user.registerPushID(id.userId);
-                });
-            });
-        }
-        //this.dateStatus(null);
     }
 
     initData() {
@@ -95,6 +90,20 @@ export class HomePage {
                 this.groups = groups;
                 if (groups.length === 0) {
                     this.groups = -1;
+                }
+
+                //make device regsiter call
+                if (this.platform.is('cordova')) {
+                    this.deviceRegsiter = 1;
+                    this._oneSignal.getIds().then((id) => {
+                        this.user.registerPushID(id.userId).then(response => {
+                            this.deviceRegsiter = 2;
+                        }).catch(error => {
+                            this.deviceRegsiter = 0;
+                        });
+                    }).catch(error => {
+                        this.deviceRegsiter = 0;
+                    });
                 }
                 resolve(true);
             }).catch(error => {

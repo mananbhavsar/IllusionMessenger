@@ -89,6 +89,13 @@ export class GroupOptionsPage {
     return 'tag-' + (id % 10);
   }
 
+  isYou(id) {
+    if (id) {
+      return id === this.connection.user.LoginUserID;
+    }
+    return false;
+  }
+
   dismiss(data) {
     this.viewController.dismiss(data);
   }

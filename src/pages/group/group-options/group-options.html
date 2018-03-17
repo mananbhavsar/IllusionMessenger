@@ -1,15 +1,15 @@
 <ion-header no-border>
 	<ion-navbar color="primary">
-		<ion-title>{{title}}</ion-title>
+		<ion-title>
+			<div>{{title}}</div>
+			<small>{{group_name}}</small>
+		</ion-title>
 		<ion-buttons end>
 			<button color="light" ion-button outline (click)="dismiss(null)">
 				Close
 			</button>
 		</ion-buttons>
 	</ion-navbar>
-	<ion-toolbar class="group-header">
-		<ion-title>{{group_name}}</ion-title>
-	</ion-toolbar>
 </ion-header>
 <ion-content padding>
 	<ion-row class="buttons-container">
@@ -36,6 +36,7 @@
 			<ion-item *ngFor="let user of userlist.UserDetail">
 				<h2>
 					{{user.User[0].User}}
+					<span *ngIf="isYou(user.User[0].UserID)">(You)</span>
 				</h2>
 				<p text-left text-small small text-wrap>
 					<ion-badge *ngFor="let tag of user.Tag" [ngClass]="getTagColor(tag.TagID)">{{tag.Tag}}</ion-badge>

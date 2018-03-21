@@ -1,3 +1,4 @@
+import { PipesModule } from './../pipes/pipes.module';
 import { MomentModule } from 'angular2-moment';
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
@@ -13,6 +14,7 @@ import { CallFabComponent } from './call-fab/call-fab';
 import { ChatBubbleComponent } from './chat-bubble/chat-bubble';
 import { IonicImageViewerModule } from 'ionic-img-viewer';
 import { TranslateModule } from "@ngx-translate/core";
+import { FlashNewsComponent } from './flash-news/flash-news';
 
 @NgModule({
     declarations: [EmptyComponent,
@@ -25,6 +27,7 @@ import { TranslateModule } from "@ngx-translate/core";
         ProgressBarComponent,
         CallFabComponent,
         ChatBubbleComponent,
+        FlashNewsComponent,
     ],
     imports: [
         MomentModule,
@@ -39,6 +42,8 @@ import { TranslateModule } from "@ngx-translate/core";
         IonicPageModule.forChild(ProgressBarComponent),
         IonicPageModule.forChild(CallFabComponent),
         IonicPageModule.forChild(ChatBubbleComponent),
+        IonicPageModule.forChild(FlashNewsComponent),
+        PipesModule,
     ],
     exports: [
         EmptyComponent,
@@ -52,6 +57,7 @@ import { TranslateModule } from "@ngx-translate/core";
         CallFabComponent,
         ChatBubbleComponent,
         TranslateModule,
+        FlashNewsComponent,
     ]
 })
 export class ComponentsModule { }

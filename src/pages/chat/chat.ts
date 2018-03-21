@@ -100,6 +100,10 @@ export class ChatPage {
   userID: string = null;
   chatUsers: any = {};
 
+  amIAdmin: boolean = false;
+  amIResponsible: boolean = false;
+  responsibleUserID: number = 0;
+
   lastcalled: boolean = false;
   readyForPagination: boolean = false;
   sendClickKeepKeyboardOpened: boolean = false;
@@ -591,10 +595,7 @@ export class ChatPage {
           this.data.GroupID = this.groupID;
           this.group_name = this.data.Group;
 
-          this.headerButtons = [{ icon: 'more', name: 'more-option' }];
-          /*if (this.data.StatusID === 1) {
-            this.headerButtons.push({ icon: 'close', name: 'options' });
-          }*/
+          this.headerButtons = [{ icon: 'ios-more', name: 'more-option' }];
 
           console.log(this.data);
           this.topicCode = this.data.TopicCode;
@@ -694,7 +695,7 @@ export class ChatPage {
   setUsers() {
     return new Promise((resolve, reject) => {
       if (this.data && this.data.User.length) {
-        this.data.User.forEach(user => {
+        this.data.User.forEach((user, index) => {
           //for typing
           this.userTyping[user.UserID] = user.User;
 
@@ -703,6 +704,28 @@ export class ChatPage {
 
           //adding lang
           this.addLang(user);
+
+          //converting to boolean
+          if (typeof this.data.User[index].IsAdmin === 'string') {
+            this.data.User[index].IsAdmin = user.IsAdmin === 'true';
+            user.IsAdmin = this.data.User[index].IsAdmin;
+          }
+          if (typeof this.data.User[index].IsResponsible === 'string') {
+            this.data.User[index].IsResponsible = user.IsResponsible === 'true';
+            user.IsResponsible = this.data.User[index].IsResponsible;
+          }
+
+          //checking admin for me
+          if (user.UserID === this.connection.user.LoginUserID && user.IsAdmin) {
+            this.amIAdmin = true;
+          }
+          //checking isResponsible for me
+          if (user.UserID === this.connection.user.LoginUserID && user.IsResponsible) {
+            this.amIResponsible = true;
+          }
+          if (user.IsResponsible) {
+            this.responsibleUserID = user.UserID;
+          }
         });
         resolve(this.chatUsers);
       } else {
@@ -774,7 +797,9 @@ export class ChatPage {
 
   sendTextMessage(event) {
     if (this.keyboardOpen) {
-      event.preventDefault();
+      if (event) {
+        event.preventDefault();
+      }
       this.sendClickKeepKeyboardOpened = true;
       this.messageInput.nativeElement.focus();
     } else {
@@ -1617,5 +1642,9 @@ export class ChatPage {
     }
 
     return null;
+  }
+
+  getTrackByField(index, message) {
+    return message.key;
   }
 }

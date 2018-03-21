@@ -30,6 +30,10 @@ page-home {
                         color: color($colors, secondary);
                         font-style: italic;
                     }
+                    .responsibletopics {
+                        color: color($colors, pickup);
+                        font-style: italic;
+                    }
                     .overdue {
                         color: color($colors, danger);
                         font-style: italic;

@@ -6,10 +6,12 @@ import { Component, ViewChild } from '@angular/core';
 import { IonicPage, NavController, NavParams, ModalController, Slides } from 'ionic-angular';
 import { GroupOptionsPage } from './../group/group-options/group-options';
 import { CloseTopicPage } from './../topic/close-topic/close-topic';
+
 import * as _ from 'underscore';
 import * as  moment from "moment";
 import { locale } from 'moment';
-import { AngularFireDatabase } from 'angularfire2/database';
+
+import * as firebase from 'firebase';
 
 @IonicPage()
 @Component({
@@ -25,15 +27,11 @@ export class GroupPage {
   badges: any = {};
   page: number = 0;
 
-  flashTimer = null;
-  flashes: Array<any> = [];
-  flashesID: any = {};
 
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     private connection: ConnectionProvider,
-    public angularFireDatabase: AngularFireDatabase,
     private _date: DateProvider,
     private modalController: ModalController,
   ) {
@@ -43,21 +41,10 @@ export class GroupPage {
 
   ionViewDidEnter() {
     this.getGroupDetails().then(status => {
-      if (this.flashTimer === null) {
-        this.flashTimer = setInterval(() => {
-          this.processForRange();
-        }, 15000);
-      }
+
     }).catch(error => {
 
     });
-  }
-
-  ionViewWillLeave() {
-    if (this.flashTimer) {
-      clearInterval(this.flashTimer);
-      this.flashTimer = null;
-    }
   }
 
   getGroupDetails() {
@@ -70,10 +57,7 @@ export class GroupPage {
       }, false).then((response: any) => {
         this.group = response;
 
-        this.updateSlider(this.group.FlashNews);
-
         this.setForBadge();
-        this.processForRange();
         resolve(true);
       }).catch(error => {
         reject(error);
@@ -82,9 +66,9 @@ export class GroupPage {
   }
 
   setForBadge() {
-    this.angularFireDatabase.object('Badge/' + this.connection.user.id + '/Groups/' + this.group['GroupDetail'][0].GroupCode + '/Topics').snapshotChanges().subscribe(snapshot => {
-      snapshot = snapshot.payload.val();
-      if (!_.isEmpty(snapshot)) {
+    firebase.database().ref('Badge/' + this.connection.user.id + '/Groups/' + this.group['GroupDetail'][0].GroupCode + '/Topics').on('value', snapshot => {
+      snapshot = snapshot.val();
+      if (snapshot && !_.isEmpty(snapshot)) {
         this.badges = snapshot;
       }
     });
@@ -145,6 +129,7 @@ export class GroupPage {
     let closeTopicModal = this.modalController.create(CloseTopicPage, {
       group_id: this.group_id,
       group_name: this.title,
+      group_code: this.group['GroupDetail'][0].GroupCode,
     });
     closeTopicModal.onDidDismiss(data => {
       if (data) {
@@ -173,41 +158,17 @@ export class GroupPage {
     });
     groupOptionsModal.onDidDismiss(data => {
       if (data) {
-        this.getGroupDetails();
-        //if needs to go to ChatPage
-        if (data.page && data.page === 'ChatPage') {
-          this.navCtrl.push(ChatPage, data.params);
-        }
+        this.group = [];
+        this.page = 0;
+        setTimeout(() => {
+          this.getGroupDetails();
+          //if needs to go to ChatPage
+          if (data.page && data.page === 'ChatPage') {
+            this.navCtrl.push(ChatPage, data.params);
+          }
+        });
       }
     });
     groupOptionsModal.present();
   }
-
-  processForRange() {
-    let tmpFlashes: Array<any> = [];
-    if (this.flashes && this.flashes.length) {
-      this.flashes.forEach(flash => {
-        let start = this._date.fromServerFormat(flash.StartDate_UTC).toDate().getTime();
-        let end = this._date.fromServerFormat(flash.EndDate_UTC).toDate().getTime();
-        let now = new Date().getTime();
-        if (start <= now && now <= end) {
-          tmpFlashes.push(flash);
-        }
-      });
-      this.updateSlider(tmpFlashes);
-    }
-  }
-
-  updateSlider(tmpFlashes) {
-    setTimeout(() => {
-      this.flashes = [];
-      if (this.slides) {
-        this.slides.update();
-      }
-      setTimeout(() => {
-        this.flashes = tmpFlashes;
-      });
-    });
-  }
 }
-

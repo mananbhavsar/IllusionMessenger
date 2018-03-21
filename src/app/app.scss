@@ -136,7 +136,7 @@ ion-app.md {
 
 .error-message-block {
     color: color($colors, 'danger');
-    padding: 0 16px;
+    padding: 0;
     font-size: 0.9em;
     font-style: italic;
     span {
@@ -181,5 +181,20 @@ ion-app.md {
             color: white;
             font-size: 12px;
         }
+    }
+}
+
+.reschedule-count {
+    &.reschedule-count-0:after {
+        content: '';
+    }
+    &.reschedule-count-1:after {
+        content: '*';
+    }
+    &.reschedule-count-2:after {
+        content: '**';
+    }
+    &.reschedule-count-3:after {
+        content: '***';
     }
 }

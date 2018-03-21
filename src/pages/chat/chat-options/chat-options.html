@@ -19,11 +19,16 @@
 			Saved Media
 			<ion-icon name="ios-arrow-forward" item-end></ion-icon>
 		</ion-item>
-		<ion-item-divider color="light">data</ion-item-divider>
+		<ion-item-divider color="light"></ion-item-divider>
 
 		<ion-item *ngFor="let participant of data.User;let i = index" (click)="userOptionsClicked(participant, i)">
-			{{participant.User}}
-			<span *ngIf="isYou(participant.UserID)">(You)</span>
+			<h2>
+				{{participant.User}}
+				<span *ngIf="isYou(participant.UserID)">(You)</span>
+			</h2>
+			<p *ngIf="participant.Tags">
+				{{participant.Tags}}
+			</p>
 			<ion-icon item-end name="ios-star" color="pickup" *ngIf="participant.IsResponsible"></ion-icon>
 			<button ion-button item-end small outline color="casestatus" *ngIf="participant.IsAdmin">Admin</button>
 		</ion-item>
@@ -31,7 +36,13 @@
 	<div *ngIf="amIAdmin">
 		<ion-item-divider color="light"></ion-item-divider>
 		<ion-list [hidden]="closeButton" *ngIf="data.StatusID === 1">
-			<ion-item (click)="closeGroup()" class="close-topic">
+			<ion-item (click)="rescheduleTopic()" class="close-topic" *ngIf="data.RescheduleCount < 3">
+				<h2 color="danger">Reschedule</h2>
+			</ion-item>
+			<ion-item class="height-0" *ngIf="data.RescheduleCount < 3">
+				<ion-datetime displayFormat="DD MMM YYYY, h A" (ionChange)="resheduleDateTimeChanged($event)" max="2050" #dueDate></ion-datetime>
+			</ion-item>
+			<ion-item (click)="closeTopic()" class="close-topic">
 				<h2 color="danger">Close Topic</h2>
 			</ion-item>
 		</ion-list>
@@ -42,7 +53,7 @@
 			Created: {{data.CreationDate_UTC | time}}
 		</p>
 		<p [ngClass]="isExpired(data.DueDate_UTC, data.CloseDatime_UTC) ? 'danger' : 'secondary'">
-			Due: {{data.DueDate_UTC | time}}
+			Due: {{data.DueDate_UTC | time}} <i class="reschedule-count" [ngClass]="'reschedule-count-' + data.RescheduleCount"></i>
 		</p>
 		<p *ngIf="data.StatusID === 2" color="danger">
 			Closed: {{data.CloseDatime_UTC | time}}

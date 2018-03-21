@@ -1,12 +1,16 @@
-import { DateProvider } from './../../../providers/date/date';
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ModalController, ActionSheetController, Events, ViewController } from 'ionic-angular';
+import { Component, ViewChild } from '@angular/core';
+import { IonicPage, NavController, NavParams, ModalController, ActionSheetController, Events, ViewController, DateTime } from 'ionic-angular';
+
 import { SavedMediaPage } from "./saved-media/saved-media";
+
+import { DateProvider } from './../../../providers/date/date';
 import { ConnectionProvider } from '../../../providers/connection/connection';
 import { FirebaseTransactionProvider } from '../../../providers/firebase-transaction/firebase-transaction';
 import { NotificationsProvider } from "../../../providers/notifications/notifications";
-import { Storage } from '@ionic/storage';
 import { UserProvider } from '../../../providers/user/user';
+
+import { Storage } from '@ionic/storage';
+
 
 import * as moment from 'moment';
 import * as _ from 'underscore';
@@ -17,6 +21,9 @@ import * as _ from 'underscore';
   templateUrl: 'chat-options.html',
 })
 export class ChatOptionsPage {
+  @ViewChild('dueDate') dueDate: DateTime;
+  dueDateOpened: boolean = false;
+
   data: any = {}
   title: string = '';
   topicCode: string = null;
@@ -52,6 +59,8 @@ export class ChatOptionsPage {
     this.statusID = this.navParams.data.data.StatusID;
     this.topicCode = this.navParams.data.folder;
 
+    console.log(this.navParams.data);
+
     this.path = this.navParams.data.path;
     this.group_name = this.navParams.data.group_name;
 
@@ -64,14 +73,20 @@ export class ChatOptionsPage {
         //converting to boolean
         if (typeof this.data.User[index].IsAdmin === 'string') {
           this.data.User[index].IsAdmin = user.IsAdmin === 'true';
+          user.IsAdmin = this.data.User[index].IsAdmin;
         }
         if (typeof this.data.User[index].IsResponsible === 'string') {
           this.data.User[index].IsResponsible = user.IsResponsible === 'true';
+          user.IsResponsible = this.data.User[index].IsResponsible;
         }
 
         //checking admin for me
         if (user.UserID === this.connection.user.LoginUserID && user.IsAdmin) {
           this.amIAdmin = true;
+        }
+        //checking isResponsible for me
+        if (user.UserID === this.connection.user.LoginUserID && user.IsResponsible) {
+          this.amIResponsible = true;
         }
       });
     }
@@ -91,7 +106,60 @@ export class ChatOptionsPage {
     savedMediaModal.present();
   }
 
-  closeGroup() {
+  rescheduleTopic() {
+    this.dueDate.mode = 'ios';
+    this.dueDate.setValue(this._date.fromServerFormat(this.data.DueDate_UTC).format());
+    this.dueDate.open();
+    this.dueDateOpened = true;
+    this.dueDate.ionCancel.subscribe(cancel => {
+      this.dueDateOpened = false;
+    });
+  }
+
+  resheduleDateTimeChanged(changed) {
+    if (!this.dueDateOpened) {
+      return;
+    }
+    //validate
+    let changedDate = new Date();
+    changedDate.setFullYear(changed.year);
+    changedDate.setMonth(changed.month - 1);
+    changedDate.setDate(changed.day);
+    changedDate.setHours(changed.hour);
+    changedDate.setMinutes(changed.minute);
+    changedDate.setSeconds(changed.second);
+
+    let changedMoment = moment(changedDate);
+    if (changedMoment.isValid()) {
+      //checking if more than now
+      if (changedMoment.toDate().getTime() >= moment().toDate().getTime()) {
+        //make ajax call to change
+        let utcString = this._date.toUTCISOString(changedMoment);
+        this.connection.doPost('Chat/RescheduleTopic', {
+          GroupID: this.groupID,
+          TopicID: this.topicID,
+          NewDueDate: utcString,
+        }).then((response: any) => {
+          this.dueDateOpened = false;
+          //update in DueDate_UTC/CurrentRescheduleCount
+          this.events.publish('toast:create', response.Data.Message);
+          this.data.DueDate_UTC = utcString;
+          this.data.RescheduleCount = response.Data.CurrentRescheduleCount;
+        }).catch(error => {
+          this.dueDateOpened = false;
+          this.events.publish('toast:error', error);
+        });
+      } else {
+        this.dueDateOpened = false;
+        this.events.publish('toast:error', 'New Due Date should be more than now');
+      }
+    } else {
+      this.dueDateOpened = false;
+      this.events.publish('toast:error', 'Invalid date');
+    }
+  }
+
+  closeTopic() {
     let actionSheet = this.actionSheetCtrl.create({
       title: 'Do You Want to Close ',
       buttons: [
@@ -148,7 +216,7 @@ export class ChatOptionsPage {
         //make, remove admin
         if (participant.IsAdmin) {
           //if not by created
-          if (this.removeAsAdmin)
+          if (participant.UserID !== this.data.CreatedByID)
             buttons.push({
               role: 'destructive',
               text: 'Remove as Admin',
@@ -165,25 +233,7 @@ export class ChatOptionsPage {
           });
         }
       }
-      //make, remove responsibel
-      if (this.amIResponsible) {
-        if (participant.IsResponsible) {
-          buttons.push({
-            role: 'destructive',
-            text: 'Remove as Responsible',
-            handler: () => {
 
-            }
-          });
-        } else {
-          buttons.push({
-            text: 'Mark Responsible',
-            handler: () => {
-
-            }
-          });
-        }
-      }
       if (buttons.length) { //at least on button other than cancel
         //cancel button
         buttons.push({
@@ -196,7 +246,8 @@ export class ChatOptionsPage {
         let userOptionActionSheet = this.actionSheetCtrl.create({
           title: 'Take Action',
           buttons: buttons
-        }).present();
+        });
+        userOptionActionSheet.present();
       }
     }
   }

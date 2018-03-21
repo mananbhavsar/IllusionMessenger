@@ -1,0 +1,22 @@
+<div *ngIf="flashes && flashes.length">
+  <ion-item-divider color="light">
+    Flash News
+  </ion-item-divider>
+  <ion-slides autoplay="5000" [loop]="flashes.length > 1" pager="true" #slides>
+    <ion-slide *ngFor="let flashNews of flashes;trackBy:getFlashID">
+      <h1>{{flashNews.Flash}}</h1>
+      <p>
+        <ion-row>
+          <ion-col text-left>
+            <ion-icon name="ios-person"></ion-icon>
+            {{flashNews.CreatedBy}}
+          </ion-col>
+          <ion-col text-right>
+            <ion-icon name="ios-clock"></ion-icon>
+            {{flashNews.StartDate_UTC | time}}
+          </ion-col>
+        </ion-row>
+      </p>
+    </ion-slide>
+  </ion-slides>
+</div>

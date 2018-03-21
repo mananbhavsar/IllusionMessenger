@@ -1,12 +1,14 @@
-import { ChatPage } from './../../chat/chat';
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
-import { ConnectionProvider } from '../../../providers/connection/connection';
+import { IonicPage, NavController, NavParams, ViewController, ModalController } from 'ionic-angular';
 
+import { ConnectionProvider } from '../../../providers/connection/connection';
+import { DateProvider } from './../../../providers/date/date';
+import { ChatPage } from './../../chat/chat';
+
+import * as _ from 'underscore';
+import * as firebase from 'firebase';
 import * as  moment from "moment";
 import { locale } from 'moment';
-import { ModalController } from 'ionic-angular';
-
 
 @IonicPage()
 @Component({
@@ -15,6 +17,7 @@ import { ModalController } from 'ionic-angular';
 })
 export class CloseTopicPage {
   group_id: number = null;
+  group_code: string = null;
   group_name: string = 'loading';
 
   topics: Array<any> = [];
@@ -24,19 +27,27 @@ export class CloseTopicPage {
 
   showSearch: boolean = false;
 
+  badges: any = {};
+
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     public connection: ConnectionProvider,
     public modalCtrl: ModalController,
     private viewController: ViewController,
+    private _date: DateProvider,
   ) {
     this.group_id = this.navParams.data.group_id;
     this.group_name = this.navParams.data.group_name;
+    this.group_code = this.navParams.data.group_code;
   }
 
-  ionViewDidLoad() {
-    this.getDetails();
+  ionViewDidEnter() {
+    this.getDetails().then(status => {
+      this.setForBadge();
+    }).catch(error => {
+
+    });
     this.initializeItems();
   }
 
@@ -46,7 +57,7 @@ export class CloseTopicPage {
 
     this.query = val.trim();
     this.getDetails().catch(error => {
-      
+
     });
   }
 
@@ -142,6 +153,29 @@ export class CloseTopicPage {
 
   toggleSearch() {
     this.showSearch = !this.showSearch;
+  }
+
+  isExpired(date) {
+    if (moment(date).isValid() && Math.abs(moment().diff(moment(date), 'years')) < 20) {
+      return (new Date().getTime() - this._date.fromServerFormat(date).toDate().getTime()) > 0;
+    }
+    return null;
+  }
+
+  setForBadge() {
+    firebase.database().ref('Badge/' + this.connection.user.id + '/Groups/' + this.group_code + '/Topics').on('value', snapshot => {
+      snapshot = snapshot.val();
+      if (snapshot && !_.isEmpty(snapshot)) {
+        this.badges = snapshot;
+      }
+    });
+  }
+
+  getBadge(topicCode) {
+    if (!(topicCode in this.badges)) {
+      this.badges[topicCode] = 0;
+    }
+    return this.badges[topicCode];
   }
 
 }

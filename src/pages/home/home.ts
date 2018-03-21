@@ -1,6 +1,9 @@
+import { AddFlashPage } from './../group/add-flash/add-flash';
+import { FirebaseTransactionProvider } from './../../providers/firebase-transaction/firebase-transaction';
+import { NotificationsProvider } from './../../providers/notifications/notifications';
 import { DateProvider } from './../../providers/date/date';
 import { Component, group } from '@angular/core';
-import { IonicPage, NavController, NavParams, Events, Platform } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, Events, Platform, ModalController } from 'ionic-angular';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ConnectionProvider } from '../../providers/connection/connection';
 import { UserProvider } from '../../providers/user/user';
@@ -9,6 +12,8 @@ import { OneSignal } from '@ionic-native/onesignal';
 import { Global } from '../../app/global';
 import { ChatPage } from "../chat/chat";
 import { Storage } from '@ionic/storage';
+
+import { Network } from '@ionic-native/network';
 
 import { CreateTopicPage } from './../topic/create-topic/create-topic';
 import * as _ from 'underscore';
@@ -30,6 +35,7 @@ export class HomePage {
     badges: any = {};
     firebaseConnected: boolean = false;
 
+    flashNews: Array<any> = [];
     /**
      * 0 => not connected
      * 1 => connecting
@@ -46,11 +52,20 @@ export class HomePage {
         private _oneSignal: OneSignal,
         private platform: Platform,
         private _date: DateProvider,
+        private _network: Network,
+        private modalController: ModalController,
+        private notifications: NotificationsProvider,
+        private _firebaseTransaction: FirebaseTransactionProvider,
     ) {
         this.global = Global;
         //listening to Resume & Pause events
         this.events.subscribe('platform:onResumed', () => {
             this.getData().catch(error => { });
+        });
+
+        //online offline
+        this._network.onchange().subscribe(() => {
+            this.registerDevice();
         });
     }
 
@@ -86,31 +101,41 @@ export class HomePage {
     getData() {
         return new Promise((resolve, reject) => {
             this.connection.doPost('Chat/Home', {
-            }).then((groups: Array<any>) => {
-                this.groups = groups;
-                if (groups.length === 0) {
-                    this.groups = -1;
-                }
+            }).then((response: any) => {
+                //groups
+                this.groups = response.Groups;
+                //flash
+                this.flashNews = response.FlashNews;
+                console.log(this.flashNews);
 
-                //make device regsiter call
-                if (this.platform.is('cordova')) {
-                    this.deviceRegsiter = 1;
-                    this._oneSignal.getIds().then((id) => {
-                        this.user.registerPushID(id.userId).then(response => {
-                            this.deviceRegsiter = 2;
-                        }).catch(error => {
-                            this.deviceRegsiter = 0;
-                        });
-                    }).catch(error => {
-                        this.deviceRegsiter = 0;
-                    });
-                }
+                this.registerDevice();
                 resolve(true);
             }).catch(error => {
                 this.groups = -1;
                 reject(error);
             })
         });
+    }
+
+    registerDevice() {
+        //make device regsiter call
+        if (this.platform.is('cordova')) {
+            //if internet
+            if (this._network.type === 'none') {
+                this.deviceRegsiter = 0;
+            } else {
+                this.deviceRegsiter = 1;
+                this._oneSignal.getIds().then((id) => {
+                    this.user.registerPushID(id.userId).then(response => {
+                        this.deviceRegsiter = 2;
+                    }).catch(error => {
+                        this.deviceRegsiter = 0;
+                    });
+                }).catch(error => {
+                    this.deviceRegsiter = 0;
+                });
+            }
+        }
     }
 
     refresh(refresher) {
@@ -144,10 +169,6 @@ export class HomePage {
         });
     }
 
-    registerDevice(id) {
-        this.user.registerPushID(id);
-    }
-
     useLang(lang) {
         this.translate.use(lang);
         this.user.registerPushID('123456');
@@ -167,4 +188,36 @@ export class HomePage {
     createTopic(group_id) {
         this.navCtrl.push(CreateTopicPage, group_id);
     }
+
+    headerButtonClicked(event) {
+        switch (event.name) {
+            case 'flash':
+                this.addFlash();
+                break;
+
+        }
+    }
+
+    addFlash() {
+        let flashModal = this.modalController.create(AddFlashPage, {
+            group_id: 0,
+            group_name: null,
+        });
+        flashModal.onDidDismiss(data => {
+            if (data) {
+                this.events.publish('toast:create', data.Data.Message);
+                this.notifications.sends(data.OneSignalTransaction);
+                this._firebaseTransaction.doTransaction(data.FireBaseTransaction).catch(error => {
+
+                });
+
+                //refresh
+                setTimeout(() => {
+                    this.getData();
+                });
+            }
+        });
+        flashModal.present();
+    }
 }
+

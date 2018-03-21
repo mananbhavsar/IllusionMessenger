@@ -1,8 +1,8 @@
 <ion-header>
   <ion-toolbar ion-text color="primary">
     <ion-title>
-      <div>Create Topic</div>
-      <small>{{group_name}}</small>
+      <div>{{title}}</div>
+      <small>{{subTitle()}}</small>
     </ion-title>
     <ion-buttons end>
       <button color="light" ion-button outline (click)="dismiss(null)">
@@ -29,7 +29,7 @@
         </div>
         <ion-item>
           <ion-label>Due Date</ion-label>
-          <ion-datetime displayFormat="DD MMM YYYY, h A" formControlName="due_date" max="2050"></ion-datetime>
+          <ion-datetime displayFormat="DD MMM YYYY, h A" formControlName="due_date" max="2050" #dueDate></ion-datetime>
         </ion-item>
         <div class="error-message-block" *ngIf="createForm.controls.due_date.errors && (createForm.controls.due_date.dirty || createForm.controls.due_date.touched)">
           <span *ngIf="createForm.controls.due_date.errors?.InvalidDatetime">Due date should be more than current time</span>

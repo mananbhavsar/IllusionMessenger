@@ -7,7 +7,7 @@ import { UserAutoCompleteService } from './user-auto-complete';
 import { Global } from './../../../app/global';
 import { ConnectionProvider } from './../../../providers/connection/connection';
 import { Component, ViewChild } from '@angular/core';
-import { IonicPage, NavController, NavParams, Events, ModalController, ViewController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, Events, ModalController, ViewController, DateTime } from 'ionic-angular';
 import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import * as _ from 'underscore';
 import { AutoCompleteComponent } from 'ionic2-auto-complete-ng5';
@@ -22,8 +22,15 @@ import { ManageParticipantsPage } from "./manage-participants/manage-participant
   templateUrl: 'create-topic.html',
 })
 export class CreateTopicPage {
+  @ViewChild('dueDate') dueDate: DateTime;
+
+  title: string = 'Create Topic';
+
   group_id: number = 0;
-  group_name: string = 'loading';
+  group_name: string = null;
+
+  topic_id: number = 0;
+  topic_name: string = null;
 
   participants: Array<any> = [];
   selectedParticipantIDs: Array<number> = [];
@@ -53,12 +60,18 @@ export class CreateTopicPage {
     this.group_id = this.navParams.data.group_id;
     this.group_name = this.navParams.data.group_name;
 
+    //edit params
+    if (this.navParams.data.topic_id) {
+      this.topic_id = this.navParams.data.topic_id;
+      this.topic_name = this.navParams.data.topic_name;
+    }
+
     this.global = Global;
     this.createForm = this.formBuilder.group({
-      group_id: [''],
-      assigned: [''],
       private: [true],
+      group_id: [''],
       name: ['', [Validators.required]],
+      assigned: [''],
       participants: [''],
       due_date: new FormControl(moment().local().add(3, 'hours').format())
     }, {
@@ -68,6 +81,24 @@ export class CreateTopicPage {
 
   ionViewDidLoad() {
     this.initData();
+  }
+
+  ngAfterViewChecked(){
+    //change mode
+    this.dueDate.mode = 'ios';
+  }
+
+  subTitle() {
+    let subTitle = '';
+
+    if (this.topic_name) {
+      subTitle += this.topic_name + ' / ';
+    }
+    if (this.group_name) {
+      subTitle += this.group_name;
+    }
+
+    return subTitle;
   }
 
   initData() {

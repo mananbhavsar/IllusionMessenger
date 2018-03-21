@@ -26,15 +26,21 @@
 		<ion-item no-padding *ngFor="let topic of topics; let i = index;" (click)="openTopic(topic, i)">
 			<h2>
 				{{topic.Topic}}
+				<span float-right>
+					<ion-icon name="ios-star" color="pickup" *ngIf="topic.IsResponsible"></ion-icon>
+					<ion-badge *ngIf="getBadge(topic.TopicCode)">{{getBadge(topic.TopicCode)}}</ion-badge>
+				</span>
 			</h2>
-			<ion-row>
-				<ion-col text-left class="pickup">
-					Created: {{topic.CreationDate_UTC | time }}
-				</ion-col>
-				<ion-col text-right class="danger">
-					Closed: {{topic.CloseDatime_UTC | time }}
-				</ion-col>
-			</ion-row>
+			<p>
+				<ion-row>
+					<ion-col text-left class="pickup">
+						Created: {{topic.CreationDate_UTC | time }}
+					</ion-col>
+					<ion-col text-right [ngClass]="isExpired(topic.DueDate_UTC) ? 'danger' : 'secondary'">
+						Closed: {{topic.CloseDatime_UTC | time }}
+					</ion-col>
+				</ion-row>
+			</p>
 		</ion-item>
 		<ion-infinite-scroll (ionInfinite)="paginate($event)" *ngIf="page !== -1">
 		</ion-infinite-scroll>

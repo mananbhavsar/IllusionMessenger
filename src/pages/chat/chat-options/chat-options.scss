@@ -12,7 +12,16 @@ page-chat-options {
                     &.close-topic {
                         ion-label {
                             color: color($colors, danger);
+                            ion-datetime {
+                                display: none;
+                            }
                         }
+                    }
+                    &.height-0 {
+                        height: 0;
+                        display: block;
+                        max-height: 0;
+                        min-height: 0;
                     }
                     button {
                         height: 1.1em;

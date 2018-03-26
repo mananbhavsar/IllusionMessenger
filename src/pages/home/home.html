@@ -29,13 +29,13 @@
                 <p>
                     <ion-row>
                         <ion-col text-start class="activetopics" *ngIf="group.ActiveTopics > 0">
-                            <ion-icon name="ios-alarm"></ion-icon> {{group.ActiveTopics}} due
+                            <ion-icon name="ios-alarm"></ion-icon> {{group.ActiveTopics}} {{'due' + (group.ActiveTopics > 1 ? 's' : '')}}
                         </ion-col>
                         <ion-col text-center class="responsibletopics" *ngIf="group.ResponsibleCount && group.ResponsibleCount > 0">
                             <ion-icon name="ios-star"></ion-icon> {{group.ResponsibleCount}} assigned
                         </ion-col>
                         <ion-col text-end class="overdue" *ngIf="group.OverDueTopics > 0">
-                            <ion-icon name="ios-alert"></ion-icon> {{group.OverDueTopics}} over-due
+                            <ion-icon name="ios-alert"></ion-icon> {{group.OverDueTopics}} {{'over-due' + (group.OverDueTopics > 1 ? 's' : '')}}
                         </ion-col>
                     </ion-row>
                 </p>

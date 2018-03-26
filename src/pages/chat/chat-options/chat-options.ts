@@ -96,7 +96,7 @@ export class ChatOptionsPage {
     let params = {
       path: this.path,
       folder: this.topicCode,
-      topic_group_name: this.navParams.data.user.Topic + ' / ' + this.group_name
+      topic_group_name: this.group_name + ' / ' + this.navParams.data.data.Topic
     };
 
     let savedMediaModal = this.modal.create(SavedMediaPage, params);
@@ -304,7 +304,7 @@ export class ChatOptionsPage {
 
   isExpired(due_date, close_date) {
     if (close_date === '0001-01-01T00:00:00.00Z' || !moment(close_date).isValid()) {
-      close_date = this._date.toUTCISOString(new Date(), false);
+      close_date = this._date.toUTCISOString(new Date(), false, false);
     }
     if (moment(due_date).isValid() && moment(close_date).isValid()) {
       return (this._date.fromServerFormat(close_date).toDate().getTime() - this._date.fromServerFormat(due_date).toDate().getTime()) > 0;

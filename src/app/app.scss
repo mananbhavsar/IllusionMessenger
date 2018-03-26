@@ -184,6 +184,19 @@ ion-app.md {
     }
 }
 
+.item>ion-icon,
+.item-inner>ion-icon {
+    min-height: 0.8rem;
+    font-size: initial;
+    line-height: 1;
+}
+ion-item-divider{
+    &.item-divider-md{
+        ion-label{
+            margin: 3px 2px 3px 0;
+        }
+    }
+}
 .reschedule-count {
     &.reschedule-count-0:after {
         content: '';

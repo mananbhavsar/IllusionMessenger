@@ -33,6 +33,7 @@ import { Globalization } from '@ionic-native/globalization';
 import { OneSignal } from '@ionic-native/onesignal';
 import { FileOpener } from '@ionic-native/file-opener';
 import { PhotoViewer } from '@ionic-native/photo-viewer';
+import { AndroidPermissions } from '@ionic-native/android-permissions';
 
 import { HttpModule } from '@angular/http';
 import { IonicStorageModule } from '@ionic/storage';
@@ -185,6 +186,7 @@ export function createTranslateLoader(http: HttpClient) {
         Globalization,
         CommonProvider,
         OneSignal,
+        AndroidPermissions,
         NotificationsProvider,
         FileOpener,
         FileOpsProvider,

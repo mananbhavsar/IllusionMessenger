@@ -1,8 +1,8 @@
 <div class="message" [ngClass]="message.UserID === userID ? 'message-mine' : 'message-other'">
   <div class="message-header" *ngIf="message.UserID !== userID">
     <div class="message-user">
-      <ion-icon name="ios-star" *ngIf="message.UserID === responsibleUserID"></ion-icon>
       {{message.From}}
+      <ion-icon name="ios-star" *ngIf="message.UserID === responsibleUserID"></ion-icon>
     </div>
   </div>
   <div class="message-body" (click)="openFile()">

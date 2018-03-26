@@ -22,6 +22,7 @@
     "@angular/platform-browser": "^4.4.6",
     "@angular/platform-browser-dynamic": "^4.4.6",
     "@angular/tsc-wrapped": "^4.4.6",
+    "@ionic-native/android-permissions": "^4.6.0",
     "@ionic-native/app-version": "^4.3.1",
     "@ionic-native/badge": "^4.5.3",
     "@ionic-native/base64-to-gallery": "^4.3.1",
@@ -73,6 +74,7 @@
     "cordova-base64-to-gallery": "^4.1.3",
     "cordova-ios": "4.5.4",
     "cordova-plugin-add-swift-support": "^1.7.1",
+    "cordova-plugin-android-permissions": "^1.0.0",
     "cordova-plugin-app-version": "^0.1.9",
     "cordova-plugin-badge": "^0.8.7",
     "cordova-plugin-call-number": "^1.0.1",
@@ -172,7 +174,8 @@
         "MICROPHONE_USAGE_DESCRIPTION": "To send voice message"
       },
       "com.hutchind.cordova.plugins.streamingmedia": {},
-      "nl.x-services.plugins.videocaptureplus": {}
+      "nl.x-services.plugins.videocaptureplus": {},
+      "cordova-plugin-android-permissions": {}
     },
     "platforms": []
   }

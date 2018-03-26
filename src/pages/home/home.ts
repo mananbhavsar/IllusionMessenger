@@ -112,6 +112,7 @@ export class HomePage {
                 resolve(true);
             }).catch(error => {
                 this.groups = -1;
+                this.flashNews = [];
                 reject(error);
             })
         });

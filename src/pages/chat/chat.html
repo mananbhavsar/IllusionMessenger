@@ -1,5 +1,5 @@
 <ion-header no-border (touchstart)="closeKeyboard($event)">
-  <header [title]="title" [subTitle]="getTyping()" [buttons]="headerButtons" (buttonClicked)="openChatOptions()"></header>
+  <header [title]="title" [subTitle]="userTypingString" [buttons]="headerButtons" (buttonClicked)="openChatOptions()"></header>
   <ion-toolbar class="group-header">
     <ion-title>{{group_name}}</ion-title>
   </ion-toolbar>
@@ -18,7 +18,8 @@
     </ion-infinite-scroll>
     <ng-container *ngFor="let message of messages;trackBy:getTrackByField | orderBy:'CreateAt'">
       <chat-bubble [id]="'message-'+message.key" class="message-wrapper" [message]="message" [userID]="userID" [topicID]="topicID"
-        [topicCode]="topicCode" [groupID]="groupID" [groupCode]="groupCode" [users]="groupCode" [myLanguage]="myLanguage" [responsibleUserID]="responsibleUserID" (press)="openReading($event, message, false)"></chat-bubble>
+        [topicCode]="topicCode" [groupID]="groupID" [groupCode]="groupCode" [users]="chatUsers" [myLanguage]="myLanguage" [responsibleUserID]="responsibleUserID"
+        (press)="openReading($event, message, false)"></chat-bubble>
     </ng-container>
   </div>
   <!-- <div class="typing-container">
@@ -42,18 +43,13 @@
 
       <label class="item-input-wrapper" [ngClass]="{'send': message.trim().length > 0}">
         <!-- fz-elastic -->
-        <textarea autocomplete="on" [disabled]="translating" autocorrect="on" fz-elastic rows="1" #messageInput [(ngModel)]="message"
+        <textarea autocomplete="on" autocorrect="on" fz-elastic rows="1" #messageInput [(ngModel)]="message"
           dir="auto" (keyup)="keyup($event)" (focus)="onFocus($event)" (blur)="onBlur($event)"></textarea>
       </label>
 
       <span *ngIf="message.trim().length > 0">
-        <button (click)="sendTextMessage($event)" [disabled]="translating" class="send-button" round ion-button small>
-          <ng-container *ngIf="translating;else show_send">
-            <ion-spinner name="dots"></ion-spinner>
-          </ng-container>
-          <ng-template #show_send>
-            {{'ChatScreen._Send_' | translate}}
-          </ng-template>
+        <button (click)="sendTextMessage($event)" class="send-button" round ion-button small>
+          {{'ChatScreen._Send_' | translate}}
         </button>
       </span>
       <span *ngIf="!message || message.trim().length === 0">

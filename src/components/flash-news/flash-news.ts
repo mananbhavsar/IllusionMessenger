@@ -37,8 +37,7 @@ export class FlashNewsComponent {
    */
   ngOnChanges(changes: SimpleChanges) {
     this.processing = true;
-    console.log(changes.flashNews);
-    if (changes.flashNews && changes.flashNews.currentValue && changes.flashNews.firstChange) {
+    if (changes.flashNews && changes.flashNews.currentValue) {
       this.processing = false;
       this.updateSlider(changes.flashNews.currentValue);
     }
@@ -77,9 +76,14 @@ export class FlashNewsComponent {
     }
 
     setTimeout(() => {
+      let oldLength = this.flashes.length;
       this.flashes = tmpFlashes;
       if (this.slides) {
         this.slides.update();
+        //selecting first
+        if (oldLength !== this.flashes.length && this.flashes.length) {
+          this.slides.slideTo(0);
+        }
       }
     });
   }

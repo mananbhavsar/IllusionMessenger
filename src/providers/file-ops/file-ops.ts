@@ -1,3 +1,4 @@
+import { Storage } from '@ionic/storage';
 import { Injectable } from '@angular/core';
 import { Platform, Events, normalizeURL } from 'ionic-angular';
 
@@ -6,7 +7,10 @@ import * as mime from 'mime-types';
 import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer';
 import { File } from '@ionic-native/file';
 import { StreamingMedia, StreamingVideoOptions } from '@ionic-native/streaming-media';
+
 import { Network } from '@ionic-native/network';
+import { AndroidPermissions } from '@ionic-native/android-permissions';
+
 import { FileOpener } from '@ionic-native/file-opener';
 
 import { Global } from '../../app/global';
@@ -25,6 +29,7 @@ export class FileOpsProvider {
     private platform: Platform,
     private events: Events,
     private fileOpener: FileOpener,
+    private androidPermissions: AndroidPermissions,
   ) {
     this.isIOS = this.platform.is('ios');
     this.isAndroid = this.platform.is('android');
@@ -35,16 +40,38 @@ export class FileOpsProvider {
     return new Promise((resolve, reject) => {
       if (this.isCordova) {
         if (this.isAndroid) {
-          //creating folder
-          this.file.createDir(this.file.externalRootDirectory, Global.APP_NAME, false).then(entry => {
-            resolve(this.file.externalRootDirectory + Global.APP_NAME + '/');
-          }).catch(error => {
-            if (error.code === 12) { //Dir Exist
-              resolve(this.file.externalRootDirectory + Global.APP_NAME + '/');
+          //check if has permission
+          this.androidPermissions.checkPermission(this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE).then(permission => {
+            if (permission.hasPermission) {
+              //creating folder
+              this.file.createDir(this.file.externalRootDirectory, Global.APP_NAME, false).then(entry => {
+                resolve(this.file.externalRootDirectory + Global.APP_NAME + '/');
+              }).catch(error => {
+                if (error.code === 12) { //Dir Exist
+                  resolve(this.file.externalRootDirectory + Global.APP_NAME + '/');
+                } else {
+                  reject(error);
+                }
+              });
             } else {
-              reject(error);
+              this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE).then(permission => {
+                if (permission.hasPermission) {
+                  this.getDataDirectory().then(path => {
+                    resolve(path);
+                  }).catch(error => {
+                    reject(error);
+                  });
+                }
+              }, error => {
+                console.log(error);
+                reject('Permission reject to write files');
+              });
             }
+          }, error => {
+            console.log(error);
+
           });
+
         } else { //iOS
           resolve(this.file.dataDirectory);
         }

@@ -2,7 +2,7 @@
   <ion-item-divider color="light">
     Flash News
   </ion-item-divider>
-  <ion-slides autoplay="5000" [loop]="flashes.length > 1" pager="true" #slides>
+  <ion-slides autoplay="5000" [loop]="true" pager="true" #slides>
     <ion-slide *ngFor="let flashNews of flashes;trackBy:getFlashID">
       <h1>{{flashNews.Flash}}</h1>
       <p>

@@ -54,6 +54,8 @@ export class ChatPage {
   @ViewChild(Content) content: Content;
   @ViewChild('messageInput') messageInput: any;
   global: any = Global;
+  platformResumeReference = null;
+  platformPauseReference = null;
 
   data: any = {};
 
@@ -87,6 +89,7 @@ export class ChatPage {
   typingRef: firebase.database.Reference;
   typingRefLoaded: boolean = false;
   userTyping: any = {}; //this will hold all users id:status. 
+  userTypingString: string = null;
 
   userChatting: any = {}; // active chat users
   chattingRef: firebase.database.Reference;
@@ -147,7 +150,6 @@ export class ChatPage {
 
   myLanguage: string = null;
   chatLanguages: Array<string> = [];
-  translating: boolean = false;
   headerButtons: Array<any> = [];
 
   doctor_translate: string = 'Doctor';
@@ -195,7 +197,9 @@ export class ChatPage {
 
     this._fileOps.getDataDirectory().then(path => {
       this.dataDirectory = path;
+      console.log(this.dataDirectory);
     }).catch(error => {
+      console.log(error);
     });
 
     this.keyboard.onKeyboardShow().subscribe((data) => {
@@ -316,6 +320,7 @@ export class ChatPage {
 
     }
 
+    console.log(this.newMessagesRef);
     this.newMessagesRef.on('child_added', (snapshot) => {
       let message = snapshot.val();
 
@@ -379,6 +384,7 @@ export class ChatPage {
         }, 100);
       }
       this.typingRefLoaded = true;
+      this.setTypingString();
     });
 
     this.chattingRef.on('value', snapshot => {
@@ -472,16 +478,24 @@ export class ChatPage {
 
   listenToEvents() {
     //listening to platforms events
-    this.events.subscribe('platform:onPause', () => {
-      console.log('pause');
-      this.doLeaving(false);
-    });
-
-    this.events.subscribe('platform:onResumed', () => {
+    //On app Resume & Pause
+    this.platformResumeReference = this.platform.resume.subscribe(() => {
+      console.log('resume');
       this.setFirebaseRef();
-      this.listenToFirebaseEvents(true);
+      if (this.messagesRef && this.newMessagesRef) {
+        this.listenToFirebaseEvents(true);
+      }
       //make all unread count of this topic to zero
       this.clearBadgeCountIfAny();
+    }, error => {
+      console.log(error);
+    });
+
+    this.platformPauseReference = this.platform.pause.subscribe(() => {
+      console.log('pause');
+      this.doLeaving(false);
+    }, error => {
+      console.log(error);
     });
 
     //notification subs
@@ -590,7 +604,7 @@ export class ChatPage {
           TopicID: this.topicID,
           GroupID: this.groupID,
         };
-        this.connection.doPost('Chat/GetTopicDetail', params).then((response: any) => {
+        this.connection.doPost('Chat/GetTopicDetail', params, false).then((response: any) => {
           this.data = response.Data;
           this.data.GroupID = this.groupID;
           this.group_name = this.data.Group;
@@ -806,23 +820,16 @@ export class ChatPage {
       this.sendClickKeepKeyboardOpened = false;
     }
 
-    if (this.translating) {
-      return;
-    }
-
     if (this.message.trim() === '') {
       return false;
     }
     if (this.message) {
       let textMessage = this.message.trim().replace(/(?:\r\n|\r|\n)/g, '<br/>');
 
-      this.translating = true;
       this.sendToFirebase(textMessage).then(data => {
-        this.translating = false;
         this.message = '';
       }).catch(error => {
         console.log(error);
-        this.translating = false;
         this.message = '';
       });
     } else {
@@ -877,33 +884,8 @@ export class ChatPage {
         let translation = {};
         //adding mine which is original
         translation[this.myLanguage] = message;
-        //checking if all user knows only one lang, hence no need of translating
-        if (this.chatLanguages.length < 2) {
-          resolve(translation);
-        } else {
-          //looping over each lang and getting translation
-          this.chatLanguages.forEach(lang => {
-            //not translating my lang
-            if (lang !== this.myLanguage) {
-              this.http.post('https://translation.googleapis.com/language/translate/v2?key=' + Global.Translate.key, {
-                q: message,
-                source: this.myLanguage,
-                target: lang,
-              }).map((response: Response) => response.json()).subscribe(response => {
-                if (response.data) {
-                  translation[lang] = response.data.translations[0].translatedText;
-                } else {
-                  translation[lang] = message;
-                }
-                if (_.size(translation) === this.chatLanguages.length) {
-                  resolve(translation);
-                }
-              }, error => {
-                reject(error);
-              });
-            }
-          })
-        }
+        translation['en'] = message;
+        resolve(translation);
       } else {
         resolve({});
       }
@@ -1172,7 +1154,7 @@ export class ChatPage {
         const fileTransfer: FileTransferObject = this.transfer.create();
         let options = this.setFileOptions(file);
 
-        fileTransfer.upload(file, Global.SERVER_URL + 'Chat/InsertChat_Attachement', options)
+        fileTransfer.upload(file, this.connection.URL + 'Chat/InsertChat_Attachement', options)
           .then((data) => {
             this.progressPercent = 0;
             //getting URL from XML
@@ -1214,6 +1196,7 @@ export class ChatPage {
       TopicID: this.topicID,
       GroupID: this.groupID,
       TopicCode: this.topicCode,
+      GroupCode: this.groupCode,
       FileName: fileName,
       FileExtension: fileExtension,
     };
@@ -1334,11 +1317,17 @@ export class ChatPage {
       this.messages = [];
       this.messagesKeys = [];
       this.offlineMessages = [];
-      this.events.unsubscribe('platform:onPause');
-      this.events.unsubscribe('platform:onResumed');
       this.events.unsubscribe('notification:chat');
       this.events.unsubscribe('network:online');
       this.events.unsubscribe('network:offline');
+      if (this.platformPauseReference) {
+        this.platformPauseReference.unsubscribe();
+        this.platformPauseReference = null;
+      }
+      if (this.platformResumeReference) {
+        this.platformResumeReference.unsubscribe();
+        this.platformResumeReference = null;
+      }
 
       if (this.topicClosePath) {
         firebase.database().ref(this.topicClosePath).off('value');
@@ -1406,15 +1395,6 @@ export class ChatPage {
       return this.chatUsers[userID].Name;
     }
     return '';
-  }
-
-  isWithinRange(time) {
-    let momentTime = moment(time).utc().local();
-    if (momentTime.isValid()) {
-      time = moment().utc().valueOf() - momentTime.valueOf();
-      return time <= 3000;
-    }
-    return false;
   }
 
   doFoldering() {
@@ -1517,27 +1497,25 @@ export class ChatPage {
   }
 
   openReading(event, message) {
-    if (this.userID === message.UserID) {
-      let time = new Date().getTime();
-      if ((time - this.lastReadingTime) < 1000) {
-        return;
-      }
-      this.lastReadingTime = time;
-      let params = {
-        message: message,
-        chatUsers: this.chatUsers,
-        topicID: this.topicID,
-        topicCode: this.topicCode,
-        groupID: this.groupID,
-        groupCode: this.groupCode,
-        userID: this.userID,
-      };
-      let chatReadModal = this.modal.create(ChatReadModalPage, params);
-      chatReadModal.onDidDismiss(data => {
-
-      });
-      chatReadModal.present();
+    let time = new Date().getTime();
+    if ((time - this.lastReadingTime) < 1000) {
+      return;
     }
+    this.lastReadingTime = time;
+    let params = {
+      message: message,
+      chatUsers: this.chatUsers,
+      topicID: this.topicID,
+      topicCode: this.topicCode,
+      groupID: this.groupID,
+      groupCode: this.groupCode,
+      userID: this.userID,
+    };
+    let chatReadModal = this.modal.create(ChatReadModalPage, params);
+    chatReadModal.onDidDismiss(data => {
+
+    });
+    chatReadModal.present();
   }
 
   openChatOptions() {
@@ -1547,6 +1525,7 @@ export class ChatPage {
       folder: this.topicCode,
       group_name: this.group_name,
     }
+    console.log(this.dataDirectory);
     let chatOptionModal = this.modal.create(ChatOptionsPage, params);
     chatOptionModal.onDidDismiss(data => {
 
@@ -1630,7 +1609,16 @@ export class ChatPage {
     });
   }
 
-  getTyping() {
+  isWithinRange(time) {
+    let momentTime = moment(time).utc().local();
+    if (momentTime.isValid()) {
+      time = moment().utc().valueOf() - momentTime.valueOf();
+      return time <= 3000;
+    }
+    return false;
+  }
+
+  setTypingString() {
     let typingUsers: Array<string> = [];
     for (let typingUserId in this.userTyping) {
       if (typingUserId && typingUserId !== (this.userID + '') && this.isWithinRange(this.userTyping[typingUserId])) {
@@ -1638,10 +1626,10 @@ export class ChatPage {
       }
     }
     if (typingUsers.length) {
-      return typingUsers.join(', ') + ' typing';
+      this.userTypingString = typingUsers.join(', ') + ' typing';
+    } else {
+      this.userTypingString = null;
     }
-
-    return null;
   }
 
   getTrackByField(index, message) {

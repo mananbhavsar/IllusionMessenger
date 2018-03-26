@@ -19,24 +19,27 @@ page-home {
         ion-item {
             ion-label {
                 &.label-md {
-                    margin: 5px 0;
+                    margin: 0;
                 }
                 h2 {}
                 ion-row {
                     ion-col {
-                        font-size: 11px;
-                    }
-                    .activetopics {
-                        color: color($colors, secondary);
-                        font-style: italic;
-                    }
-                    .responsibletopics {
-                        color: color($colors, pickup);
-                        font-style: italic;
-                    }
-                    .overdue {
-                        color: color($colors, danger);
-                        font-style: italic;
+                        &.col {
+                            font-size: 11px;
+                            padding: 0;
+                        }
+                        &.activetopics {
+                            color: color($colors, secondary);
+                            font-style: italic;
+                        }
+                        &.responsibletopics {
+                            color: color($colors, pickup);
+                            font-style: italic;
+                        }
+                        &.overdue {
+                            color: color($colors, danger);
+                            font-style: italic;
+                        }
                     }
                 }
             }

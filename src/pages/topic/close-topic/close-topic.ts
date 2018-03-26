@@ -43,6 +43,7 @@ export class CloseTopicPage {
   }
 
   ionViewDidEnter() {
+    this.initializeItems();
     this.getDetails().then(status => {
       this.setForBadge();
     }).catch(error => {

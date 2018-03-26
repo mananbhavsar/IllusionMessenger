@@ -30,16 +30,18 @@ export class DateProvider {
     return date;
   }
 
-  toUTC(date, minuteFlag: boolean = true) {
+  toUTC(date, minuteFlag: boolean = true, secondFlag: boolean = true) {
     if (date && moment(date).isValid()) {
       if (!moment.isMoment(date)) {
         date = moment(date);
         let zeroParams = {
-          second: 0,
           millisecond: 0
         };
         if (minuteFlag) {
           zeroParams['minute'] = 0;
+        }
+        if (secondFlag) {
+          zeroParams['second'] = 0;
         }
         date.set(zeroParams);
       }
@@ -48,12 +50,12 @@ export class DateProvider {
     return date;
   }
 
-  toUTCISOString(date, minuteFlag: boolean = true) {
+  toUTCISOString(date, minuteFlag: boolean = true, secondFlag: boolean = true) {
     if (date && moment(date).isValid()) {
       if (typeof date === 'string') {
         date = this.replaceTZ(date);
       }
-      return this.toUTC(date, minuteFlag).toISOString() + '';
+      return this.toUTC(date, minuteFlag, secondFlag).toISOString() + '';
     }
     return date;
   }

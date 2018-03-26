@@ -7,6 +7,7 @@ import { Http, Headers, Response, URLSearchParams } from '@angular/http';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/timeout';
 import * as _ from 'underscore';
+import * as firebase from 'firebase';
 
 import { TranslateService } from "@ngx-translate/core";
 
@@ -25,6 +26,8 @@ export class ConnectionProvider {
 
     loading_translate: string = 'loading';
     please_check_internet_connection: string = 'Please check your network connection';
+
+    URL:string = null;
     constructor(
         public http: Http,
         public storage: Storage,
@@ -35,6 +38,8 @@ export class ConnectionProvider {
         private uniqueDeviceID: UniqueDeviceID,
         private translate: TranslateService,
     ) {
+        this.URL = Global.SERVER_URL;
+
         this.events.subscribe('user:changed', (user) => {
             this.storage.get('User').then((user) => {
                 this.user = user;
@@ -53,6 +58,15 @@ export class ConnectionProvider {
                     .catch((error: any) => console.log(error));
             }
             this.doTranslate();
+
+
+            //url from  firebase
+            firebase.database().ref('Settings/URL').on('value', snapshot=>{
+                let url = snapshot.val();
+                if(url){
+                    this.URL = url;
+                }
+            });
         });
     }
 
@@ -89,7 +103,7 @@ export class ConnectionProvider {
             }
             //creating request
             let urlSearchParams = this.getURLSearchParams(params);
-            this.http.post(Global.SERVER_URL + url, urlSearchParams).timeout(60000).map((response: Response) => response.json()).subscribe((data) => {
+            this.http.post(this.URL + url, urlSearchParams).timeout(60000).map((response: Response) => response.json()).subscribe((data) => {
                 if (loader) {
                     this.events.publish('loading:close');
                 }
@@ -161,7 +175,7 @@ export class ConnectionProvider {
 
     doGet(url, data: any) {
 
-        return this.http.get(Global.SERVER_URL + url).map((response: Response) => response.json());
+        return this.http.get(this.URL + url).map((response: Response) => response.json());
 
     }
 

@@ -55,6 +55,7 @@ export class GroupPage {
         RowsPerPage: 20,
         Query: '',
       }, false).then((response: any) => {
+        console.log(response);
         this.group = response;
 
         this.setForBadge();
@@ -115,14 +116,17 @@ export class GroupPage {
   }
 
   openTopic(topic, index, type) {
-    if (topic.Count) {
-      topic.Count = 0;
-      this.group[type].Count = 0;
+    if (topic) {
+      if (topic.Count) {
+        topic.Count = 0;
+        console.log(this.group, type);
+        this.group[type].Count = 0;
+      }
+      this.navCtrl.push(ChatPage, {
+        topicID: topic.TopicID,
+        groupID: this.group_id,
+      });
     }
-    this.navCtrl.push(ChatPage, {
-      topicID: topic.TopicID,
-      groupID: this.group_id,
-    });
   }
 
   viewAllClosedTopics() {

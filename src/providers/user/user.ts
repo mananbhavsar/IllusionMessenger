@@ -168,6 +168,9 @@ export class UserProvider {
                         }
                         this.logout();
                         reject(false);
+                    } else if (response.Data.Status === 0) {
+                        this._firebaseTransaction.doTransaction(response.FireBaseTransaction).catch(error => { })
+                        reject(response.Data);
                     } else {
                         //now doing firebase transaction
                         this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => {

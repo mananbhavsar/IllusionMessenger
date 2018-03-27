@@ -12,6 +12,9 @@ export class TimePipe implements PipeTransform {
 
   }
   transform(value: string, avoidExtra: boolean = false) {
-    return this._date.get(value);
+    if (value && moment(value).isValid()) {
+      return this._date.get(value);
+    }
+    return value;
   }
 }

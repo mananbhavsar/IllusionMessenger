@@ -3,6 +3,8 @@ import { IonicPageModule } from 'ionic-angular';
 import { HomePage } from './home';
 import { ComponentsModule } from "../../components/components.module";
 import { MomentModule } from 'angular2-moment';
+import { PipesModule } from '../../pipes/pipes.module';
+
 @NgModule({
     declarations: [
         HomePage,
@@ -10,7 +12,8 @@ import { MomentModule } from 'angular2-moment';
     imports: [
         IonicPageModule.forChild(HomePage),
         ComponentsModule,
-        MomentModule
+        MomentModule,
+        PipesModule,
     ],
 })
 export class HomePageModule { }

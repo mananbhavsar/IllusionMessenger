@@ -1,6 +1,6 @@
 export var Global = {
-    APP_NAME: 'IllusionMessenger',
-    album: 'IllusionMessenger',
+    APP_NAME: 'LaxmiTaskManager',
+    album: 'Laxmi Task Manager',
     tutorial: false,
     color: {
         primary: 'D5232F',
@@ -15,7 +15,7 @@ export var Global = {
         invoice: '673AB7',
         payments: '009688'
     },
-    AppVersion: '0.3.2',
+    AppVersion: '0.3.3',
     support: {
         landline: '+91-22-61366301',
         pick_up: '+91-22-61366301',

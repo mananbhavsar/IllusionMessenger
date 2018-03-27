@@ -4,6 +4,7 @@ import { OneSignal } from '@ionic-native/onesignal';
 import { Global } from "../../app/global";
 
 import { ConnectionProvider } from "../connection/connection";
+import { Platform } from 'ionic-angular';
 
 @Injectable()
 export class NotificationsProvider {
@@ -11,6 +12,7 @@ export class NotificationsProvider {
   constructor(
     private _oneSignal: OneSignal,
     private _connection: ConnectionProvider,
+    private _platform: Platform,
   ) {
 
   }
@@ -72,13 +74,18 @@ export class NotificationsProvider {
         };
         notificationObj['big_picture'] = image_url;
       }
-      this._oneSignal.postNotification(notificationObj).then(response => {
-        console.log(response);
-        resolve(response);
-      }).catch(error => {
-        console.log(error);
-        reject(error);
-      });
+      if (this._platform.is('cordova')) {
+        this._oneSignal.postNotification(notificationObj).then(response => {
+          console.log(response);
+          resolve(response);
+        }).catch(error => {
+          console.log(error);
+          reject(error);
+        });
+      } else {
+        console.log(notificationObj);
+        resolve('sent');
+      }
     });
   }
 }

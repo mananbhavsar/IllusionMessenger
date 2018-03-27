@@ -90,6 +90,7 @@ export class ChatPage {
   typingRefLoaded: boolean = false;
   userTyping: any = {}; //this will hold all users id:status. 
   userTypingString: string = null;
+  userTypingStringInterval = null;
 
   userChatting: any = {}; // active chat users
   chattingRef: firebase.database.Reference;
@@ -590,11 +591,26 @@ export class ChatPage {
         }
       })
     }
+
+    //setTypingString interval
+    this.clearTypingStringInterval();
+    this.userTypingStringInterval = setInterval(() => {
+      this.setTypingString();
+    }, 3000);
+  }
+
+  clearTypingStringInterval() {
+    //setTypingString interval
+    if (this.userTypingStringInterval) {
+      clearInterval(this.userTypingStringInterval);
+      this.userTypingStringInterval = null;
+    }
   }
 
   ionViewWillLeave() {
     console.log('leaving');
     this.doLeaving(true);
+    this.clearTypingStringInterval();
   }
 
   initData() {
@@ -1220,23 +1236,26 @@ export class ChatPage {
 
 
   sendPushNotification(message, users: Array<object>) {
-    if (_.isEmpty(message.Translation)) {
-      message.Translation = { en: message.Message };
-    }
     users.forEach((user: any) => {
 
-      let contents = message.Translation;
+      let contents = user.Message;
 
       //checking if Image then adding image notification
       if (message.MessageType === 'Image') {
-        contents.en = '📷 Image';
-        contents.fr = '📷 Image';
+        contents.en = '📷 ' + contents.en;
+        if (contents.fr) {
+          contents.fr = '📷 ' + contents.fr;
+        }
       } else if (message.MessageType === 'Video') {
-        contents.en = '📹 Video Message';
-        contents.fr = '📹 Video Message';
+        contents.en = '📹 ' + contents.en;
+        if (contents.fr) {
+          contents.fr = '📹 ' + contents.fr;
+        }
       } else if (message.MessageType === 'Audio') {
-        contents.en = '🎤 Voice Message';
-        contents.fr = '🎤 Voice Message';
+        contents.en = '🎤 ' + contents.en;
+        if (contents.fr) {
+          contents.fr = '🎤 ' + contents.fr;
+        }
       }
 
       this._notifications.send(user.DeviceID, user.title, contents, user.Badge, 'ChatPage', this.topicCode, message.URL).catch(error => { });

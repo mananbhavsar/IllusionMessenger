@@ -33,6 +33,7 @@ export class HomePage {
     global: any = {};
     groups: Array<any> | -1 = [];
     badges: any = {};
+
     firebaseConnected: boolean = false;
 
     flashNews: Array<any> = [];
@@ -42,6 +43,7 @@ export class HomePage {
      * 2 => connected
      */
     deviceRegsiter: number = 0;
+    connectedTime: string = null;
     constructor(
         public navCtrl: NavController,
         public connection: ConnectionProvider,
@@ -64,9 +66,11 @@ export class HomePage {
         });
 
         //online offline
-        this._network.onchange().subscribe(() => {
-            this.registerDevice();
-        });
+        if (this.platform.is('cordova')) {
+            this._network.onchange().subscribe(() => {
+                this.registerDevice();
+            });
+        }
     }
 
     //keep it enter only
@@ -127,16 +131,27 @@ export class HomePage {
             } else {
                 this.deviceRegsiter = 1;
                 this._oneSignal.getIds().then((id) => {
-                    this.user.registerPushID(id.userId).then(response => {
-                        this.deviceRegsiter = 2;
-                    }).catch(error => {
-                        this.deviceRegsiter = 0;
-                    });
+                    this.connectToServer(id.userId);
                 }).catch(error => {
                     this.deviceRegsiter = 0;
                 });
             }
         }
+    }
+
+    connectToServer(pushID) {
+        this.user.registerPushID(pushID).then((response: any) => {
+            console.log(response);
+            if (response.Data && response.Data.LastActivity) {
+                this.deviceRegsiter = 2; //connected
+                this.connectedTime = response.Data.LastActivity; //this will be utc
+            } else {
+                this.deviceRegsiter = 0;
+            }
+        }).catch(error => {
+            this.events.publish('toast:error', error);
+            this.deviceRegsiter = 0;
+        });
     }
 
     refresh(refresher) {

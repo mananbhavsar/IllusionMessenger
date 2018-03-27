@@ -3,7 +3,7 @@
     <div class="device-register" [ngSwitch]="deviceRegsiter">
         <span class="gray" *ngSwitchCase="0">Not Connected</span>
         <span class="pickup" *ngSwitchCase="1">Connecting</span>
-        <span class="secondary" *ngSwitchCase="2">Connected</span>
+        <span class="secondary" *ngSwitchCase="2">Last connected at {{connectedTime | time}}</span>
     </div>
 </ion-header>
 <ion-content no-padding>

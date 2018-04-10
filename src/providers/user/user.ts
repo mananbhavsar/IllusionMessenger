@@ -184,6 +184,7 @@ export class UserProvider {
                         });
                     }
                 }).catch(error => {
+                    this.events.publish('toast:error', error);
                     reject(error);
                 });
             } else {

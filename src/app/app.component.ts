@@ -268,7 +268,11 @@ export class MyApp {
 
         this.events.subscribe('loading:close', () => {
             if (this.loading) {
+                try{
                 this.loading.dismiss();
+                }catch(e){
+                    console.error(e);
+                }
             }
         });
 
@@ -294,7 +298,7 @@ export class MyApp {
         });
 
 
-        this.events.subscribe('toast:create', (message, cssClass) => {
+        this.events.subscribe('toast:create', (message, cssClass, position: string = 'top') => {
             cssClass = cssClass || null;
             if (message.trim() === '') {
                 return;
@@ -302,7 +306,7 @@ export class MyApp {
             let toast = this.toast.create({
                 message: message,
                 duration: 5000,
-                position: 'top',
+                position: position,
                 showCloseButton: true,
                 closeButtonText: 'x',
                 cssClass: cssClass
@@ -310,14 +314,14 @@ export class MyApp {
             toast.present();
         });
 
-        this.events.subscribe('toast:error', (error) => {
+        this.events.subscribe('toast:error', (error, position: string = 'top') => {
             if (error === null) {
                 return;
             }
             if (typeof error === 'string') {
-                this.events.publish('toast:create', error, 'danger');
+                this.events.publish('toast:create', error, 'danger', position);
             } else if ([404].indexOf(error.status) > -1) {
-                this.events.publish('toast:create', error.status + ': ' + error.statusText, 'danger');
+                this.events.publish('toast:create', error.status + ': ' + error.statusText, 'danger', position);
             } else if (error._body) {
                 let body = error._body;
                 if (body) {
@@ -342,7 +346,7 @@ export class MyApp {
                 }
                 this.events.publish('alert:basic', body.title, body.message);
             } else {
-                this.events.publish('toast:create', this.error_translate, 'danger');
+                this.events.publish('toast:create', this.error_translate, 'danger', position);
             }
         });
 
@@ -523,6 +527,9 @@ export class MyApp {
     }
 
     processOneSignalId() {
+        if (!this.platform.is('cordova')) {
+            return;
+        }
         this._oneSignal.getIds().then((id) => {
             //registering user
             this._oneSignal.setSubscription(true);
@@ -544,7 +551,11 @@ export class MyApp {
                 let total = snapshot.payload.val();
                 console.log('total:' + total);
                 if (total) {
-                    this._badge.set(total);
+                    this._badge.set(total).then(value => {
+
+                    }).catch(error => {
+
+                    });
                 } else {
                     this._badge.clear();
                 }

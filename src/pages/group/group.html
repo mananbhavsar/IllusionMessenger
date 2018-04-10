@@ -43,14 +43,18 @@
                 Created: {{topic.CreationDate_UTC | time }}
               </ion-col>
               <ion-col text-right *ngIf="isExpired(topic.DueDate_UTC) !== null" [ngClass]="isExpired(topic.DueDate_UTC) ? 'danger' : 'secondary'">
-                Due: {{topic.DueDate_UTC | time }} <i class="reschedule-count" [ngClass]="'reschedule-count-' + topic.RescheduleCount"></i>
+                Due: {{topic.DueDate_UTC | time }}
+                <i class="reschedule-count" [ngClass]="'reschedule-count-' + topic.RescheduleCount"></i>
               </ion-col>
             </ion-row>
           </p>
           <ion-icon name="ios-arrow-forward" item-end></ion-icon>
         </ion-item>
         <ion-item color="light" text-center (click)="viewAllClosedTopics($event)">
-          View All Archived
+          <h2>
+            View All Archived&nbsp;&nbsp;
+            <ion-badge small text-small *ngIf="group && group.ArchiveTopicCount">{{group.ArchiveTopicCount}}</ion-badge>
+          </h2>
         </ion-item>
       </ion-item-group>
     </ion-grid>

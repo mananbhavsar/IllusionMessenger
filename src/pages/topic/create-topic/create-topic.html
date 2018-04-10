@@ -29,26 +29,37 @@
         </div>
         <ion-item>
           <ion-label>Due Date</ion-label>
-          <ion-datetime displayFormat="DD MMM YYYY, h A" formControlName="due_date" max="2050" #dueDate></ion-datetime>
+          <ion-datetime displayFormat="DD MMM YYYY, h A" pickerFormat="DD MMM YYYY, HH" formControlName="due_date" max="2050" #dueDate
+            hourValues="09,10,11,12,13,14,15,16,17,18,19,20,21"></ion-datetime>
         </ion-item>
         <div class="error-message-block" *ngIf="createForm.controls.due_date.errors && (createForm.controls.due_date.dirty || createForm.controls.due_date.touched)">
-          <span *ngIf="createForm.controls.due_date.errors?.InvalidDatetime">Due date should be more than current time</span>
+          <span *ngIf="createForm.controls.due_date.errors?.InvalidDatetime">{{getErrorMessage()}}</span>
         </div>
-        <ion-item no-lines *ngIf="createForm.get('private').value">
-          <button ion-button block (click)="addParticipants()">Add Participants</button>
-        </ion-item>
-        <div *ngIf="createForm.get('private').value">
-          <ion-list *ngIf="!_.isEmpty(selectedParticipants)">
-            <ion-list-header>
-              Selected Participants
-            </ion-list-header>
-            <ion-item *ngFor="let userID of selectedParticipantIDs" [hidden]="isMe(userID)">
-              {{getUserName(userID)}}
-              <ion-icon item-end color="pickup" *ngIf="assigned === userID" name="ios-star"></ion-icon>
-              <ion-icon item-end color="danger" name="ios-trash" (click)="removeParticipant(userID)"></ion-icon>
-            </ion-item>
-          </ion-list>
-        </div>
+        <ng-container *ngIf="createForm.get('private').value;else publicAssignTo">
+          <ion-item no-lines>
+            <button ion-button block (click)="addParticipants()">Add Participants</button>
+          </ion-item>
+          <div>
+            <ion-list *ngIf="selectedParticipantIDs.length">
+              <ion-list-header>
+                Selected Participants
+              </ion-list-header>
+              <ion-item *ngFor="let userID of selectedParticipantIDs" [hidden]="isMe(userID)">
+                {{participantsName[userID]}}
+                <ion-icon item-end color="pickup" *ngIf="this.createForm.get('assigned').value === userID" name="ios-star"></ion-icon>
+                <ion-icon item-end color="danger" name="ios-trash" (click)="removeParticipant(userID)"></ion-icon>
+              </ion-item>
+            </ion-list>
+          </div>
+        </ng-container>
+        <ng-template #publicAssignTo>
+          <ion-item>
+            <ion-label>Assign To</ion-label>
+            <ion-select formControlName="assigned" placeholder="Select">
+              <ion-option [hidden]="isMe(user.User[0].UserID)" *ngFor="let user of participants | orderBy:'User[0].User'" [value]="user.User[0].UserID">{{user.User[0].User}}</ion-option>
+            </ion-select>
+          </ion-item>
+        </ng-template>
       </ion-list>
     </form>
   </ion-grid>

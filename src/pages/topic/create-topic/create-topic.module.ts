@@ -4,6 +4,7 @@ import { IonicPageModule } from 'ionic-angular';
 import { CreateTopicPage } from './create-topic';
 import { ComponentsModule } from '../../../components/components.module';
 import { MomentModule } from 'angular2-moment';
+import { OrderModule } from 'ngx-order-pipe';
 
 
 @NgModule({
@@ -15,6 +16,7 @@ import { MomentModule } from 'angular2-moment';
     ComponentsModule,
     MomentModule,
     PipesModule,
+    OrderModule,
   ],
 })
 export class CreateTopicPageModule { }

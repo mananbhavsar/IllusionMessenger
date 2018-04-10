@@ -13,12 +13,16 @@
 
 <ion-content>
 	<div class="header-divider">Available Tags</div>
-	<button type="button" small ion-button *ngFor="let tag of tags;let i=index;" (click)="tagClicked(tag.id,i)" [ngClass]="getTagColor(tag.id)">{{tag.name}}</button>
+	<button type="button" small ion-button icon-right *ngFor="let tag of tags;let i=index;" (click)="tagClicked(tag.id,i)" [ngClass]="getTagColor(tag.id)">
+		{{tag.name}}
+		<ion-icon name="md-checkmark" *ngIf="tagsSelected[tag.id]" ></ion-icon>
+	</button>
 	<div class="header-divider">Select Participants</div>
 	<ion-list *ngIf="participants.length">
-		<ion-item *ngFor="let user of participants;let i = index;" (click)="setParticipants(user.User[0].UserID, i)" [hidden]="isHidden(user.User[0].UserID)">
-			{{user.User[0].User}}
-
+		<ion-item *ngFor="let user of participants | orderBy:'selectedAt':true;let i = index;trackBy:getTrackBy" (click)="setParticipants(user.User[0].UserID)"
+		 [hidden]="isHidden(user.User[0].UserID)">
+			<h2>{{user.User[0].User}}</h2>
+			<p>{{getTags(user.Tag)}}</p>
 			<ion-icon item-end name="ios-checkmark-circle-outline" *ngIf="!inSelectedParticipants(user.User[0].UserID);else selectedParticipant"></ion-icon>
 			<ng-template #selectedParticipant>
 				<button item-end ion-button clear icon-only (click)="toggleAssign(user.User[0].UserID, $event)">

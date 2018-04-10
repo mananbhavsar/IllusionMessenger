@@ -7,6 +7,7 @@ import * as  moment from "moment";
 import { locale } from 'moment';
 import { UserProvider } from '../../../providers/user/user';
 import { HomePage } from '../../home/home';
+import { DateValidator } from '../../../validators/date-validator';
 
 @IonicPage()
 @Component({
@@ -17,6 +18,7 @@ export class AddFlashPage {
   addFlashForm: FormGroup;
   group_id: number = 0;
   group_name: string = 'loading';
+  hourAddition: number = 2;
 
   constructor(
     public navCtrl: NavController,
@@ -34,8 +36,10 @@ export class AddFlashPage {
     this.addFlashForm = this.formBuilder.group({
       flash_message: ['', [Validators.required, Validators.maxLength(160)]],
       start_date: [moment().format()],
-      end_date: [moment().add(2, 'hours').format()],
-    });
+      end_date: [moment().add(this.hourAddition, 'hours').format()],
+    }, {
+        validator: DateValidator.isBefore
+      });
   }
 
   addFlash() {
@@ -57,5 +61,9 @@ export class AddFlashPage {
 
   dismiss(data) {
     this.viewController.dismiss(data);
+  }
+
+  getErrorMessage() {
+    return 'End date should be more than ' + moment().add(this.hourAddition - 1, 'hours').format('h A');
   }
 }

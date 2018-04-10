@@ -30,6 +30,12 @@ body {
     }
 }
 
+.item-md{
+    min-height: auto;
+    h2{
+        font-size: 1.2rem;
+    }
+}
 ion-menu {
     ion-header {
         ion-toolbar {

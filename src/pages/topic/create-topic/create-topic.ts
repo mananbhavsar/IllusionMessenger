@@ -1,7 +1,7 @@
 import { DateValidator } from './../../../validators/date-validator';
 import { DateProvider } from './../../../providers/date/date';
 import { NotificationsProvider } from './../../../providers/notifications/notifications';
-import { ChatPage } from './../../chat/chat';
+
 import { FirebaseTransactionProvider } from './../../../providers/firebase-transaction/firebase-transaction';
 import { UserAutoCompleteService } from './user-auto-complete';
 import { Global } from './../../../app/global';
@@ -12,7 +12,7 @@ import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms'
 import * as _ from 'underscore';
 import { AutoCompleteComponent } from 'ionic2-auto-complete-ng5';
 import * as  moment from "moment";
-import { locale } from 'moment';
+
 import { ManageParticipantsPage } from "./manage-participants/manage-participants";
 
 
@@ -23,7 +23,7 @@ import { ManageParticipantsPage } from "./manage-participants/manage-participant
 })
 export class CreateTopicPage {
   @ViewChild('dueDate') dueDate: DateTime;
-
+  hourAddition: number = 3;
   title: string = 'Create Topic';
 
   group_id: number = 0;
@@ -34,12 +34,11 @@ export class CreateTopicPage {
 
   participants: Array<any> = [];
   selectedParticipantIDs: Array<number> = [];
-  selectedParticipants: any = {}; //id:index 
   _: _.UnderscoreStatic = _;
 
 
   selectedParticipant: Array<string> = [];
-  assigned: number = 0;
+  participantsName: any = {};
   global: any = {};
 
   createForm: FormGroup;
@@ -71,9 +70,9 @@ export class CreateTopicPage {
       private: [true],
       group_id: [''],
       name: ['', [Validators.required]],
-      assigned: [''],
+      assigned: [0, [Validators.required]],
       participants: [''],
-      due_date: new FormControl(moment().local().add(3, 'hours').format())
+      due_date: new FormControl(moment().local().add(this.hourAddition, 'hours').format())
     }, {
         validator: DateValidator.isBefore
       });
@@ -83,7 +82,7 @@ export class CreateTopicPage {
     this.initData();
   }
 
-  ngAfterViewChecked(){
+  ngAfterViewChecked() {
     //change mode
     this.dueDate.mode = 'ios';
   }
@@ -108,16 +107,16 @@ export class CreateTopicPage {
       this.participants = response.UserDetail;
       //removing self
       if (this.participants.length) {
-        let index = -1;
-        this.participants.every((user, i) => {
+        let userIndex = -1;
+        this.participants.forEach((user, index) => {
+          //name
+          this.participantsName[user.User[0].UserID] = user.User[0].User;
           if (user.User[0].UserID === this.connection.user.id) {
-            index = i;
-            return false;
+            userIndex = index;
           }
-          return true;
         });
-        if (index > -1) {
-          this.participants.splice(index, 1);
+        if (userIndex > -1) {
+          this.participants.splice(userIndex, 1);
         }
       }
     }).catch(error => {
@@ -126,13 +125,14 @@ export class CreateTopicPage {
   }
 
   removeParticipant(userID) {
-    if (userID in this.selectedParticipants) {
-      delete this.selectedParticipants[userID];
+    if (this.selectedParticipantIDs.indexOf(userID) > -1) {
       this.selectedParticipantIDs.splice(this.selectedParticipantIDs.indexOf(userID), 1);
 
       //checking if this was assined
-      if (userID === this.assigned) {
-        this.assigned = 0;
+      if (userID === this.createForm.get('assigned').value) {
+        this.createForm.patchValue({
+          assigned: userID
+        });
       }
     }
   }
@@ -140,11 +140,11 @@ export class CreateTopicPage {
   setSelectedParticipants() {
     let selectedParticipantString = '';
     //checking if me added
-    if (this.connection.user.LoginUserID in this.selectedParticipants) {
+    if (this.selectedParticipantIDs.indexOf(this.connection.user.LoginUserID) > -1) {
       delete this.selectedParticipant[this.connection.user.LoginUserID];
     }
-    if (!_.isEmpty(this.selectedParticipants)) {
-      selectedParticipantString = Object.keys(this.selectedParticipants).join(',');
+    if (this.selectedParticipantIDs.length) {
+      selectedParticipantString = this.selectedParticipantIDs.join(',');
     }
     this.createForm.patchValue({
       'participants': selectedParticipantString
@@ -152,11 +152,15 @@ export class CreateTopicPage {
   }
 
   getUserName(userID) {
-    let index = this.selectedParticipants[userID];
-    if (this.participants[index]) {
-      return this.participants[index].User[0].User;
-    }
-    return '';
+    let found = '';
+    this.participants.some(user => {
+      if (user.User[0].UserID === userID) {
+        found = user.User[0].User;
+        return true;
+      }
+      return false;
+    });
+    return found;
   }
 
   submitForm() {
@@ -165,6 +169,23 @@ export class CreateTopicPage {
       let userList = [];
       if (this.createForm.get('private').value) {
         userList = this.createForm.get('participants').value.split(',');
+        for (let i = 0; i < userList.length; i++) {
+          userList[i] = parseInt('' + userList[i]);
+        }
+        //removing self
+        if (userList.indexOf(this.connection.user.LoginUserID) > -1) {
+          userList.splice(userList.indexOf(this.connection.user.LoginUserID), 1);
+        }
+
+        //checking if assinged && selected user is in selected user list
+        if (!this.createForm.get('assigned').value) {
+          this.events.publish('alert:basic', 'No assignee selected!', 'Kindly select Responsible/Assignee');
+          return false;
+        } else if (this.createForm.get('assigned').value && userList.indexOf(this.createForm.get('assigned').value) === -1) {
+          this.events.publish('alert:basic', 'Improper assignee selected!', 'Kindly select Responsible/Assignee from selected Participants');
+          return false;
+        }
+
         //adding logged in user
         if (userList.indexOf(this.connection.user.LoginUserID) === -1) {
           userList.push(this.connection.user.LoginUserID);
@@ -177,7 +198,7 @@ export class CreateTopicPage {
         DueDate: this._date.toUTCISOString(this.createForm.get('due_date').value),
         UserList: _.uniq(userList).join(','),
         StatusID: 1,
-        Responsibles: this.assigned,
+        Responsibles: this.createForm.get('assigned').value,
       }, 'creating topic').then((response: any) => {
         if (('Status' in response) && response.Status === 0) {
           this.events.publish('toast:error', response.Message);
@@ -207,18 +228,19 @@ export class CreateTopicPage {
   addParticipants() {
     let modal = this.modalCtrl.create(ManageParticipantsPage, {
       participants: this.participants,
-      assigned: this.assigned,
-      selectedParticipants: this.selectedParticipants,
+      assigned: this.createForm.get('assigned').value,
       selectedParticipantIDs: this.selectedParticipantIDs,
       group_name: this.group_name
     });
 
     modal.onDidDismiss(data => {
       if (data) {
-        this.selectedParticipants = data.selectedParticipants;
         this.selectedParticipantIDs = data.selectedParticipantIDs;
-        this.assigned = data.assigned;
+        this.createForm.patchValue({
+          assigned: data.assigned
+        });
         this.setSelectedParticipants();
+        
       }
     });
     modal.present();
@@ -230,5 +252,9 @@ export class CreateTopicPage {
 
   dismiss(data) {
     this.viewController.dismiss(data);
+  }
+
+  getErrorMessage() {
+    return 'Due date should be more than ' + moment().add(this.hourAddition - 1, 'hours').format('h A');
   }
 }

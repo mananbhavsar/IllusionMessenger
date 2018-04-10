@@ -105,7 +105,7 @@ export class HomePage {
     getData() {
         return new Promise((resolve, reject) => {
             this.connection.doPost('Chat/Home', {
-            }).then((response: any) => {
+            }, false).then((response: any) => {
                 //groups
                 this.groups = response.Groups;
                 //flash
@@ -149,7 +149,6 @@ export class HomePage {
                 this.deviceRegsiter = 0;
             }
         }).catch(error => {
-            this.events.publish('toast:error', error);
             this.deviceRegsiter = 0;
         });
     }

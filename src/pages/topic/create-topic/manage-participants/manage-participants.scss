@@ -6,4 +6,9 @@ page-manage-participants {
         font-size: 12px;
         color: white;
     }
+    ion-label{
+        &.label-md{
+            margin: 3px 5px;
+        }
+    }
 }

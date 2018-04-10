@@ -15,7 +15,7 @@ export var Global = {
         invoice: '673AB7',
         payments: '009688'
     },
-    AppVersion: '0.3.3',
+    AppVersion: '0.4.0',
     support: {
         landline: '+91-22-61366301',
         pick_up: '+91-22-61366301',
@@ -42,10 +42,8 @@ export var Global = {
     },
     APP_URL: {
         android: 'https://play.google.com/store/apps/details?id=com.illusionmessenger.app',
-        ios: 'https://itunes.apple.com/us/app/illusion-messenger/id1347861725?ls=1&mt=8'
+        ios: 'https://itunes.apple.com/us/app/laxmi-task-manager/id1347861725?ls=1&mt=8'
     },
-    // SERVER_URL: 'http://43.241.39.24/Labguru_Mobile_UAT/api/',
-    // SERVER_URL: 'http://43.241.39.17/Labguru_Mobile_UAT/api/',
     SERVER_URL: 'https://messengerapi.illusiondentallab.com/api/',
     CDN: 'https://d3nwpy9993ruf3.cloudfront.net/',
 

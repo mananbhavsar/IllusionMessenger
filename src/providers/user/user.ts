@@ -235,7 +235,7 @@ export class UserProvider {
                     }
 
                     let alert = this.alertCtrl.create({
-                        enableBackdropDismiss: allowAlertClose,
+                        // enableBackdropDismiss: allowAlertClose,
                         title: 'Version Update Available',
                         message: 'There is a version update, please update your application',
                         buttons: buttons

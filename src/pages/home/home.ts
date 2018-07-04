@@ -1,28 +1,23 @@
-import { AddFlashPage } from './../group/add-flash/add-flash';
-import { FirebaseTransactionProvider } from './../../providers/firebase-transaction/firebase-transaction';
-import { NotificationsProvider } from './../../providers/notifications/notifications';
-import { DateProvider } from './../../providers/date/date';
-import { Component, group } from '@angular/core';
-import { IonicPage, NavController, NavParams, Events, Platform, ModalController } from 'ionic-angular';
-import { DomSanitizer } from '@angular/platform-browser';
+import { Component } from '@angular/core';
+import { Network } from '@ionic-native/network';
+import { OneSignal } from '@ionic-native/onesignal';
+import { Storage } from '@ionic/storage';
+import { TranslateService } from "@ngx-translate/core";
+import firebase from 'firebase';
+import { Events, IonicPage, ModalController, NavController, Platform } from 'ionic-angular';
+import * as _ from 'underscore';
+import { Global } from '../../app/global';
 import { ConnectionProvider } from '../../providers/connection/connection';
 import { UserProvider } from '../../providers/user/user';
-import { TranslateService } from "@ngx-translate/core";
-import { OneSignal } from '@ionic-native/onesignal';
-import { Global } from '../../app/global';
-import { ChatPage } from "../chat/chat";
-import { Storage } from '@ionic/storage';
-
-import { Network } from '@ionic-native/network';
-
-import { CreateTopicPage } from './../topic/create-topic/create-topic';
-import * as _ from 'underscore';
-import { Transition } from 'ionic-angular/transitions/transition';
 import { GroupPage } from '../group/group';
+import { DateProvider } from './../../providers/date/date';
+import { FirebaseTransactionProvider } from './../../providers/firebase-transaction/firebase-transaction';
+import { NotificationsProvider } from './../../providers/notifications/notifications';
+import { AddFlashPage } from './../group/add-flash/add-flash';
+import { CreateTopicPage } from './../topic/create-topic/create-topic';
 
-import firebase from 'firebase';
-import * as  moment from "moment";
-import { locale } from 'moment';
+
+
 
 @IonicPage()
 @Component({
@@ -108,9 +103,11 @@ export class HomePage {
             }, false).then((response: any) => {
                 //groups
                 this.groups = response.Groups;
+                if (_.size(this.groups) === 0) {
+                    this.groups = -1;
+                }
                 //flash
                 this.flashNews = response.FlashNews;
-                console.log(this.flashNews);
 
                 this.registerDevice();
                 resolve(true);
@@ -165,7 +162,7 @@ export class HomePage {
     connectToFireBase() {
         //user setting
         this.user.getUser().then(user => {
-            if (this.groups) {
+            if (this.groups !== -1) {
                 let groupsTemp: any = this.groups;
                 groupsTemp.forEach((group, index) => {
                     let ref = firebase.database().ref('Badge/' + user.id + '/Groups/' + group.GroupCode + '/Total');

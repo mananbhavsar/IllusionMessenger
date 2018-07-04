@@ -230,7 +230,8 @@ export class CreateTopicPage {
       participants: this.participants,
       assigned: this.createForm.get('assigned').value,
       selectedParticipantIDs: this.selectedParticipantIDs,
-      group_name: this.group_name
+      group_name: this.group_name,
+      is_from_chat: false,
     });
 
     modal.onDidDismiss(data => {

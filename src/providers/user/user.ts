@@ -1,21 +1,18 @@
 import { Injectable } from '@angular/core';
-import 'rxjs/add/operator/map';
-import { Events, Platform, AlertController } from 'ionic-angular';
-
+import { Badge } from '@ionic-native/badge';
 import { Storage } from '@ionic/storage';
+import { TranslateService } from '@ngx-translate/core';
+import { AngularFireDatabase } from 'angularfire2/database';
+import { AlertController, Events, Platform } from 'ionic-angular';
+import 'rxjs/add/operator/map';
+import * as _ from 'underscore';
+import { Global } from "../../app/global";
 import { ConnectionProvider } from '../connection/connection';
 import { FirebaseTransactionProvider } from "../firebase-transaction/firebase-transaction";
-import { TranslateService } from '@ngx-translate/core';
 
-import { Global } from "../../app/global";
 
-import * as _ from 'underscore';
-import { Badge } from '@ionic-native/badge';
-import { Network } from '@ionic-native/network';
 
-import { AngularFireDatabase } from 'angularfire2/database';
-import { useAnimation } from '@angular/core/src/animation/dsl';
-import { Response } from '@angular/http/src/static_response';
+
 
 @Injectable()
 export class UserProvider {
@@ -233,11 +230,17 @@ export class UserProvider {
                             role: 'cancel'
                         });
                     }
+                    let message = 'There is a new version available, kindly update your application now. <br/><br/>Note: if <b>open</b> button is present instead of <b>update</b>,';
+                    if (OSName === 'android') {
+                        message += ' go to <b>menu</b> of Play Store, naviagte to <b>My apps & games.</b>';
+                    } else {
+                        message += ' go to <b>updates tab</b> of App Store, <b>pull down refresh.</b>';
+                    }
 
                     let alert = this.alertCtrl.create({
                         enableBackdropDismiss: allowAlertClose,
                         title: 'Version Update Available',
-                        message: 'There is a version update, please update your application',
+                        message: message,
                         buttons: buttons
                     });
                     alert.present();

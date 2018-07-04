@@ -1,16 +1,16 @@
 import { Component } from '@angular/core';
-import { IonicPage, Events, NavController, NavParams, ViewController } from 'ionic-angular';
-
-import { UserProvider } from '../../../providers/user/user';
-import { ConnectionProvider } from '../../../providers/connection/connection';
-
-import { Validators, FormBuilder, FormGroup } from '@angular/forms';
-
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Network } from '@ionic-native/network';
-
+import { Events, IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
 import { Global } from '../../../app/global';
-
+import { ConnectionProvider } from '../../../providers/connection/connection';
+import { UserProvider } from '../../../providers/user/user';
 import { PasswordValidation } from "./password-validation";
+
+
+
+
+
 
 @IonicPage()
 @Component({
@@ -66,9 +66,10 @@ export class ChangePasswordPage {
     }
     this.submitted = true;
     //updating
-    this.connection.doPost('MobileApp/UserProfile_ChangePassword', {
+    this.connection.doPost('Chat/ChangePassword', {
       Password: this.changePasswordForm.get('new_password').value,
       OldPassword: this.changePasswordForm.get('password').value,
+      UserCode: this.connection.user.​UserCode,
     }, 'changing').then((response: any) => {
       if (response.Status) {
         this.events.publish('toast:create', response.Message);

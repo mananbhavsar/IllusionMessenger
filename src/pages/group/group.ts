@@ -1,17 +1,15 @@
-import { DateProvider } from './../../providers/date/date';
-import { CreateTopicPage } from './../topic/create-topic/create-topic';
-import { ChatPage } from './../chat/chat';
-import { ConnectionProvider } from './../../providers/connection/connection';
 import { Component, ViewChild } from '@angular/core';
-import { IonicPage, NavController, NavParams, ModalController, Slides } from 'ionic-angular';
+import * as firebase from 'firebase';
+import { ActionSheetController, IonicPage, ModalController, NavController, NavParams, Slides } from 'ionic-angular';
+import * as moment from "moment";
+import * as _ from 'underscore';
+import { ConnectionProvider } from './../../providers/connection/connection';
+import { DateProvider } from './../../providers/date/date';
+import { ChatPage } from './../chat/chat';
 import { GroupOptionsPage } from './../group/group-options/group-options';
 import { CloseTopicPage } from './../topic/close-topic/close-topic';
+import { CreateTopicPage } from './../topic/create-topic/create-topic';
 
-import * as _ from 'underscore';
-import * as  moment from "moment";
-import { locale } from 'moment';
-
-import * as firebase from 'firebase';
 
 @IonicPage()
 @Component({
@@ -28,12 +26,16 @@ export class GroupPage {
   page: number = 0;
 
 
+  //sort option
+  sort_by: string = 'CreationDate';
+  sort_order: string = 'ASC';
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     private connection: ConnectionProvider,
     private _date: DateProvider,
     private modalController: ModalController,
+    private actionSheetController: ActionSheetController,
   ) {
     this.title = this.navParams.data.Group;
     this.group_id = this.navParams.data.GroupID;
@@ -54,8 +56,9 @@ export class GroupPage {
         PageNumber: this.page,
         RowsPerPage: 20,
         Query: '',
+        OrderBy: this.sort_by,
+        Order: this.sort_order,
       }, false).then((response: any) => {
-        console.log(response);
         this.group = response;
 
         this.setForBadge();
@@ -136,9 +139,11 @@ export class GroupPage {
       group_code: this.group['GroupDetail'][0].GroupCode,
     });
     closeTopicModal.onDidDismiss(data => {
-      if (data) {
-        //this.navCtrl.pop();
-      }
+      //refresh page
+      this.page = 0;//to keep consistency
+      this.getGroupDetails().catch(erroe => {
+
+      });
     });
     closeTopicModal.present();
   }
@@ -174,5 +179,52 @@ export class GroupPage {
       }
     });
     groupOptionsModal.present();
+  }
+
+  openSortOptions() {
+    //creating buttons
+    let buttons = [];
+    let sortingOptions = {
+      'CreationDate': 'Creation Date',
+      'DueDate': 'Due Date',
+    };
+    for (let key in sortingOptions) {
+      let label = sortingOptions[key];
+      let icon = null;
+      if (key === this.sort_by) {
+        icon = this.sort_order === 'ASC' ? 'ios-arrow-round-up-outline' : 'ios-arrow-round-down-outline';
+      }
+      buttons.push({
+        text: label,
+        icon: icon,
+        handler: () => {
+          //if not selected initially, making it desc so it could be reversed later
+          if (this.sort_by !== key) {
+            this.sort_order = 'DESC';
+          }
+          this.sort_by = key;
+          this.sort_order = this.sort_order === 'ASC' ? 'DESC' : 'ASC';
+          this.doSorting();
+        }
+      });
+    }
+
+    //cancel button
+    buttons.push({
+      text: 'Cancel',
+      role: 'cancel',
+    });
+    //creating action sheet
+    let sortActionSheet = this.actionSheetController.create({
+      title: 'Select sort options',
+      buttons: buttons
+    });
+    sortActionSheet.present();
+  }
+
+  doSorting() {
+    this.group = [];
+    this.page = 0;
+    this.getGroupDetails();
   }
 }

@@ -6,8 +6,11 @@ page-chat-options {
             ion-list {
                 margin-bottom: 0;
                 ion-item {
+                    .item-inner {
+                        margin-left: 0 !important;
+                    }
                     ion-label {
-                        margin: 8px;
+                        margin: 4px 0;
                     }
                     &.close-topic {
                         ion-label {
@@ -37,12 +40,28 @@ page-chat-options {
                 }
             }
             p {
-                margin: 0 16px 5px;
+                margin: 0;
+                font-size: 12px;
                 &.danger {
                     color: color($colors, danger);
                 }
                 &.secondary {
                     color: color($colors, secondary);
+                }
+                ion-badge {
+                    margin-right: 2px;
+                    font-style: italic;
+                    font-size: 0.8em;
+                }
+                .activity {
+                    font-size: 10px;
+                    padding: 1px;
+                    .activity-status {
+                        font-weight: 600;
+                    }
+                    .activity-time {
+                        font-style: italic;
+                    }
                 }
             }
         }

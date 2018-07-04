@@ -39,7 +39,18 @@
 					<span *ngIf="isYou(user.User[0].UserID)">(You)</span>
 				</h2>
 				<p text-left text-small small text-wrap>
-					<ion-badge *ngFor="let tag of user.Tag" [ngClass]="getTagColor(tag.TagID)">{{tag.Tag}}</ion-badge>
+					<ion-row>
+						<ion-col class="activity">
+							Last Activity
+							<span class="activity-status">{{user.User[0].LoginStatus}}</span>
+							at
+							<span class="activity-time">{{user.User[0].LastActivityDateTime}}</span>
+
+						</ion-col>
+					</ion-row>
+					<ion-row>
+						<ion-badge *ngFor="let tag of user.Tag" [ngClass]="getTagColor(tag.TagID)">{{tag.Tag}}</ion-badge>
+					</ion-row>
 				</p>
 			</ion-item>
 		</ion-list>

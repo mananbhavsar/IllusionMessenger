@@ -25,7 +25,7 @@
         <ion-item-divider color="light">
           <!-- <ion-icon name="ios-folder-open"></ion-icon> -->
           Active Topics
-          <!-- <ion-icon item-end name="ios-options" color="pickup"></ion-icon> -->
+          <ion-icon item-end name="ios-options" color="pickup" (click)="openSortOptions()"></ion-icon>
         </ion-item-divider>
 
         <p *ngIf="group.ActiveTopicList.length === 0" text-center>No Topics Found</p>

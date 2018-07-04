@@ -1,37 +1,33 @@
-import { GroupPage } from './../pages/group/group';
 import { Component, ViewChild, enableProdMode } from '@angular/core';
-import { Nav, MenuController, Platform, Events, LoadingController, ModalController, AlertController, ToastController } from 'ionic-angular';
-
-import { Network } from '@ionic-native/network';
-import { StatusBar } from '@ionic-native/status-bar';
-import { SplashScreen } from '@ionic-native/splash-screen';
-import { Diagnostic } from '@ionic-native/diagnostic';
-import { Keyboard } from '@ionic-native/keyboard';
 import { Badge } from '@ionic-native/badge';
+import { Diagnostic } from '@ionic-native/diagnostic';
 import { Globalization } from '@ionic-native/globalization';
+import { Keyboard } from '@ionic-native/keyboard';
+import { Network } from '@ionic-native/network';
 import { OneSignal } from '@ionic-native/onesignal';
-
+import { SplashScreen } from '@ionic-native/splash-screen';
+import { StatusBar } from '@ionic-native/status-bar';
 import { Storage } from '@ionic/storage';
-
-import { AboutPage } from '../pages/about/about';
+import { TranslateService } from '@ngx-translate/core';
+import { AngularFireDatabase } from 'angularfire2/database';
+import { AlertController, Events, LoadingController, MenuController, ModalController, Nav, Platform, ToastController } from 'ionic-angular';
 import { AccountPage } from '../pages/account/account';
 import { ChatPage } from '../pages/chat/chat';
-import { ContactUsPage } from '../pages/contact-us/contact-us';
+import { ForgotPasswordPage } from '../pages/forgot-password/forgot-password';
 import { HelpPage } from '../pages/help/help';
 import { HomePage } from '../pages/home/home';
 import { LoginPage } from '../pages/login/login';
 import { LogoutPage } from '../pages/logout/logout';
-import { ForgotPasswordPage } from '../pages/forgot-password/forgot-password';
 import { TutorialPage } from '../pages/tutorial/tutorial';
 import { WelcomePage } from '../pages/welcome/welcome';
-
 import { UserProvider } from '../providers/user/user';
+import { GroupPage } from './../pages/group/group';
 import { Global } from './global';
 
-import { AngularFireDatabase } from 'angularfire2/database';
-import { not } from '@angular/compiler/src/output/output_ast';
-import { TranslateService } from '@ngx-translate/core';
-import { locale } from 'moment';
+
+
+
+
 
 enableProdMode();
 
@@ -72,7 +68,7 @@ export class MyApp {
         { title: 'Home', translate_key: 'HomeScreen._Home_', name: 'HomePage', component: HomePage, icon: 'home' },
     ];
     accountPages: PageInterface[] = [
-        /* { title: 'Account', translate_key: 'Common._Account_', name: 'AccountPage', component: AccountPage, icon: 'user' },*/
+        { title: 'Account', translate_key: 'Common._Account_', name: 'AccountPage', component: AccountPage, icon: 'user' },
         { title: 'Logout', translate_key: 'Common._LogOut_', name: 'LogoutPage', component: LogoutPage, icon: 'log-out', logsOut: true }
     ];
     loggedOutPages: PageInterface[] = [
@@ -268,9 +264,9 @@ export class MyApp {
 
         this.events.subscribe('loading:close', () => {
             if (this.loading) {
-                try{
-                this.loading.dismiss();
-                }catch(e){
+                try {
+                    this.loading.dismiss();
+                } catch (e) {
                     console.error(e);
                 }
             }

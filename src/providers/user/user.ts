@@ -1,22 +1,18 @@
 import { Injectable } from '@angular/core';
-import 'rxjs/add/operator/map';
-import { Events, Platform, AlertController } from 'ionic-angular';
-
+import { Badge } from '@ionic-native/badge';
 import { Storage } from '@ionic/storage';
+import { TranslateService } from '@ngx-translate/core';
+import { AngularFireDatabase } from 'angularfire2/database';
+import { AlertController, Events, Platform } from 'ionic-angular';
+import 'rxjs/add/operator/map';
+import * as _ from 'underscore';
+import { Global } from "../../app/global";
 import { ConnectionProvider } from '../connection/connection';
 import { FirebaseTransactionProvider } from "../firebase-transaction/firebase-transaction";
-import { OfficeServiceProvider } from '../office-service/office-service';
-import { TranslateService } from '@ngx-translate/core';
 
-import { Global } from "../../app/global";
 
-import * as _ from 'underscore';
-import { Badge } from '@ionic-native/badge';
-import { Network } from '@ionic-native/network';
 
-import { AngularFireDatabase } from 'angularfire2/database';
-import { useAnimation } from '@angular/core/src/animation/dsl';
-import { Response } from '@angular/http/src/static_response';
+
 
 @Injectable()
 export class UserProvider {
@@ -28,6 +24,7 @@ export class UserProvider {
     bye_bye_translate: string = 'Good bye see you soon';
     logging_you_in_translate: string = 'Logging you in';
     login_failed_translate: string = 'Login Failed';
+    isFromMobile : boolean = true;
     constructor(
         public events: Events,
         public storage: Storage,
@@ -35,7 +32,6 @@ export class UserProvider {
         private _firebaseTransaction: FirebaseTransactionProvider,
         public platform: Platform,
         public alertCtrl: AlertController,
-        public officeList: OfficeServiceProvider,
         private badge: Badge,
         private angularFireDatabase: AngularFireDatabase,
         private translate: TranslateService,
@@ -47,6 +43,10 @@ export class UserProvider {
                 this._user = user;
             });
         });
+
+    if(this.platform.is('core')){
+        this.isFromMobile = false;
+    }
 
         setTimeout(() => {
             this.doTranslate();
@@ -69,21 +69,21 @@ export class UserProvider {
     }
 
     login(username, password) {
-        this.connection.doPost('Account/login', { UserCode: username, Password: password }, this.logging_you_in_translate + '!').then(
+        this.connection.doPost('Chat/login', { UserCode: username, Password: password, IsFromMobile :  this.isFromMobile}, this.logging_you_in_translate + '!').then(
             response => {
-                this._user = response;
+                this._user = response[0];
                 this.setUser(this._user).then(() => {
                     this.HAS_LOGGED_IN = true;
                     this.events.publish('user:login', this._user);
                 });
-            }).catch(error => {
+            }).catch(error => {              
                 this.events.publish('alert:basic', this.login_failed_translate + '!', error);
             });
     };
 
     logout() {
         return new Promise((resolve, reject) => {
-            let name = this._user.Customer;
+            let name = this._user.LoginUser;
             this.registerPushID('').then(response => {
                 //removing from Storage
                 this.storage.remove('User').then(response => {
@@ -115,7 +115,7 @@ export class UserProvider {
 
     setUser(User) {
         //setting
-        User.id = User.CustomerPortalID + '-' + User.LoginTypeID;
+        User.id = User.UserCode;
         return this.storage.set('User', User).then((user) => {
             this._user = user;
             return this._user;
@@ -158,25 +158,39 @@ export class UserProvider {
                 this.connection.push_id = push_id;
 
                 //sending to server
-                this.connection.doPost('Account/RegisterDevice', {
+                this.connection.doPost('Chat/RegisterDevice', {
                     DeviceID: push_id,
                     IsLogin: push_id !== '',
+                    IsFromMobile :  this.isFromMobile
                 }, false).then((response: any) => {
-
-                    //now doing firebase transaction
-                    this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => {
-                        resolve(response);
-                    }).catch(error => {
-                        if (error == 'Empty') {
-                            resolve(response);
-                        } else {
-                            reject(error);
+                    console.log(response);
+                    
+                    //LogOutForcefully
+                    if (response.Data.LogOutForcefully) {
+                        if (response.Data.Message) {
+                            this.events.publish('alert:basic', 'Logged Out!', response.Data.Message);
                         }
-                    });
+                        this.logout();
+                        reject(false);
+                    } else if (response.Data.Status === 0) {
+                        this._firebaseTransaction.doTransaction(response.FireBaseTransaction).catch(error => { })
+                        reject(response.Data);
+                    } else {
+                        //now doing firebase transaction
+                        this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => {
+                            resolve(response);
+                        }).catch(error => {
+                            if (error == 'Empty') {
+                                resolve(response);
+                            } else {
+                                reject(error);
+                            }
+                        });
+                    }
                 }).catch(error => {
+                    this.events.publish('toast:error', error);
                     reject(error);
                 });
-
             } else {
                 //waiting to logged in
                 this.events.subscribe('user:ready', (user) => {
@@ -212,6 +226,7 @@ export class UserProvider {
                             text: 'Update Now',
                             handler: () => {
                                 window.open(this.global.APP_URL[OSName], '_system');
+                                return allowAlertClose;
                             }
                         }
                     ];
@@ -222,11 +237,17 @@ export class UserProvider {
                             role: 'cancel'
                         });
                     }
-                    
+                    let message = 'There is a new version available, kindly update your application now. <br/><br/>Note: if <b>open</b> button is present instead of <b>update</b>,';
+                    if (OSName === 'android') {
+                        message += ' go to <b>menu</b> of Play Store, naviagte to <b>My apps & games.</b>';
+                    } else {
+                        message += ' go to <b>updates tab</b> of App Store, <b>pull down refresh.</b>';
+                    }
+
                     let alert = this.alertCtrl.create({
-                        enableBackdropDismiss: allowAlertClose,
+                        // enableBackdropDismiss: allowAlertClose,
                         title: 'Version Update Available',
-                        message: 'There is a version update, please update your application',
+                        message: message,
                         buttons: buttons
                     });
                     alert.present();

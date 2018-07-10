@@ -1,5 +1,4 @@
 import { Component, Input } from '@angular/core';
-import { SearchPage } from '../../pages/search/search';
 import { NavController } from 'ionic-angular';
 
 /**
@@ -30,7 +29,6 @@ export class EmptyComponent {
     }
 
     openSearch() {
-        this.navCtrl.push(SearchPage);
     }
 
 }

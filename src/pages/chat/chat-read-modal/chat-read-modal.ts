@@ -13,8 +13,10 @@ export class ChatReadModalPage {
   message: any = {};
   chatUsers: any = {};
   userID = null;
-  ticket: string = null;
-  loginTypeID = null;
+  topicID: string = null;
+  topicCode: string = null;
+  groupID: string = null;
+  groupCode: string = null;
 
   messageReadRef: firebase.database.Query;
 
@@ -26,12 +28,14 @@ export class ChatReadModalPage {
   ) {
     this.message = this.navParams.data.message;
     this.chatUsers = this.navParams.data.chatUsers;
-    this.ticket = this.navParams.data.ticket;
+    this.topicID = this.navParams.data.topicID;
+    this.topicCode = this.navParams.data.topicCode;
+    this.groupID = this.navParams.data.groupID;
+    this.groupCode = this.navParams.data.groupCode;
     this.userID = this.navParams.data.userID;
-    this.loginTypeID = this.navParams.data.loginTypeID;
 
     //listen for read event
-    this.messageReadRef = firebase.database().ref('Communications/' + this.ticket + '/' + 'Chat/Read');
+    this.messageReadRef = firebase.database().ref('Communications/' + this.groupCode + '/' + this.topicCode + '/Chat/Read');
   }
 
   ionViewDidLoad() {
@@ -44,9 +48,12 @@ export class ChatReadModalPage {
   makeList() {
     this.reads = [];
     if (this.message.Read) {
-      for (let userId in this.message.Read) {
+      let userId: any;
+      for (userId in this.message.Read) {
+        if (typeof userId === 'string') {
+          userId = parseInt(userId);
+        }
         //not adding for self
-        console.log(this.chatUsers);
         if (userId !== this.message.UserID && userId !== this.userID) {//sent by or me
           //escaping if no name present
           if (userId in this.chatUsers) {
@@ -97,6 +104,9 @@ export class ChatReadModalPage {
   }
 
   inRead(userId) {
+    if (typeof userId === 'string') {
+      userId = parseInt(userId);
+    }
     //checking if its logged in user
     if (userId === this.message.UserID) {
       return true;

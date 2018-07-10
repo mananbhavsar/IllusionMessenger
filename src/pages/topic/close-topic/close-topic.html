@@ -1,0 +1,56 @@
+<ion-header>
+	<ion-navbar color="primary">
+		<ion-title>
+			<div>Archived Topics</div>
+			<small>{{group_name}}</small>
+		</ion-title>
+		<ion-buttons end>
+			<button color="light" ion-button icon-only (click)="toggleSearch()">
+				<ion-icon name="search"></ion-icon>
+			</button>
+			<button color="light" ion-button outline (click)="dismiss(null)">Close</button>
+		</ion-buttons>
+	</ion-navbar>
+	<ion-toolbar ion-text color="primary" *ngIf="showSearch">
+		<ion-searchbar placeholder="Enter Name" (ionInput)="getData($event)" (ionCancel)="onCancel($event)" (ionClear)="onClear($event)"></ion-searchbar>
+	</ion-toolbar>
+</ion-header>
+
+<ion-content [ngClass]="{extraTop: showSearch}">
+	<ion-refresher (ionRefresh)="refresh($event)" *ngIf="showSearch === false">
+		<ion-refresher-content pullingIcon="arrow-round-down" pullingText="Pull to refresh" refreshingSpinner="crescent" refreshingText="Refreshing...">
+		</ion-refresher-content>
+	</ion-refresher>
+	<ion-grid *ngIf="topics" no-padding>
+		<p *ngIf="topics.length === 0;else topicsFound" text-center>No data Found</p>
+		<ng-template #topicsFound>
+			<ion-item-divider color="light">
+				Closed Topics
+				<ion-icon item-end name="ios-options" color="pickup" (click)="openSortOptions()"></ion-icon>
+			</ion-item-divider>
+			<ion-list padding>
+				<ion-item no-padding *ngFor="let topic of topics; let i = index;" (click)="openTopic(topic, i)">
+					<h2>
+						{{topic.Topic}}
+						<span float-right>
+							<ion-icon name="ios-star" color="pickup" *ngIf="topic.IsResponsible"></ion-icon>
+							<ion-badge *ngIf="getBadge(topic.TopicCode)">{{getBadge(topic.TopicCode)}}</ion-badge>
+						</span>
+					</h2>
+					<p>
+						<ion-row>
+							<ion-col text-left class="pickup">
+								Created: {{topic.CreationDate_UTC | time }}
+							</ion-col>
+							<ion-col text-right [ngClass]="isExpired(topic.DueDate_UTC) ? 'danger' : 'secondary'">
+								Closed: {{topic.CloseDatime_UTC | time }}
+							</ion-col>
+						</ion-row>
+					</p>
+				</ion-item>
+			</ion-list>
+			<ion-infinite-scroll (ionInfinite)="paginate($event)" *ngIf="page !== -1">
+			</ion-infinite-scroll>
+		</ng-template>
+	</ion-grid>
+</ion-content>

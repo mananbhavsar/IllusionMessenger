@@ -1,0 +1,30 @@
+flash-news {
+    ion-slides {
+        .swiper-container {
+            min-height: 100px;
+            padding-bottom: 30px;
+            ion-slide {
+                h1 {
+                    font-size: 1em;
+                }
+                p {
+                    font-size: 12px;
+                    font-style: italic;
+                    color: #555;
+                    ion-row {
+                        ion-col {}
+                    }
+                }
+            }
+            .swiper-pagination {
+                button {
+                    &.swiper-pagination-bullet-active {
+                        width: 30px;
+                        border-radius: 5px;
+                        background-color: color($colors, primary);
+                    }
+                }
+            }
+        }
+    }
+}

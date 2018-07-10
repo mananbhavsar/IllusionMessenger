@@ -1,8 +1,11 @@
 <ion-header no-border (touchstart)="closeKeyboard($event)">
-  <header [title]="title" [buttons]="[{icon:'archive'}]" (buttonClicked)="openSavedMedia($event)"></header>
-  <ion-toolbar *ngIf="subTitle" class="sub-header">
-    <ion-title>{{subTitle}}</ion-title>
+  <header [title]="title" [subTitle]="userTypingString" [buttons]="headerButtons" (buttonClicked)="openChatOptions()"></header>
+  <ion-toolbar class="group-header">
+    <ion-title>{{group_name}}</ion-title>
   </ion-toolbar>
+  <!--   <ion-toolbar class="sub-header" *ngIf="data && data.StatusID !== 0">
+    <ion-title>{{getSubTitle()}}</ion-title>
+  </ion-toolbar> -->
 </ion-header>
 <ion-content class="chat" delegate-handle="chatScroll" (touchstart)="closeKeyboard($event)">
   <div class="message-list">
@@ -13,84 +16,88 @@
     <ion-infinite-scroll *ngIf="messagesLoaded" [hidden]="showNoMoreMessages" (ionInfinite)="paginate($event)" position="top">
       <ion-infinite-scroll-content></ion-infinite-scroll-content>
     </ion-infinite-scroll>
-    <chat-bubble [id]="'message-'+message.key" *ngFor="let message of messages | orderBy:'CreateAt'" class="message-wrapper"
-      [message]="message" [userID]="userID" [ticket]="ticket" [impressNo]="impressNo" [users]="chatUsers" [LoginTypeID]="user.LoginTypeID" [myLanguage]="myLanguage"
-      (press)="openReading($event, message, false)"></chat-bubble>
-  </div>
-  <div class="typing-container">
-    <ng-container *ngIf="user.LoginTypeID === global.LoginType.Group;else typing_doctor">
-      <div class="typing" *ngFor="let typingUserId of userTyping | keys" [hidden]="typingUserId === userID || !isWithinRange(userTyping[typingUserId])">{{'ChatScreen._Typing_' | translate:{name:getName(typingUserId)} }}</div>
+    <ng-container *ngFor="let message of messages;trackBy:getTrackByField | orderBy:'CreateAt'">
+      <chat-bubble [id]="'message-'+message.key" class="message-wrapper" [message]="message" [userID]="userID" [topicID]="topicID"
+        [topicCode]="topicCode" [groupID]="groupID" [groupCode]="groupCode" [users]="chatUsers" [myLanguage]="myLanguage" [responsibleUserID]="responsibleUserID"
+        (press)="openReading($event, message, false)"></chat-bubble>
     </ng-container>
-    <ng-template #typing_doctor>
-      <div class="typing" *ngIf="showDoctorTyping()">{{'ChatScreen._Typing_' | translate:{name:global.APP_NAME} }}</div>
-    </ng-template>
   </div>
+  <!-- <div class="typing-container">
+    <div class="typing" *ngFor="let typingUserId of userTyping | keys" [hidden]="typingUserId == userID || !isWithinRange(userTyping[typingUserId])">
+      {{'ChatScreen._Typing_' | translate:{name:getName(typingUserId)} }}
+    </div>
+  </div> -->
 </ion-content>
 <ion-footer [keyboardAttach]="content" class="bar-stable footer-chat item-input-inset">
   <ng-container *ngIf="hasInternet && messagesLoaded === false">
     <ion-spinner name="dots"></ion-spinner>
   </ng-container>
-  <ng-container *ngIf="hasInternet && messagesLoaded && aboutToRecord === false">
-    <button ion-button clear icon-only (click)="openUploadOptions()">
-      <ion-icon name="ios-add-outline"></ion-icon>
-    </button>
+  <ng-container *ngIf="data && data.StatusID === 2;else chatOpened">
+    Cannot send messages on Closed Topic
+  </ng-container>
+  <ng-template #chatOpened>
+    <ng-container *ngIf="hasInternet && messagesLoaded && aboutToRecord === false">
+      <button *ngIf="!isBrowser" ion-button clear icon-only (click)="openUploadOptions()">
+        <ion-icon name="ios-add-outline"></ion-icon>
+      </button>
+      <div *ngIf="isBrowser" style="display: flex;">
+          <button ion-button clear icon-only>
+            <ion-icon name="images"></ion-icon>
+          </button>
+          <input type="file" name="file" id="file" class="inputfile" accept="image/*" (change)="handleImageFiles($event)"/>
+        </div>
+      <label class="item-input-wrapper" [ngClass]="{'send': message.trim().length > 0}">
+        <!-- fz-elastic -->
+        <textarea autocomplete="on" autocorrect="on" fz-elastic rows="1" #messageInput [(ngModel)]="message"
+          dir="auto" (keyup)="keyup($event)" (focus)="onFocus($event)" (blur)="onBlur($event)"></textarea>
+      </label>
 
-    <label class="item-input-wrapper" [ngClass]="{'send': message.trim().length > 0}">
-      <!-- fz-elastic -->
-      <textarea autocomplete="on" [disabled]="translating" autocorrect="on" fz-elastic rows="1" #messageInput [(ngModel)]="message"
-        dir="auto" (keyup)="keyup($event)" (focus)="onFocus($event)" (blur)="onBlur($event)"></textarea>
-    </label>
-
-    <span *ngIf="message.trim().length > 0">
-      <button (click)="sendTextMessage($event)" [disabled]="translating" class="send-button" round ion-button small>
-        <ng-container *ngIf="translating;else show_send">
-          <ion-spinner name="dots"></ion-spinner>
-        </ng-container>
-        <ng-template #show_send>
+      <span *ngIf="message.trim().length > 0">
+        <button (click)="sendTextMessage($event)" class="send-button" round ion-button small>
           {{'ChatScreen._Send_' | translate}}
-        </ng-template>
-      </button>
-    </span>
-    <span *ngIf="!message || message.trim().length === 0">
-      <button (click)="captureImage()" clear ion-button icon-only>
-        <ion-icon name="ios-camera-outline"></ion-icon>
-      </button>
-      <button class="buttons-seperator" ion-button clear icon-only>
-        <ion-icon name="md-more"></ion-icon>
-      </button>
-      <button (click)="captureAudio()" ion-button clear icon-only>
-        <ion-icon name="ios-mic-outline"></ion-icon>
-      </button>
-    </span>
-  </ng-container>
-  <ng-container *ngIf="hasInternet && aboutToRecord === true">
-    <ion-grid no-padding class="recording">
-      <ion-row no-padding align-items-center>
-        <ion-col text-start align-self-center no-padding>
-          <button ion-button clear icon-only [color]="recordingInProgress?'primary':'dark'">
-            <ion-icon name="ios-mic"></ion-icon>
-          </button>
-          <span class="timer">&nbsp;&nbsp;{{getRecordTime()}}</span>
-        </ion-col>
-        <ion-col text-end align-self-center no-padding>
-          <button ion-button small [hidden]="recordingInProgress" (click)="startRecording()" color="secondary">
-            {{'ChatScreen._Record_' | translate}}
-          </button>
-          <button ion-button small [hidden]="recordingInProgress" (click)="closeRecording()">
-            {{'ChatScreen._Close_' | translate}}
-          </button>
-          <button ion-button small [hidden]="!recordingInProgress" (click)="stopRecording()">
-            {{'ChatScreen._Send_' | translate}}
-          </button>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-  </ng-container>
-  <ng-container *ngIf="hasInternet === false">
-    <span text-center text-small>
-      {{'ChatScreen._OfflineMessageSend_' | translate}}
-    </span>
-  </ng-container>
+        </button>
+      </span>
+      <span *ngIf="(!message || message.trim().length === 0 ) && !isBrowser">
+        <button (click)="captureImage()" clear ion-button icon-only>
+          <ion-icon name="ios-camera-outline"></ion-icon>
+        </button>
+        <button class="buttons-seperator" ion-button clear icon-only>
+          <ion-icon name="md-more"></ion-icon>
+        </button>
+        <button (click)="captureAudio()" ion-button clear icon-only>
+          <ion-icon name="ios-mic-outline"></ion-icon>
+        </button>
+      </span>
+    </ng-container>
+    <ng-container *ngIf="hasInternet && aboutToRecord === true">
+      <ion-grid no-padding class="recording">
+        <ion-row no-padding align-items-center>
+          <ion-col text-start align-self-center no-padding>
+            <button ion-button clear icon-only [color]="recordingInProgress?'primary':'dark'">
+              <ion-icon name="ios-mic"></ion-icon>
+            </button>
+            <span class="timer">&nbsp;&nbsp;{{getRecordTime()}}</span>
+          </ion-col>
+          <ion-col text-end align-self-center no-padding>
+            <button ion-button small [hidden]="recordingInProgress" (click)="startRecording()" color="secondary">
+              {{'ChatScreen._Record_' | translate}}
+            </button>
+            <button ion-button small [hidden]="recordingInProgress" (click)="closeRecording()">
+              {{'ChatScreen._Close_' | translate}}
+            </button>
+            <button ion-button small [hidden]="!recordingInProgress" (click)="stopRecording()">
+              {{'ChatScreen._Send_' | translate}}
+            </button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ng-container>
+    <ng-container *ngIf="hasInternet === false">
+      <span text-center text-small>
+        {{'ChatScreen._OfflineMessageSend_' | translate}}
+      </span>
+    </ng-container>
+  </ng-template>
 </ion-footer>
 
 <div class="file-uploader-progress" *ngIf="progressPercent > 0">

@@ -1,20 +1,51 @@
 page-home {
-    .cutomer-name {
-        padding: 5px;
-        text-transform: uppercase;
-        background: gray;
+
+.device-register {
+    text-align: center;
+    span {
         color: white;
-        text-align: center;
+        display: block;
+        &.gray {
+            background-color: gray;
+        }
+        &.secondary {
+            background-color: color($colors, secondary);
+        }
+        &.pickup {
+            background-color: color($colors, pickup);
+        }
     }
-    .homescreenDivision,
-    .homescreenDivision1 {
-        display: flex;
-        justify-content: center;
+}
+
+ion-list {
+    ion-item {
+        ion-label {
+            &.label-md {
+                margin: 0;
+            }
+            h2 {}
+            ion-row {
+                ion-col {
+                    &.col {
+                        font-size: 11px;
+                        padding: 0;
+                    }
+                    &.activetopics {
+                        color: color($colors, secondary);
+                        font-style: italic;
+                    }
+                    &.responsibletopics {
+                        color: color($colors, pickup);
+                        font-style: italic;
+                    }
+                    &.overdue {
+                        color: color($colors, danger);
+                        font-style: italic;
+                    }
+                }
+            }
+        }
     }
-    .homescreenDivision {
-        min-height: 25%;
-    }
-    .homescreenDivision1 {
-        min-height: 50%;
-    }
+}
+
 }

@@ -1,7 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { NavController, Events } from 'ionic-angular';
 
-import { SearchPage } from '../../pages/search/search';
 import { StatusBar } from '@ionic-native/status-bar';
 
 import { Global } from "../../app/global";
@@ -10,6 +9,7 @@ import { Global } from "../../app/global";
     templateUrl: 'header.html'
 })
 export class HeaderComponent {
+    @Input() subTitle: string = null;
     @Input() buttons: any = null;
     @Output() buttonClicked = new EventEmitter();
     _title: string;
@@ -47,7 +47,6 @@ export class HeaderComponent {
     }
 
     openSearch() {
-        this.navCtrl.push(SearchPage);
     }
 
     getColor(name: string = null) {
@@ -81,6 +80,7 @@ export class HeaderComponent {
     }
 
     sendButtonClicked(button, event) {
+        button.event = event;
         this.buttonClicked.emit(button);
     }
 }

@@ -1,99 +1,25 @@
 {
-  "prepare_queue": {
-    "installed": [],
-    "uninstalled": []
-  },
-  "config_munge": {
-    "files": {}
-  },
-  "installed_plugins": {
-    "com.hutchind.cordova.plugins.streamingmedia": {
-      "PACKAGE_NAME": "com.illusiondental.app"
+    "prepare_queue": {
+        "installed": [],
+        "uninstalled": []
     },
-    "com.moust.cordova.videoplayer": {
-      "PACKAGE_NAME": "com.illusiondental.app"
+    "config_munge": {
+        "files": {}
     },
-    "cordova-base64-to-gallery": {
-      "PACKAGE_NAME": "com.illusiondental.app"
+    "installed_plugins": {
+        "com-sarriaroman-photoviewer": {
+            "PACKAGE_NAME": "com.illusionmessenger.app"
+        },
+        "cordova-plugin-native-ringtones": {
+            "PACKAGE_NAME": "com.illusionmessenger.app"
+        }
     },
-    "cordova-plugin-add-swift-support": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-plugin-app-version": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-plugin-badge": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-plugin-camera": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-plugin-device": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-plugin-file": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-plugin-file-transfer": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-plugin-globalization": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-plugin-inappbrowser": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-plugin-ionic-webview": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-plugin-media": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-plugin-media-capture": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-plugin-network-information": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-plugin-photo-library": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-plugin-splashscreen": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-plugin-statusbar": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-plugin-uniquedeviceid": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-plugin-vibration": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-plugin-video-editor": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-plugin-whitelist": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova-sqlite-storage": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "cordova.plugins.diagnostic": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "ionic-plugin-keyboard": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "onesignal-cordova-plugin": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "nl.x-services.plugins.videocaptureplus": {
-      "PACKAGE_NAME": "com.illusiondental.app"
-    },
-    "com-sarriaroman-photoviewer": {
-      "PACKAGE_NAME": "com.illusiondental.app"
+    "dependent_plugins": {
+        "cordova-plugin-file": {
+            "PACKAGE_NAME": "com.illusionmessenger.app"
+        },
+        "cordova-plugin-media": {
+            "PACKAGE_NAME": "com.illusionmessenger.app"
+        }
     }
-  },
-  "dependent_plugins": {}
 }

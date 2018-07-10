@@ -4,7 +4,7 @@
     font-weight: 300;
 }
 
-
+@import "../../node_modules/ionic2-auto-complete-ng5/auto-complete";
 /*
 Platform Wide styles
 */
@@ -30,6 +30,13 @@ body {
     }
 }
 
+.item-md {
+    min-height: auto;
+    h2 {
+        font-size: 1.2rem;
+    }
+}
+
 ion-menu {
     ion-header {
         ion-toolbar {
@@ -47,6 +54,10 @@ ion-card-header {
     text-align: center;
     font-size: 1.5em !important;
     font-weight: bold;
+}
+
+.toolbar-title-md {
+    padding-bottom: 2px;
 }
 
 .item-label-stacked .text-input-md,
@@ -132,7 +143,7 @@ ion-app.md {
 
 .error-message-block {
     color: color($colors, 'danger');
-    padding: 0 16px;
+    padding: 0;
     font-size: 0.9em;
     font-style: italic;
     span {
@@ -151,10 +162,66 @@ ion-app.md {
     color: white;
     text-align: center;
 }
-.sub-heading{
+
+.sub-heading {
     padding: 3px;
     text-transform: uppercase;
     background: rgb(144, 144, 144);
     color: white;
     text-align: center;
 }
+
+.magin-bottom-5 {
+    margin-bottom: 5px;
+}
+
+.group-header {
+    padding: 3px;
+    min-height: 25px;
+    .toolbar-background {
+        background: #646464;
+    }
+    ion-title {
+        div {
+            text-transform: uppercase;
+            text-align: center;
+            color: white;
+            font-size: 12px;
+        }
+    }
+}
+
+.item>ion-icon,
+.item-inner>ion-icon {
+    min-height: 0.8rem;
+    font-size: initial;
+    line-height: 1;
+}
+
+ion-item-divider {
+    &.item-divider-md {
+        ion-label {
+            margin: 3px 2px 3px 0;
+        }
+    }
+}
+
+@mixin repeat($character,
+$times) {
+    $result: "";
+    @for $i from 0 through $times {
+        $result: $result + $character;
+    }
+    return {
+        content: $result
+    }
+}
+
+.reschedule-count {
+    @for $i from 0 through 10 {
+        &.reschedule-count-#{$i}::after {
+            @include repeat('*', $i);
+        }
+    }
+}
+

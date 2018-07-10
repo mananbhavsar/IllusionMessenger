@@ -1,0 +1,39 @@
+page-group {
+	ion-content {
+		ion-grid {
+			ion-item-divider {
+				ion-label {
+					vertical-align: middle;
+					ion-icon {
+						font-size: 2em;
+					}
+				}
+			}
+			ion-item {
+				ion-label {
+					&.label-md {
+						margin: 3px 3px 3px 0;
+						h2 {}
+						p {
+							width: 100%;
+							ion-row {
+								ion-col {
+									font-size: 11px;
+									&.pickup {
+										color: color($colors, pickup);
+									}
+									&.secondary {
+										color: color($colors, secondary);
+									}
+									&.danger {
+										color: color($colors, danger);
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}

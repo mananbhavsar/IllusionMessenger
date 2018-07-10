@@ -4,6 +4,7 @@ import { OneSignal } from '@ionic-native/onesignal';
 import { Global } from "../../app/global";
 
 import { ConnectionProvider } from "../connection/connection";
+import { Platform } from 'ionic-angular';
 
 @Injectable()
 export class NotificationsProvider {
@@ -11,12 +12,25 @@ export class NotificationsProvider {
   constructor(
     private _oneSignal: OneSignal,
     private _connection: ConnectionProvider,
+    private _platform: Platform,
   ) {
 
   }
 
+  sends(notifications, page = null, params = null, image_url = null) {
+    if (notifications && notifications.length) {
+      notifications.forEach(notification => {
+        this.send(notification.DeviceID, notification.Title, notification.Message, notification.Badge, page, params, image_url).catch(error => { });
+      });
+    }
+  }
+
   send(player_ids, headings, contents, badge, page = null, params = null, image_url = null) {
     return new Promise((resolve, reject) => {
+      if (player_ids === null) {
+        reject('Player Id is required');
+        return;
+      }
       //checking if its an string
       if (typeof player_ids === 'string') {
         player_ids = [player_ids];
@@ -60,13 +74,18 @@ export class NotificationsProvider {
         };
         notificationObj['big_picture'] = image_url;
       }
-      this._oneSignal.postNotification(notificationObj).then(response => {
-        console.log(response);
-        resolve(response);
-      }).catch(error => {
-        console.log(error);
-        reject(error);
-      });
+      if (this._platform.is('cordova')) {
+        this._oneSignal.postNotification(notificationObj).then(response => {
+          console.log(response);
+          resolve(response);
+        }).catch(error => {
+          console.log(error);
+          reject(error);
+        });
+      } else {
+        console.log(notificationObj);
+        resolve('sent');
+      }
     });
   }
 }

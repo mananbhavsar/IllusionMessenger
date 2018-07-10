@@ -5,6 +5,10 @@ import { Network } from '@ionic-native/network';
 import { Http, Headers, Response, URLSearchParams } from '@angular/http';
 
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/timeout';
+import * as _ from 'underscore';
+import * as firebase from 'firebase';
+
 import { TranslateService } from "@ngx-translate/core";
 
 import { Global } from '../../app/global';
@@ -22,6 +26,8 @@ export class ConnectionProvider {
 
     loading_translate: string = 'loading';
     please_check_internet_connection: string = 'Please check your network connection';
+
+    URL: string = null;
     constructor(
         public http: Http,
         public storage: Storage,
@@ -32,6 +38,8 @@ export class ConnectionProvider {
         private uniqueDeviceID: UniqueDeviceID,
         private translate: TranslateService,
     ) {
+        this.URL = Global.SERVER_URL;
+
         this.events.subscribe('user:changed', (user) => {
             this.storage.get('User').then((user) => {
                 this.user = user;
@@ -42,12 +50,23 @@ export class ConnectionProvider {
 
         //device id
         platform.ready().then(() => {
-            this.uniqueDeviceID.get()
-                .then((uuid: any) => {
-                    this.uuid = uuid;
-                })
-                .catch((error: any) => console.log(error));
+            if (platform.is('cordova')) {
+                this.uniqueDeviceID.get()
+                    .then((uuid: any) => {
+                        this.uuid = uuid;
+                    })
+                    .catch((error: any) => console.log(error));
+            }
             this.doTranslate();
+
+
+            //url from  firebase
+            firebase.database().ref('Settings/URL').on('value', snapshot => {
+                let url = snapshot.val();
+                if (url) {
+                    this.URL = url;
+                }
+            });
         });
     }
 
@@ -84,8 +103,7 @@ export class ConnectionProvider {
             }
             //creating request
             let urlSearchParams = this.getURLSearchParams(params);
-
-            this.http.post(Global.SERVER_URL + url, urlSearchParams).timeout(60000).map((response: Response) => response.json()).subscribe((data) => {
+            this.http.post(this.URL + url, urlSearchParams).timeout(60000).map((response: Response) => response.json()).subscribe((data) => {
                 if (loader) {
                     this.events.publish('loading:close');
                 }
@@ -95,7 +113,20 @@ export class ConnectionProvider {
                         if (data.objData.trim() === '') {
                             data.objData = data.objData.trim();
                         } else {
-                            data.objData = JSON.parse(data.objData);
+                            try {
+                                data.objData = JSON.parse(data.objData);
+                            } catch (error) {
+                                //trying to remove extra last comma
+                                if (error.toString().indexOf('Unexpected token } in JSON') > -1) {
+                                    try {
+                                        data.objData = JSON.parse(data.objData.replace(',}', '}'));
+                                    }
+                                    catch (error) {
+                                        reject('Invalid JSON Format');
+                                        break;
+                                    }
+                                }
+                            }
                         }
                         resolve(data.objData);
                         break;
@@ -120,8 +151,6 @@ export class ConnectionProvider {
                 reject(error);
             });
         });
-
-
     }
 
     getURLSearchParams(params): URLSearchParams {
@@ -129,14 +158,22 @@ export class ConnectionProvider {
         for (let key in params) {
             urlSearchParams.append(key, params[key]);
         }
-        //device specific info
-        urlSearchParams.append('UniqueID', this.uuid);
-        urlSearchParams.append('Device', this.device.platform);
-        urlSearchParams.append('OSVersion', this.device.version);
-        urlSearchParams.append('Manufacturer', this.device.manufacturer);
-        urlSearchParams.append('AppVersion', Global.AppVersion);
-        //adding user info
-        if (this.user) {
+        //browser specific info 
+        if (this.platform.is('core')) {
+            urlSearchParams.append('Device', navigator.platform);
+            urlSearchParams.append('Manufacturer', navigator.appCodeName);
+            urlSearchParams.append('UniqueID', '454366');
+
+        } else if (this.platform.is('cordova')) {
+            //device specific info
+            urlSearchParams.append('UniqueID', this.uuid);
+            urlSearchParams.append('Device', this.device.platform);
+            urlSearchParams.append('OSVersion', this.device.version);
+            urlSearchParams.append('Manufacturer', this.device.manufacturer);
+            urlSearchParams.append('AppVersion', Global.AppVersion);
+            //adding user info
+        }
+        if (this.user || !_.isEmpty(this.user)) {
             urlSearchParams = this.addUserInfo(urlSearchParams);
         }
         return urlSearchParams;
@@ -144,18 +181,13 @@ export class ConnectionProvider {
 
     doGet(url, data: any) {
 
-        return this.http.get(Global.SERVER_URL + url).map((response: Response) => response.json());
+        return this.http.get(this.URL + url).map((response: Response) => response.json());
 
     }
 
     addUserInfo(urlSearchParams: URLSearchParams): URLSearchParams {
-        urlSearchParams.append('UserCode', this.user.UserCode);
-        urlSearchParams.append('CustomerID', this.user.CustomerID);
-        urlSearchParams.append('SecureToken', this.user.SecureToken);
-        urlSearchParams.append('OrganizationUnitID', this.user.LoginOUID);
-        urlSearchParams.append('LoginTypeID', this.user.LoginTypeID);
-        urlSearchParams.append('LoginUserID', this.user.CustomerPortalID);
+        urlSearchParams.append('LoginUserID', this.user.LoginUserID);
         urlSearchParams.append('PushID', this.push_id);
-        return urlSearchParams
+        return urlSearchParams;
     }
 }

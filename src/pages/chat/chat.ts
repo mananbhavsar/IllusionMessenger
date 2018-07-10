@@ -1,46 +1,44 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
-import { IonicPage, NavController, Content, NavParams, Platform, ModalController, Events, normalizeURL, ToastController, ActionSheetController } from 'ionic-angular';
-
-import * as _ from 'underscore';
-import * as mime from 'mime-types';
-
-import * as firebase from 'firebase';
-import * as moment from 'moment';
-
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Subscription } from 'rxjs/Subscription';
-import { Http, Headers, Response, URLSearchParams } from '@angular/http';
-import 'rxjs/add/operator/switchMap';
-
-import { ConnectionProvider } from '../../providers/connection/connection';
-import { NotificationsProvider } from "../../providers/notifications/notifications";
-import { UserProvider } from '../../providers/user/user';
-import { FirebaseTransactionProvider } from '../../providers/firebase-transaction/firebase-transaction';
-import { CommonProvider } from "../../providers/common/common";
-import { TranslateService } from "@ngx-translate/core";
-import { FileOpsProvider } from "../../providers/file-ops/file-ops";
-
-import { Global } from '../../app/global';
-
-import { Storage } from '@ionic/storage';
-
+import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Http } from '@angular/http';
 import { Camera, CameraOptions } from '@ionic-native/camera';
-import { Keyboard } from '@ionic-native/keyboard';
-import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer';
 import { File } from '@ionic-native/file';
+import { FileTransfer, FileTransferObject, FileUploadOptions } from '@ionic-native/file-transfer';
+import { Keyboard } from '@ionic-native/keyboard';
 import { Media, MediaObject } from '@ionic-native/media';
-import { Vibration } from '@ionic-native/vibration';
 import { Network } from '@ionic-native/network';
-import { VideoCapturePlus, VideoCapturePlusOptions, MediaFile } from '@ionic-native/video-capture-plus';
+import { Vibration } from '@ionic-native/vibration';
+import { MediaFile, VideoCapturePlus, VideoCapturePlusOptions } from '@ionic-native/video-capture-plus';
 import { VideoEditor } from '@ionic-native/video-editor';
-
-import { LogoutPage } from '../logout/logout';
-import { retry } from 'rxjs/operators/retry';
-import { HomePage } from '../home/home';
+import { Storage } from '@ionic/storage';
+import { TranslateService } from "@ngx-translate/core";
+import * as firebase from 'firebase';
+import { ActionSheetController, Content, Events, IonicPage, ModalController, NavController, NavParams, Platform, ToastController, normalizeURL } from 'ionic-angular';
+import * as mime from 'mime-types';
+import * as moment from 'moment';
+import 'rxjs/add/operator/switchMap';
+import * as _ from 'underscore';
+import { Global } from '../../app/global';
 import { ChatReadModalPage } from "../../pages/chat/chat-read-modal/chat-read-modal";
-import { SavedMediaPage } from "../../pages/chat/saved-media/saved-media";
+import { CommonProvider } from "../../providers/common/common";
+import { ConnectionProvider } from '../../providers/connection/connection';
+import { FileOpsProvider } from "../../providers/file-ops/file-ops";
+import { FirebaseTransactionProvider } from '../../providers/firebase-transaction/firebase-transaction';
+import { NotificationsProvider } from "../../providers/notifications/notifications";
+import { HomePage } from '../home/home';
+import { LogoutPage } from '../logout/logout';
+import { DateProvider } from './../../providers/date/date';
+import { ChatOptionsPage } from "./chat-options/chat-options";
+import { SavedMediaPage } from "./chat-options/saved-media/saved-media";
 
-import { Modal } from 'ionic-angular/components/modal/modal';
+
+
+
+
+
+
+
+
+
 @IonicPage()
 @Component({
   selector: 'page-chat',
@@ -50,12 +48,18 @@ export class ChatPage {
   @ViewChild(Content) content: Content;
   @ViewChild('messageInput') messageInput: any;
   global: any = Global;
+  platformResumeReference = null;
+  platformPauseReference = null;
 
   data: any = {};
-  ticket: string = null;
-  impressNo: string = null;
+
+  topicID: string = null;
+  topicCode: string = null;
+  groupID: string = null;
+  groupCode: string = null;
+  group_name: string = 'loading';
+
   title: string = 'loading';
-  subTitle: string = null;
   isIOS: boolean = false;
   isCordova: boolean = false;
   keyboardHeight: number = 0;
@@ -63,6 +67,7 @@ export class ChatPage {
   pathIdentifier: string = '';
   basePath: string = '';
   path: string = '';
+  topicClosePath: string = '';
 
   messagesRef: firebase.database.Reference;
   newMessagesRef: firebase.database.Query;
@@ -78,6 +83,8 @@ export class ChatPage {
   typingRef: firebase.database.Reference;
   typingRefLoaded: boolean = false;
   userTyping: any = {}; //this will hold all users id:status. 
+  userTypingString: string = null;
+  userTypingStringInterval = null;
 
   userChatting: any = {}; // active chat users
   chattingRef: firebase.database.Reference;
@@ -85,9 +92,15 @@ export class ChatPage {
 
   lastTypingTime: number = 0;
 
+  scrollingBottom: boolean = false;
+
   user: any = {};
-  userID = null;
+  userID: string = null;
   chatUsers: any = {};
+
+  amIAdmin: boolean = false;
+  amIResponsible: boolean = false;
+  responsibleUserID: number = 0;
 
   lastcalled: boolean = false;
   readyForPagination: boolean = false;
@@ -124,7 +137,7 @@ export class ChatPage {
   recordFileName: string = 'record.wav';
   recordInterval: any = null;
   vibrateDuration: number = 300;
-
+  isBrowser : boolean;
   keyboardOpen: boolean = false;
   hasInternet: boolean = true;
   lastReadingTime: number = 0;
@@ -132,7 +145,7 @@ export class ChatPage {
 
   myLanguage: string = null;
   chatLanguages: Array<string> = [];
-  translating: boolean = false;
+  headerButtons: Array<any> = [];
 
   doctor_translate: string = 'Doctor';
   impression_no_translate: string = 'Imp No.';
@@ -167,35 +180,23 @@ export class ChatPage {
     private translate: TranslateService,
     private _notifications: NotificationsProvider,
     private _fileOps: FileOpsProvider,
+    private _date: DateProvider,
   ) {
     //init
     this.isIOS = this.platform.is('ios');
     this.isCordova = this.platform.is('cordova');
+    this.isBrowser = this.platform.is('core');
     this.global = Global;
+
+    this.topicID = this.navParams.data.topicID;
+    this.groupID = this.navParams.data.groupID;
+
     this._fileOps.getDataDirectory().then(path => {
       this.dataDirectory = path;
+      console.log(this.dataDirectory);
     }).catch(error => {
       console.log(error);
     });
-
-    //checking if param is single string
-    if (typeof this.navParams.data === 'string') {
-      this.navParams.data = {
-        TicketNo: this.navParams.data
-      };
-    }
-    //getting Ticket no
-    if (Global.work_with_impression_no) {
-      this.ticket = this.navParams.data.TicketNo;
-      this.impressNo = this.navParams.data.ImpressionNo;
-
-      this.pathIdentifier = this.impressNo;
-    } else {
-      this.ticket = this.navParams.data.TicketNo;
-      this.pathIdentifier = this.ticket;
-    }
-    this.basePath = 'Communications/' + this.pathIdentifier + '/';
-
 
     this.keyboard.onKeyboardShow().subscribe((data) => {
       this.scrollBottom('keyboard show').catch(error => { });
@@ -217,15 +218,12 @@ export class ChatPage {
 
       this.setFirebaseRef();
       this.listenToFirebaseEvents(true);
-      //make all unread count of this ticket to zero
+      //make all unread count of this topics to zero
       this.clearBadgeCountIfAny();
     });
     this.events.subscribe('network:offline', () => {
       this.hasInternet = false;
     });
-
-    //making folder with this ticket number to save files
-    this.doFoldering();
   }
 
   setFirebaseRef() {
@@ -240,6 +238,18 @@ export class ChatPage {
 
     //keyboard disable
     this.keyboard.disableScroll(true);
+
+    //listening to Close Topic
+    firebase.database().ref(this.topicClosePath).on('value', snapshot => {
+      let closedTime = snapshot.val();
+      if (closedTime && moment(closedTime).isValid()) {
+        this.data.StatusID = 2;
+        this.data.CloseDatime_UTC = closedTime;
+
+        firebase.database().ref(this.topicClosePath).remove();
+        firebase.database().ref(this.topicClosePath).off('value');
+      }
+    });
   }
 
   connectFireBase() {
@@ -286,7 +296,7 @@ export class ChatPage {
         this.checkForNoMoreMessages();
         //saving first message key
         this.data.firstMessageKey = this.firstMessageKey;
-        this.setOfflineTicketList(this.data);
+        this.setOfflineTopicList(this.data);
       }
     });
   }
@@ -306,6 +316,7 @@ export class ChatPage {
 
     }
 
+    console.log(this.newMessagesRef);
     this.newMessagesRef.on('child_added', (snapshot) => {
       let message = snapshot.val();
 
@@ -322,7 +333,7 @@ export class ChatPage {
             this.checkForNoMoreMessages();
             //saving first message key
             this.data.firstMessageKey = this.firstMessageKey;
-            this.setOfflineTicketList(this.data);
+            this.setOfflineTopicList(this.data);
           }
 
           setTimeout(() => {
@@ -364,12 +375,12 @@ export class ChatPage {
     this.typingRef.on('value', snapshot => {
       this.userTyping = snapshot.val();
       if (this.typingRefLoaded) {
-
         setTimeout(() => {
           this.scrollBottom('typing ref init').catch(error => { });
         }, 100);
       }
       this.typingRefLoaded = true;
+      this.setTypingString();
     });
 
     this.chattingRef.on('value', snapshot => {
@@ -458,21 +469,29 @@ export class ChatPage {
   initUser() {
     //setting current User
     this.user = this.connection.user;
-    this.userID = this.user.id;
+    this.userID = this.user.LoginUserID;
   }
 
   listenToEvents() {
     //listening to platforms events
-    this.events.subscribe('platform:onPause', () => {
-      console.log('pause');
-      this.doLeaving(false);
+    //On app Resume & Pause
+    this.platformResumeReference = this.platform.resume.subscribe(() => {
+      console.log('resume');
+      this.setFirebaseRef();
+      if (this.messagesRef && this.newMessagesRef) {
+        this.listenToFirebaseEvents(true);
+      }
+      //make all unread count of this topic to zero
+      this.clearBadgeCountIfAny();
+    }, error => {
+      console.log(error);
     });
 
-    this.events.subscribe('platform:onResumed', () => {
-      this.setFirebaseRef();
-      this.listenToFirebaseEvents(true);
-      //make all unread count of this ticket to zero
-      this.clearBadgeCountIfAny();
+    this.platformPauseReference = this.platform.pause.subscribe(() => {
+      console.log('pause');
+      this.doLeaving(false);
+    }, error => {
+      console.log(error);
     });
 
     //notification subs
@@ -485,10 +504,10 @@ export class ChatPage {
         this.lastcalled = false;
       }, 100);
       /**
-       * checking if chatting with same ticketNo
+       * checking if chatting with same TopicCode
        * if not then show in toast with button
        */
-      if (this.ticket !== notification.additionalData.params) {
+      if (this.topicCode !== notification.additionalData.params.topicCode) {
         let chatToast = this._toastCtrl.create({
           message: 'New message from ' + notification.title,
           duration: 5000,
@@ -548,13 +567,13 @@ export class ChatPage {
   ionViewDidEnter() {
     this.doTranslate();
     //checking if user logged in
-
     if (!_.isEmpty(this.connection.user)) {
       this.initUser();
       //get Chat info before we load
       this.initData().then(status => {
         this.listenToEvents();
       }).catch(error => {
+        console.log(error);
         this.navCtrl.pop();
       });
     } else {
@@ -567,28 +586,49 @@ export class ChatPage {
         }
       })
     }
+
+    //setTypingString interval
+    this.clearTypingStringInterval();
+    this.userTypingStringInterval = setInterval(() => {
+      this.setTypingString();
+    }, 3000);
+  }
+
+  clearTypingStringInterval() {
+    //setTypingString interval
+    if (this.userTypingStringInterval) {
+      clearInterval(this.userTypingStringInterval);
+      this.userTypingStringInterval = null;
+    }
   }
 
   ionViewWillLeave() {
     console.log('leaving');
     this.doLeaving(true);
+    this.clearTypingStringInterval();
   }
 
   initData() {
     return new Promise((resolve, reject) => {
       if (this._network.type !== 'none') {
         let params = {
-          TicketRegisterNo: this.ticket
+          TopicID: this.topicID,
+          GroupID: this.groupID,
         };
-        if (Global.work_with_impression_no) {
-          params['ImpressionNo'] = this.impressNo;
-        }
-        this.connection.doPost('Communication/GetQueryDetail', params).then((response: any) => {
-          this.data = JSON.parse(response.Data);
-          console.log(this.data);
-          this.setOfflineTicketList(this.data);
-          this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { });
+        this.connection.doPost('Chat/GetTopicDetail', params, false).then((response: any) => {
+          this.data = response.Data;
+          this.data.GroupID = this.groupID;
+          this.group_name = this.data.Group;
 
+          this.headerButtons = [{ icon: 'ios-more', name: 'more-option' }];
+
+          this.topicCode = this.data.TopicCode;
+          this.groupCode = this.data.GroupCode;
+          this.setPath();
+          this.setOfflineTopicList(this.data);
+          if (response.FireBaseTransaction) {
+            this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { });
+          }
           this.setTitle();
           this.setUsers().then((chatUsersList) => {
             this.connectFireBase();
@@ -602,17 +642,17 @@ export class ChatPage {
           reject(error);
         });
       } else {
-        this.storage.get('OfflineTickets').then(tickets => {
-          if (_.isEmpty(tickets)) {
-            tickets = {};
+        this.storage.get('OfflineTopics').then(topicCodes => {
+          if (_.isEmpty(topicCodes)) {
+            topicCodes = {};
           }
-          if (!(this.ticket in tickets) || _.size(tickets[this.ticket]) === 0) {
+          if (!(this.topicCode in topicCodes) || _.size(topicCodes[this.topicCode]) === 0) {
             this.events.publish('toast:create', this.offlineMessageText);
             reject(false);
             return;
           }
-          this.data = tickets[this.ticket];
-          console.log(this.data);
+          this.data = topicCodes[this.topicCode];
+
           this.setTitle();
           this.setUsers().then(chatUsersList => {
             this.initOffline();
@@ -625,12 +665,52 @@ export class ChatPage {
     });
   }
 
+
+  setPath() {
+    this.pathIdentifier = this.groupCode + '/' + this.topicCode;
+
+    this.basePath = 'Communications/' + this.pathIdentifier + '/';
+
+    //Chat close event
+    this.topicClosePath = 'CloseTopics/' + this.pathIdentifier + '/' + this.userID;
+
+    //making folder with this topics code to save files
+    this.doFoldering();
+  }
+
   /**
    * sets title for Chat
    */
   setTitle() {
-    this.title = this.data.Query[0].Patient;
-    this.subTitle = this.doctor_translate + ': ' + this.data.Query[0].Doctor + ', ' + this.impression_no_translate + ': ' + this.data.Query[0].ImpNo;
+    this.title = this.data.Topic;
+  }
+
+  getSubTitle() {
+    let subTitle = '';
+
+    let now = moment();
+    let creationDate = this._date.fromServerFormat(this.data.CreationDate_UTC);
+    let dueDate = this._date.fromServerFormat(this.data.DueDate_UTC);
+    let closedDate = this._date.fromServerFormat(this.data.CloseDatime_UTC);
+
+    //creation date
+    if (creationDate.isValid() && this.data.StatusID !== 0) {
+      subTitle += 'Created: ' + this._date.format(creationDate);
+    }
+    //due
+    if (dueDate.isValid() && this.data.StatusID === 1) {
+      subTitle += ', ' + 'Due: ';
+      if ((now.toDate().getTime() - dueDate.toDate().getTime()) > 0) {
+        subTitle += this._date.format(dueDate);
+      } else {
+        subTitle += this._date.format(dueDate);
+      }
+    }
+    //closed 
+    if (closedDate.isValid() && this.data.StatusID === 2) {
+      subTitle += ', ' + 'Closed: ' + this._date.format(closedDate);
+    }
+    return subTitle;
   }
 
   /**
@@ -639,25 +719,40 @@ export class ChatPage {
   setUsers() {
     return new Promise((resolve, reject) => {
       if (this.data && this.data.User.length) {
-        this.data.User[0].Dentist.forEach(user => {
+        this.data.User.forEach((user, index) => {
           //for typing
-          this.userTyping[user.LoginUserID] = user.UserName;
+          if(this.userTyping === null){
+            this.userTyping = {};
+          }
+          this.userTyping[user.UserID] = user.User;
 
           //actual user
-          this.chatUsers[user.LoginUserID] = { Name: user.UserName, LoginTypeID: user.LoginTypeID };
+          this.chatUsers[user.UserID] = { Name: user.User, UserID: user.UserID };
 
           //adding lang
           this.addLang(user);
-        });
-        this.data.User[0].GroupUser.forEach(user => {
-          //for typing
-          this.userTyping[user.LoginUserID] = user.UserName;
 
-          //actual user
-          this.chatUsers[user.LoginUserID] = { Name: user.UserName, LoginTypeID: user.LoginTypeID };
+          //converting to boolean
+          if (typeof this.data.User[index].IsAdmin === 'string') {
+            this.data.User[index].IsAdmin = user.IsAdmin === 'true';
+            user.IsAdmin = this.data.User[index].IsAdmin;
+          }
+          if (typeof this.data.User[index].IsResponsible === 'string') {
+            this.data.User[index].IsResponsible = user.IsResponsible === 'true';
+            user.IsResponsible = this.data.User[index].IsResponsible;
+          }
 
-          //adding lang
-          this.addLang(user);
+          //checking admin for me
+          if (user.UserID === this.connection.user.LoginUserID && user.IsAdmin) {
+            this.amIAdmin = true;
+          }
+          //checking isResponsible for me
+          if (user.UserID === this.connection.user.LoginUserID && user.IsResponsible) {
+            this.amIResponsible = true;
+          }
+          if (user.IsResponsible) {
+            this.responsibleUserID = user.UserID;
+          }
         });
         resolve(this.chatUsers);
       } else {
@@ -667,14 +762,55 @@ export class ChatPage {
   }
 
   addLang(user) {
+    if (!('MyLanguage' in user)) {
+      user['MyLanguage'] = 'en';
+    }
     //adding to group languages
     if (this.chatLanguages.indexOf(user.MyLanguage) === -1) {
       this.chatLanguages.push(user.MyLanguage);
     }
     //setting my own lang
-    if (user.LoginUserID === this.userID) {
+    if (user.UserID === this.userID) {
       this.myLanguage = user.MyLanguage;
     }
+  }
+
+
+  handleImageFiles(file) {
+    let input = file.target;
+    let dataURL: string;
+    let fileName = this._fileOps.getFileNameWithoutExtension(input.files[0].name);
+    let fileExtension = this._fileOps.getFileExtension(input.files[0].name);
+    let reader = new FileReader();
+    let context = this;
+    reader.onload = function () {
+      dataURL = reader.result.replace(/^data:image\/\w+;base64,/, "");
+      context.uploadFileFromBrowser(fileName, fileExtension, dataURL)
+        .then((data: any) => {
+          if (data.Data.indexOf('https') === 0) {
+            context.sendToFirebase('', 'Image', data.Data);
+
+          } else {
+            context.events.publish('alert:basic', data.Data);
+          }
+        }).catch((error) => {
+        });
+    }
+    reader.readAsDataURL(input.files[0]);
+  }
+
+  uploadFileFromBrowser(fileName, fileExtension, Base64String) {
+    return new Promise((resolve, reject) => {
+      this.connection.doPost('Chat/InsertChat_Attachement_Base64', {
+        FileName: fileName,
+        FileExtension: fileExtension,
+        Base64String: Base64String
+      }).then((data: any) => {
+        resolve(data);
+      }).catch((error) => {
+        reject(false);
+      });
+    });
   }
 
   openUploadOptions() {
@@ -726,15 +862,13 @@ export class ChatPage {
 
   sendTextMessage(event) {
     if (this.keyboardOpen) {
-      event.preventDefault();
+      if (event) {
+        event.preventDefault();
+      }
       this.sendClickKeepKeyboardOpened = true;
       this.messageInput.nativeElement.focus();
     } else {
       this.sendClickKeepKeyboardOpened = false;
-    }
-
-    if (this.translating) {
-      return;
     }
 
     if (this.message.trim() === '') {
@@ -743,13 +877,9 @@ export class ChatPage {
     if (this.message) {
       let textMessage = this.message.trim().replace(/(?:\r\n|\r|\n)/g, '<br/>');
 
-      this.translating = true;
       this.sendToFirebase(textMessage).then(data => {
-        this.translating = false;
         this.message = '';
       }).catch(error => {
-        console.log(error);
-        this.translating = false;
         this.message = '';
       });
     } else {
@@ -770,17 +900,13 @@ export class ChatPage {
           CreateAt: firebase.database.ServerValue.TIMESTAMP,
           MessageType: type,
           HasAttachment: type !== 'Text',
-          From: this.user.Customer,
+          From: this.user.LoginUser,
           UserID: this.userID,
-          LoginTypeID: this.user.LoginTypeID,
           Status: 0,
           URL: url,
           Read: readObject,
-          TicketNo: this.ticket,
+          TopicCode: this.topicCode,
         };
-        if (Global.work_with_impression_no) {
-          values['ImpressionNo'] = this.impressNo;
-        }
 
         this.messagesRef.push(values).then((messageFromFirebase) => {
           let data = {
@@ -808,33 +934,8 @@ export class ChatPage {
         let translation = {};
         //adding mine which is original
         translation[this.myLanguage] = message;
-        //checking if all user knows only one lang, hence no need of translating
-        if (this.chatLanguages.length < 2) {
-          resolve(translation);
-        } else {
-          //looping over each lang and getting translation
-          this.chatLanguages.forEach(lang => {
-            //not translating my lang
-            if (lang !== this.myLanguage) {
-              this.http.post('https://translation.googleapis.com/language/translate/v2?key=' + Global.Translate.key, {
-                q: message,
-                source: this.myLanguage,
-                target: lang,
-              }).map((response: Response) => response.json()).subscribe(response => {
-                if (response.data) {
-                  translation[lang] = response.data.translations[0].translatedText;
-                } else {
-                  translation[lang] = message;
-                }
-                if (_.size(translation) === this.chatLanguages.length) {
-                  resolve(translation);
-                }
-              }, error => {
-                reject(error);
-              });
-            }
-          })
-        }
+        translation['en'] = message;
+        resolve(translation);
       } else {
         resolve({});
       }
@@ -842,7 +943,6 @@ export class ChatPage {
   }
 
   onBlur(event) {
-    console.log('blur:' + this.keyboardOpen);
     if (this.keyboardOpen) {
       event.target.focus();
     } else {
@@ -855,13 +955,11 @@ export class ChatPage {
   }
 
   onFocus(event) {
-    console.log('focus');
     this.keyboardOpen = true;
     this.setTyping(true);
   }
 
   closeKeyboard(event) {
-    console.log('touchstart:' + this.keyboardOpen);
     if (this.keyboardOpen) {
       this.keyboardOpen = false;
       this.setTyping(false);
@@ -899,6 +997,8 @@ export class ChatPage {
           this.chattingRef.child(this.userID).set(firebase.database.ServerValue.TIMESTAMP).then(value => {
             resolve();
           });
+        } else {
+          resolve(true);
         }
       } else {
         // reject('No ref');
@@ -907,26 +1007,38 @@ export class ChatPage {
   }
 
   scrollBottom(caller) {
-    console.log('ScrollBottom: ' + caller);
     return new Promise((resolve, reject) => {
       if (Global.getActiveComponentName(this.navCtrl.getActive()) !== 'ChatPage') {
         reject(false);
         return;
       }
+      if (this.scrollingBottom) {
+        reject(false);
+        return;
+      }
+      this.scrollingBottom = true;
       if (typeof this.content !== 'undefined') {
         let animate = 300;
         this.contentResize();
         if (this.content && typeof this.content.scrollToBottom === 'function' && this.content._scroll) {
           const wait = this.content.isScrolling ? 150 : null;
           setTimeout(() => {
-            this.content.scrollToBottom(animate).then(value => {
-              resolve(value);
-            }).catch(error => {
+            try {
+              this.content.scrollToBottom(animate).then(value => {
+                this.scrollingBottom = false;
+                resolve(value);
+              }).catch(error => {
+                this.scrollingBottom = false;
+                reject(error);
+              });
+            } catch (error) {
+              this.scrollingBottom = false;
               reject(error);
-            });
+            }
           });
         }
       } else {
+        this.scrollingBottom = false;
         reject('no content');
       }
     });
@@ -1088,11 +1200,10 @@ export class ChatPage {
         const fileTransfer: FileTransferObject = this.transfer.create();
         let options = this.setFileOptions(file);
 
-        fileTransfer.upload(file, Global.SERVER_URL + 'Communication/InsertChat_Attachement', options)
+        fileTransfer.upload(file, this.connection.URL + 'Chat/InsertChat_Attachement', options)
           .then((data) => {
             this.progressPercent = 0;
             //getting URL from XML
-            console.log(data);
             if (data.response.indexOf('http') === -1) {
               reject(data);
             } else if (data.response.indexOf('>') > -1) {
@@ -1101,7 +1212,6 @@ export class ChatPage {
               resolve(JSON.parse(data.response));
             }
           }, (err) => {
-            console.log(err);
             this.progressPercent = 0;
             reject(err);
           });
@@ -1126,18 +1236,14 @@ export class ChatPage {
     let fileExtension = file.substring(file.lastIndexOf('.') + 1);
 
     let params = {
-      CustomerID: this.user.CustomerID,
-      SecureToken: this.user.SecureToken,
-      OrganizationUnitID: this.user.LoginOUID,
-      LoginTypeID: this.user.LoginTypeID,
-      LoginUserID: this.user.CustomerPortalID,
+      UserID: this.user.UserID,
+      TopicID: this.topicID,
+      GroupID: this.groupID,
+      TopicCode: this.topicCode,
+      GroupCode: this.groupCode,
       FileName: fileName,
       FileExtension: fileExtension,
-      TicketNo: this.ticket,
     };
-    if (Global.work_with_impression_no) {
-      params['ImpressionNo'] = this.impressNo;
-    }
 
     let options: FileUploadOptions = {
       fileKey: 'file',
@@ -1158,32 +1264,38 @@ export class ChatPage {
 
 
   sendPushNotification(message, users: Array<object>) {
-    if (_.isEmpty(message.Translation)) {
-      message.Translation = { en: message.Message };
-    }
     users.forEach((user: any) => {
 
-      let contents = message.Translation;
+      let contents = user.Message;
 
       //checking if Image then adding image notification
       if (message.MessageType === 'Image') {
-        contents.en = '📷 Image';
-        contents.fr = '📷 Image';
+        contents.en = '📷 ' + contents.en;
+        if (contents.fr) {
+          contents.fr = '📷 ' + contents.fr;
+        }
       } else if (message.MessageType === 'Video') {
-        contents.en = '📹 Video Message';
-        contents.fr = '📹 Video Message';
+        contents.en = '📹 ' + contents.en;
+        if (contents.fr) {
+          contents.fr = '📹 ' + contents.fr;
+        }
       } else if (message.MessageType === 'Audio') {
-        contents.en = '🎤 Voice Message';
-        contents.fr = '🎤 Voice Message';
+        contents.en = '🎤 ' + contents.en;
+        if (contents.fr) {
+          contents.fr = '🎤 ' + contents.fr;
+        }
       }
 
-      this._notifications.send(user.DeviceID, user.title, contents, user.Badge, 'ChatPage', this.ticket, message.URL).catch(error => { });
+      this._notifications.send(user.DeviceID, user.title, contents, user.Badge, 'ChatPage', this.topicCode, message.URL).catch(error => { });
     });
   }
 
   sendMessageToServer(message) {
     // get live chat users
-    var activeUserList = this.getLiveChatUsers();
+    let userChattingNow = this.userChatting;
+    let nowTime = moment().utc().valueOf();
+
+    var activeUserList = this.getLiveChatUsers(userChattingNow, nowTime);
 
     let fileName = null;
     let fileExtension = null;
@@ -1195,26 +1307,27 @@ export class ChatPage {
 
     let params = {
       LiveUsersOnChat: activeUserList,
-      ChattingUsers: this.common.build_query(this.userChatting),
-      TimeOnPhone: moment().utc().valueOf(),
+      ChattingUsers: this.common.build_query(userChattingNow),
+      TimeOnPhone: nowTime,
       Message: message.Message ? message.Message : '',
       MessageType: message.MessageType,
       URL: message.URL,
       FileName: fileName,
       FileExtension: fileExtension,
-      TicketNo: this.ticket,
+      TopicCode: this.topicCode,
+      TopicID: this.topicID,
+      GroupID: this.groupID,
     };
-    if (Global.work_with_impression_no) {
-      params['ImpressionNo'] = this.impressNo;
-    }
 
-    this.connection.doPost('Communication/InsertChat', params, false).then((response: any) => {
+    this.connection.doPost('Chat/InsertChat', params, false).then((response: any) => {
       //send Push
       if (Global.Push.OneSignal) {
-        this.sendPushNotification(message, response.Data);
+        this.sendPushNotification(message, response.OneSignalTransaction);
       }
       //managing firebase count
-      this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { })
+      if (response.FireBaseTransaction) {
+        this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { })
+      }
     }).catch(error => {
 
     });
@@ -1247,28 +1360,38 @@ export class ChatPage {
     }
 
     if (messageNull) {
+
       this.messages = [];
       this.messagesKeys = [];
       this.offlineMessages = [];
-      this.events.unsubscribe('platform:onPause');
-      this.events.unsubscribe('platform:onResumed');
       this.events.unsubscribe('notification:chat');
       this.events.unsubscribe('network:online');
       this.events.unsubscribe('network:offline');
+      if (this.platformPauseReference) {
+        this.platformPauseReference.unsubscribe();
+        this.platformPauseReference = null;
+      }
+      if (this.platformResumeReference) {
+        this.platformResumeReference.unsubscribe();
+        this.platformResumeReference = null;
+      }
+
+      if (this.topicClosePath) {
+        firebase.database().ref(this.topicClosePath).off('value');
+      }
     }
 
     this.events.unsubscribe('user:ready');
     this.keyboard.disableScroll(false);
   }
 
-  getLiveChatUsers() {
+  getLiveChatUsers(userChattingNow, nowTime) {
     var activeUserList = '';
     let currentChattingUsers = [];
-    let nowTime = moment().utc().valueOf();
 
-    if (!_.isEmpty(this.userChatting)) {
-      for (let userID in this.userChatting) {
-        let value = this.userChatting[userID];
+    if (!_.isEmpty(userChattingNow)) {
+      for (let userID in userChattingNow) {
+        let value = userChattingNow[userID];
         //checking if boolean, older version
         if (typeof value === 'boolean') {
           //if true
@@ -1277,7 +1400,7 @@ export class ChatPage {
           }
         } else {
           //checking if now is less than a sec which can be considered as online & chatting
-          if ((nowTime - value) <= 1000) {
+          if ((nowTime - value) <= 2000) {
             currentChattingUsers.push(userID);
           }
         }
@@ -1301,32 +1424,16 @@ export class ChatPage {
 
       let params = {
         UserCode: this.userID,
-        TicketNo: this.ticket,
+        TopicCode: this.topicCode,
+        TopicID: this.topicID,
+        GroupID: this.groupID,
       };
-      if (Global.work_with_impression_no) {
-        params['ImpressionNo'] = this.ticket;
-      }
 
-      this.connection.doPost('Communication/UpdateChatStatus', params, false).then((response: any) => {
+      this.connection.doPost('Chat/UpdateChatStatus', params, false).then((response: any) => {
         this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { })
       }).catch(error => {
-        console.log(error);
       });
     }
-  }
-
-  showDoctorTyping() {
-    for (let typingUserId in this.userTyping) {
-      //avoiding self
-      if (typingUserId === this.userID) {
-        continue;
-      }
-      //checking if in range
-      if (this.isWithinRange(this.userTyping[typingUserId])) {
-        return true;
-      }
-    }
-    return false;
   }
 
   getName(userID) {
@@ -1336,28 +1443,19 @@ export class ChatPage {
     return '';
   }
 
-  isWithinRange(time) {
-    let momentTime = moment(time).utc().local();
-    if (momentTime.isValid()) {
-      time = moment().utc().valueOf() - momentTime.valueOf();
-      return time <= 3000;
-    }
-    return false;
-  }
-
   doFoldering() {
-    this.file.checkDir(this.dataDirectory, this.ticket).then(exist => {
+    this.file.checkDir(this.dataDirectory, this.topicCode).then(exist => {
 
     }).catch(error => {
       if (error.code === 1) {
-        this.file.createDir(this.dataDirectory, this.ticket, false).then(entry => { }).catch(error => { });
+        this.file.createDir(this.dataDirectory, this.topicCode, false).then(entry => { }).catch(error => { });
       }
     });
   }
 
   initOffline() {
     return new Promise((resolve, reject) => {
-      this.storage.get('OfflineMessages-' + this.ticket).then(messages => {
+      this.storage.get('OfflineMessages-' + this.topicCode).then(messages => {
         if (_.isEmpty(messages)) {
           messages = {};
         }
@@ -1401,13 +1499,13 @@ export class ChatPage {
     if (index === -1) {
       if (pushFlag) {
         index = this.messages.push(item);
-        //adding ticketno
+        //adding TopicCode
         this.messagesKeys.push(key);
         //offline messages
         this.offlineMessages.push(item);
       } else {
         index = this.messages.unshift(item);
-        //adding ticketno
+        //adding TopicCode
         this.messagesKeys.unshift(key);
         //offline messages
         this.offlineMessages.unshift(item);
@@ -1419,7 +1517,7 @@ export class ChatPage {
 
   saveOfflineData() {
     return new Promise((resolve, reject) => {
-      this.storage.set('OfflineMessages-' + this.ticket, this.offlineMessages).then(status => {
+      this.storage.set('OfflineMessages-' + this.topicCode, this.offlineMessages).then(status => {
         resolve(status);
       }).catch(error => {
         reject(error);
@@ -1427,15 +1525,15 @@ export class ChatPage {
     });
   }
 
-  setOfflineTicketList(data) {
+  setOfflineTopicList(data) {
     return new Promise((resolve, reject) => {
-      this.storage.get('OfflineTickets').then(tickets => {
-        if (_.isEmpty(tickets)) {
-          tickets = {};
+      this.storage.get('OfflineTopics').then(topicCodes => {
+        if (_.isEmpty(topicCodes)) {
+          topicCodes = {};
         }
-        tickets[this.ticket] = data;
+        topicCodes[this.topicCode] = data;
 
-        this.storage.set('OfflineTickets', tickets).then(status => {
+        this.storage.set('OfflineTopics', topicCodes).then(status => {
           resolve(status);
         }).catch(error => {
           reject(error);
@@ -1449,16 +1547,15 @@ export class ChatPage {
     if ((time - this.lastReadingTime) < 1000) {
       return;
     }
-    if ([Global.LoginType.Doctor, Global.LoginType.Parent].indexOf(this.user.LoginTypeID) > -1) {
-      return;
-    }
     this.lastReadingTime = time;
     let params = {
       message: message,
       chatUsers: this.chatUsers,
-      ticket: this.ticket,
+      topicID: this.topicID,
+      topicCode: this.topicCode,
+      groupID: this.groupID,
+      groupCode: this.groupCode,
       userID: this.userID,
-      loginTypeID: this.user.LoginTypeID,
     };
     let chatReadModal = this.modal.create(ChatReadModalPage, params);
     chatReadModal.onDidDismiss(data => {
@@ -1467,18 +1564,88 @@ export class ChatPage {
     chatReadModal.present();
   }
 
-  openSavedMedia(event) {
+  openChatOptions() {
     let params = {
+      data: this.data,
       path: this.dataDirectory,
-      folder: this.ticket,
-      loginTypeID: this.user.LoginTypeID,
-    };
-    let savedMediaModal = this.modal.create(SavedMediaPage, params);
-    savedMediaModal.onDidDismiss(data => {
-
+      folder: this.topicCode,
+      group_name: this.group_name,
+    }
+    let chatOptionModal = this.modal.create(ChatOptionsPage, params);
+    chatOptionModal.onDidDismiss(data => {
+      if (!_.isEmpty(data)) {
+        //need to re-init
+        if (data.reInitData) {
+          this.initData().then(status => {
+            //need to open chat options again
+            if (this.openChatOptions) {
+              this.openChatOptions();
+            }
+          }).catch(error => {
+           });
+        }
+      }
     });
-    savedMediaModal.present();
+    chatOptionModal.present();
+  }
 
+  openSavedMedia(event) {
+    switch (event.name) {
+      case 'open-media':
+        let params = {
+          path: this.dataDirectory,
+          folder: this.topicCode,
+        };
+        let savedMediaModal = this.modal.create(SavedMediaPage, params);
+        savedMediaModal.onDidDismiss(data => {
+
+        });
+        savedMediaModal.present();
+        break;
+
+      case 'options':
+        let actionSheet = this.actionSheetCtrl.create({
+          title: 'Do You Want to Close ',
+          buttons: [
+            {
+              text: 'Close it now!',
+              role: 'destructive',
+              handler: () => {
+                this.connection.doPost('Chat/UpdateTopicStatus', {
+                  GroupID: this.groupID,
+                  TopicID: this.topicID,
+                  StatusID: 2
+                }).then((response: any) => {
+                  this.data.StatusID = 2;
+                  this.headerButtons.pop();
+
+                  if (response.Data.Message) {
+                    this.events.publish('toast:create', response.Data.Message);
+                  }
+                  //firebase 
+                  if (response.FireBaseTransaction) {
+                    this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { });
+                  }
+                  //send notification
+                  if (response.OneSignalTransaction) {
+                    this._notifications.sends(response.OneSignalTransaction, 'ChatPage', {
+                      topicID: this.topicID,
+                      groupID: this.groupID,
+                    });
+                  }
+                }).catch(error => {
+                  console.log(error);
+                });
+              }
+            }, {
+              text: 'Cancel',
+              role: 'cancel',
+            }]
+        });
+
+        actionSheet.present();
+        break;
+    }
   }
 
   goToElement(id) {
@@ -1495,5 +1662,32 @@ export class ChatPage {
         }
       });
     });
+  }
+
+  isWithinRange(time) {
+    let momentTime = moment(time).utc().local();
+    if (momentTime.isValid()) {
+      time = moment().utc().valueOf() - momentTime.valueOf();
+      return time <= 3000;
+    }
+    return false;
+  }
+
+  setTypingString() {
+    let typingUsers: Array<string> = [];
+    for (let typingUserId in this.userTyping) {
+      if (typingUserId && typingUserId !== (this.userID + '') && this.isWithinRange(this.userTyping[typingUserId])) {
+        typingUsers.push(this.getName(typingUserId));
+      }
+    }
+    if (typingUsers.length) {
+      this.userTypingString = typingUsers.join(', ') + ' typing';
+    } else {
+      this.userTypingString = null;
+    }
+  }
+
+  getTrackByField(index, message) {
+    return message.key;
   }
 }

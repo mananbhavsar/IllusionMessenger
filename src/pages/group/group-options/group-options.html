@@ -1,0 +1,58 @@
+<ion-header no-border>
+	<ion-navbar color="primary">
+		<ion-title>
+			<div>{{title}}</div>
+			<small>{{group_name}}</small>
+		</ion-title>
+		<ion-buttons end>
+			<button color="light" ion-button outline (click)="dismiss(null)">
+				Close
+			</button>
+		</ion-buttons>
+	</ion-navbar>
+</ion-header>
+<ion-content padding>
+	<ion-row class="buttons-container">
+		<ion-col>
+			<button ion-button full color="secondary" (click)="addFlashNews()">
+				<div>
+					<ion-icon name="ios-flash"></ion-icon>
+					<label>Add Flash News</label>
+				</div>
+			</button>
+		</ion-col>
+		<ion-col>
+			<button ion-button full color="primary" (click)="createTopic()">
+				<div>
+					<ion-icon name="ios-chatboxes"></ion-icon>
+					<label>Create Topic</label>
+				</div>
+			</button>
+		</ion-col>
+	</ion-row>
+	<ion-card *ngIf="userlist.UserDetail">
+		<ion-list>
+			<ion-list-header color="light">Participants In Group</ion-list-header>
+			<ion-item *ngFor="let user of userlist.UserDetail">
+				<h2>
+					{{user.User[0].User}}
+					<span *ngIf="isYou(user.User[0].UserID)">(You)</span>
+				</h2>
+				<p text-left text-small small text-wrap>
+					<ion-row>
+						<ion-col class="activity">
+							Last Activity
+							<span class="activity-status">{{user.User[0].LoginStatus}}</span>
+							at
+							<span class="activity-time">{{user.User[0].LastActivityDateTime}}</span>
+
+						</ion-col>
+					</ion-row>
+					<ion-row>
+						<ion-badge *ngFor="let tag of user.Tag" [ngClass]="getTagColor(tag.TagID)">{{tag.Tag}}</ion-badge>
+					</ion-row>
+				</p>
+			</ion-item>
+		</ion-list>
+	</ion-card>
+</ion-content>

@@ -1,0 +1,78 @@
+<ion-header no-border>
+	<ion-toolbar ion-text color="primary">
+		<ion-title>
+			<div>{{title}}</div>
+			<small>{{group_name}}</small>
+		</ion-title>
+		<ion-buttons end>
+			<button color="light" ion-button outline (click)="dismiss(null)">
+				Close
+			</button>
+		</ion-buttons>
+	</ion-toolbar>
+</ion-header>
+<ion-content no-padding *ngIf="data.User !==-1">
+	<ion-list>
+		<ion-item-divider color="light"></ion-item-divider>
+		<ion-item (click)="openSavedMedia()">
+			<ion-icon name="archive" item-start color="energized"></ion-icon>
+			Saved Media
+			<ion-icon name="ios-arrow-forward" item-end></ion-icon>
+		</ion-item>
+		<ion-item-divider color="light"></ion-item-divider>
+
+		<ion-item (click)="addParticipants()" *ngIf="amIAdmin">
+			<ion-icon name="ios-add-circle" color="pickup" item-start></ion-icon>
+			Add Participants
+		</ion-item>
+		<ion-item *ngFor="let participant of data.User;let i = index" (click)="userOptionsClicked(participant, i)" [hidden]="!participant">
+			<h2 *ngIf="participant">
+				{{participant.User}}
+				<span *ngIf="isYou(participant.UserID)">(You)</span>
+			</h2>
+			<p text-left text-small small text-wrap>
+				<ion-row>
+					<ion-col class="activity">
+						Last Activity
+						<span class="activity-status">{{participant.LoginStatus}}</span>
+						at
+						<span class="activity-time">{{participant.LastActivityDateTime}}</span>
+
+					</ion-col>
+				</ion-row>
+				<ion-row *ngIf="participant && participant.Tag">
+					<ion-badge *ngFor="let tag of getTags(participant)" [ngClass]="getTagColor(tag.TagID)">{{tag.Tag}}</ion-badge>
+				</ion-row>
+			</p>
+			<ion-icon item-end name="ios-star" color="pickup" *ngIf="participant && participant.IsResponsible"></ion-icon>
+			<button ion-button item-end small outline color="casestatus" *ngIf="participant && participant.IsAdmin">Admin</button>
+		</ion-item>
+	</ion-list>
+	<div *ngIf="amIAdmin">
+		<ion-item-divider color="light"></ion-item-divider>
+		<ion-list [hidden]="closeButton" *ngIf="data.StatusID === 1">
+			<ion-item (click)="rescheduleTopic()" class="close-topic" *ngIf="data.RescheduleCount < 3">
+				<h2 color="danger">Reschedule</h2>
+			</ion-item>
+			<ion-item class="height-0" *ngIf="data.RescheduleCount < 3">
+				<ion-datetime displayFormat="DD MMM YYYY, h A" (ionChange)="resheduleDateTimeChanged($event)" max="2050" #dueDate></ion-datetime>
+			</ion-item>
+			<ion-item (click)="closeTopic()" class="close-topic">
+				<h2 color="danger">Close Topic</h2>
+			</ion-item>
+		</ion-list>
+	</div>
+	<div margin-left class="background-grey" *ngIf="data.StatusID !== 0">
+		<ion-item-divider color="light"></ion-item-divider>
+		<p color="pickup">
+			Created: {{data.CreationDate_UTC | time}}
+		</p>
+		<p [ngClass]="isExpired(data.DueDate_UTC, data.CloseDatime_UTC) ? 'danger' : 'secondary'">
+			Due: {{data.DueDate_UTC | time}}
+			<i class="reschedule-count" [ngClass]="'reschedule-count-' + data.RescheduleCount"></i>
+		</p>
+		<p *ngIf="data.StatusID === 2" color="danger">
+			Closed: {{data.CloseDatime_UTC | time}}
+		</p>
+	</div>
+</ion-content>

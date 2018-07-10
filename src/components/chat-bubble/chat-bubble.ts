@@ -31,11 +31,13 @@ export class ChatBubbleComponent {
   element: any = null;
   @Input() message: any;
   @Input() userID: string;
-  @Input() ticket: string;
-  @Input() impressNo: string;
+  @Input() topicID: string;
+  @Input() topicCode: string;
+  @Input() groupID: string;
+  @Input() groupCode: string;
   @Input() users: any = {};
-  @Input() LoginTypeID: number = 0;
   @Input() myLanguage: string = 'en';
+  @Input() responsibleUserID: number = 0;
 
   global: any = Global;
 
@@ -85,11 +87,8 @@ export class ChatBubbleComponent {
 
   ngOnInit() {
     this.doTranslate();
-    if (Global.work_with_impression_no) {
-      this.pathIdentifier = this.impressNo;
-    } else {
-      this.pathIdentifier = this.ticket;
-    }
+    this.pathIdentifier = this.groupCode + '/' + this.topicCode;
+
     if (this.pathIdentifier) {
       this.basePath = 'Communications/' + this.pathIdentifier + '/';
       this.messagePath = this.basePath + 'Chat/' + this.message.key;
@@ -99,8 +98,8 @@ export class ChatBubbleComponent {
       this.fileOps.getDataDirectory().then((path: string) => {
         this.dataDirectory = path;
 
-        this.downloadDirectory = this.dataDirectory + this.ticket + '/';
-        this.fileOps.createDirectoryIfNotExist(this.dataDirectory, this.ticket);
+        this.downloadDirectory = this.dataDirectory + this.topicCode + '/';
+        this.fileOps.createDirectoryIfNotExist(this.dataDirectory, this.topicCode);
 
         this.processFile();
       }).catch(error => {
@@ -137,7 +136,7 @@ export class ChatBubbleComponent {
 
 
   /**
-   * update status of message if sent by other user LoginTypeID
+   * update status of message if sent by other user id
    * 1: if 
    * 2: if read by all
    */
@@ -153,21 +152,13 @@ export class ChatBubbleComponent {
     if (!('UserID' in this.message)) {
       this.message['UserID'] = 0;
     }
-    if (!('LoginTypeID' in this.message)) {
-      this.message['LoginTypeID'] = 0;
-    }
     if (this.message.UserID !== this.userID) { //avoid same user type also
       let status = -1;
-      //sent by 
-      if ([Global.LoginType.Doctor, Global.LoginType.Parent].indexOf(this.message.LoginTypeID) > -1 && this.LoginTypeID === Global.LoginType.Group) { //dentist & read by group user
+      //checking if read by all
+      if (_.size(this.message.Read) === _.size(this.users)) {
         status = 2;
-      } else if ([Global.LoginType.LabGuru, Global.LoginType.Group].indexOf(this.message.LoginTypeID) > -1) { //sent by group user
-        //checking if read by all
-        if (_.size(this.message.Read) === _.size(this.users)) {
-          status = 2;
-        } else if ([Global.LoginType.Doctor, Global.LoginType.Parent].indexOf(this.message.LoginTypeID) === -1 && this.message.Status === 0) { //read by any dentist
-          status = 1;
-        }
+      } else {
+        status = 1;
       }
       if (status > 0) {
         this.angularFireDB.object(this.messagePath + '/Status').set(status);
@@ -180,13 +171,12 @@ export class ChatBubbleComponent {
       this.events.publish('toast:error', this.not_available_offline_translate);
       return;
     }
+    let file: string = this.message.URL;
+    //if already downloading
+    if (this.message.downloading) {
+      return;
+    }
     if (this.message.URL) {
-      if (this.isCordova) {
-        let file = this.message.nativeURL || this.message.URL;
-        //if already downloading
-        if (this.message.downloading) {
-          return;
-        }
         let wasDownloaded = this.message.downloaded;
         this.check(file).then(entry => {
           if (wasDownloaded) {
@@ -208,7 +198,7 @@ export class ChatBubbleComponent {
         }).catch(error => {
           console.log(error);
         });
-      }
+      
     }
   }
 
@@ -232,36 +222,47 @@ export class ChatBubbleComponent {
   openVideo() {
     let options = {
       successCallback: () => { console.log('Video played') },
-      errorCallback: (e) => { console.log('Error streaming') },
+      errorCallback: (e) => {
+        console.log(e);
+        return false;
+      },
       shouldAutoClose: true,
     };
     this.streamingMedia.playVideo(this.message.nativeURL, options);
   }
 
   check(file) {
+    console.log(this.message.nativeURL);
+    
     return new Promise((resolve, reject) => {
       this.fileOps.isFileDownloaded(file, this.downloadDirectory).then(status => {
         console.log(status);
         resolve(status);
       }).catch(error => {
-        this.message.downloading = true;
-        this.fileOps.downloadFile(file, this.downloadDirectory).then((entry: any) => {
-          this.message.nativeURL = this.fileOps.getNativeURL(file, this.downloadDirectory);
-          this.message.downloading = false;
+        if (this.platform.is('core')) {
           this.message.downloaded = true;
+          console.log(this.message.nativeURL);
+          
+        } else if (this.platform.is('cordova')) {
+          this.message.downloading = true;
+          this.fileOps.downloadFile(file, this.downloadDirectory).then((entry: any) => {
+            this.message.nativeURL = this.fileOps.getNativeURL(file, this.downloadDirectory);
+            this.message.downloading = false;
+            this.message.downloaded = true;
 
-          this.subscribeToFileDelete(file);
-          setTimeout(() => {
-            console.log(entry);
-            resolve(entry);
-          });
-        }).catch(error => {
-          this.message.downloading = false;
-          this.message.downloaded = false;
-          this.message['error'] = error;
-          this.events.publish('toast:error', error);
-          reject(error);
-        })
+            this.subscribeToFileDelete(file);
+            setTimeout(() => {
+              console.log(entry);
+              resolve(entry);
+            });
+          }).catch(error => {
+            this.message.downloading = false;
+            this.message.downloaded = false;
+            this.message['error'] = error;
+            this.events.publish('toast:error', error);
+            reject(error);
+          })
+        }
       });
     });
   }
@@ -348,11 +349,6 @@ export class ChatBubbleComponent {
     return time;
   }
 
-  showRead(message) {
-    if (this.LoginTypeID === Global.LoginType.Group) {
-    }
-  }
-
   /**
    * This will reduce badge count if message is newly sent & read first time
    */
@@ -419,10 +415,6 @@ export class ChatBubbleComponent {
   }
 
   isHidden() {
-    //checking if sent by LabGuru & logged in user type is group then show tick
-    if (this.message.LoginTypeID === Global.LoginType.LabGuru && this.LoginTypeID === Global.LoginType.Group) {
-      return false;
-    }
     return this.message.UserID !== this.userID;
   }
 

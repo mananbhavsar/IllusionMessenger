@@ -1,43 +1,33 @@
 import { Component, ViewChild, enableProdMode } from '@angular/core';
-import { Nav, MenuController, Platform, Events, LoadingController, ModalController, AlertController, ToastController } from 'ionic-angular';
-
-import { Network } from '@ionic-native/network';
-import { StatusBar } from '@ionic-native/status-bar';
-import { SplashScreen } from '@ionic-native/splash-screen';
-import { Diagnostic } from '@ionic-native/diagnostic';
-import { Keyboard } from '@ionic-native/keyboard';
 import { Badge } from '@ionic-native/badge';
+import { Diagnostic } from '@ionic-native/diagnostic';
 import { Globalization } from '@ionic-native/globalization';
+import { Keyboard } from '@ionic-native/keyboard';
+import { Network } from '@ionic-native/network';
 import { OneSignal } from '@ionic-native/onesignal';
-
+import { SplashScreen } from '@ionic-native/splash-screen';
+import { StatusBar } from '@ionic-native/status-bar';
 import { Storage } from '@ionic/storage';
-
-import { AboutPage } from '../pages/about/about';
+import { TranslateService } from '@ngx-translate/core';
+import { AngularFireDatabase } from 'angularfire2/database';
+import { AlertController, Events, LoadingController, MenuController, ModalController, Nav, Platform, ToastController } from 'ionic-angular';
 import { AccountPage } from '../pages/account/account';
-import { CaseStatusPage } from '../pages/case-status/case-status';
 import { ChatPage } from '../pages/chat/chat';
-import { CommunicationPage } from "../pages/communication/communication";
-import { ContactUsPage } from '../pages/contact-us/contact-us';
-import { DashboardPage } from "../pages/dashboard/dashboard";
+import { ForgotPasswordPage } from '../pages/forgot-password/forgot-password';
 import { HelpPage } from '../pages/help/help';
 import { HomePage } from '../pages/home/home';
-import { InvoicePage } from '../pages/invoice/invoice';
 import { LoginPage } from '../pages/login/login';
 import { LogoutPage } from '../pages/logout/logout';
-import { OfflinePage } from '../pages/offline/offline';
-import { PaymentsPage } from "../pages/payments/payments";
-import { PickupPage } from "../pages/pickup/pickup";
-import { ForgotPasswordPage } from '../pages/forgot-password/forgot-password';
 import { TutorialPage } from '../pages/tutorial/tutorial';
 import { WelcomePage } from '../pages/welcome/welcome';
-
 import { UserProvider } from '../providers/user/user';
+import { GroupPage } from './../pages/group/group';
 import { Global } from './global';
+import { NativeRingtones } from '@ionic-native/native-ringtones';
 
-import { AngularFireDatabase } from 'angularfire2/database';
-import { not } from '@angular/compiler/src/output/output_ast';
-import { TranslateService } from '@ngx-translate/core';
-import { locale } from 'moment';
+
+
+
 
 enableProdMode();
 
@@ -76,12 +66,6 @@ export class MyApp {
     ];
     loggedInPages: PageInterface[] = [
         { title: 'Home', translate_key: 'HomeScreen._Home_', name: 'HomePage', component: HomePage, icon: 'home' },
-        { title: 'Dashboard', translate_key: 'HomeScreen._Dashboard_', name: 'DashboardPage', component: DashboardPage, icon: '' },
-        { title: 'Pickup', translate_key: 'HomeScreen._PickUp_', name: 'PickupPage', component: PickupPage, icon: '' },
-        { title: 'Case Status', translate_key: 'HomeScreen._CaseStatus_', name: 'CaseStatusPage', component: CaseStatusPage, icon: '' },
-        { title: 'Communication', translate_key: 'HomeScreen._Communication_', name: 'CommunicationPage', component: CommunicationPage, icon: '' },
-        { title: 'Invoice', translate_key: 'HomeScreen._Invoice_', name: 'InvoicePage', component: InvoicePage, icon: '' },
-        { title: 'Payments', translate_key: 'HomeScreen._Payments_', name: 'PaymentsPage', component: PaymentsPage, icon: '' },
     ];
     accountPages: PageInterface[] = [
         { title: 'Account', translate_key: 'Common._Account_', name: 'AccountPage', component: AccountPage, icon: 'user' },
@@ -106,6 +90,7 @@ export class MyApp {
         public events: Events,
         public menu: MenuController,
         public platform: Platform,
+        private ringtones: NativeRingtones,
         private _statusBar: StatusBar,
         public storage: Storage,
         public splashScreen: SplashScreen,
@@ -137,7 +122,6 @@ export class MyApp {
 
             setTimeout(() => {
                 this.initPreLoginPlugins();
-                // this.connectSocket();
             }, 500);
         });
     }
@@ -222,17 +206,6 @@ export class MyApp {
      */
     isAuthorized(page: PageInterface) {
         if (this.user && this.user._user) {
-            //for LoginTypeID 3
-            if (this.user._user.LoginTypeID === Global.LoginType.Group) {
-                //for dashboard
-                return ['DashboardPage', 'PickupPage', 'InvoicePage', 'PaymentsPage'].indexOf(page.name) === -1;
-            } else {
-                //for non portal user
-                if (!this.user._user.isPortalAdmin) {
-                    return ['InvoicePage', 'PaymentsPage'].indexOf(page.name) === -1;
-                }
-
-            }
             return true;
         }
         return false;
@@ -292,13 +265,24 @@ export class MyApp {
 
         this.events.subscribe('loading:close', () => {
             if (this.loading) {
-                this.loading.dismiss();
+                try {
+                    this.loading.dismiss();
+                } catch (e) {
+                    console.error(e);
+                }
             }
         });
 
 
         this.events.subscribe('alert:basic', (title, subTitle, buttons) => {
-            if (title.trim() === '' || subTitle.trim() === '') {
+            try {
+                if (typeof title === 'undefined' || title.trim() === '') {
+                    return;
+                }
+                if (typeof subTitle === 'undefined' || subTitle.trim() === '') {
+                    return;
+                }
+            } catch (e) {
                 return;
             }
             buttons = buttons || [this.ok_translate]; //OK
@@ -311,7 +295,7 @@ export class MyApp {
         });
 
 
-        this.events.subscribe('toast:create', (message, cssClass) => {
+        this.events.subscribe('toast:create', (message, cssClass, position: string = 'top') => {
             cssClass = cssClass || null;
             if (message.trim() === '') {
                 return;
@@ -319,7 +303,7 @@ export class MyApp {
             let toast = this.toast.create({
                 message: message,
                 duration: 5000,
-                position: 'top',
+                position: position,
                 showCloseButton: true,
                 closeButtonText: 'x',
                 cssClass: cssClass
@@ -327,19 +311,39 @@ export class MyApp {
             toast.present();
         });
 
-        this.events.subscribe('toast:error', (error) => {
+        this.events.subscribe('toast:error', (error, position: string = 'top') => {
             if (error === null) {
                 return;
             }
             if (typeof error === 'string') {
-                this.events.publish('toast:create', error, 'danger');
+                this.events.publish('toast:create', error, 'danger', position);
             } else if ([404].indexOf(error.status) > -1) {
-                this.events.publish('toast:create', error.status + ': ' + error.statusText, 'danger');
+                this.events.publish('toast:create', error.status + ': ' + error.statusText, 'danger', position);
             } else if (error._body) {
-                let body = error._body ? error._body : JSON.parse(error._body);
+                let body = error._body;
+                if (body) {
+                    try {
+                        body = JSON.parse(error._body);
+                    } catch (e) {
+                        body = error._body;
+                    }
+                }
+
+                //checking if title
+                if (typeof body === 'object') {
+                    if (!('title' in body)) {
+                        //adding statusText
+                        body.title = error.statusText;
+                    }
+                } else {
+                    body = {
+                        title: error.statusText,
+                        message: body
+                    }
+                }
                 this.events.publish('alert:basic', body.title, body.message);
             } else {
-                this.events.publish('toast:create', this.error_translate, 'danger');
+                this.events.publish('toast:create', this.error_translate, 'danger', position);
             }
         });
 
@@ -350,7 +354,6 @@ export class MyApp {
         //Network events
         this.events.subscribe('network:offline', () => {
             let time = new Date().getTime();
-            console.log(time, this.lastOfflineMessageShown);
             if ((time - this.lastOfflineMessageShown) < 1000) {
                 return;
             }
@@ -389,6 +392,8 @@ export class MyApp {
             this.events.publish('platform:onPause');
         });
 
+        //OneSignal
+
         //working on OS Version
         this.doVersionCheck();
 
@@ -404,7 +409,8 @@ export class MyApp {
         }
         //init OneSignal
         if (Global.Push.OneSignal) {
-            this.initOneSignal();
+        this.initOneSignal();            
+            this.processOneSignalId();
         }
 
         //Badge
@@ -450,6 +456,10 @@ export class MyApp {
                     page = ChatPage;
                     break;
 
+                case 'GroupPage':
+                    page = GroupPage;
+                    break;
+
                 default:
                     page = HomePage;
                     break;
@@ -470,6 +480,12 @@ export class MyApp {
         } else if (directOpenPage && payload.additionalData && payload.additionalData.page) {//direct open & has data pages
             this.openNotificationPage(payload);
         } else {
+            this.ringtones.getRingtone().then((ringtones) => { 
+                console.log(ringtones);
+                if(ringtones){
+                    this.ringtones.playRingtone('assets/ringtones/notification-ringtone.mp3');
+                }
+             });
             let closeText = 'x';
             if (payload.additionalData && payload.additionalData.page) {
                 if (payload.additionalData.page === 'ChatPage') {
@@ -487,6 +503,7 @@ export class MyApp {
             });
             notificationToast.onDidDismiss((data, role) => {
                 if (role === 'close') {
+                this.ringtones.stopRingtone('assets/ringtones/notification-ringtone.mp3');                    
                     this.openNotificationPage(payload);
                 }
             });
@@ -495,46 +512,102 @@ export class MyApp {
     }
 
     initOneSignal() {
-        if (!this.platform.is('cordova')) {
-            return;
-        }
-        this._oneSignal.startInit(Global.OneSignal.key, Global.OneSignal.android);
-        this._oneSignal.inFocusDisplaying(this._oneSignal.OSInFocusDisplayOption.None);
-        this._oneSignal.getIds().then((id) => {
-            //registering user
-            this._oneSignal.setSubscription(true);
-            //updating user ID
-            this.events.subscribe('user:ready', (response) => {
-                this.user.registerPushID(id.userId);
-            });
-            //setting tags for this user
-            this.user.getUser().then(user => {
-                this._oneSignal.sendTags({
-                    user_id: user.id,
-                    name: user.Customer
+        if (this.platform.is('core')) {
+            let OneSignal = window['OneSignal'] || [];
+            OneSignal.push(["init", {
+                appId: '88b19d42-ea0e-4fa7-b35a-cf754a5ce4aa',
+                autoRegister: true,
+                allowLocalhostAsSecureOrigin: true,
+                notifyButton: {
+                    enable: false
+                },
+            }]);
+            let that = this;
+            OneSignal.push(function () {
+                OneSignal.isPushNotificationsEnabled(function (isEnabled) {
+                    if (isEnabled) {
+                        OneSignal.getUserId(function (userId: string) {
+                            console.log(userId);
+                            
+                            that.events.publish('pushid:created', userId);
+                            that.user.registerPushID(userId).catch(error => { });
+                        });
+                    } else {
+                        OneSignal.registerForPushNotifications({
+                            modalPrompt: true,
+                        });
+                    }
+                });
+                OneSignal.on('subscriptionChange', function (isSubscribed) {
+                    if (isSubscribed) {
+                        OneSignal.isPushNotificationsEnabled().then(function (isEnabled) {
+                            if (isEnabled) {
+                                OneSignal.getUserId(function (userId: string) {
+                                    console.log(userId);
+
+                                    that.events.publish('pushid:created', userId);
+                                    that.user.registerPushID(userId).catch(error => { });
+                                    that.user.getUser().then(user => {
+                                        console.log(user);
+                                        if (user) {
+                                            OneSignal.sendTags({
+                                                user_id: user.id,
+                                                name: user.LoginUser
+                                            });
+                                        }
+                                    });
+                                });
+                            }
+                        });
+                    }
                 });
             });
-        });
-        this._oneSignal.handleNotificationReceived().subscribe((notification) => {
-            // do something when notification is received
-            this.processNotification(notification, false);
-        });
+        } else if (this.platform.is('cordova')) {
+            this._oneSignal.startInit(Global.OneSignal.key, Global.OneSignal.android);
+            this._oneSignal.inFocusDisplaying(this._oneSignal.OSInFocusDisplayOption.None);
+            this._oneSignal.handleNotificationReceived().subscribe((notification) => {
+                // do something when notification is received
+                this.processNotification(notification, false);
+            });
 
-        this._oneSignal.handleNotificationOpened().subscribe((notification) => {
-            // do something when a notification is opened
-            this.processNotification(notification, true);
-        });
+            this._oneSignal.handleNotificationOpened().subscribe((notification) => {
+                // do something when a notification is opened
+                this.processNotification(notification, true);
+            });
 
-        this._oneSignal.endInit();
+            this._oneSignal.endInit();
+        }
+    }
+
+    processOneSignalId() {
+        if (this.platform.is('cordova')) {
+            this._oneSignal.getIds().then((id) => {
+                //registering user
+                this._oneSignal.setSubscription(true);
+                //updating user ID
+                this.user.registerPushID(id.userId);
+                //setting tags for this user
+                this.user.getUser().then(user => {
+                    this._oneSignal.sendTags({
+                        user_id: user.id,
+                        name: user.LoginUser
+                    });
+                });
+            });
+        }
     }
 
     initBadge() {
         this.user.getUser().then(user => {
             this.angularFireDatabase.object('Badge/' + user.id + '/Total').snapshotChanges().subscribe(snapshot => {
-                let total = snapshot.payload.val();
+                let total:any = snapshot.payload.val();
                 console.log('total:' + total);
                 if (total) {
-                    this._badge.set(total);
+                    this._badge.set(total).then(value => {
+
+                    }).catch(error => {
+
+                    });
                 } else {
                     this._badge.clear();
                 }
@@ -554,7 +627,7 @@ export class MyApp {
             this.nav.setRoot(HomePage);
 
             setTimeout(() => {
-                var full_name = user ? user.Customer : '';
+                let full_name = user ? user.LoginUser : '';
                 this.events.publish('toast:create', this.welcome_translate + ' ' + full_name);
                 this.initPostLoginPlugins();
                 this.events.publish('user:changed');
@@ -589,22 +662,5 @@ export class MyApp {
             }
         });
     }
-
-    //remove in next version
-    connectSocket() {
-        // this.socket = io("https://illusion-chat-server.herokuapp.com/");
-        // this.socket.on('connect', () => {
-        //     console.log('Connected');
-        // });
-        // this.socket.on('disconnect', () => {
-        //     console.log('Disconnected');
-        // });
-
-        // //listening to events
-        // this.socket.on('updateCount', (response) => {
-        //     this.events.publish('socket:updateCount', response);
-        // });
-    }
-
 
 }

@@ -6,13 +6,20 @@ page-chat {
                 background: gray;
             }
             ion-title {
-                .toolbar-title {
+               .toolbar-title {
+                height:23px;
                     color: white;
                     font-size: 1em;
                     text-align: center;
                 }
             }
         }
+    }
+    .inputfile {
+        position: absolute;
+        opacity: 0;
+        width: 3.1px;
+        height: 3.1px;
     }
     .header-picture {
         max-width: 33px;

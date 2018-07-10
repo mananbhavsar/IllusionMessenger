@@ -1,0 +1,28 @@
+{
+    "prepare_queue": {
+        "installed": [],
+        "uninstalled": []
+    },
+    "config_munge": {
+        "files": {}
+    },
+    "installed_plugins": {
+        "com-sarriaroman-photoviewer": {
+            "PACKAGE_NAME": "com.illusionmessenger.app"
+        },
+        "cordova-plugin-file": {
+            "PACKAGE_NAME": "com.illusionmessenger.app"
+        },
+        "cordova-plugin-media": {
+            "PACKAGE_NAME": "com.illusionmessenger.app"
+        },
+        "cordova-plugin-native-ringtones": {
+            "PACKAGE_NAME": "com.illusionmessenger.app"
+        }
+    },
+    "dependent_plugins": {
+        "cordova-plugin-compat": {
+            "PACKAGE_NAME": "com.illusionmessenger.app"
+        }
+    }
+}

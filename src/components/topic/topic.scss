@@ -1,0 +1,35 @@
+topic {
+    ion-item {
+        &.item-md {
+            &.item-block {
+                padding-left: 0;
+                .item-inner {
+                    padding-right: 0;
+                    ion-label {
+                        &.label-md {
+                            margin: 3px 3px 3px 0;
+                            h2 {}
+                            p {
+                                width: 100%;
+                                ion-row {
+                                    ion-col {
+                                        font-size: 11px;
+                                        &.pickup {
+                                            color: color($colors, pickup);
+                                        }
+                                        &.secondary {
+                                            color: color($colors, secondary);
+                                        }
+                                        &.danger {
+                                            color: color($colors, danger);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

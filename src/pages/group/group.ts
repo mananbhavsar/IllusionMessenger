@@ -118,7 +118,7 @@ export class GroupPage {
     return _.isEmpty(object);
   }
 
-  openTopic(topic, index, type) {
+  openGeneralTopic(topic, index, type) {
     if (topic) {
       if (topic.Count) {
         topic.Count = 0;
@@ -129,6 +129,17 @@ export class GroupPage {
         topicID: topic.TopicID,
         groupID: this.group_id,
       });
+    }
+  }
+
+  topicCliked(event) {
+    if (event && event.topic) {
+      if (event.topic.Count) {
+        event.topic.Count = 0;
+        //make count zero
+        this.group[event.type].Count = 0;
+      }
+
     }
   }
 

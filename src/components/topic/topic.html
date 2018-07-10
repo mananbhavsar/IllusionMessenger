@@ -1,0 +1,23 @@
+<ng-container *ngIf="topic">
+  <ion-item (click)="openTopic()">
+    <h2>
+      {{topic.Topic}}
+      <span float-right>
+        <ion-icon name="ios-star" color="pickup" *ngIf="topic.IsResponsible"></ion-icon>
+        <ion-badge *ngIf="badgeCount">{{badgeCount}}</ion-badge>
+      </span>
+    </h2>
+    <p>
+      <ion-row>
+        <ion-col text-left class="pickup">
+          Created: {{topic.CreationDate_UTC | time }}
+        </ion-col>
+        <ion-col text-right *ngIf="isExpired(topic.DueDate_UTC) !== null" [ngClass]="isExpired(topic.DueDate_UTC) ? 'danger' : 'secondary'">
+          Due: {{topic.DueDate_UTC | time }}
+          <i class="reschedule-count" [ngClass]="'reschedule-count-' + topic.RescheduleCount"></i>
+        </ion-col>
+      </ion-row>
+    </p>
+    <ion-icon name="ios-arrow-forward" item-end></ion-icon>
+  </ion-item>
+</ng-container>

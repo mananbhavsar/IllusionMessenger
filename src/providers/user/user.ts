@@ -24,6 +24,9 @@ export class UserProvider {
     bye_bye_translate: string = 'Good bye see you soon';
     logging_you_in_translate: string = 'Logging you in';
     login_failed_translate: string = 'Login Failed';
+
+    //total badge count
+    totalBadgeCount: number = 0;
     constructor(
         public events: Events,
         public storage: Storage,
@@ -41,6 +44,10 @@ export class UserProvider {
             this.storage.get('User').then((user) => {
                 this._user = user;
             });
+        });
+
+        this.events.subscribe('badge:set', total => {
+            this.totalBadgeCount = total;
         });
 
         setTimeout(() => {
@@ -91,6 +98,7 @@ export class UserProvider {
 
                     this.removeOfflineData();
 
+                    this.events.publish('badge:set', 0);
                     this.events.publish('user:logout', this.bye_bye_translate);
 
                     resolve('Logged out');

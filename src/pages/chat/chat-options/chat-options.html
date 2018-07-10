@@ -1,15 +1,5 @@
 <ion-header no-border>
-	<ion-toolbar ion-text color="primary">
-		<ion-title>
-			<div>{{title}}</div>
-			<small>{{group_name}}</small>
-		</ion-title>
-		<ion-buttons end>
-			<button color="light" ion-button outline (click)="dismiss(null)">
-				Close
-			</button>
-		</ion-buttons>
-	</ion-toolbar>
+	<modal-toolbar [title]="title" [subTitle]="group_name" (dismiss)="dismiss($event)"></modal-toolbar>
 </ion-header>
 <ion-content no-padding *ngIf="data.User !==-1">
 	<ion-list>
@@ -51,10 +41,10 @@
 	<div *ngIf="amIAdmin">
 		<ion-item-divider color="light"></ion-item-divider>
 		<ion-list [hidden]="closeButton" *ngIf="data.StatusID === 1">
-			<ion-item (click)="rescheduleTopic()" class="close-topic" *ngIf="data.RescheduleCount < 3">
+			<ion-item (click)="rescheduleTopic()" class="close-topic" *ngIf="data.RescheduleCount < 10">
 				<h2 color="danger">Reschedule</h2>
 			</ion-item>
-			<ion-item class="height-0" *ngIf="data.RescheduleCount < 3">
+			<ion-item class="height-0" *ngIf="data.RescheduleCount < 10">
 				<ion-datetime displayFormat="DD MMM YYYY, h A" (ionChange)="resheduleDateTimeChanged($event)" max="2050" #dueDate></ion-datetime>
 			</ion-item>
 			<ion-item (click)="closeTopic()" class="close-topic">

@@ -1,4 +1,4 @@
-import { Component, ViewChild, enableProdMode } from '@angular/core';
+import { Component, enableProdMode, ViewChild } from '@angular/core';
 import { Badge } from '@ionic-native/badge';
 import { Diagnostic } from '@ionic-native/diagnostic';
 import { Globalization } from '@ionic-native/globalization';
@@ -23,10 +23,6 @@ import { WelcomePage } from '../pages/welcome/welcome';
 import { UserProvider } from '../providers/user/user';
 import { GroupPage } from './../pages/group/group';
 import { Global } from './global';
-
-
-
-
 
 
 enableProdMode();
@@ -546,12 +542,9 @@ export class MyApp {
             this.angularFireDatabase.object('Badge/' + user.id + '/Total').snapshotChanges().subscribe(snapshot => {
                 let total = snapshot.payload.val();
                 console.log('total:' + total);
+                this.events.publish('badge:set', total);
                 if (total) {
-                    this._badge.set(total).then(value => {
-
-                    }).catch(error => {
-
-                    });
+                    this._badge.set(total);
                 } else {
                     this._badge.clear();
                 }

@@ -17,8 +17,6 @@ import { AddFlashPage } from './../group/add-flash/add-flash';
 import { CreateTopicPage } from './../topic/create-topic/create-topic';
 
 
-
-
 @IonicPage()
 @Component({
     selector: 'page-home',
@@ -26,7 +24,7 @@ import { CreateTopicPage } from './../topic/create-topic/create-topic';
 })
 export class HomePage {
     global: any = {};
-    groups: Array<any> | -1 = [];
+    data: any = null;
     badges: any = {};
 
     firebaseConnected: boolean = false;
@@ -39,6 +37,30 @@ export class HomePage {
      */
     deviceRegsiter: number = 0;
     connectedTime: string = null;
+
+    dataFetched: boolean = false;
+    tabs = [
+        {
+            name: 'Assigned To Me',
+            icon: 'star'
+        },
+        {
+            name: 'Created By Me',
+            icon: 'people'
+        },
+        {
+            name: 'Groups',
+            icon: 'list-box'
+        },
+        {
+            name: 'Priorty',
+            icon: 'flag'
+        },
+        {
+            name: 'All Tasks',
+            icon: 'paper'
+        },];
+    selectedTab: string = 'star';
     constructor(
         public navCtrl: NavController,
         public connection: ConnectionProvider,
@@ -99,20 +121,19 @@ export class HomePage {
 
     getData() {
         return new Promise((resolve, reject) => {
-            this.connection.doPost('Chat/Home', {
+            this.dataFetched = false;
+            this.connection.doPost('Chat/GetTaskDetail', {
             }, false).then((response: any) => {
+                this.dataFetched = true;
                 //groups
-                this.groups = response.Groups;
-                if (_.size(this.groups) === 0) {
-                    this.groups = -1;
-                }
+                console.log(response);
+                this.data = response;
                 //flash
-                this.flashNews = response.FlashNews;
+                // this.flashNews = response.FlashNews;
 
                 this.registerDevice();
                 resolve(true);
             }).catch(error => {
-                this.groups = -1;
                 this.flashNews = [];
                 reject(error);
             })
@@ -152,6 +173,7 @@ export class HomePage {
 
     refresh(refresher) {
         this.getData().then(status => {
+            this.dataFetched = true;
             refresher.complete();
             this.connectToFireBase();
         }).catch(error => {
@@ -162,8 +184,8 @@ export class HomePage {
     connectToFireBase() {
         //user setting
         this.user.getUser().then(user => {
-            if (this.groups !== -1) {
-                let groupsTemp: any = this.groups;
+            if (this.data.Groups_Wise) {
+                let groupsTemp: any = this.data.Groups_Wise;
                 groupsTemp.forEach((group, index) => {
                     let ref = firebase.database().ref('Badge/' + user.id + '/Groups/' + group.GroupCode + '/Total');
                     ref.off('value');
@@ -230,6 +252,18 @@ export class HomePage {
             }
         });
         flashModal.present();
+    }
+
+    getSelectedTabName() {
+        let selectedName = '';
+        this.tabs.some(tab => {
+            if (tab.icon === this.selectedTab) {
+                selectedName = tab.name;
+                return true;
+            }
+            return false;
+        });
+        return selectedName;
     }
 }
 

@@ -34,7 +34,7 @@ node_modules
 #GoogleService-Info.plist
 #config.xml
 #src/app/global.ts
-
+index.html
 .DS_Store
 Thumbs.db
 UserInterfaceState.xcuserstate

@@ -2,6 +2,7 @@
   <ion-item (click)="openTopic()">
     <h2>
       {{topic.Topic}}
+      <ion-icon name="ios-flag" class="priority" *ngIf="topic.IsPriority"></ion-icon>
       <span float-right>
         <ion-icon name="ios-star" color="pickup" *ngIf="topic.IsResponsible"></ion-icon>
         <ion-badge *ngIf="badgeCount">{{badgeCount}}</ion-badge>

@@ -147,7 +147,9 @@
         "_ReceiptNo_": "Receipt No",
         "_ReceiptRoute_": "Receipt Route"
     },
+
     "Common": {
+        "_ChangePassword_" : "Change Password",
         "_Menu_": "Menu",
         "_Home_": "Home",
         "_AboutApp_": "About App",

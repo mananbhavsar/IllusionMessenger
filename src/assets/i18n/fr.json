@@ -150,6 +150,7 @@
         "_ReceiptRoute_": "Receipt Route"
     },
     "Common": {
+        "_ChangePassword_" : "Changer le mot de passe",
         "_Menu_": "Menu",
         "_Home_": "Home",
         "_AboutApp_": "À propos d'App",

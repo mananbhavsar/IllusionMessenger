@@ -16,6 +16,10 @@ import { IonicImageViewerModule } from 'ionic-img-viewer';
 import { TranslateModule } from "@ngx-translate/core";
 import { FlashNewsComponent } from './flash-news/flash-news';
 import { AttachmentComponent } from './attachment/attachment';
+import { TitleComponent } from './title/title';
+import { ModalToolbarComponent } from './modal-toolbar/modal-toolbar';
+
+
 
 @NgModule({
     declarations: [EmptyComponent,
@@ -29,7 +33,9 @@ import { AttachmentComponent } from './attachment/attachment';
         CallFabComponent,
         ChatBubbleComponent,
         FlashNewsComponent,
-        AttachmentComponent
+        AttachmentComponent,
+        TitleComponent,
+        ModalToolbarComponent
     ],
     imports: [
         MomentModule,
@@ -46,6 +52,8 @@ import { AttachmentComponent } from './attachment/attachment';
         IonicPageModule.forChild(ChatBubbleComponent),
         IonicPageModule.forChild(FlashNewsComponent),
         IonicPageModule.forChild(AttachmentComponent),
+        IonicPageModule.forChild(TitleComponent),
+        IonicPageModule.forChild(ModalToolbarComponent),
         PipesModule,
     ],
     exports: [
@@ -61,7 +69,9 @@ import { AttachmentComponent } from './attachment/attachment';
         ChatBubbleComponent,
         TranslateModule,
         FlashNewsComponent,
-        AttachmentComponent
+        AttachmentComponent,
+        TitleComponent,
+        ModalToolbarComponent
         
     ]
 })

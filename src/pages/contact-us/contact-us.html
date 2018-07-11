@@ -1,14 +1,5 @@
 <ion-header>
-  <ion-toolbar ion-text color="primary">
-    <ion-title>
-      Contact Us
-    </ion-title>
-    <ion-buttons end>
-      <button color="light" ion-button outline (click)="dismiss(null)">
-          {{'ChatScreen._Close_' | translate}}
-      </button>
-    </ion-buttons>
-  </ion-toolbar>
+  <modal-toolbar [title]="'Common._ContactUs_' | translate" (dismiss)="dismiss($event)"></modal-toolbar>
 </ion-header>
 <ion-content class="login">
   <ion-grid class="slide_header">

@@ -598,13 +598,14 @@ export class MyApp {
             this.angularFireDatabase.object('Badge/' + user.id + '/Total').snapshotChanges().subscribe(snapshot => {
                 let total:any = snapshot.payload.val();
                 console.log('total:' + total);
+                this.events.publish('badge:set', total);
+
                 if (total) {
-                    this._badge.set(total).then(value => {
-
-                    }).catch(error => {
-
-                    });
-                } else {
+                    this._badge.set(total);
+                    if(this.platform.is('core')){
+                        this.events.publish('Badge:set',total);
+                    }
+                }  else {
                     this._badge.clear();
                 }
             });

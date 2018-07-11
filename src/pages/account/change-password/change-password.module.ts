@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
 import { ChangePasswordPage } from './change-password';
-
 import { ComponentsModule } from "../../../components/components.module";
 
 @NgModule({
@@ -10,7 +9,7 @@ import { ComponentsModule } from "../../../components/components.module";
   ],
   imports: [
     IonicPageModule.forChild(ChangePasswordPage),
-    ComponentsModule,
+    ComponentsModule
   ],
 })
 export class ChangePasswordPageModule { }

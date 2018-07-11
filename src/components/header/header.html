@@ -2,10 +2,10 @@
     <button ion-button menuToggle>
         <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-title>
-        <div>{{_title}}</div>
-        <small *ngIf="subTitle">{{subTitle}}</small>
-    </ion-title>
+    <title [title]="_title" [subTitle]="subTitle" [badgeCount]="badgeCount"></title>
+    <div>
+        {{_count}}
+    </div>
     <ion-buttons end *ngIf="buttons">
         <button ion-button (click)="sendButtonClicked(button, $event)" clear icon-only color="light" *ngFor="let button of buttons">
             <ion-icon [name]="button.icon"></ion-icon>

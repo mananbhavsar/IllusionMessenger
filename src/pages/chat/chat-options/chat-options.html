@@ -1,15 +1,5 @@
-<ion-header no-border>
-	<ion-toolbar ion-text color="primary">
-		<ion-title>
-			<div>{{title}}</div>
-			<small>{{group_name}}</small>
-		</ion-title>
-		<ion-buttons end>
-			<button color="light" ion-button outline (click)="dismiss(null)">
-				Close
-			</button>
-		</ion-buttons>
-	</ion-toolbar>
+<ion-header>
+		<modal-toolbar [title]="title" (dismiss)="dismiss($event)"></modal-toolbar>
 </ion-header>
 <ion-content no-padding *ngIf="data.User !==-1">
 	<ion-list>

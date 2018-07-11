@@ -24,7 +24,9 @@ export class UserProvider {
     bye_bye_translate: string = 'Good bye see you soon';
     logging_you_in_translate: string = 'Logging you in';
     login_failed_translate: string = 'Login Failed';
-    isFromMobile : boolean = true;
+    isFromMobile: boolean = true;
+    totalBadgeCount: number = 0;
+
     constructor(
         public events: Events,
         public storage: Storage,
@@ -44,9 +46,13 @@ export class UserProvider {
             });
         });
 
-    if(this.platform.is('core')){
-        this.isFromMobile = false;
-    }
+        this.events.subscribe('badge:set', total => {
+            this.totalBadgeCount = total;
+        });
+
+        if (this.platform.is('core')) {
+            this.isFromMobile = false;
+        }
 
         setTimeout(() => {
             this.doTranslate();
@@ -69,14 +75,14 @@ export class UserProvider {
     }
 
     login(username, password) {
-        this.connection.doPost('Chat/login', { UserCode: username, Password: password, IsFromMobile :  this.isFromMobile}, this.logging_you_in_translate + '!').then(
+        this.connection.doPost('Chat/login', { UserCode: username, Password: password, IsFromMobile: this.isFromMobile }, this.logging_you_in_translate + '!').then(
             response => {
                 this._user = response[0];
                 this.setUser(this._user).then(() => {
                     this.HAS_LOGGED_IN = true;
                     this.events.publish('user:login', this._user);
                 });
-            }).catch(error => {              
+            }).catch(error => {
                 this.events.publish('alert:basic', this.login_failed_translate + '!', error);
             });
     };
@@ -161,10 +167,10 @@ export class UserProvider {
                 this.connection.doPost('Chat/RegisterDevice', {
                     DeviceID: push_id,
                     IsLogin: push_id !== '',
-                    IsFromMobile :  this.isFromMobile
+                    IsFromMobile: this.isFromMobile
                 }, false).then((response: any) => {
                     console.log(response);
-                    
+
                     //LogOutForcefully
                     if (response.Data.LogOutForcefully) {
                         if (response.Data.Message) {

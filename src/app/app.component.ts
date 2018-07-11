@@ -25,10 +25,6 @@ import { GroupPage } from './../pages/group/group';
 import { Global } from './global';
 import { NativeRingtones } from '@ionic-native/native-ringtones';
 
-
-
-
-
 enableProdMode();
 
 export interface PageInterface {
@@ -481,9 +477,9 @@ export class MyApp {
             this.openNotificationPage(payload);
         } else {
             this.ringtones.getRingtone().then((ringtones) => { 
-                console.log(ringtones);
                 if(ringtones){
-                    this.ringtones.playRingtone('assets/ringtones/notification-ringtone.mp3');
+        
+                    this.ringtones.playRingtone('../assets/ringtones/notification-ringtone.mp3');
                 }
              });
             let closeText = 'x';
@@ -503,7 +499,7 @@ export class MyApp {
             });
             notificationToast.onDidDismiss((data, role) => {
                 if (role === 'close') {
-                this.ringtones.stopRingtone('assets/ringtones/notification-ringtone.mp3');                    
+                this.ringtones.stopRingtone('../assets/ringtones/notification-ringtone.mp3');                    
                     this.openNotificationPage(payload);
                 }
             });

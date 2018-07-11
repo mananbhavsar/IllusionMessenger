@@ -32,6 +32,7 @@ import { PhotoLibrary } from '@ionic-native/photo-library';
 import { Globalization } from '@ionic-native/globalization';
 import { OneSignal } from '@ionic-native/onesignal';
 import { FileOpener } from '@ionic-native/file-opener';
+import { NativeRingtones } from '@ionic-native/native-ringtones';
 import { PhotoViewer } from '@ionic-native/photo-viewer';
 import { AndroidPermissions } from '@ionic-native/android-permissions';
 
@@ -185,6 +186,7 @@ export function createTranslateLoader(http: HttpClient) {
         PhotoLibrary,
         Globalization,
         CommonProvider,
+        NativeRingtones,
         OneSignal,
         AndroidPermissions,
         NotificationsProvider,

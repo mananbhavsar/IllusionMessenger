@@ -22,6 +22,7 @@ import { Global } from '../../app/global';
 import { retry } from 'rxjs/operator/retry';
 
 import { ImageViewerController } from 'ionic-img-viewer';
+import { window } from 'rxjs/operator/window';
 
 @Component({
   selector: 'chat-bubble',
@@ -49,6 +50,8 @@ export class ChatBubbleComponent {
   downloadDirectory: string = null;
   selectedTrack: number;
   isCordova: boolean = false;
+  isBrowser: boolean = false;
+  window: Window;
 
   not_available_offline_translate: string = 'Not available in Offline';
   constructor(
@@ -68,6 +71,7 @@ export class ChatBubbleComponent {
   ) {
     this.global = Global;
     this.isCordova = this.platform.is('cordova');
+    this.isBrowser = this.platform.is('core');
 
     //listening to page change event to pause audio
     this.navCtlr.viewWillLeave.subscribe(event => {
@@ -177,28 +181,28 @@ export class ChatBubbleComponent {
       return;
     }
     if (this.message.URL) {
-        let wasDownloaded = this.message.downloaded;
-        this.check(file).then(entry => {
-          if (wasDownloaded) {
-            switch (this.message.MessageType) {
-              case 'Image':
-                this.openImage();
-                break;
+      let wasDownloaded = this.message.downloaded;
+      this.check(file).then(entry => {
+        if (wasDownloaded) {
+          switch (this.message.MessageType) {
+            case 'Image':
+              this.openImage();
+              break;
 
-              case 'Audio':
-                this.openAudio();
-                break;
+            case 'Audio':
+              this.openAudio();
+              break;
 
-              case 'Video':
-                this.openVideo();
-                break;
-            }
+            case 'Video':
+              this.openVideo();
+              break;
           }
+        }
 
-        }).catch(error => {
-          console.log(error);
-        });
-      
+      }).catch(error => {
+        console.log(error);
+      });
+
     }
   }
 
@@ -210,40 +214,45 @@ export class ChatBubbleComponent {
   }
 
   openAudio() {
-    let options = {
-      successCallback: () => { console.log('Audio played') },
-      errorCallback: (e) => { console.log('Error streaming') },
-      shouldAutoClose: true,
-      bgImage: 'https://s3-ap-southeast-1.amazonaws.com/eiosys/images/equilizer.gif',
-    };
-    this.streamingMedia.playAudio(this.message.nativeURL, options);
+    if (this.isBrowser) {
+      this.window.open(this.message.URL, '_blank');
+    } else if (this.isCordova) {
+      let options = {
+        successCallback: () => { console.log('Audio played') },
+        errorCallback: (e) => { console.log('Error streaming') },
+        shouldAutoClose: true,
+        bgImage: 'https://s3-ap-southeast-1.amazonaws.com/eiosys/images/equilizer.gif',
+      };
+      this.streamingMedia.playAudio(this.message.nativeURL, options);
+    }
   }
 
   openVideo() {
-    let options = {
-      successCallback: () => { console.log('Video played') },
-      errorCallback: (e) => {
-        console.log(e);
-        return false;
-      },
-      shouldAutoClose: true,
-    };
-    this.streamingMedia.playVideo(this.message.nativeURL, options);
+    if (this.isBrowser) {
+      this.window.open(this.message.URL, '_blank');
+    } else if (this.isCordova) {
+      let options = {
+        successCallback: () => { console.log('Video played') },
+        errorCallback: (e) => {
+          console.log(e);
+          return false;
+        },
+        shouldAutoClose: true,
+      };
+      this.streamingMedia.playVideo(this.message.nativeURL, options);
+    }
   }
 
   check(file) {
-    console.log(this.message.nativeURL);
-    
     return new Promise((resolve, reject) => {
-      this.fileOps.isFileDownloaded(file, this.downloadDirectory).then(status => {
-        console.log(status);
-        resolve(status);
-      }).catch(error => {
-        if (this.platform.is('core')) {
-          this.message.downloaded = true;
-          console.log(this.message.nativeURL);
-          
-        } else if (this.platform.is('cordova')) {
+      if (this.isBrowser) {
+        this.message.downloaded = true;
+        this.message.nativeURL = this.message.URL;
+        resolve(true);
+      } else if (this.isCordova) {
+        this.fileOps.isFileDownloaded(file, this.downloadDirectory).then(status => {
+          resolve(status);
+        }).catch(error => {
           this.message.downloading = true;
           this.fileOps.downloadFile(file, this.downloadDirectory).then((entry: any) => {
             this.message.nativeURL = this.fileOps.getNativeURL(file, this.downloadDirectory);
@@ -262,15 +271,15 @@ export class ChatBubbleComponent {
             this.events.publish('toast:error', error);
             reject(error);
           })
-        }
-      });
+        });
+      }
     });
   }
 
   processFile() {
     //downloading file
     if (this.message.URL) {
-      if (this.isCordova) {
+      if (this.isCordova && !this.isBrowser) {
         let file = this.message.URL;
 
         this.fileOps.isFileDownloaded(file, this.downloadDirectory).then(status => {
@@ -293,6 +302,7 @@ export class ChatBubbleComponent {
 
       } else {
         this.message['downloaded'] = false;
+        this.message.nativeURL = this.message.URL;
       }
     } else {
       this.message['downloaded'] = true;

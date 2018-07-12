@@ -129,7 +129,9 @@ export class HomePage {
                 console.log(response);
                 this.data = response;
                 //flash
-                // this.flashNews = response.FlashNews;
+                if (response.FlashNews) {
+                    this.flashNews = response.FlashNews;
+                }
 
                 this.registerDevice();
                 resolve(true);

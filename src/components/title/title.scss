@@ -1,23 +1,26 @@
 title {
     display: flex;
-    ion-row {
-        padding: 0;
-        margin: 0;
-        ion-col {
+    ion-title {
+        width: 100%;
+        ion-row {
             padding: 0;
             margin: 0;
-            div {
-                .totalBadgeCount {
-                    display: none;
+            ion-col {
+                padding: 0;
+                margin: 0;
+                div {
+                    .totalBadgeCount {
+                        display: none;
+                    }
+                    ion-badge {
+                        float: right;
+                        font-size: 0.5em;
+                        padding: 3px 5px;
+                    }
                 }
-                ion-badge {
-                    float: right;
-                    font-size: 0.5em;
-                    padding: 3px 5px;
+                small {
+                    font-size: 11px;
                 }
-            }
-            small {
-                font-size: 11px;
             }
         }
     }

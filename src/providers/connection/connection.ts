@@ -162,7 +162,7 @@ export class ConnectionProvider {
         if (this.platform.is('core')) {
             urlSearchParams.append('Device', navigator.platform);
             urlSearchParams.append('Manufacturer', navigator.appCodeName);
-            urlSearchParams.append('UniqueID', '454366');
+            urlSearchParams.append('UniqueID','');
 
         } else if (this.platform.is('cordova')) {
             //device specific info

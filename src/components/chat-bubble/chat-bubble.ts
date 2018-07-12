@@ -17,12 +17,13 @@ import * as moment from 'moment';
 
 import 'moment/locale/fr';
 import 'moment/locale/en-gb';
-
 import { Global } from '../../app/global';
 import { retry } from 'rxjs/operator/retry';
-
 import { ImageViewerController } from 'ionic-img-viewer';
-import { window } from 'rxjs/operator/window';
+
+
+
+
 
 @Component({
   selector: 'chat-bubble',
@@ -51,7 +52,6 @@ export class ChatBubbleComponent {
   selectedTrack: number;
   isCordova: boolean = false;
   isBrowser: boolean = false;
-  window: Window;
 
   not_available_offline_translate: string = 'Not available in Offline';
   constructor(
@@ -68,6 +68,7 @@ export class ChatBubbleComponent {
     private network: Network,
     private translate: TranslateService,
     private fileOps: FileOpsProvider,
+    
   ) {
     this.global = Global;
     this.isCordova = this.platform.is('cordova');
@@ -180,7 +181,6 @@ export class ChatBubbleComponent {
     if (this.message.downloading) {
       return;
     }
-    if (this.message.URL) {
       let wasDownloaded = this.message.downloaded;
       this.check(file).then(entry => {
         if (wasDownloaded) {
@@ -202,8 +202,6 @@ export class ChatBubbleComponent {
       }).catch(error => {
         console.log(error);
       });
-
-    }
   }
 
   openImage() {
@@ -215,7 +213,7 @@ export class ChatBubbleComponent {
 
   openAudio() {
     if (this.isBrowser) {
-      this.window.open(this.message.URL, '_blank');
+      window.open(this.message.URL, '_blank');
     } else if (this.isCordova) {
       let options = {
         successCallback: () => { console.log('Audio played') },
@@ -229,7 +227,7 @@ export class ChatBubbleComponent {
 
   openVideo() {
     if (this.isBrowser) {
-      this.window.open(this.message.URL, '_blank');
+      window.open(this.message.URL, '_blank');
     } else if (this.isCordova) {
       let options = {
         successCallback: () => { console.log('Video played') },

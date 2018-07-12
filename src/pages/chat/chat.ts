@@ -96,6 +96,7 @@ export class ChatPage {
 
   user: any = {};
   userID: string = null;
+  created_time : any = null;
   chatUsers: any = {};
 
   amIAdmin: boolean = false;
@@ -193,9 +194,7 @@ export class ChatPage {
 
     this._fileOps.getDataDirectory().then(path => {
       this.dataDirectory = path;
-      console.log(this.dataDirectory);
     }).catch(error => {
-      console.log(error);
     });
 
     this.keyboard.onKeyboardShow().subscribe((data) => {
@@ -316,7 +315,6 @@ export class ChatPage {
 
     }
 
-    console.log(this.newMessagesRef);
     this.newMessagesRef.on('child_added', (snapshot) => {
       let message = snapshot.val();
 
@@ -413,7 +411,6 @@ export class ChatPage {
       return;
     }
 
-    console.log('paginate');
     //paging prev 10 messages
     if (this.messagesRef) {
       if (this.messages && this.messages.length > 0 && typeof this.messages[0] !== 'undefined') {
@@ -476,7 +473,6 @@ export class ChatPage {
     //listening to platforms events
     //On app Resume & Pause
     this.platformResumeReference = this.platform.resume.subscribe(() => {
-      console.log('resume');
       this.setFirebaseRef();
       if (this.messagesRef && this.newMessagesRef) {
         this.listenToFirebaseEvents(true);
@@ -484,14 +480,11 @@ export class ChatPage {
       //make all unread count of this topic to zero
       this.clearBadgeCountIfAny();
     }, error => {
-      console.log(error);
     });
 
     this.platformPauseReference = this.platform.pause.subscribe(() => {
-      console.log('pause');
       this.doLeaving(false);
     }, error => {
-      console.log(error);
     });
 
     //notification subs
@@ -573,7 +566,6 @@ export class ChatPage {
       this.initData().then(status => {
         this.listenToEvents();
       }).catch(error => {
-        console.log(error);
         this.navCtrl.pop();
       });
     } else {
@@ -603,7 +595,6 @@ export class ChatPage {
   }
 
   ionViewWillLeave() {
-    console.log('leaving');
     this.doLeaving(true);
     this.clearTypingStringInterval();
   }
@@ -617,6 +608,7 @@ export class ChatPage {
         };
         this.connection.doPost('Chat/GetTopicDetail', params, false).then((response: any) => {
           this.data = response.Data;
+          this.created_time = this.data.CreationDate;
           this.data.GroupID = this.groupID;
           this.group_name = this.data.Group;
 
@@ -1176,7 +1168,6 @@ export class ChatPage {
     }, error => {
       this.events.publish('toast:error', error.message);
     }).catch(error => {
-      console.log(error);
     });
   }
 
@@ -1634,7 +1625,6 @@ export class ChatPage {
                     });
                   }
                 }).catch(error => {
-                  console.log(error);
                 });
               }
             }, {

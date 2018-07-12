@@ -15,6 +15,7 @@ import { FirebaseTransactionProvider } from './../../providers/firebase-transact
 import { NotificationsProvider } from './../../providers/notifications/notifications';
 import { AddFlashPage } from './../group/add-flash/add-flash';
 import { CreateTopicPage } from './../topic/create-topic/create-topic';
+import { NativeRingtones } from '@ionic-native/native-ringtones';
 
 
 
@@ -42,6 +43,7 @@ export class HomePage {
     connectedTime: string = null;
     constructor(
         public navCtrl: NavController,
+        private ringtones: NativeRingtones,
         public connection: ConnectionProvider,
         public user: UserProvider,
         public events: Events,
@@ -73,7 +75,12 @@ export class HomePage {
     ionViewDidEnter() {
         //checking if logged in
         if (!_.isEmpty(this.connection.user)) {
-            this.initData().catch(error => { });
+            this.initData().catch(error => { });            
+            if(this.platform.is('core')){
+                console.log(this.connection.push_id);
+            if(this.connection.push_id){
+                this.connectToServer(this.connection.push_id);
+            }
         } else {
             //waiting for login
             this.events.subscribe('user:ready', (status) => {
@@ -82,6 +89,7 @@ export class HomePage {
                 }
             });
         }
+    }
     }
 
     initData() {
@@ -103,8 +111,10 @@ export class HomePage {
             this.connection.doPost('Chat/Home', {
             }, false).then((response: any) => {
                 //groups
+                console.log(response);
+                
                 this.groups = response.Groups;
-
+                
                 if (_.size(this.groups) === 0) {
                     this.groups = -1;
                 }

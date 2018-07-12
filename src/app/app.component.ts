@@ -163,6 +163,8 @@ export class MyApp {
                     }]
                 });
                 logoutConfirmation.present();
+            } else if (page.name === 'HomePage') {
+                this.nav.setRoot(page.name, params);
             } else {
                 // Set the root of the nav with params if it's a tab index
                 this.nav.push(page.name, params);
@@ -405,7 +407,7 @@ export class MyApp {
         }
         //init OneSignal
         if (Global.Push.OneSignal) {
-        this.initOneSignal();            
+            this.initOneSignal();
             this.processOneSignalId();
         }
 
@@ -468,7 +470,8 @@ export class MyApp {
 
     processNotification(notification, directOpenPage) {
         let payload = 'payload' in notification ? notification.payload : notification.notification.payload;
-        console.log(payload, directOpenPage);
+        this.ringtones.playRingtone('../assets/ringtones/notification-ringtone.mp3').then(
+            res => { console.log(res);}).catch((error) => { console.log("ringtone error", error) });
         //showing notification  alert if not chatting else giving control to Caht module to handle it
         let currentPage = Global.getActiveComponentName(this.nav.getActive());
         if (currentPage === 'ChatPage') {
@@ -476,12 +479,6 @@ export class MyApp {
         } else if (directOpenPage && payload.additionalData && payload.additionalData.page) {//direct open & has data pages
             this.openNotificationPage(payload);
         } else {
-            this.ringtones.getRingtone().then((ringtones) => { 
-                if(ringtones){
-        
-                    this.ringtones.playRingtone('../assets/ringtones/notification-ringtone.mp3');
-                }
-             });
             let closeText = 'x';
             if (payload.additionalData && payload.additionalData.page) {
                 if (payload.additionalData.page === 'ChatPage') {
@@ -499,7 +496,7 @@ export class MyApp {
             });
             notificationToast.onDidDismiss((data, role) => {
                 if (role === 'close') {
-                this.ringtones.stopRingtone('../assets/ringtones/notification-ringtone.mp3');                    
+                    this.ringtones.stopRingtone('../assets/ringtones/notification-ringtone.mp3');
                     this.openNotificationPage(payload);
                 }
             });
@@ -523,8 +520,6 @@ export class MyApp {
                 OneSignal.isPushNotificationsEnabled(function (isEnabled) {
                     if (isEnabled) {
                         OneSignal.getUserId(function (userId: string) {
-                            console.log(userId);
-                            
                             that.events.publish('pushid:created', userId);
                             that.user.registerPushID(userId).catch(error => { });
                         });
@@ -539,12 +534,9 @@ export class MyApp {
                         OneSignal.isPushNotificationsEnabled().then(function (isEnabled) {
                             if (isEnabled) {
                                 OneSignal.getUserId(function (userId: string) {
-                                    console.log(userId);
-
                                     that.events.publish('pushid:created', userId);
                                     that.user.registerPushID(userId).catch(error => { });
                                     that.user.getUser().then(user => {
-                                        console.log(user);
                                         if (user) {
                                             OneSignal.sendTags({
                                                 user_id: user.id,
@@ -596,16 +588,16 @@ export class MyApp {
     initBadge() {
         this.user.getUser().then(user => {
             this.angularFireDatabase.object('Badge/' + user.id + '/Total').snapshotChanges().subscribe(snapshot => {
-                let total:any = snapshot.payload.val();
+                let total: any = snapshot.payload.val();
                 console.log('total:' + total);
                 this.events.publish('badge:set', total);
 
                 if (total) {
                     this._badge.set(total);
-                    if(this.platform.is('core')){
-                        this.events.publish('Badge:set',total);
+                    if (this.platform.is('core')) {
+                        this.events.publish('Badge:set', total);
                     }
-                }  else {
+                } else {
                     this._badge.clear();
                 }
             });
@@ -616,11 +608,12 @@ export class MyApp {
         this.events.subscribe('user:login', (user) => {
             this.loggedIn = true;
             this.enableMenu(true);
+            if(!this.platform.is('core')){
             if (Global.Push.OneSignal) {
                 this._oneSignal.setSubscription(true);
             }
+        }
             this.translate.use(user.MyLanguage);
-
             this.nav.setRoot(HomePage);
 
             setTimeout(() => {

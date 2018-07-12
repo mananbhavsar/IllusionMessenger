@@ -9,53 +9,7 @@
     "installed_plugins": {
         "com-sarriaroman-photoviewer": {
             "PACKAGE_NAME": "com.illusionmessenger.app"
-        },
-        "cordova-plugin-file": {
-            "PACKAGE_NAME": "com.illusionmessenger.app"
-        },
-        "cordova-plugin-media": {
-            "PACKAGE_NAME": "com.illusionmessenger.app"
-        },
-        "cordova-plugin-native-ringtones": {
-            "PACKAGE_NAME": "com.illusionmessenger.app"
-        },
-        "cordova-plugin-uniquedeviceid": {
-            "PACKAGE_NAME": "com.illusionmessenger.app"
-        },
-        "cordova-plugin-statusbar": {
-            "PACKAGE_NAME": "com.illusionmessenger.app"
-        },
-        "cordova-plugin-splashscreen": {
-            "PACKAGE_NAME": "com.illusionmessenger.app"
-        },
-        "ionic-plugin-keyboard": {
-            "PACKAGE_NAME": "com.illusionmessenger.app"
-        },
-        "cordova-plugin-globalization": {
-            "PACKAGE_NAME": "com.illusionmessenger.app"
-        },
-        "cordova-plugin-device": {
-            "PACKAGE_NAME": "com.illusionmessenger.app"
-        },
-        "cordova-plugin-whitelist": {
-            "PACKAGE_NAME": "com.illusionmessenger.app"
-        },
-        "onesignal-cordova-plugin": {
-            "PACKAGE_NAME": "com.illusionmessenger.app"
-        },
-        "cordova-plugin-camera": {
-            "PACKAGE_NAME": "com.illusionmessenger.app"
-        },
-        "cordova-plugin-android-permissions": {
-            "PACKAGE_NAME": "com.illusionmessenger.app"
-        },
-        "cordova-plugin-file-transfer": {
-            "PACKAGE_NAME": "com.illusionmessenger.app"
         }
     },
-    "dependent_plugins": {
-        "cordova-plugin-compat": {
-            "PACKAGE_NAME": "com.illusionmessenger.app"
-        }
-    }
+    "dependent_plugins": {}
 }

@@ -1,5 +1,5 @@
 <ion-header>
-  <modal-toolbar [title]="title" [subTitle]="subTitle" (dismiss)="dismiss($event)"></modal-toolbar>
+  <modal-toolbar [title]="title" [subTitle]="getSubTitle()" (dismiss)="dismiss($event)"></modal-toolbar>
 </ion-header>
 <ion-content padding>
   <ion-grid>

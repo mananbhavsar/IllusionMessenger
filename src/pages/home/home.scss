@@ -15,6 +15,9 @@ page-home {
             }
         }
     }
+    ion-segment {
+        ion-segment-button {}
+    }
     ion-list {
         ion-item-divider {
             &.item-md {
@@ -22,6 +25,9 @@ page-home {
                 ion-label {
                     h2 {
                         font-weight: 600;
+                        .total-rows-count {
+                            color: color($colors, 'payments');
+                        }
                     }
                     ion-badge {
                         float: right;

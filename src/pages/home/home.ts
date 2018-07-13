@@ -274,7 +274,7 @@ export class HomePage {
     }
 
     getSelectedTabBadgeCount() {
-        let selectedBadgeCount = 0;
+        let selectedBadgeCount: any = 0;
 
         this.tabs.some(tab => {
             if (tab.icon === this.selectedTab) {
@@ -286,7 +286,33 @@ export class HomePage {
             }
             return false;
         });
+
+        if (selectedBadgeCount > 10) {
+            selectedBadgeCount = '10+';
+        }
         return selectedBadgeCount;
+    }
+
+    getSelectedTabRowsCount() {
+        let selectedRowsCount: any = 'NA';
+
+        this.tabs.some(tab => {
+            if (tab.icon === this.selectedTab) {
+                selectedRowsCount = this.getTabRowsCount(tab.key);
+                return true;
+            }
+            return false;
+        });
+        return selectedRowsCount;
+    }
+
+    getTabRowsCount(tab_key) {
+        let selectedRowsCount: any = 0;
+
+        if (this.data) {
+            selectedRowsCount = _.size(this.data[tab_key]);
+        }
+        return selectedRowsCount;
     }
 }
 

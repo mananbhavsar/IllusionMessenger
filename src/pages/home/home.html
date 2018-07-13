@@ -17,16 +17,17 @@
         <ion-segment [(ngModel)]="selectedTab" color="theme" padding mode="ios">
             <ion-segment-button [value]="tab.icon" *ngFor="let tab of tabs">
                 <ion-icon [name]="tab.icon"></ion-icon>
+                <span>
+                    {{getSelectedTabBadgeCount(tab.key)}}
+                </span>
             </ion-segment-button>
         </ion-segment>
         <div padding-horizontal [ngSwitch]="selectedTab">
             <ion-list>
                 <ion-item-divider color="light">
                     <h2>
-                        {{getSelectedTabName()}}
-                        <ion-badge>
-                            {{getSelectedTabBadgeCount()}}
-                        </ion-badge>
+                        <span class="total-rows-count">{{getSelectedTabRowsCount()}}</span>
+                        &nbsp;-&nbsp; {{getSelectedTabName()}}
                     </h2>
                 </ion-item-divider>
                 <ng-container *ngSwitchCase="'star'">

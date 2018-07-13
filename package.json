@@ -64,7 +64,7 @@
     "@types/underscore": "^1.8.3",
     "angular2-moment": "^1.8.0",
     "angular2-uuid": "^1.1.1",
-    "angularfire2": "^5.0.0-rc.11",
+    "angularfire2": "5.0.0-rc.9",
     "buffer-crc32": "^0.2.13",
     "callsite": "^1.0.0",
     "com-sarriaroman-photoviewer": "^1.1.16",

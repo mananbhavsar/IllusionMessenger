@@ -260,9 +260,9 @@
   version "4.5.3"
   resolved "https://registry.yarnpkg.com/@ionic-native/media/-/media-4.5.3.tgz#976c6ab7a91e73ce9c72272421b330bc21ec08b5"
 
-"@ionic-native/network@^4.5.3":
-  version "4.5.3"
-  resolved "https://registry.yarnpkg.com/@ionic-native/network/-/network-4.5.3.tgz#dfe19099c0623b2cac76fd388c44a86767cbcbcd"
+"@ionic-native/network@^4.9.0":
+  version "4.9.1"
+  resolved "https://registry.yarnpkg.com/@ionic-native/network/-/network-4.9.1.tgz#040416595daaea110a059d0a6209210f212a096c"
 
 "@ionic-native/onesignal@^4.5.3":
   version "4.5.3"
@@ -284,17 +284,17 @@
   version "4.5.3"
   resolved "https://registry.yarnpkg.com/@ionic-native/social-sharing/-/social-sharing-4.5.3.tgz#ee799ac6f03559162ff32a4247688805a17a1bb8"
 
-"@ionic-native/splash-screen@^4.5.3":
-  version "4.5.3"
-  resolved "https://registry.yarnpkg.com/@ionic-native/splash-screen/-/splash-screen-4.5.3.tgz#1f76d947091f4a8aa50963fd692f633738ac79d9"
+"@ionic-native/splash-screen@^4.9.0":
+  version "4.9.1"
+  resolved "https://registry.yarnpkg.com/@ionic-native/splash-screen/-/splash-screen-4.9.1.tgz#36b8a4964249e35aeaaaf85865c20808d33c0a97"
 
 "@ionic-native/sqlite@^4.5.3":
   version "4.5.3"
   resolved "https://registry.yarnpkg.com/@ionic-native/sqlite/-/sqlite-4.5.3.tgz#c035cf488842cb1c61ec4feb997929df1adaee8f"
 
-"@ionic-native/status-bar@^4.5.3":
-  version "4.5.3"
-  resolved "https://registry.yarnpkg.com/@ionic-native/status-bar/-/status-bar-4.5.3.tgz#e48d7a638e52887f59c761adff5ed5cf6d8fdb58"
+"@ionic-native/status-bar@^4.9.0":
+  version "4.9.1"
+  resolved "https://registry.yarnpkg.com/@ionic-native/status-bar/-/status-bar-4.9.1.tgz#d300b42318b4759b743b52486fd60b0e300f2395"
 
 "@ionic-native/streaming-media@^4.5.3":
   version "4.5.3"
@@ -532,9 +532,9 @@ angular2-uuid@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/angular2-uuid/-/angular2-uuid-1.1.1.tgz#72f03cd532b7f40032eb1ecfb9f8457384be956e"
 
-angularfire2@^5.0.0-rc.11:
-  version "5.0.0-rc.11"
-  resolved "https://registry.yarnpkg.com/angularfire2/-/angularfire2-5.0.0-rc.11.tgz#697c43bf8e74fe5b27afa436e35dad9bae54a744"
+angularfire2@5.0.0-rc.9:
+  version "5.0.0-rc.9"
+  resolved "https://registry.yarnpkg.com/angularfire2/-/angularfire2-5.0.0-rc.9.tgz#b5f2ebd93f70524c25795e2b2485ec946c9664cb"
 
 ansi-align@^2.0.0:
   version "2.0.0"

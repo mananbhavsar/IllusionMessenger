@@ -14,7 +14,6 @@ export class TopicComponent {
   @Input() topic: any = null;
   @Input() type: string = null;
   @Input() group_id: number = 0;
-
   @Output() clicked = new EventEmitter();
 
   badgeCount: number = 0;
@@ -50,6 +49,20 @@ export class TopicComponent {
       topicID: this.topic.TopicID,
       groupID: this.group_id,
     });
+  }
+
+  setPriority(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    this.connection.doPost('Chat/SetPriority', {
+      UserID: this.topic.UserID,
+      TopicID: this.topic.TopicID,
+      isPriority : this.topic.isPriority,
+   }).then((res) => {
+     this.topic.isPriority=!this.topic.isPriority;
+      console.log(res);
+    }).catch((error) => { });
   }
 
   isExpired(date) {

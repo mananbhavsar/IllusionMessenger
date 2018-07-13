@@ -12,8 +12,11 @@
         </ion-item>
         <ion-item>
           <ion-label floating>Topic Name</ion-label>
-          <ion-input formControlName="name" type="text" placeholder="Topic Name"></ion-input>
+          <ion-input formControlName="name" type="text" maxLength="60" placeholder="Topic Name"></ion-input>
         </ion-item>
+        <div text-right class="italic-small-grey">
+            ({{createForm.get('name').value.length}}/60)
+          </div>
         <div class="error-message-block" *ngIf="createForm.controls.name.errors && (createForm.controls.name.dirty || createForm.controls.name.touched)">
           <span *ngIf="createForm.controls.name.errors.required">Name is required</span>
         </div>

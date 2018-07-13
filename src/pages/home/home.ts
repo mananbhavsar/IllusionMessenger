@@ -15,6 +15,7 @@ import { FirebaseTransactionProvider } from './../../providers/firebase-transact
 import { NotificationsProvider } from './../../providers/notifications/notifications';
 import { AddFlashPage } from './../group/add-flash/add-flash';
 import { CreateTopicPage } from './../topic/create-topic/create-topic';
+import { ActionSheetController } from 'ionic-angular/components/action-sheet/action-sheet-controller';
 
 
 @IonicPage()
@@ -36,7 +37,11 @@ export class HomePage {
      * 2 => connected
      */
     deviceRegsiter: number = 0;
+    group: any = {};
+    page: number = 0;
     connectedTime: string = null;
+    sort_by: string = 'CreationDate';
+    sort_order: string = 'ASC';
 
     dataFetched: boolean = false;
     tabs = [
@@ -80,6 +85,7 @@ export class HomePage {
         private modalController: ModalController,
         private notifications: NotificationsProvider,
         private _firebaseTransaction: FirebaseTransactionProvider,
+        public actionSheetController : ActionSheetController
     ) {
         this.global = Global;
         //listening to Resume & Pause events
@@ -287,6 +293,53 @@ export class HomePage {
             return false;
         });
         return selectedBadgeCount;
+    }
+
+    openSortOptions() {
+        //creating buttons
+        let buttons = [];
+        let sortingOptions = {
+            'CreationDate': 'Creation Date',
+            'DueDate': 'Due Date',
+        };
+        for (let key in sortingOptions) {
+            let label = sortingOptions[key];
+            let icon = null;
+            if (key === this.sort_by) {
+                icon = this.sort_order === 'ASC' ? 'ios-arrow-round-up-outline' : 'ios-arrow-round-down-outline';
+            }
+            buttons.push({
+                text: label,
+                icon: icon,
+                handler: () => {
+                    //if not selected initially, making it desc so it could be reversed later
+                    if (this.sort_by !== key) {
+                        this.sort_order = 'DESC';
+                    }
+                    this.sort_by = key;
+                    this.sort_order = this.sort_order === 'ASC' ? 'DESC' : 'ASC';
+                    this.doSorting();
+                }
+            });
+        }
+
+        //cancel button
+        buttons.push({
+            text: 'Cancel',
+            role: 'cancel',
+        });
+        //creating action sheet
+        let sortActionSheet = this.actionSheetController.create({
+            title: 'Select sort options',
+            buttons: buttons
+        });
+        sortActionSheet.present();
+    }
+
+    doSorting() {
+        this.group = [];
+        this.page = 0;
+        this.getData();
     }
 }
 

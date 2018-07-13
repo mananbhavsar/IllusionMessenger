@@ -15,6 +15,11 @@ page-home {
             }
         }
     }
+    ion-row{
+        ion-col{
+            text-align: center;
+        }
+    }
     ion-list {
         ion-item-divider {
             &.item-md {

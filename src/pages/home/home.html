@@ -13,6 +13,16 @@
     </ion-refresher>
     <center-spinner *ngIf="dataFetched === false;else data_template"></center-spinner>
     <ng-template #data_template>
+        <ion-row>
+            <ion-col (click)="openSortOptions($event)">
+                <ion-icon name="funnel"></ion-icon>
+                <span>Sort By</span>
+            </ion-col>
+            <ion-col>
+                <ion-icon name="options"></ion-icon>
+                <span>Filter</span>
+            </ion-col>
+        </ion-row>
         <flash-news [flashNews]="flashNews"></flash-news>
         <ion-segment [(ngModel)]="selectedTab" color="theme" padding mode="ios">
             <ion-segment-button [value]="tab.icon" *ngFor="let tab of tabs">

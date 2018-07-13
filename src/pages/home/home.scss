@@ -16,6 +16,20 @@ page-home {
         }
     }
     ion-list {
+        ion-item-divider {
+            &.item-md {
+                padding: 0 5px;
+                ion-label {
+                    h2 {
+                        font-weight: 600;
+                    }
+                    ion-badge {
+                        float: right;
+                        margin-right: 1em;
+                    }
+                }
+            }
+        }
         ion-item {
             ion-label {
                 &.label-md {

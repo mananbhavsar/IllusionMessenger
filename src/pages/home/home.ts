@@ -42,23 +42,28 @@ export class HomePage {
     tabs = [
         {
             name: 'Assigned To Me',
-            icon: 'star'
+            icon: 'star',
+            key: 'Assigned_To_Me',
         },
         {
             name: 'Created By Me',
-            icon: 'people'
+            icon: 'people',
+            key: 'Created_By_Me'
         },
         {
             name: 'Groups',
-            icon: 'list-box'
+            icon: 'list-box',
+            key: 'Groups_Wise'
         },
         {
             name: 'Priorty',
-            icon: 'flag'
+            icon: 'flag',
+            key: 'Priorty'
         },
         {
             name: 'All Tasks',
-            icon: 'paper'
+            icon: 'paper',
+            key: 'Topic_Wise'
         },];
     selectedTab: string = 'star';
     constructor(
@@ -266,6 +271,22 @@ export class HomePage {
             return false;
         });
         return selectedName;
+    }
+
+    getSelectedTabBadgeCount() {
+        let selectedBadgeCount = 0;
+
+        this.tabs.some(tab => {
+            if (tab.icon === this.selectedTab) {
+                let field = tab.key + '_Count';
+                if (field in this.data) {
+                    selectedBadgeCount = this.data[field];
+                }
+                return true;
+            }
+            return false;
+        });
+        return selectedBadgeCount;
     }
 }
 

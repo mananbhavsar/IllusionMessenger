@@ -21,7 +21,14 @@
         </ion-segment>
         <div padding-horizontal [ngSwitch]="selectedTab">
             <ion-list>
-                <ion-item-divider color="light" [innerText]="getSelectedTabName()"></ion-item-divider>
+                <ion-item-divider color="light">
+                    <h2>
+                        {{getSelectedTabName()}}
+                        <ion-badge>
+                            {{getSelectedTabBadgeCount()}}
+                        </ion-badge>
+                    </h2>
+                </ion-item-divider>
                 <ng-container *ngSwitchCase="'star'">
                     <topic [group_id]="topic.GroupID" type="ActiveTopicList" [topic]="topic" *ngFor="let topic of data.Assigned_To_Me;"></topic>
                 </ng-container>

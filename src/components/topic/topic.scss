@@ -9,13 +9,7 @@ topic {
                     ion-label {
                         &.label-md {
                             margin: 3px 3px 3px 0;
-                            h2 {
-                                .priority {
-                                    color: color($colors, primary);
-                                    font-size: 1.2em;
-                                    margin-left: 0.125em;
-                                }
-                            }
+                            h2 {}
                             p {
                                 width: 100%;
                                 ion-row {
@@ -34,6 +28,10 @@ topic {
                                 }
                             }
                         }
+                    }
+                    .priority {
+                        font-size: 1.5em;
+                        margin: 11px 8px;
                     }
                 }
             }

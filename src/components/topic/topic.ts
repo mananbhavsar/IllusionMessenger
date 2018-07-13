@@ -61,9 +61,9 @@ export class TopicComponent {
     this.connection.doPost('Chat/SetPriority', {
       UserID: this.topic.UserID,
       TopicID: this.topic.TopicID,
-      isPriority: this.topic.isPriority
+      IsPriority: this.topic.IsPriority
     }).then((response:any) => {
-      this.topic.isPriority = !this.topic.isPriority;
+      this.topic.IsPriority = !this.topic.IsPriority;
       this.events.publish('toast:create',response.Data.Message);
     }).catch((error) => { });
   }

@@ -319,31 +319,9 @@ export class HomePage {
             selectedRowsCount = _.size(this.data[tab_key]);
         }
         return selectedRowsCount;
-                    }
-                    this.sort_by = key;
-                    this.sort_order = this.sort_order === 'ASC' ? 'DESC' : 'ASC';
-                    this.doSorting();
-                }
-            });
-        }
-
-        //cancel button
-        buttons.push({
-            text: 'Cancel',
-            role: 'cancel',
-        });
-        //creating action sheet
-        let sortActionSheet = this.actionSheetController.create({
-            title: 'Select sort options',
-            buttons: buttons
-        });
-        sortActionSheet.present();
+        
     }
 
-    doSorting() {
-        this.group = [];
-        this.page = 0;
-        this.getData();
-    }
+
 }
 

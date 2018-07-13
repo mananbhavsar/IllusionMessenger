@@ -1,19 +1,19 @@
-import { DateValidator } from './../../../validators/date-validator';
-import { DateProvider } from './../../../providers/date/date';
-import { NotificationsProvider } from './../../../providers/notifications/notifications';
-
-import { FirebaseTransactionProvider } from './../../../providers/firebase-transaction/firebase-transaction';
-import { UserAutoCompleteService } from './user-auto-complete';
+import { Component, ViewChild } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { DateTime, Events, IonicPage, ModalController, NavController, NavParams, ViewController } from 'ionic-angular';
+import { AutoCompleteComponent } from 'ionic2-auto-complete-ng5';
+import * as moment from "moment";
+import * as _ from 'underscore';
 import { Global } from './../../../app/global';
 import { ConnectionProvider } from './../../../providers/connection/connection';
-import { Component, ViewChild } from '@angular/core';
-import { IonicPage, NavController, NavParams, Events, ModalController, ViewController, DateTime } from 'ionic-angular';
-import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
-import * as _ from 'underscore';
-import { AutoCompleteComponent } from 'ionic2-auto-complete-ng5';
-import * as  moment from "moment";
-
+import { DateProvider } from './../../../providers/date/date';
+import { FirebaseTransactionProvider } from './../../../providers/firebase-transaction/firebase-transaction';
+import { NotificationsProvider } from './../../../providers/notifications/notifications';
+import { DateValidator } from './../../../validators/date-validator';
 import { ManageParticipantsPage } from "./manage-participants/manage-participants";
+import { UserAutoCompleteService } from './user-auto-complete';
+
+
 
 
 @IonicPage()
@@ -87,7 +87,7 @@ export class CreateTopicPage {
     this.dueDate.mode = 'ios';
   }
 
-  subTitle() {
+  getSubTitle() {
     let subTitle = '';
 
     if (this.topic_name) {
@@ -230,7 +230,8 @@ export class CreateTopicPage {
       participants: this.participants,
       assigned: this.createForm.get('assigned').value,
       selectedParticipantIDs: this.selectedParticipantIDs,
-      group_name: this.group_name
+      group_name: this.group_name,
+      is_from_chat: false,
     });
 
     modal.onDidDismiss(data => {

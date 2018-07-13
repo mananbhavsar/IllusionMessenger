@@ -1,14 +1,13 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ViewController, ModalController } from 'ionic-angular';
-
+import * as firebase from 'firebase';
+import { ActionSheetController, IonicPage, ModalController, NavController, NavParams, ViewController } from 'ionic-angular';
+import * as moment from "moment";
+import * as _ from 'underscore';
 import { ConnectionProvider } from '../../../providers/connection/connection';
 import { DateProvider } from './../../../providers/date/date';
 import { ChatPage } from './../../chat/chat';
 
-import * as _ from 'underscore';
-import * as firebase from 'firebase';
-import * as  moment from "moment";
-import { locale } from 'moment';
+
 
 @IonicPage()
 @Component({
@@ -29,6 +28,9 @@ export class CloseTopicPage {
 
   badges: any = {};
 
+  //sort option
+  sort_by: string = 'CloseDatime';
+  sort_order: string = 'ASC';
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -36,6 +38,7 @@ export class CloseTopicPage {
     public modalCtrl: ModalController,
     private viewController: ViewController,
     private _date: DateProvider,
+    private actionSheetController: ActionSheetController,
   ) {
     this.group_id = this.navParams.data.group_id;
     this.group_name = this.navParams.data.group_name;
@@ -72,7 +75,9 @@ export class CloseTopicPage {
           StatusID: 1,
           DisablePaging: true,
           PageNumber: this.page,
-          RowsPerPage: 20
+          RowsPerPage: 20,
+          OrderBy: this.sort_by,
+          Order: this.sort_order,
         };
         if (this.query) {
           params['Query'] = this.query;
@@ -179,4 +184,52 @@ export class CloseTopicPage {
     return this.badges[topicCode];
   }
 
+
+  openSortOptions() {
+    //creating buttons
+    let buttons = [];
+    let sortingOptions = {
+      'CreationDate': 'Creation Date',
+      'DueDate': 'Due Date',
+      'CloseDatime': 'Closed Date'
+    };
+    for (let key in sortingOptions) {
+      let label = sortingOptions[key];
+      let icon = null;
+      if (key === this.sort_by) {
+        icon = this.sort_order === 'ASC' ? 'ios-arrow-round-up-outline' : 'ios-arrow-round-down-outline';
+      }
+      buttons.push({
+        text: label,
+        icon: icon,
+        handler: () => {
+          //if not selected initially, making it desc so it could be reversed later
+          if (this.sort_by !== key) {
+            this.sort_order = 'DESC';
+          }
+          this.sort_by = key;
+          this.sort_order = this.sort_order === 'ASC' ? 'DESC' : 'ASC';
+          this.doSorting();
+        }
+      });
+    }
+
+    //cancel button
+    buttons.push({
+      text: 'Cancel',
+      role: 'cancel',
+    });
+    //creating action sheet
+    let sortActionSheet = this.actionSheetController.create({
+      title: 'Select sort options',
+      buttons: buttons
+    });
+    sortActionSheet.present();
+  }
+
+  doSorting() {
+    this.page = 0;
+    this.topics = [];
+    this.getDetails();
+  }
 }

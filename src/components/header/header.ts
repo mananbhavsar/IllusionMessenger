@@ -1,9 +1,9 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { NavController, Events } from 'ionic-angular';
-
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { StatusBar } from '@ionic-native/status-bar';
-
+import { Events, NavController } from 'ionic-angular';
 import { Global } from "../../app/global";
+
+
 @Component({
     selector: 'header',
     templateUrl: 'header.html'
@@ -12,6 +12,7 @@ export class HeaderComponent {
     @Input() subTitle: string = null;
     @Input() buttons: any = null;
     @Output() buttonClicked = new EventEmitter();
+
     _title: string;
     cartCounter: number = null;
     prevPageColor: string = null;

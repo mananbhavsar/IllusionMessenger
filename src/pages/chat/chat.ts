@@ -1,50 +1,44 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
-import { IonicPage, NavController, Content, NavParams, Platform, ModalController, Events, normalizeURL, ToastController, ActionSheetController } from 'ionic-angular';
-
-import * as _ from 'underscore';
-import * as mime from 'mime-types';
-
-import * as firebase from 'firebase';
-import * as moment from 'moment';
-
-import { BehaviorSubject } from 'rxjs/Rx';
-import { Subscription } from 'rxjs/Rx';
-import { Http, Headers, Response, URLSearchParams } from '@angular/http';
-import 'rxjs/add/operator/switchMap';
-
-import { ConnectionProvider } from '../../providers/connection/connection';
-import { NotificationsProvider } from "../../providers/notifications/notifications";
-import { UserProvider } from '../../providers/user/user';
-import { DateProvider } from './../../providers/date/date';
-
-import { FirebaseTransactionProvider } from '../../providers/firebase-transaction/firebase-transaction';
-import { CommonProvider } from "../../providers/common/common";
-import { TranslateService } from "@ngx-translate/core";
-import { FileOpsProvider } from "../../providers/file-ops/file-ops";
-
-import { Global } from '../../app/global';
-
-import { Storage } from '@ionic/storage';
-
+import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Http } from '@angular/http';
 import { Camera, CameraOptions } from '@ionic-native/camera';
-import { Keyboard } from '@ionic-native/keyboard';
-import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer';
 import { File } from '@ionic-native/file';
+import { FileTransfer, FileTransferObject, FileUploadOptions } from '@ionic-native/file-transfer';
+import { Keyboard } from '@ionic-native/keyboard';
 import { Media, MediaObject } from '@ionic-native/media';
-import { Vibration } from '@ionic-native/vibration';
 import { Network } from '@ionic-native/network';
-import { VideoCapturePlus, VideoCapturePlusOptions, MediaFile } from '@ionic-native/video-capture-plus';
+import { Vibration } from '@ionic-native/vibration';
+import { MediaFile, VideoCapturePlus, VideoCapturePlusOptions } from '@ionic-native/video-capture-plus';
 import { VideoEditor } from '@ionic-native/video-editor';
-
-import { LogoutPage } from '../logout/logout';
-import { retry } from 'rxjs/operators/retry';
-import { HomePage } from '../home/home';
-import { CloseTopicPage } from './../topic/close-topic/close-topic';
+import { Storage } from '@ionic/storage';
+import { TranslateService } from "@ngx-translate/core";
+import * as firebase from 'firebase';
+import { ActionSheetController, Content, Events, IonicPage, ModalController, NavController, NavParams, Platform, ToastController, normalizeURL } from 'ionic-angular';
+import * as mime from 'mime-types';
+import * as moment from 'moment';
+import 'rxjs/add/operator/switchMap';
+import * as _ from 'underscore';
+import { Global } from '../../app/global';
 import { ChatReadModalPage } from "../../pages/chat/chat-read-modal/chat-read-modal";
-import { SavedMediaPage } from "./chat-options/saved-media/saved-media";
+import { CommonProvider } from "../../providers/common/common";
+import { ConnectionProvider } from '../../providers/connection/connection';
+import { FileOpsProvider } from "../../providers/file-ops/file-ops";
+import { FirebaseTransactionProvider } from '../../providers/firebase-transaction/firebase-transaction';
+import { NotificationsProvider } from "../../providers/notifications/notifications";
+import { HomePage } from '../home/home';
+import { LogoutPage } from '../logout/logout';
+import { DateProvider } from './../../providers/date/date';
 import { ChatOptionsPage } from "./chat-options/chat-options";
+import { SavedMediaPage } from "./chat-options/saved-media/saved-media";
 
-import { Modal } from 'ionic-angular/components/modal/modal';
+
+
+
+
+
+
+
+
+
 @IonicPage()
 @Component({
   selector: 'page-chat',
@@ -627,7 +621,6 @@ export class ChatPage {
 
           this.headerButtons = [{ icon: 'ios-more', name: 'more-option' }];
 
-          console.log(this.data);
           this.topicCode = this.data.TopicCode;
           this.groupCode = this.data.GroupCode;
           this.setPath();
@@ -727,6 +720,9 @@ export class ChatPage {
       if (this.data && this.data.User.length) {
         this.data.User.forEach((user, index) => {
           //for typing
+          if(this.userTyping === null){
+            this.userTyping = {};
+          }
           this.userTyping[user.UserID] = user.User;
 
           //actual user
@@ -845,7 +841,6 @@ export class ChatPage {
       this.sendToFirebase(textMessage).then(data => {
         this.message = '';
       }).catch(error => {
-        console.log(error);
         this.message = '';
       });
     } else {
@@ -909,7 +904,6 @@ export class ChatPage {
   }
 
   onBlur(event) {
-    console.log('blur:' + this.keyboardOpen);
     if (this.keyboardOpen) {
       event.target.focus();
     } else {
@@ -922,13 +916,11 @@ export class ChatPage {
   }
 
   onFocus(event) {
-    console.log('focus');
     this.keyboardOpen = true;
     this.setTyping(true);
   }
 
   closeKeyboard(event) {
-    console.log('touchstart:' + this.keyboardOpen);
     if (this.keyboardOpen) {
       this.keyboardOpen = false;
       this.setTyping(false);
@@ -976,7 +968,6 @@ export class ChatPage {
   }
 
   scrollBottom(caller) {
-    console.log('ScrollBottom: ' + caller);
     return new Promise((resolve, reject) => {
       if (Global.getActiveComponentName(this.navCtrl.getActive()) !== 'ChatPage') {
         reject(false);
@@ -1174,7 +1165,6 @@ export class ChatPage {
           .then((data) => {
             this.progressPercent = 0;
             //getting URL from XML
-            console.log(data);
             if (data.response.indexOf('http') === -1) {
               reject(data);
             } else if (data.response.indexOf('>') > -1) {
@@ -1183,7 +1173,6 @@ export class ChatPage {
               resolve(JSON.parse(data.response));
             }
           }, (err) => {
-            console.log(err);
             this.progressPercent = 0;
             reject(err);
           });
@@ -1404,7 +1393,6 @@ export class ChatPage {
       this.connection.doPost('Chat/UpdateChatStatus', params, false).then((response: any) => {
         this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { })
       }).catch(error => {
-        console.log(error);
       });
     }
   }
@@ -1544,10 +1532,20 @@ export class ChatPage {
       folder: this.topicCode,
       group_name: this.group_name,
     }
-    console.log(this.dataDirectory);
     let chatOptionModal = this.modal.create(ChatOptionsPage, params);
     chatOptionModal.onDidDismiss(data => {
-
+      if (!_.isEmpty(data)) {
+        //need to re-init
+        if (data.reInitData) {
+          this.initData().then(status => {
+            //need to open chat options again
+            if (this.openChatOptions) {
+              this.openChatOptions();
+            }
+          }).catch(error => {
+           });
+        }
+      }
     });
     chatOptionModal.present();
   }
@@ -1589,7 +1587,6 @@ export class ChatPage {
                   if (response.FireBaseTransaction) {
                     this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { });
                   }
-
                   //send notification
                   if (response.OneSignalTransaction) {
                     this._notifications.sends(response.OneSignalTransaction, 'ChatPage', {

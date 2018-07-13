@@ -1,19 +1,20 @@
 import { Component, ViewChild } from '@angular/core';
-import { IonicPage, NavController, NavParams, ModalController, ActionSheetController, Events, ViewController, DateTime } from 'ionic-angular';
-
-import { SavedMediaPage } from "./saved-media/saved-media";
-
-import { DateProvider } from './../../../providers/date/date';
+import { Storage } from '@ionic/storage';
+import { ActionSheetController, DateTime, Events, IonicPage, ModalController, NavController, NavParams, ViewController } from 'ionic-angular';
+import * as moment from 'moment';
+import * as _ from 'underscore';
 import { ConnectionProvider } from '../../../providers/connection/connection';
 import { FirebaseTransactionProvider } from '../../../providers/firebase-transaction/firebase-transaction';
 import { NotificationsProvider } from "../../../providers/notifications/notifications";
 import { UserProvider } from '../../../providers/user/user';
+import { ManageParticipantsPage } from '../../topic/create-topic/manage-participants/manage-participants';
+import { DateProvider } from './../../../providers/date/date';
+import { SavedMediaPage } from "./saved-media/saved-media";
 
-import { Storage } from '@ionic/storage';
 
 
-import * as moment from 'moment';
-import * as _ from 'underscore';
+
+
 
 @IonicPage()
 @Component({
@@ -38,6 +39,7 @@ export class ChatOptionsPage {
 
   amIAdmin: boolean = false;
   amIResponsible: boolean = false;
+  responsibleUserID: string = null;
 
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
@@ -58,8 +60,6 @@ export class ChatOptionsPage {
     this.groupID = this.navParams.data.data.GroupID;
     this.statusID = this.navParams.data.data.StatusID;
     this.topicCode = this.navParams.data.folder;
-
-    console.log(this.navParams.data);
 
     this.path = this.navParams.data.path;
     this.group_name = this.navParams.data.group_name;
@@ -87,6 +87,10 @@ export class ChatOptionsPage {
         //checking isResponsible for me
         if (user.UserID === this.connection.user.LoginUserID && user.IsResponsible) {
           this.amIResponsible = true;
+        }
+        //saving responsible user id
+        if (user.IsResponsible) {
+          this.responsibleUserID = user.UserID;
         }
       });
     }
@@ -193,7 +197,6 @@ export class ChatOptionsPage {
                 });
               }
             }).catch(error => {
-              console.log(error);
             });
           }
         }, {
@@ -213,6 +216,15 @@ export class ChatOptionsPage {
     if (this.amIAdmin && this.statusID === 1) {
       let buttons = [];
       if (participant.UserID !== this.connection.user.LoginUserID) {//can't remove/add self
+        //making user reposnsible
+        if (!participant.IsResponsible) {
+          buttons.push({
+            text: 'Mark Responsible',
+            handler: () => {
+              this.markResponsible(participant, index);
+            }
+          });
+        }
         //make, remove admin
         if (participant.IsAdmin) {
           //if not by created
@@ -229,6 +241,16 @@ export class ChatOptionsPage {
             text: 'Make Admin',
             handler: () => {
               this.makeAsAdmin(participant, index);
+            }
+          });
+        }
+        //remove from user 
+        if (!participant.IsResponsible && participant.UserID !== this.data.CreatedByID) {//if not responsible or created by
+          buttons.push({
+            role: 'destructive',
+            text: 'Remove from Topic',
+            handler: () => {
+              this.removeFromTopic(participant, index);
             }
           });
         }
@@ -250,6 +272,33 @@ export class ChatOptionsPage {
         userOptionActionSheet.present();
       }
     }
+  }
+
+  markResponsible(participant, index) {
+    this.connection.doPost('Chat/Change_Responsible', {
+      UserID: participant.UserID,
+      GroupID: this.groupID,
+      TopicID: this.topicID,
+    }).then((response: any) => {
+      this.events.publish('toast:create', response.Data.Message);
+      //firebase 
+      if (response.FireBaseTransaction) {
+        this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { });
+      }
+      //send notification
+      if (response.OneSignalTransaction) {
+        this._notifications.sends(response.OneSignalTransaction, 'ChatPage', {
+          topicID: this.topicID,
+          groupID: this.groupID,
+        });
+      }
+      //making it responsible and removing existing reponsible
+      this.data.User[this.getIndexById(this.responsibleUserID)].IsResponsible = false;
+      this.data.User[index].IsResponsible = true;
+      this.responsibleUserID = participant.UserID;
+    }).catch(error => {
+
+    });
   }
 
   makeAsAdmin(participant, index) {
@@ -302,6 +351,31 @@ export class ChatOptionsPage {
     });
   }
 
+  removeFromTopic(participant, index) {
+    this.connection.doPost('Chat/Remove_Participant', {
+      UserID: participant.UserID,
+      GroupID: this.groupID,
+      TopicID: this.topicID,
+    }).then((response: any) => {
+      this.events.publish('toast:create', response.Data.Message);
+      //firebase 
+      if (response.FireBaseTransaction) {
+        this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { });
+      }
+      //send notification
+      if (response.OneSignalTransaction) {
+        this._notifications.sends(response.OneSignalTransaction, 'ChatPage', {
+          topicID: this.topicID,
+          groupID: this.groupID,
+        });
+      }
+      //removing 
+      delete this.data.User[index];
+    }).catch(error => {
+
+    });
+  }
+
   isExpired(due_date, close_date) {
     if (close_date === '0001-01-01T00:00:00.00Z' || !moment(close_date).isValid()) {
       close_date = this._date.toUTCISOString(new Date(), false, false);
@@ -317,5 +391,106 @@ export class ChatOptionsPage {
       return id === this.connection.user.LoginUserID;
     }
     return false;
+  }
+
+  getIndexById(UserID) {
+    let index = -1;
+    this.data.User.some((user, i) => {
+      if (user.UserID === UserID) {
+        index = i;
+        return true;
+      }
+    });
+    return index;
+  }
+
+  addParticipants() {
+    /**
+     * 1. get all users in group
+     * 2. open modal to add
+     */
+    this.connection.doPost('Chat/GetGroupUserDetail', {
+      GroupID: this.groupID,
+    }).then((response: any) => {
+      //find selected users which is nothing but current users in topic
+
+      let participants = [];
+      let selectedParticipantIDs = [];
+      this.data.User.forEach((user, index) => {
+        selectedParticipantIDs.push(user.UserID);
+      });
+      //removing self
+      if (response.UserDetail.length) {
+        let userIndex = -1;
+        response.UserDetail.forEach((user, index) => {
+          //only adding users which are not in topic
+          if (selectedParticipantIDs.indexOf(user.User[0].UserID) === -1) {
+            participants.push(user);
+          }
+        });
+      }
+      //checking if all added
+      if (participants.length) {
+        //open modal
+        let modal = this.modal.create(ManageParticipantsPage, {
+          participants: participants,
+          assigned: this.responsibleUserID,
+          selectedParticipantIDs: [],
+          group_name: this.group_name,
+          is_from_chat: true,
+        });
+
+        modal.onDidDismiss(data => {
+          if (data) {
+            //saving new users
+            this.connection.doPost('Chat/Add_Participant', {
+              UserID: this.connection.user.LoginUserID,
+              GroupID: this.groupID,
+              TopicID: this.topicID,
+              Participants: data.selectedParticipantIDs.join(','),
+            }, 'adding').then((response: any) => {
+              this.events.publish('toast:create', response.Data.Message);
+              //do firebase transaction if any
+              if (response.FireBaseTransaction) {
+                this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { });
+              }
+              //oneSignal transaction
+              if (response.OneSignalTransaction) {
+                this._notifications.sends(response.OneSignalTransaction);
+              }
+              //close this and request for initData and open this screen again
+              this.dismiss({
+                reInitData: true,
+                openChatOptions: true
+              });
+            }).catch(error => { });
+          }
+        });
+        modal.present();
+      } else {
+        this.events.publish('toast:create', 'All members of group have been added to topic');
+      }
+    }).catch(error => {
+    })
+  }
+
+  getTags(participant) {
+    let tags = [];
+
+    let tagNames = participant.Tag.split(',');
+    let tagIds = participant.TagID.split(',');
+
+    tagNames.forEach((tag, index) => {
+      tags.push({
+        TagID: tagIds[index],
+        Tag: tag,
+      })
+    });
+
+    return tags;
+  }
+
+  getTagColor(id) {
+    return 'tag-' + (id % 10);
   }
 }

@@ -1,15 +1,5 @@
 <ion-header no-border>
-	<ion-navbar color="primary">
-		<ion-title>
-			<div>{{title}}</div>
-			<small>{{group_name}}</small>
-		</ion-title>
-		<ion-buttons end>
-			<button color="light" ion-button outline (click)="dismiss(null)">
-				Close
-			</button>
-		</ion-buttons>
-	</ion-navbar>
+	<modal-toolbar [title]="title" [subTitle]="group_name" (dismiss)="dismiss($event)"></modal-toolbar>
 </ion-header>
 <ion-content padding>
 	<ion-row class="buttons-container">
@@ -39,7 +29,18 @@
 					<span *ngIf="isYou(user.User[0].UserID)">(You)</span>
 				</h2>
 				<p text-left text-small small text-wrap>
-					<ion-badge *ngFor="let tag of user.Tag" [ngClass]="getTagColor(tag.TagID)">{{tag.Tag}}</ion-badge>
+					<ion-row>
+						<ion-col class="activity">
+							Last Activity
+							<span class="activity-status">{{user.User[0].LoginStatus}}</span>
+							at
+							<span class="activity-time">{{user.User[0].LastActivityDateTime}}</span>
+
+						</ion-col>
+					</ion-row>
+					<ion-row>
+						<ion-badge *ngFor="let tag of user.Tag" [ngClass]="getTagColor(tag.TagID)">{{tag.Tag}}</ion-badge>
+					</ion-row>
 				</p>
 			</ion-item>
 		</ion-list>

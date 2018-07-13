@@ -171,6 +171,10 @@
         "_NothingToShow_": "Rien de plus pour montrer",
         "_Welcome_": "Bienvenue",
         "_ErrorOccurred_": "Erreur est survenue! Réessayer",
-        "_CheckInternetConnection_": "Veuillez vérifier votre connexion réseau"
+        "_CheckInternetConnection_": "Veuillez vérifier votre connexion réseau",
+        "_ChangePassword_": "Changer le mot de passe",
+        "_EditProfile_": "Editer le profil",
+        "_NotificationPreference_": "Préférence de notification",
+        "_ContactUs_": "Contactez nous"
     }
 }

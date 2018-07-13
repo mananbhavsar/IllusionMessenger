@@ -1,15 +1,5 @@
 <ion-header>
-  <ion-toolbar ion-text color="primary">
-    <ion-title>
-      <div>{{title}}</div>
-      <small>{{subTitle()}}</small>
-    </ion-title>
-    <ion-buttons end>
-      <button color="light" ion-button outline (click)="dismiss(null)">
-        Close
-      </button>
-    </ion-buttons>
-  </ion-toolbar>
+  <modal-toolbar [title]="title" [subTitle]="getSubTitle()" (dismiss)="dismiss($event)"></modal-toolbar>
 </ion-header>
 <ion-content padding>
   <ion-grid>

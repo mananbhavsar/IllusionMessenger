@@ -1,19 +1,10 @@
 <ion-header>
-  <ion-toolbar ion-text color="primary">
-    <ion-title>
-      {{'ChatScreen._MessageInfo_' | translate}}
-    </ion-title>
-    <ion-buttons end>
-      <button color="light" ion-button outline (click)="dismiss(null)">
-        {{'ChatScreen._Close_' | translate}}
-      </button>
-    </ion-buttons>
-  </ion-toolbar>
+  <modal-toolbar [title]="'ChatScreen._MessageInfo_' | translate" (dismiss)="dismiss($event)"></modal-toolbar>
 </ion-header>
 <ion-content>
   <div class="chat">
-    <chat-bubble [id]="'message-'+message.key" class="message-wrapper" [message]="message" [userID]="userID" [topicID]="topicID" [topicCode]="topicCode" [groupID]="groupID" [groupCode]="groupCode"
-      [users]="chatUsers"></chat-bubble>
+    <chat-bubble [id]="'message-'+message.key" class="message-wrapper" [message]="message" [userID]="userID" [topicID]="topicID"
+      [topicCode]="topicCode" [groupID]="groupID" [groupCode]="groupCode" [users]="chatUsers"></chat-bubble>
   </div>
   <ion-list>
     <ion-list-header>

@@ -73,9 +73,9 @@
         "_Status_": "Status",
         "_ProgressDetail_": "Progress Detail",
         "_ImpressionDate_": "Impression Date",
-        "_DueDate_":"Due Date",
+        "_DueDate_": "Due Date",
         "_ClickToCommunicate_": "Click to Communicate",
-        "_OpenRx_":"Open Rx",
+        "_OpenRx_": "Open Rx",
         "Dispatch": {
             "_Patient": "Patient",
             "_DispatchDate": "Dispatch Date",
@@ -169,6 +169,10 @@
         "_NothingToShow_": "Nothing to show more",
         "_Welcome_": "Welcome",
         "_ErrorOccurred_": "Error occurred! Try again",
-        "_CheckInternetConnection_": "Please check your network connection"
+        "_CheckInternetConnection_": "Please check your network connection",
+        "_ChangePassword_": "Change Password",
+        "_EditProfile_": "Edit Profile",
+        "_NotificationPreference_": "Notification Preference",
+        "_ContactUs_": "Contact Us"
     }
 }

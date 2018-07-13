@@ -1,5 +1,5 @@
 <div class="message" [ngClass]="message.UserID === userID ? 'message-mine' : 'message-other'">
-  <div class="message-header" *ngIf="message.UserID !== userID">
+  <div class="message-header" *ngIf="message.UserID !== userID && message.UserID !== 0">
     <div class="message-user">
       {{message.From}}
       <ion-icon name="ios-star" *ngIf="message.UserID === responsibleUserID"></ion-icon>
@@ -24,7 +24,7 @@
       </div>
     </ng-container>
   </div>
-  <div class="message-footer">
+  <div class="message-footer" *ngIf="message.UserID !== 0">
     <div class="message-timestamp">{{ getTime(message.CreateAt)}}</div>
     <div class="message-status" [ngClass]="'status-' + message.Status" [hidden]="isHidden()">
       <ng-container [ngSwitch]="message.Status">

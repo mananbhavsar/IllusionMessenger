@@ -1,21 +1,21 @@
-import { Injectable, Inject, forwardRef } from '@angular/core';
-import { Events, Platform } from 'ionic-angular';
-import { Storage } from '@ionic/storage';
+import { Injectable } from '@angular/core';
+import { Headers, Http, Response, URLSearchParams } from '@angular/http';
+import { Device } from '@ionic-native/device';
 import { Network } from '@ionic-native/network';
-import { Http, Headers, Response, URLSearchParams } from '@angular/http';
-
+import { UniqueDeviceID } from '@ionic-native/unique-device-id';
+import { Storage } from '@ionic/storage';
+import { TranslateService } from "@ngx-translate/core";
+import * as firebase from 'firebase';
+import { Events, Platform } from 'ionic-angular';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/timeout';
 import * as _ from 'underscore';
-import * as firebase from 'firebase';
-
-import { TranslateService } from "@ngx-translate/core";
-
 import { Global } from '../../app/global';
 
-import { Device } from '@ionic-native/device';
 
-import { UniqueDeviceID } from '@ionic-native/unique-device-id';
+
+
+
 
 @Injectable()
 export class ConnectionProvider {
@@ -27,7 +27,7 @@ export class ConnectionProvider {
     loading_translate: string = 'loading';
     please_check_internet_connection: string = 'Please check your network connection';
 
-    URL:string = null;
+    URL: string = null;
     constructor(
         public http: Http,
         public storage: Storage,
@@ -61,9 +61,9 @@ export class ConnectionProvider {
 
 
             //url from  firebase
-            firebase.database().ref('Settings/URL').on('value', snapshot=>{
+            firebase.database().ref('Settings/URL').on('value', snapshot => {
                 let url = snapshot.val();
-                if(url){
+                if (url) {
                     this.URL = url;
                 }
             });
@@ -110,22 +110,22 @@ export class ConnectionProvider {
                 //Checking for Error Code
                 switch (parseInt(data.ErrorCode)) {
                     case 0:
-                    if (data.objData.trim() === '') {
-                       data.objData = data.objData.trim();
-                    } else {
-                           try{
+                        if (data.objData.trim() === '') {
+                            data.objData = data.objData.trim();
+                        } else {
+                            try {
                                 data.objData = JSON.parse(data.objData);
-                              }catch(error){
-                            //trying to remove extra last comma
-                            if(error.toString().indexOf('Unexpected token } in JSON') > -1){
-                                try{
-                                    data.objData=JSON.parse(data.objData.replace(',}','}'));
-                                }
-                                catch(error){
-                                     reject('Invalid JSON Format');
-                                     break;
+                            } catch (error) {
+                                //trying to remove extra last comma
+                                if (error.toString().indexOf('Unexpected token } in JSON') > -1) {
+                                    try {
+                                        data.objData = JSON.parse(data.objData.replace(',}', '}'));
                                     }
-                                } 
+                                    catch (error) {
+                                        reject('Invalid JSON Format');
+                                        break;
+                                    }
+                                }
                             }
                         }
                         resolve(data.objData);
@@ -183,5 +183,15 @@ export class ConnectionProvider {
         urlSearchParams.append('LoginUserID', this.user.LoginUserID);
         urlSearchParams.append('PushID', this.push_id);
         return urlSearchParams
+    }
+
+    getPushID() {
+        if (this.push_id) {
+            //check if string and non empty
+            if (typeof this.push_id === 'string' && this.push_id.trim() !== '') {
+                return this.push_id;
+            }
+        }
+        return false;
     }
 }

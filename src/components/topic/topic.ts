@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Input, NgZone, Output } from '@angular/core';
 import * as firebase from 'firebase';
 import { NavController } from 'ionic-angular';
+import { Events } from 'ionic-angular/util/events';
 import * as moment from "moment";
 import { ConnectionProvider } from '../../providers/connection/connection';
 import { DateProvider } from '../../providers/date/date';
-import { Events } from 'ionic-angular/util/events';
 
 
 @Component({
@@ -23,7 +23,7 @@ export class TopicComponent {
     private zone: NgZone,
     private connection: ConnectionProvider,
     private _date: DateProvider,
-    public events : Events
+    public events: Events
   ) {
 
   }
@@ -56,15 +56,13 @@ export class TopicComponent {
   setPriority(event) {
     event.preventDefault();
     event.stopPropagation();
-    console.log(this.topic);
-    
+
     this.connection.doPost('Chat/SetPriority', {
-      UserID: this.topic.UserID,
       TopicID: this.topic.TopicID,
-      isPriority: this.topic.isPriority
-    }).then((response:any) => {
-      this.topic.isPriority = !this.topic.isPriority;
-      this.events.publish('toast:create',response.Data.Message);
+      IsPriority: !this.topic.IsPriority
+    }).then((response: any) => {
+      this.topic.IsPriority = !this.topic.IsPriority;
+      this.events.publish('toast:create', response.Data.Message);
     }).catch((error) => { });
   }
 

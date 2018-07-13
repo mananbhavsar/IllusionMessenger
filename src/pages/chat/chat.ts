@@ -12,7 +12,7 @@ import { VideoEditor } from '@ionic-native/video-editor';
 import { Storage } from '@ionic/storage';
 import { TranslateService } from "@ngx-translate/core";
 import * as firebase from 'firebase';
-import { ActionSheetController, Content, Events, IonicPage, ModalController, NavController, NavParams, Platform, ToastController, normalizeURL } from 'ionic-angular';
+import { ActionSheetController, Content, Events, IonicPage, ModalController, NavController, NavParams, normalizeURL, Platform, ToastController } from 'ionic-angular';
 import * as mime from 'mime-types';
 import * as moment from 'moment';
 import 'rxjs/add/operator/switchMap';
@@ -720,7 +720,7 @@ export class ChatPage {
       if (this.data && this.data.User.length) {
         this.data.User.forEach((user, index) => {
           //for typing
-          if(this.userTyping === null){
+          if (this.userTyping === null) {
             this.userTyping = {};
           }
           this.userTyping[user.UserID] = user.User;
@@ -840,6 +840,9 @@ export class ChatPage {
 
       this.sendToFirebase(textMessage).then(data => {
         this.message = '';
+        setTimeout(() => {
+          this.messageInput.nativeElement.focus();
+        });
       }).catch(error => {
         this.message = '';
       });
@@ -1278,6 +1281,7 @@ export class ChatPage {
       TopicCode: this.topicCode,
       TopicID: this.topicID,
       GroupID: this.groupID,
+      IsWeb: this.platform.is('core'),
     };
 
     this.connection.doPost('Chat/InsertChat', params, false).then((response: any) => {
@@ -1543,7 +1547,7 @@ export class ChatPage {
               this.openChatOptions();
             }
           }).catch(error => {
-           });
+          });
         }
       }
     });

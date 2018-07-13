@@ -1,5 +1,6 @@
 <ion-header no-border>
-    <header [title]="'HomeScreen._Home_' | translate" [buttons]="[{icon:'ios-flash',name:'flash'}]" (buttonClicked)="headerButtonClicked($event)"></header>
+    <header [title]="'HomeScreen._Home_' | translate" [buttons]="[{icon: 'ios-flash', name: 'flash'}, { icon: 'ios-options', name: 'sort'}]"
+        (buttonClicked)="headerButtonClicked($event)"></header>
     <div class="device-register" [ngSwitch]="deviceRegsiter">
         <span class="gray" *ngSwitchCase="0">Not Connected</span>
         <span class="pickup" *ngSwitchCase="1">Connecting</span>
@@ -13,22 +14,12 @@
     </ion-refresher>
     <center-spinner *ngIf="dataFetched === false;else data_template"></center-spinner>
     <ng-template #data_template>
-        <ion-row>
-            <ion-col (click)="openSortOptions($event)">
-                <ion-icon name="funnel"></ion-icon>
-                <span>Sort By</span>
-            </ion-col>
-            <ion-col>
-                <ion-icon name="options"></ion-icon>
-                <span>Filter</span>
-            </ion-col>
-        </ion-row>
         <flash-news [flashNews]="flashNews"></flash-news>
         <ion-segment [(ngModel)]="selectedTab" color="theme" padding mode="ios">
             <ion-segment-button [value]="tab.icon" *ngFor="let tab of tabs">
                 <ion-icon [name]="tab.icon"></ion-icon>
                 <span>
-                    {{getSelectedTabBadgeCount(tab.key)}}
+                    {{getTabBadgeCount(tab.key)}}
                 </span>
             </ion-segment-button>
         </ion-segment>
@@ -71,7 +62,7 @@
                     </ion-item>
                 </ng-container>
                 <ng-container *ngSwitchCase="'flag'">
-                    <topic [group_id]="topic.GroupID" type="ActiveTopicList" [topic]="topic" *ngFor="let topic of data.Priorty;"></topic>
+                    <topic [group_id]="topic.GroupID" type="ActiveTopicList" [topic]="topic" *ngFor="let topic of data.Priority;"></topic>
                 </ng-container>
                 <ng-container *ngSwitchCase="'paper'">
                     <topic [group_id]="topic.GroupID" type="ActiveTopicList" [topic]="topic" *ngFor="let topic of data.Topic_Wise;"></topic>

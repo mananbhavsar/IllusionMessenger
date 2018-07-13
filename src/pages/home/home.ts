@@ -5,6 +5,7 @@ import { Storage } from '@ionic/storage';
 import { TranslateService } from "@ngx-translate/core";
 import firebase from 'firebase';
 import { Events, IonicPage, ModalController, NavController, Platform } from 'ionic-angular';
+import { ActionSheetController } from 'ionic-angular/components/action-sheet/action-sheet-controller';
 import * as _ from 'underscore';
 import { Global } from '../../app/global';
 import { ConnectionProvider } from '../../providers/connection/connection';
@@ -15,7 +16,6 @@ import { FirebaseTransactionProvider } from './../../providers/firebase-transact
 import { NotificationsProvider } from './../../providers/notifications/notifications';
 import { AddFlashPage } from './../group/add-flash/add-flash';
 import { CreateTopicPage } from './../topic/create-topic/create-topic';
-import { ActionSheetController } from 'ionic-angular/components/action-sheet/action-sheet-controller';
 
 
 @IonicPage()
@@ -37,11 +37,10 @@ export class HomePage {
      * 2 => connected
      */
     deviceRegsiter: number = 0;
-    group: any = {};
     page: number = 0;
     connectedTime: string = null;
-    sort_by: string = 'CreationDate';
-    sort_order: string = 'ASC';
+    sort_by: string = '';
+    sort_order: string = '';
 
     dataFetched: boolean = false;
     tabs = [
@@ -61,9 +60,9 @@ export class HomePage {
             key: 'Groups_Wise'
         },
         {
-            name: 'Priorty',
+            name: 'Priority',
             icon: 'flag',
-            key: 'Priorty'
+            key: 'Priority'
         },
         {
             name: 'All Tasks',
@@ -85,7 +84,7 @@ export class HomePage {
         private modalController: ModalController,
         private notifications: NotificationsProvider,
         private _firebaseTransaction: FirebaseTransactionProvider,
-        public actionSheetController : ActionSheetController
+        public actionSheetController: ActionSheetController
     ) {
         this.global = Global;
         //listening to Resume & Pause events
@@ -134,6 +133,11 @@ export class HomePage {
         return new Promise((resolve, reject) => {
             this.dataFetched = false;
             this.connection.doPost('Chat/GetTaskDetail', {
+                PageNumber: this.page,
+                RowsPerPage: 100,
+                Query: '',
+                OrderBy: this.sort_by,
+                Order: this.sort_order,
             }, false).then((response: any) => {
                 this.dataFetched = true;
                 //groups
@@ -185,6 +189,7 @@ export class HomePage {
     }
 
     refresh(refresher) {
+        this.page = 0;
         this.getData().then(status => {
             this.dataFetched = true;
             refresher.complete();
@@ -241,7 +246,9 @@ export class HomePage {
             case 'flash':
                 this.addFlash();
                 break;
-
+            case 'sort':
+                this.openSortOptions();
+                break;
         }
     }
 
@@ -279,22 +286,16 @@ export class HomePage {
         return selectedName;
     }
 
-    getSelectedTabBadgeCount() {
+    getTabBadgeCount(key) {
         let selectedBadgeCount: any = 0;
 
-        this.tabs.some(tab => {
-            if (tab.icon === this.selectedTab) {
-                let field = tab.key + '_Count';
-                if (field in this.data) {
-                    selectedBadgeCount = this.data[field];
-                }
-                return true;
-            }
-            return false;
-        });
+        let field = key + '_Count';
+        if (field in this.data) {
+            selectedBadgeCount = this.data[field];
+        }
 
-        if (selectedBadgeCount > 10) {
-            selectedBadgeCount = '10+';
+        if (selectedBadgeCount > 100) {
+            selectedBadgeCount = '100+';
         }
         return selectedBadgeCount;
     }
@@ -319,6 +320,28 @@ export class HomePage {
             selectedRowsCount = _.size(this.data[tab_key]);
         }
         return selectedRowsCount;
+    }
+
+    openSortOptions() {
+        //creating buttons
+        let buttons = [];
+        let sortingOptions = {
+            'CreationDate': 'Creation Date',
+            'DueDate': 'Due Date',
+        };
+        for (let key in sortingOptions) {
+            let label = sortingOptions[key];
+            let icon = null;
+            if (key === this.sort_by) {
+                icon = this.sort_order === 'ASC' ? 'ios-arrow-round-up-outline' : 'ios-arrow-round-down-outline';
+            }
+            buttons.push({
+                text: label,
+                icon: icon,
+                handler: () => {
+                    //if not selected initially, making it desc so it could be reversed later
+                    if (this.sort_by !== key) {
+                        this.sort_order = 'DESC';
                     }
                     this.sort_by = key;
                     this.sort_order = this.sort_order === 'ASC' ? 'DESC' : 'ASC';
@@ -341,9 +364,8 @@ export class HomePage {
     }
 
     doSorting() {
-        this.group = [];
+        this.data = [];
         this.page = 0;
         this.getData();
     }
 }
-

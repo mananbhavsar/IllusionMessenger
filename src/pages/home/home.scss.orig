@@ -15,10 +15,15 @@ page-home {
             }
         }
     }
+<<<<<<< HEAD
+    ion-row{
+        ion-col{
+            text-align: center;
+        }
+=======
     ion-segment {
         ion-segment-button {}
-    }
-        }
+>>>>>>> a0bf3953c2c0017a656c9dcb35b67e5fc41bccf1
     }
     ion-list {
         ion-item-divider {

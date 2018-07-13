@@ -299,26 +299,27 @@ export class HomePage {
         return selectedBadgeCount;
     }
 
-    getSelectedTabRowsCount() {
-        let selectedRowsCount: any = 'NA';
-
-        this.tabs.some(tab => {
-            if (tab.icon === this.selectedTab) {
-                selectedRowsCount = this.getTabRowsCount(tab.key);
-                return true;
+<<<<<<< HEAD
+    openSortOptions() {
+        //creating buttons
+        let buttons = [];
+        let sortingOptions = {
+            'CreationDate': 'Creation Date',
+            'DueDate': 'Due Date',
+        };
+        for (let key in sortingOptions) {
+            let label = sortingOptions[key];
+            let icon = null;
+            if (key === this.sort_by) {
+                icon = this.sort_order === 'ASC' ? 'ios-arrow-round-up-outline' : 'ios-arrow-round-down-outline';
             }
-            return false;
-        });
-        return selectedRowsCount;
-    }
-
-    getTabRowsCount(tab_key) {
-        let selectedRowsCount: any = 0;
-
-        if (this.data) {
-            selectedRowsCount = _.size(this.data[tab_key]);
-        }
-        return selectedRowsCount;
+            buttons.push({
+                text: label,
+                icon: icon,
+                handler: () => {
+                    //if not selected initially, making it desc so it could be reversed later
+                    if (this.sort_by !== key) {
+                        this.sort_order = 'DESC';
                     }
                     this.sort_by = key;
                     this.sort_order = this.sort_order === 'ASC' ? 'DESC' : 'ASC';
@@ -344,6 +345,28 @@ export class HomePage {
         this.group = [];
         this.page = 0;
         this.getData();
+=======
+    getSelectedTabRowsCount() {
+        let selectedRowsCount: any = 'NA';
+
+        this.tabs.some(tab => {
+            if (tab.icon === this.selectedTab) {
+                selectedRowsCount = this.getTabRowsCount(tab.key);
+                return true;
+            }
+            return false;
+        });
+        return selectedRowsCount;
+    }
+
+    getTabRowsCount(tab_key) {
+        let selectedRowsCount: any = 0;
+
+        if (this.data) {
+            selectedRowsCount = _.size(this.data[tab_key]);
+        }
+        return selectedRowsCount;
+>>>>>>> a0bf3953c2c0017a656c9dcb35b67e5fc41bccf1
     }
 }
 

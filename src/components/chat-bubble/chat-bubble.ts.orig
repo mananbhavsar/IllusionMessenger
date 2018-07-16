@@ -1,24 +1,26 @@
-import { Component, ElementRef, Input } from '@angular/core';
-import { File } from '@ionic-native/file';
-import { FileTransfer } from '@ionic-native/file-transfer';
-import { Network } from '@ionic-native/network';
-import { StreamingMedia } from '@ionic-native/streaming-media';
-import { TranslateService } from "@ngx-translate/core";
+import { Component, Input, Output, EventEmitter, ElementRef } from '@angular/core';
+import { Platform, NavController, Events, normalizeURL } from 'ionic-angular';
 import * as firebase from 'firebase';
-import { Events, NavController, Platform } from 'ionic-angular';
-import { ImageViewerController } from 'ionic-img-viewer';
-import * as moment from 'moment';
-import 'moment/locale/en-gb';
-import 'moment/locale/fr';
 import * as _ from 'underscore';
-import { Global } from '../../app/global';
+import * as mime from 'mime-types';
+import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer';
+import { File } from '@ionic-native/file';
+import { StreamingMedia, StreamingVideoOptions } from '@ionic-native/streaming-media';
+import { Network } from '@ionic-native/network';
+
 import { CommonProvider } from "../../providers/common/common";
+import { TranslateService } from "@ngx-translate/core";
 import { FileOpsProvider } from "../../providers/file-ops/file-ops";
 
+import * as moment from 'moment';
 
+import 'moment/locale/fr';
+import 'moment/locale/en-gb';
 
+import { Global } from '../../app/global';
+import { retry } from 'rxjs/operator/retry';
 
-
+import { ImageViewerController } from 'ionic-img-viewer';
 
 @Component({
   selector: 'chat-bubble',
@@ -168,7 +170,11 @@ export class ChatBubbleComponent {
       this.events.publish('toast:error', this.not_available_offline_translate);
       return;
     }
-    let file: string = this.message.URL;
+<<<<<<< HEAD
+    let file = this.message.nativeURL || this.message.URL;
+=======
+    let file:string = this.message.URL;
+>>>>>>> 82e5dc68b27a68d1bc5c1a2e0fa1e61bfd38dafd
     //if already downloading
     if (this.message.downloading) {
       return;
@@ -192,6 +198,10 @@ export class ChatBubbleComponent {
       }
 
     }).catch(error => {
+<<<<<<< HEAD
+      console.log(error);
+=======
+>>>>>>> 82e5dc68b27a68d1bc5c1a2e0fa1e61bfd38dafd
     });
   }
 
@@ -207,8 +217,13 @@ export class ChatBubbleComponent {
       window.open(this.message.URL, '_blank');
     } else if (this.isCordova) {
       let options = {
+<<<<<<< HEAD
+        successCallback: () => { console.log('Audio played') },
+        errorCallback: (e) => { console.log('Error streaming') },
+=======
         successCallback: () => { },
         errorCallback: (e) => { },
+>>>>>>> 82e5dc68b27a68d1bc5c1a2e0fa1e61bfd38dafd
         shouldAutoClose: true,
         bgImage: 'https://s3-ap-southeast-1.amazonaws.com/eiosys/images/equilizer.gif',
       };
@@ -221,8 +236,14 @@ export class ChatBubbleComponent {
       window.open(this.message.URL, '_blank');
     } else if (this.isCordova) {
       let options = {
+<<<<<<< HEAD
+        successCallback: () => { console.log('Video played') },
+        errorCallback: (e) => {
+          console.log(e);
+=======
         successCallback: () => { },
         errorCallback: (e) => {
+>>>>>>> 82e5dc68b27a68d1bc5c1a2e0fa1e61bfd38dafd
           return false;
         },
         shouldAutoClose: true,
@@ -249,6 +270,10 @@ export class ChatBubbleComponent {
 
             this.subscribeToFileDelete(file);
             setTimeout(() => {
+<<<<<<< HEAD
+              console.log(entry);
+=======
+>>>>>>> 82e5dc68b27a68d1bc5c1a2e0fa1e61bfd38dafd
               resolve(entry);
             });
           }).catch(error => {
@@ -286,7 +311,11 @@ export class ChatBubbleComponent {
           }
         });
       } else {
+<<<<<<< HEAD
+        this.message['downloaded'] = false;
+=======
         this.message['downloaded'] = true;
+>>>>>>> 82e5dc68b27a68d1bc5c1a2e0fa1e61bfd38dafd
         this.message.nativeURL = this.message.URL;
       }
     } else {

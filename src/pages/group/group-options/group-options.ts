@@ -43,7 +43,6 @@ export class GroupOptionsPage {
         GroupID: this.group_id
       }).then((response: any) => {
         this.userlist = response;
-        console.log(this.userlist);
         resolve(true);
       }).catch(error => {
         reject(error);

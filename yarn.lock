@@ -183,9 +183,9 @@
   version "0.2.8"
   resolved "https://registry.yarnpkg.com/@firebase/webchannel-wrapper/-/webchannel-wrapper-0.2.8.tgz#38a936b60b898a1ad0f3719543ff1a1031f60f8b"
 
-"@ionic-native/android-permissions@^4.6.0":
-  version "4.6.0"
-  resolved "https://registry.yarnpkg.com/@ionic-native/android-permissions/-/android-permissions-4.6.0.tgz#52ea787cd509845a62f9c1751e1da243f671a6fe"
+"@ionic-native/android-permissions@^4.9.2":
+  version "4.9.2"
+  resolved "https://registry.yarnpkg.com/@ionic-native/android-permissions/-/android-permissions-4.9.2.tgz#1ce6038430295e2f125f7ffc0b0ce74452c3bb09"
 
 "@ionic-native/app-version@^4.3.1":
   version "4.5.3"
@@ -275,9 +275,9 @@
   version "4.5.3"
   resolved "https://registry.yarnpkg.com/@ionic-native/photo-library/-/photo-library-4.5.3.tgz#095b9fcdadd7680fd2853cdbdf226212514392c5"
 
-"@ionic-native/photo-viewer@^4.5.3":
-  version "4.5.3"
-  resolved "https://registry.yarnpkg.com/@ionic-native/photo-viewer/-/photo-viewer-4.5.3.tgz#d76780ccf2e8c8da5f3f0c8045b10c73824e9a98"
+"@ionic-native/photo-viewer@^4.9.2":
+  version "4.9.2"
+  resolved "https://registry.yarnpkg.com/@ionic-native/photo-viewer/-/photo-viewer-4.9.2.tgz#488dd8f1b1b347ac4ff488dcd16720370cef3e4c"
 
 "@ionic-native/shake@^4.3.0":
   version "4.5.3"

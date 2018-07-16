@@ -50,7 +50,7 @@
       <label class="item-input-wrapper" [ngClass]="{'send': message.trim().length > 0}">
         <!-- fz-elastic -->
         <textarea autocomplete="on" autocorrect="on" fz-elastic rows="1" #messageInput [(ngModel)]="message"
-          dir="auto" (keyup)="keyup($event)" (focus)="onFocus($event)" (blur)="onBlur($event)"></textarea>
+          dir="auto" (keyup)="keyup($event)" (keypress)="keyboardKey($event)" (focus)="onFocus($event)" (blur)="onBlur($event)"></textarea>
       </label>
 
       <span *ngIf="message.trim().length > 0">
@@ -58,17 +58,20 @@
           {{'ChatScreen._Send_' | translate}}
         </button>
       </span>
-      <span *ngIf="!message || message.trim().length === 0">
-        <button (click)="captureImage()" clear ion-button icon-only>
-          <ion-icon name="ios-camera-outline"></ion-icon>
-        </button>
-        <button class="buttons-seperator" ion-button clear icon-only>
-          <ion-icon name="md-more"></ion-icon>
-        </button>
-        <button (click)="captureAudio()" ion-button clear icon-only>
-          <ion-icon name="ios-mic-outline"></ion-icon>
-        </button>
+      <span *ngIf="!isBrowser">
+        <span *ngIf="!message || message.trim().length === 0">
+          <button (click)="captureImage()" clear ion-button icon-only>
+            <ion-icon name="ios-camera-outline"></ion-icon>
+          </button>
+          <button class="buttons-seperator" ion-button clear icon-only>
+            <ion-icon name="md-more"></ion-icon>
+          </button>
+          <button (click)="captureAudio()" ion-button clear icon-only>
+            <ion-icon name="ios-mic-outline"></ion-icon>
+          </button>
+        </span>
       </span>
+      
     </ng-container>
     <ng-container *ngIf="hasInternet && aboutToRecord === true">
       <ion-grid no-padding class="recording">

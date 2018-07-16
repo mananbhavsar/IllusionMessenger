@@ -444,7 +444,6 @@ export class MyApp {
     doGlobalization() {
         if (this.platform.is('cordova')) {
             this.globalization.getPreferredLanguage().then(language => {
-                console.log(language);
             });
         } else {
 
@@ -476,7 +475,6 @@ export class MyApp {
 
     processNotification(notification, directOpenPage) {
         let payload = 'payload' in notification ? notification.payload : notification.notification.payload;
-        console.log(payload, directOpenPage);
         //showing notification  alert if not chatting else giving control to Caht module to handle it
         let currentPage = Global.getActiveComponentName(this.nav.getActive());
         if (currentPage === 'ChatPage') {
@@ -553,6 +551,26 @@ export class MyApp {
                         });
                     }
                 });
+                OneSignal.on('subscriptionChange', function (isSubscribed) {
+                    if (isSubscribed) {
+                        OneSignal.isPushNotificationsEnabled().then(function (isEnabled) {
+                            if (isEnabled) {
+                                OneSignal.getUserId(function (userId: string) {
+                                    that.events.publish('pushid:created', userId);
+                                    that.user.registerPushID(userId).catch(error => { });
+                                    that.user.getUser().then(user => {
+                                        if (user) {
+                                            OneSignal.sendTags({
+                                                user_id: user.id,
+                                                name: user.LoginUser
+                                            });
+                                        }
+                                    });
+                                });
+                            }
+                        });
+                    }
+                });
             });
         } else if (this.platform.is('cordova')) {
             this._oneSignal.startInit(Global.OneSignal.key, Global.OneSignal.android);
@@ -594,7 +612,6 @@ export class MyApp {
         this.user.getUser().then(user => {
             firebase.database().ref('Badge/' + user.id + '/Total').on('value', snapshot => {
                 let total: any = snapshot.val();
-                console.log('total:' + total);
                 this.events.publish('badge:set', total);
                 if (total) {
                     this._badge.set(total);

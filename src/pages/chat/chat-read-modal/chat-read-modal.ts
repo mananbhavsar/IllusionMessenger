@@ -40,7 +40,6 @@ export class ChatReadModalPage {
 
   ionViewDidLoad() {
     this.messageReadRef.on('child_changed', (snapshot) => {
-      console.log(snapshot.val());
     });
     this.makeList();
   }

@@ -110,12 +110,10 @@ export class CloseTopicPage {
 
   onCancel() {
     this.initializeItems();
-    console.log('cancel');
   }
 
   onClear() {
     this.initializeItems();
-    console.log('clear');
     this.query = '';
     this.getDetails();
   }

@@ -9,7 +9,6 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 import { Storage } from '@ionic/storage';
 import { TranslateService } from '@ngx-translate/core';
-import { AngularFireDatabase } from 'angularfire2/database';
 import { AlertController, Events, LoadingController, MenuController, ModalController, Nav, Platform, ToastController } from 'ionic-angular';
 import { AccountPage } from '../pages/account/account';
 import { ChatPage } from '../pages/chat/chat';
@@ -24,6 +23,16 @@ import { UserProvider } from '../providers/user/user';
 import { GroupPage } from './../pages/group/group';
 import { Global } from './global';
 
+import * as firebase from 'firebase';
+
+export const firebaseConfig = {
+    apiKey: "AIzaSyAFDZ9UPTMiDTjT4qAG0d9uVeOdhL-2PBw",
+    authDomain: "illusion-messenger.firebaseapp.com",
+    databaseURL: "https://illusion-messenger.firebaseio.com",
+    projectId: "illusion-messenger",
+    storageBucket: "",
+    messagingSenderId: "4208850060"
+}
 
 enableProdMode();
 
@@ -98,7 +107,6 @@ export class MyApp {
         private _diagnostic: Diagnostic,
         private _keyboard: Keyboard,
         private _badge: Badge,
-        private angularFireDatabase: AngularFireDatabase,
         private _oneSignal: OneSignal,
         private translate: TranslateService,
         private globalization: Globalization,
@@ -119,6 +127,7 @@ export class MyApp {
                 this.initPreLoginPlugins();
             }, 500);
         });
+        firebase.initializeApp(firebaseConfig);
     }
 
     enableMenu(loggedIn: boolean) {
@@ -539,8 +548,8 @@ export class MyApp {
 
     initBadge() {
         this.user.getUser().then(user => {
-            this.angularFireDatabase.object('Badge/' + user.id + '/Total').snapshotChanges().subscribe(snapshot => {
-                let total : any = snapshot.payload.val();
+            firebase.database().ref('Badge/' + user.id + '/Total').on('value', snapshot => {
+                let total: any = snapshot.val();
                 console.log('total:' + total);
                 this.events.publish('badge:set', total);
                 if (total) {

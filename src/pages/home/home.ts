@@ -5,7 +5,7 @@ import { Storage } from '@ionic/storage';
 import { TranslateService } from "@ngx-translate/core";
 import firebase from 'firebase';
 import { Events, IonicPage, ModalController, NavController, Platform } from 'ionic-angular';
-import { ActionSheetController } from 'ionic-angular/components/action-sheet/action-sheet-controller';
+import { ActionSheetController } from 'ionic-angular';
 import * as _ from 'underscore';
 import { Global } from '../../app/global';
 import { ConnectionProvider } from '../../providers/connection/connection';

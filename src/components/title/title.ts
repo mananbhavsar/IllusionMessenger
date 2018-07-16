@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Events } from 'ionic-angular';
-import { App } from 'ionic-angular/components/app/app';
+import { App } from 'ionic-angular';
 import { UserProvider } from '../../providers/user/user';
 
 @Component({

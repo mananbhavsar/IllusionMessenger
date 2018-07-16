@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { Badge } from '@ionic-native/badge';
 import { Storage } from '@ionic/storage';
 import { TranslateService } from '@ngx-translate/core';
-import { AngularFireDatabase } from 'angularfire2/database';
 import { AlertController, Events, Platform } from 'ionic-angular';
 import 'rxjs/add/operator/map';
 import * as _ from 'underscore';
+import * as firebase from 'firebase';
 import { Global } from "../../app/global";
 import { ConnectionProvider } from '../connection/connection';
 import { FirebaseTransactionProvider } from "../firebase-transaction/firebase-transaction";
@@ -35,7 +35,6 @@ export class UserProvider {
         public platform: Platform,
         public alertCtrl: AlertController,
         private badge: Badge,
-        private angularFireDatabase: AngularFireDatabase,
         private translate: TranslateService,
     ) {
         this.global = Global;
@@ -217,10 +216,10 @@ export class UserProvider {
         if (this.platform.is('android')) {
             OSName = 'android';
         }
-        this.angularFireDatabase.object('VersionOptions/' + OSName).snapshotChanges().subscribe(snapshot => {
-            let allowAlertClose = snapshot.payload.val();
-            this.angularFireDatabase.object('Version/' + OSName).snapshotChanges().subscribe(snapshot => {
-                let AppVersion = snapshot.payload.val();
+        firebase.database().ref('VersionOptions/' + OSName).on('value', snapshot => {
+            let allowAlertClose = snapshot.val();
+            firebase.database().ref('Version/' + OSName).on('value', snapshot => {
+                let AppVersion = snapshot.val();
                 if (AppVersion && this.global.AppVersion !== AppVersion) {
                     let buttons: Array<any> = [
                         {

@@ -1,14 +1,15 @@
-import { Directive, ElementRef, Input } from '@angular/core';
-import { Content, Platform } from 'ionic-angular';
+import { Directive, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
 import { Keyboard } from '@ionic-native/keyboard';
-import { Subscription } from 'rxjs/Rx';
+import { Content, Platform } from 'ionic-angular';
+import { Subscription } from 'rxjs/Subscription';
+
 
 /**
  * @name KeyboardAttachDirective
  * @description
  * The `keyboardAttach` directive will cause an element to float above the
  * keyboard when the keyboard shows. Currently only supports the `ion-footer` element.
- *
+ * 
  * ### Notes
  * - This directive requires [Ionic Native](https://github.com/driftyco/ionic-native)
  * and the [Ionic Keyboard Plugin](https://github.com/driftyco/ionic-plugin-keyboard).
@@ -21,7 +22,7 @@ import { Subscription } from 'rxjs/Rx';
  * ```html
  * <ion-content #content>
  * </ion-content>
- *
+ * 
  * <ion-footer [keyboardAttach]="content">
  *   <ion-toolbar>
  *     <ion-item>
@@ -33,80 +34,47 @@ import { Subscription } from 'rxjs/Rx';
  */
 
 @Directive({
-  selector: '[keyboardAttach]'
+    selector: '[keyboardAttach]'
 })
-export class KeyboardAttachDirective {
-  @Input('keyboardAttach') content: Content;
+export class KeyboardAttachDirective implements OnInit, OnDestroy {
+    @Input('keyboardAttach') content: Content;
 
-  private onShowSubscription: Subscription;
-  private onHideSubscription: Subscription;
+    private onShowSubscription: Subscription;
+    private onHideSubscription: Subscription;
 
-  private attachTime = 0;
+    constructor(
+        private elementRef: ElementRef,
+        private keyboard: Keyboard,
+        private platform: Platform
+    ) { }
 
-  constructor(
-    private elementRef: ElementRef,
-    private platform: Platform,
-    private keyboard: Keyboard
-  ) {
-      if (this.platform.is('cordova') && this.platform.is('ios')) {
-      this.onShowSubscription = this.keyboard.onKeyboardShow().subscribe(e => this.onShow(e));
-      this.onHideSubscription = this.keyboard.onKeyboardHide().subscribe(() => this.onHide());      
-    }
-  
-  }
-
-  ngOnDestroy() {
-      if (this.onShowSubscription) {
-      this.onShowSubscription.unsubscribe();
-      
-    }
-    if (this.onHideSubscription) {
-      this.onHideSubscription.unsubscribe();
-    }
-  }
-
-  private onShow(e) {
-    let keyboardHeight: number = e.keyboardHeight || (e.detail && e.detail.keyboardHeight);
-
-    if (this.attachTime > 1) {
-      if (
-        keyboardHeight == 313 ||
-        keyboardHeight == 258 ||
-        keyboardHeight == 216 ||
-        keyboardHeight == 253 ||
-        keyboardHeight == 226 ||
-        keyboardHeight == 271 ||
-        keyboardHeight == 216 ||
-        keyboardHeight == 264) {
-        this.setElementPosition(0)
-      } else {
-        if (this.attachTime > 2) {
-          this.setElementPosition(0)
-        } else {
-          this.setElementPosition(keyboardHeight);
+    ngOnInit() {
+        if (this.platform.is('cordova') && this.platform.is('ios')) {
+            this.onShowSubscription = this.keyboard.onKeyboardShow().subscribe(e => this.onShow(e));
+            this.onHideSubscription = this.keyboard.onKeyboardHide().subscribe(() => this.onHide());
         }
-      }
-    } else {
-      this.setElementPosition(keyboardHeight);
     }
-    this.attachTime++
 
-    // setTimeout(() => {
-    //   window.scrollTo(0, 0);
-    //   this.content.scrollToBottom(0);
-    //   this.keyboard.disableScroll(true);
-    // });
-  };
+    ngOnDestroy() {
+        if (this.onShowSubscription) {
+            this.onShowSubscription.unsubscribe();
+        }
+        if (this.onHideSubscription) {
+            this.onHideSubscription.unsubscribe();
+        }
+    }
 
+    private onShow(e) {
+        let keyboardHeight: number = e.keyboardHeight || (e.detail && e.detail.keyboardHeight);
+        this.setElementPosition(keyboardHeight);
+    };
 
-  private onHide() {
-    this.setElementPosition(0);
-    this.attachTime = 0
-  };
+    private onHide() {
+        this.setElementPosition(0);
+    };
 
-  private setElementPosition(pixels: number) {
-    this.elementRef.nativeElement.style.paddingBottom = pixels + 'px';
-    this.content.getScrollElement().style.marginBottom = (pixels + 44) + 'px';
-    //this.content.scrollToBottom()
-  }
+    private setElementPosition(pixels: number) {
+        this.elementRef.nativeElement.style.paddingBottom = pixels + 'px';
+        this.content.resize();
+    }
 }

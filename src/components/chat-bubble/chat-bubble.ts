@@ -1,7 +1,6 @@
 import { Component, Input, Output, EventEmitter, ElementRef } from '@angular/core';
 import { Platform, NavController, Events, normalizeURL } from 'ionic-angular';
 import * as firebase from 'firebase';
-import { AngularFireDatabase } from 'angularfire2/database';
 import * as _ from 'underscore';
 import * as mime from 'mime-types';
 import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer';
@@ -52,7 +51,6 @@ export class ChatBubbleComponent {
 
   not_available_offline_translate: string = 'Not available in Offline';
   constructor(
-    public angularFireDB: AngularFireDatabase,
     private file: File,
     private transfer: FileTransfer,
     private platform: Platform,
@@ -125,7 +123,7 @@ export class ChatBubbleComponent {
         }
       } else {
         //now making it read by me
-        this.angularFireDB.object(this.messagePath + '/Read/' + this.userID).set(firebase.database.ServerValue.TIMESTAMP).then(result => {
+        firebase.database().ref(this.messagePath + '/Read/' + this.userID).set(firebase.database.ServerValue.TIMESTAMP).then(result => {
           if (this.message.Status !== 2) { // & not 2 already
             this.updateStatus();
           }
@@ -161,7 +159,7 @@ export class ChatBubbleComponent {
         status = 1;
       }
       if (status > 0) {
-        this.angularFireDB.object(this.messagePath + '/Status').set(status);
+        firebase.database().ref(this.messagePath + '/Status').set(status);
       }
     }
   }
@@ -351,7 +349,7 @@ export class ChatBubbleComponent {
       if (this.userID in this.message.BadgeCount && this.message.BadgeCount[this.userID]) {//in list && not yet made false
         //making it false first
         this.message.BadgeCount[this.userID] = false;
-        this.angularFireDB.object(this.messagePath + '/BadgeCount/' + this.userID).set(false);
+        firebase.database().ref(this.messagePath + '/BadgeCount/' + this.userID).set(false);
 
         //not reducing badge count from communication & total
         this.reduceCount('CommunicationCount');

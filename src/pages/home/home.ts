@@ -328,6 +328,7 @@ export class HomePage {
         let sortingOptions = {
             'CreationDate': 'Creation Date',
             'DueDate': 'Due Date',
+            'CloseDatime': 'Closed Date'
         };
         for (let key in sortingOptions) {
             let label = sortingOptions[key];
@@ -364,8 +365,8 @@ export class HomePage {
     }
 
     doSorting() {
-        this.data = [];
         this.page = 0;
+        this.data = [];
         this.getData();
     }
 }

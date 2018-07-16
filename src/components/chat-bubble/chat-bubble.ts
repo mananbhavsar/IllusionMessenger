@@ -105,7 +105,6 @@ export class ChatBubbleComponent {
 
         this.processFile();
       }).catch(error => {
-        console.log(error);
       });
 
       // this.processBadgeCount();
@@ -173,7 +172,7 @@ export class ChatBubbleComponent {
       this.events.publish('toast:error', this.not_available_offline_translate);
       return;
     }
-    let file = this.message.nativeURL || this.message.URL;
+    let file:string = this.message.URL;
     //if already downloading
     if (this.message.downloading) {
       return;
@@ -197,7 +196,6 @@ export class ChatBubbleComponent {
       }
 
     }).catch(error => {
-      console.log(error);
     });
   }
 
@@ -213,8 +211,8 @@ export class ChatBubbleComponent {
       window.open(this.message.URL, '_blank');
     } else if (this.isCordova) {
       let options = {
-        successCallback: () => { console.log('Audio played') },
-        errorCallback: (e) => { console.log('Error streaming') },
+        successCallback: () => { },
+        errorCallback: (e) => { },
         shouldAutoClose: true,
         bgImage: 'https://s3-ap-southeast-1.amazonaws.com/eiosys/images/equilizer.gif',
       };
@@ -227,9 +225,8 @@ export class ChatBubbleComponent {
       window.open(this.message.URL, '_blank');
     } else if (this.isCordova) {
       let options = {
-        successCallback: () => { console.log('Video played') },
+        successCallback: () => { },
         errorCallback: (e) => {
-          console.log(e);
           return false;
         },
         shouldAutoClose: true,
@@ -256,7 +253,6 @@ export class ChatBubbleComponent {
 
             this.subscribeToFileDelete(file);
             setTimeout(() => {
-              console.log(entry);
               resolve(entry);
             });
           }).catch(error => {
@@ -294,7 +290,7 @@ export class ChatBubbleComponent {
           }
         });
       } else {
-        this.message['downloaded'] = false;
+        this.message['downloaded'] = true;
         this.message.nativeURL = this.message.URL;
       }
     } else {
@@ -389,7 +385,6 @@ export class ChatBubbleComponent {
   }
 
   onTrackFinished(track: any) {
-    console.log('Track finished', track);
     //re-adding this track
     // this.message.audioTrack = {
     //   src: null,
@@ -401,8 +396,6 @@ export class ChatBubbleComponent {
 
   onHold(event) {
     //showing popover for read, translate
-    console.log('on hold');
-
   }
 
   subscribeToFileDelete(file) {

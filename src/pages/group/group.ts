@@ -122,7 +122,6 @@ export class GroupPage {
     if (topic) {
       if (topic.Count) {
         topic.Count = 0;
-        console.log(this.group, type);
         this.group[type].Count = 0;
       }
       this.navCtrl.push(ChatPage, {

@@ -85,7 +85,6 @@ export class UserProvider {
                     this.events.publish('user:login', this._user);
                 });
             }).catch(error => {
-                console.log(error);
                 this.events.publish('alert:basic', this.login_failed_translate + '!', error);
             });
     };
@@ -265,7 +264,6 @@ export class UserProvider {
     }
 
     isMultipleOffice() {
-        console.log(this._user);
     }
 
     removeOfflineData() {

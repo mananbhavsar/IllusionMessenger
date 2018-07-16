@@ -15,7 +15,6 @@ export class RefreshComponent {
   text: string;
 
   constructor() {
-    console.log('Hello RefreshComponent Component');
     this.text = 'Hello World';
   }
 

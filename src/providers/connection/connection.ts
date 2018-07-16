@@ -55,7 +55,7 @@ export class ConnectionProvider {
                     .then((uuid: any) => {
                         this.uuid = uuid;
                     })
-                    .catch((error: any) => console.log(error));
+                    .catch((error: any) => {});
             }
             this.doTranslate();
 
@@ -146,7 +146,6 @@ export class ConnectionProvider {
                 if (typeof error === 'object' && ('name' in error) && error.name === 'TimeoutError') {
                     error = error.message;
                 }
-                console.log(error);
                 this.events.publish('toast:error', error);
                 reject(error);
             });

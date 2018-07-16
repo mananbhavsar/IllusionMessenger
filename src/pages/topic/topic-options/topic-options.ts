@@ -19,7 +19,6 @@ export class TopicOptionsPage {
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad TopicOptionsPage');
   }
 
 }

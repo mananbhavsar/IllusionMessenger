@@ -12,7 +12,6 @@ export class FirebaseTransactionProvider {
     return new Promise((resolve, reject) => {
       if (!_.isEmpty(transations)) {
         var processed = 0;
-        console.log(transations);
         transations.forEach((object) => {
           let value: any = null;
           if (object.Value !== null) {

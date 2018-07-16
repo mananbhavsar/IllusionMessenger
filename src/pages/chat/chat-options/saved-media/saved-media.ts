@@ -56,8 +56,6 @@ export class SavedMediaPage {
     this.folder = this.navParams.data.folder;
     this.topic_group_name = this.navParams.data.topic_group_name;
 
-    console.log(this.path, this.folder);
-
     this.selectedTab = 'image';
   }
 
@@ -165,8 +163,8 @@ export class SavedMediaPage {
 
   openAudio(file) {
     let options = {
-      successCallback: () => { console.log('Audio played') },
-      errorCallback: (e) => { console.log('Error streaming') },
+      successCallback: () => { },
+      errorCallback: (e) => { },
       shouldAutoClose: true,
       bgImage: 'https://s3-ap-southeast-1.amazonaws.com/eiosys/images/equilizer.gif',
     };
@@ -175,8 +173,8 @@ export class SavedMediaPage {
 
   openVideo(file) {
     let options = {
-      successCallback: () => { console.log('Video played') },
-      errorCallback: (e) => { console.log('Error streaming') },
+      successCallback: () => { },
+      errorCallback: (e) => { },
       shouldAutoClose: true,
     };
     this.streamingMedia.playVideo(file.nativeURL, options);
@@ -263,7 +261,6 @@ export class SavedMediaPage {
           this._photoLibrary.saveImage(file.nativeURL, Global.album).then(status => {
             this._events.publish('toast:create', this.saved_translate);
           }).catch(error => {
-            console.log(error);
             if (error === 'Retrieved asset is nil') {
               this._events.publish('toast:create', this.saved_translate);
             } else {
@@ -277,7 +274,6 @@ export class SavedMediaPage {
           this._photoLibrary.saveVideo(file.nativeURL, Global.album).then(status => {
             this._events.publish('toast:create', this.saved_translate);
           }).catch(error => {
-            console.log(error);
             if (error === 'Retrieved asset is nil') {
               this._events.publish('toast:create', this.saved_translate);
             } else {
@@ -287,7 +283,6 @@ export class SavedMediaPage {
           break;
       }
     }).catch(error => {
-      console.log(error);
       this._events.publish('toast:error', this.permission_not_granted_translate);
     });
   }

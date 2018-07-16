@@ -12,7 +12,6 @@ import { Directive } from '@angular/core';
 export class LongPressDirective {
 
   constructor() {
-    console.log('Hello LongPressDirective Directive');
   }
 
 }

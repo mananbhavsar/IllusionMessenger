@@ -435,7 +435,6 @@ export class MyApp {
     doGlobalization() {
         if (this.platform.is('cordova')) {
             this.globalization.getPreferredLanguage().then(language => {
-                console.log(language);
             });
         } else {
 
@@ -467,7 +466,6 @@ export class MyApp {
 
     processNotification(notification, directOpenPage) {
         let payload = 'payload' in notification ? notification.payload : notification.notification.payload;
-        console.log(payload, directOpenPage);
         //showing notification  alert if not chatting else giving control to Caht module to handle it
         let currentPage = Global.getActiveComponentName(this.nav.getActive());
         if (currentPage === 'ChatPage') {
@@ -585,7 +583,6 @@ export class MyApp {
         this.user.getUser().then(user => {
             this.angularFireDatabase.object('Badge/' + user.id + '/Total').snapshotChanges().subscribe(snapshot => {
                 let total: any = snapshot.payload.val();
-                console.log('total:' + total);
                 this.events.publish('badge:set', total);
                 if (total) {
                     this._badge.set(total);

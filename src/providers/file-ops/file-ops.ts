@@ -63,12 +63,10 @@ export class FileOpsProvider {
                   });
                 }
               }, error => {
-                console.log(error);
                 reject('Permission reject to write files');
               });
             }
           }, error => {
-            console.log(error);
 
           });
 
@@ -143,7 +141,6 @@ export class FileOpsProvider {
       }, (error) => {
         reject(error);
       }).catch(error => {
-        console.log(error);
         reject(error);
       });
     });

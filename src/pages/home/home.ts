@@ -141,7 +141,6 @@ export class HomePage {
             }, false).then((response: any) => {
                 this.dataFetched = true;
                 //groups
-                console.log(response);
                 this.data = response;
                 //flash
                 if (response.FlashNews) {
@@ -194,7 +193,6 @@ export class HomePage {
 
     connectToServer(pushID) {
         this.user.registerPushID(pushID).then((response: any) => {
-            console.log(response);
             if (response.Data && response.Data.LastActivity) {
                 this.deviceRegsiter = 2; //connected
                 this.connectedTime = response.Data.LastActivity; //this will be utc

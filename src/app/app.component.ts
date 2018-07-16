@@ -500,22 +500,66 @@ export class MyApp {
     }
 
     initOneSignal() {
-        if (!this.platform.is('cordova')) {
-            return;
+        if (this.platform.is('core')) {
+            let OneSignal = window['OneSignal'] || [];
+            OneSignal.push(["init", {
+                appId: '88b19d42-ea0e-4fa7-b35a-cf754a5ce4aa',
+                autoRegister: true,
+                allowLocalhostAsSecureOrigin: true,
+                notifyButton: {
+                    enable: false
+                },
+            }]);
+            let that = this;
+            OneSignal.push(function () {
+                OneSignal.isPushNotificationsEnabled(function (isEnabled) {
+                    if (isEnabled) {
+                        OneSignal.getUserId(function (userId: string) {
+                            that.events.publish('pushid:created', userId);
+                            that.user.registerPushID(userId).catch(error => { });
+                        });
+                    } else {
+                        OneSignal.registerForPushNotifications({
+                            modalPrompt: true,
+                        });
+                    }
+                });
+                OneSignal.on('subscriptionChange', function (isSubscribed) {
+                    if (isSubscribed) {
+                        OneSignal.isPushNotificationsEnabled().then(function (isEnabled) {
+                            if (isEnabled) {
+                                OneSignal.getUserId(function (userId: string) {
+                                    that.events.publish('pushid:created', userId);
+                                    that.user.registerPushID(userId).catch(error => { });
+                                    that.user.getUser().then(user => {
+                                        if (user) {
+                                            OneSignal.sendTags({
+                                                user_id: user.id,
+                                                name: user.LoginUser
+                                            });
+                                        }
+                                    });
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+        } else if (this.platform.is('cordova')) {
+            this._oneSignal.startInit(Global.OneSignal.key, Global.OneSignal.android);
+            this._oneSignal.inFocusDisplaying(this._oneSignal.OSInFocusDisplayOption.None);
+            this._oneSignal.handleNotificationReceived().subscribe((notification) => {
+                // do something when notification is received
+                this.processNotification(notification, false);
+            });
+
+            this._oneSignal.handleNotificationOpened().subscribe((notification) => {
+                // do something when a notification is opened
+                this.processNotification(notification, true);
+            });
+
+            this._oneSignal.endInit();
         }
-        this._oneSignal.startInit(Global.OneSignal.key, Global.OneSignal.android);
-        this._oneSignal.inFocusDisplaying(this._oneSignal.OSInFocusDisplayOption.None);
-        this._oneSignal.handleNotificationReceived().subscribe((notification) => {
-            // do something when notification is received
-            this.processNotification(notification, false);
-        });
-
-        this._oneSignal.handleNotificationOpened().subscribe((notification) => {
-            // do something when a notification is opened
-            this.processNotification(notification, true);
-        });
-
-        this._oneSignal.endInit();
     }
 
     processOneSignalId() {
@@ -540,7 +584,7 @@ export class MyApp {
     initBadge() {
         this.user.getUser().then(user => {
             this.angularFireDatabase.object('Badge/' + user.id + '/Total').snapshotChanges().subscribe(snapshot => {
-                let total : any = snapshot.payload.val();
+                let total: any = snapshot.payload.val();
                 console.log('total:' + total);
                 this.events.publish('badge:set', total);
                 if (total) {

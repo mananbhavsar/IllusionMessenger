@@ -160,12 +160,20 @@ export class ConnectionProvider {
         for (let key in params) {
             urlSearchParams.append(key, params[key]);
         }
+
+        if (this.platform.is('core')) {
+            urlSearchParams.append('Device', navigator.platform);
+            urlSearchParams.append('Manufacturer', navigator.appCodeName);
+            urlSearchParams.append('UniqueID','');
+
+        } else if (this.platform.is('cordova')) {
         //device specific info
         urlSearchParams.append('UniqueID', this.uuid);
         urlSearchParams.append('Device', this.device.platform);
         urlSearchParams.append('OSVersion', this.device.version);
         urlSearchParams.append('Manufacturer', this.device.manufacturer);
         urlSearchParams.append('AppVersion', Global.AppVersion);
+        }
         //adding user info
         if (this.user || !_.isEmpty(this.user)) {
             urlSearchParams = this.addUserInfo(urlSearchParams);

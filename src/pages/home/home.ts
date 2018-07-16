@@ -131,7 +131,7 @@ export class HomePage {
 
     getData() {
         return new Promise((resolve, reject) => {
-            this.dataFetched = false;
+            this.dataFetched = _.size(this.data) > 0;
             this.connection.doPost('Chat/GetTaskDetail', {
                 PageNumber: this.page,
                 RowsPerPage: 100,

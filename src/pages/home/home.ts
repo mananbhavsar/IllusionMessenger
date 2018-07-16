@@ -159,11 +159,30 @@ export class HomePage {
 
     registerDevice() {
         //make device regsiter call
-        if (this.platform.is('cordova')) {
             //if internet
             if (this._network.type === 'none') {
                 this.deviceRegsiter = 0;
-            } else {
+            } else  if (this.platform.is('core')) {
+                if (this.connection.getPushID()) {
+                    this.connectToServer(this.connection.push_id);
+                } else {
+                    this.events.subscribe('pushid:created', (userId) => {
+                        this.connectToServer(userId);
+                    });
+                    //wait 15sec and check again for user id
+                    setTimeout(() => {
+                        let OneSignal = window['OneSignal'] || [];
+                        let that = this;
+                        OneSignal.push(function () {
+                            OneSignal.getUserId(function (userId: string) {
+                              if(userId){
+                                    that.connectToServer(userId);
+                                }
+                            });
+                        });
+                    });
+                }
+            } else if (this.platform.is('cordova')) {
                 this.deviceRegsiter = 1;
                 this._oneSignal.getIds().then((id) => {
                     this.connectToServer(id.userId);
@@ -171,7 +190,6 @@ export class HomePage {
                     this.deviceRegsiter = 0;
                 });
             }
-        }
     }
 
     connectToServer(pushID) {

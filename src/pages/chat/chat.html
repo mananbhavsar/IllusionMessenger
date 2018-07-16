@@ -37,9 +37,15 @@
   </ng-container>
   <ng-template #chatOpened>
     <ng-container *ngIf="hasInternet && messagesLoaded && aboutToRecord === false">
-      <button ion-button clear icon-only (click)="openUploadOptions()">
+      <button *ngIf="!isBrowser" ion-button clear icon-only (click)="openUploadOptions()">
         <ion-icon name="ios-add-outline"></ion-icon>
       </button>
+      <div *ngIf="isBrowser" style="display: flex;">
+        <button ion-button clear icon-only>
+          <ion-icon name="images"></ion-icon>
+        </button>
+        <input type="file" name="file" id="file" class="inputfile" accept="image/*" (change)="handleImageFiles($event)"/>
+      </div>
 
       <label class="item-input-wrapper" [ngClass]="{'send': message.trim().length > 0}">
         <!-- fz-elastic -->

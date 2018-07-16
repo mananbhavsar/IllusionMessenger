@@ -137,6 +137,7 @@ export class ChatPage {
   recordFileName: string = 'record.wav';
   recordInterval: any = null;
   vibrateDuration: number = 300;
+  isBrowser : boolean;
 
   keyboardOpen: boolean = false;
   hasInternet: boolean = true;
@@ -185,6 +186,7 @@ export class ChatPage {
     //init
     this.isIOS = this.platform.is('ios');
     this.isCordova = this.platform.is('cordova');
+    this.isBrowser = this.platform.is('core');
     this.global = Global;
 
     this.topicID = this.navParams.data.topicID;
@@ -773,6 +775,46 @@ export class ChatPage {
       this.myLanguage = user.MyLanguage;
     }
   }
+
+  handleImageFiles(file) {
+    let input = file.target;
+    let dataURL: string;
+    let fileName = this._fileOps.getFileNameWithoutExtension(input.files[0].name);
+    let fileExtension = this._fileOps.getFileExtension(input.files[0].name);
+    let reader = new FileReader();
+    let context = this;
+    reader.onload = function () {
+      dataURL = reader.result.replace(/^data:image\/\w+;base64,/, "");
+      context.uploadFileFromBrowser(fileName, fileExtension, dataURL)
+        .then((data: any) => {
+          if (data.Data.indexOf('https') === 0) {
+            context.sendToFirebase('', 'Image', data.Data);
+
+          } else {
+            context.events.publish('alert:basic', data.Data);
+          }
+        }).catch((error) => {
+        });
+    }
+    reader.readAsDataURL(input.files[0]);
+  }
+
+
+
+  uploadFileFromBrowser(fileName, fileExtension, Base64String) {
+    return new Promise((resolve, reject) => {
+      this.connection.doPost('Chat/InsertChat_Attachement_Base64', {
+        FileName: fileName,
+        FileExtension: fileExtension,
+        Base64String: Base64String
+      }).then((data: any) => {
+        resolve(data);
+      }).catch((error) => {
+        reject(false);
+      });
+    });
+  }
+
 
   openUploadOptions() {
     const actionSheet = this.actionSheetCtrl.create({

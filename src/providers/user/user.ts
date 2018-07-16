@@ -20,6 +20,7 @@ export class UserProvider {
     HAS_SEEN_TUTORIAL: string = 'hasSeenTutorial';
     HAS_LOGGED_IN: boolean = false;
     global: any = {};
+    isFromMobile : boolean;
 
     bye_bye_translate: string = 'Good bye see you soon';
     logging_you_in_translate: string = 'Logging you in';
@@ -49,6 +50,11 @@ export class UserProvider {
             this.totalBadgeCount = total;
         });
 
+        if (this.platform.is('core')) {
+            this.isFromMobile = false;
+        }
+
+
         setTimeout(() => {
             this.doTranslate();
         });
@@ -70,7 +76,7 @@ export class UserProvider {
     }
 
     login(username, password) {
-        this.connection.doPost('Chat/login', { UserCode: username, Password: password }, this.logging_you_in_translate + '!').then(
+        this.connection.doPost('Chat/login', { UserCode: username, Password: password, IsFromMobile: this.isFromMobile }, this.logging_you_in_translate + '!').then(
             response => {
                 this._user = response[0];
                 this.setUser(this._user).then(() => {
@@ -164,6 +170,7 @@ export class UserProvider {
                 this.connection.doPost('Chat/RegisterDevice', {
                     DeviceID: push_id,
                     IsLogin: push_id !== '',
+                    IsFromMobile: this.isFromMobile
                 }, false).then((response: any) => {
                     //LogOutForcefully
                     if (response.Data.LogOutForcefully) {

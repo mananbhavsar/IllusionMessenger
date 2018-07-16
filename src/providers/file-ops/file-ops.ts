@@ -167,4 +167,18 @@ export class FileOpsProvider {
     return file.substring(file.lastIndexOf('/') + 1);
   }
 
+  getFileNameWithoutExtension(file) {
+    if (file) {
+      return file.substring(0, file.lastIndexOf('.'));
+    }
+  }
+
+  getFileExtension(file) {
+    if (file) {
+      return file.substring(file.lastIndexOf('.') + 1);
+    }
+  }
+
+
+
 }

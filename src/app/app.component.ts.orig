@@ -592,8 +592,13 @@ export class MyApp {
 
     initBadge() {
         this.user.getUser().then(user => {
+<<<<<<< HEAD
             firebase.database().ref('Badge/' + user.id + '/Total').on('value', snapshot => {
                 let total: any = snapshot.val();
+=======
+            this.angularFireDatabase.object('Badge/' + user.id + '/Total').snapshotChanges().subscribe(snapshot => {
+                let total: any = snapshot.payload.val();
+>>>>>>> 1efe3defc18778f4362d10c48e2b04c336957ef9
                 console.log('total:' + total);
                 this.events.publish('badge:set', total);
                 if (total) {

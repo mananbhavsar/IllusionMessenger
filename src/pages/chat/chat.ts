@@ -225,6 +225,8 @@ export class ChatPage {
     });
   }
 
+
+
   setFirebaseRef() {
     //actual chat ref
     this.messagesRef = firebase.database().ref(this.basePath + 'Chat');

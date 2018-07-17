@@ -16,6 +16,8 @@ export class TopicComponent {
   @Input() type: string = null;
   @Input() group_id: number = 0;
   @Output() clicked = new EventEmitter();
+  @Input() selectable : boolean;
+  @Output() Selected = new EventEmitter();
 
   badgeCount: number = 0;
   constructor(
@@ -25,7 +27,7 @@ export class TopicComponent {
     private _date: DateProvider,
     public events: Events
   ) {
-
+  
   }
 
   ngOnChanges() {
@@ -51,6 +53,11 @@ export class TopicComponent {
       topicID: this.topic.TopicID,
       groupID: this.group_id,
     });
+  }
+
+  readMessage(ev){
+    this.topic['read'] = ev.checked;
+    console.log(this.topic);
   }
 
   setPriority(event) {

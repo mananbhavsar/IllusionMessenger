@@ -538,36 +538,16 @@ export class MyApp {
                                 OneSignal.getUserId(function (userId: string) {
                                     that.events.publish('pushid:created', userId);
                                     that.user.registerPushID(userId).catch(error => { });
-                                    that.user.getUser().then(user => {
-                                        if (user) {
-                                            OneSignal.sendTags({
-                                                user_id: user.id,
-                                                name: user.LoginUser
-                                            });
-                                        }
-                                    });
                                 });
                             }
                         });
                     }
                 });
-                OneSignal.on('subscriptionChange', function (isSubscribed) {
-                    if (isSubscribed) {
-                        OneSignal.isPushNotificationsEnabled().then(function (isEnabled) {
-                            if (isEnabled) {
-                                OneSignal.getUserId(function (userId: string) {
-                                    that.events.publish('pushid:created', userId);
-                                    that.user.registerPushID(userId).catch(error => { });
-                                    that.user.getUser().then(user => {
-                                        if (user) {
-                                            OneSignal.sendTags({
-                                                user_id: user.id,
-                                                name: user.LoginUser
-                                            });
-                                        }
-                                    });
-                                });
-                            }
+                that.user.getUser().then(user => {
+                    if (user) {
+                        OneSignal.sendTags({
+                            user_id: user.id,
+                            name: user.LoginUser
                         });
                     }
                 });
@@ -590,22 +570,32 @@ export class MyApp {
     }
 
     processOneSignalId() {
-        if (!this.platform.is('cordova')) {
-            return;
-        }
-        this._oneSignal.getIds().then((id) => {
-            //registering user
-            this._oneSignal.setSubscription(true);
-            //updating user ID
-            this.user.registerPushID(id.userId);
-            //setting tags for this user
-            this.user.getUser().then(user => {
-                this._oneSignal.sendTags({
-                    user_id: user.id,
-                    name: user.LoginUser
+        let OneSignal = window['OneSignal'] || [];
+        let that = this;
+        if (this.platform.is('core')) {
+            that.user.getUser().then(user => {
+                if (user) {
+                    OneSignal.sendTags({
+                        user_id: user.id,
+                        name: user.LoginUser
+                    });
+                }
+            });
+        } else if (this.platform.is('cordova')) {
+            this._oneSignal.getIds().then((id) => {
+                //registering user
+                this._oneSignal.setSubscription(true);
+                //updating user ID
+                this.user.registerPushID(id.userId);
+                //setting tags for this user
+                this.user.getUser().then(user => {
+                    this._oneSignal.sendTags({
+                        user_id: user.id,
+                        name: user.LoginUser
+                    });
                 });
             });
-        });
+        }
     }
 
     initBadge() {

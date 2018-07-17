@@ -66,6 +66,7 @@ export class LogoutPage {
             this.user.logout().then(response => {
                 this.loggedOut = true;
                 this.clearTimeout();
+                this.navCtrl.setRoot('LoginPage');                
             }).catch(error => {
                 this.clearTimeout();
                 this.navCtrl.setRoot('LoginPage');

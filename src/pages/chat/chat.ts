@@ -137,7 +137,7 @@ export class ChatPage {
   recordFileName: string = 'record.wav';
   recordInterval: any = null;
   vibrateDuration: number = 300;
-  isBrowser : boolean;
+  isBrowser: boolean;
 
   keyboardOpen: boolean = false;
   hasInternet: boolean = true;
@@ -223,6 +223,18 @@ export class ChatPage {
     this.events.subscribe('network:offline', () => {
       this.hasInternet = false;
     });
+    
+    //if user switching tab
+    if (this.isBrowser) {
+      //on leaving
+      window.onblur = () => {
+        this.doLeaving(false);
+      };
+      //on enter again
+      window.onfocus = () => {
+        this.resumed();
+      };
+    }
   }
 
   setFirebaseRef() {
@@ -469,16 +481,20 @@ export class ChatPage {
     this.userID = this.user.LoginUserID;
   }
 
+  resumed() {
+    this.setFirebaseRef();
+    if (this.messagesRef && this.newMessagesRef) {
+      this.listenToFirebaseEvents(true);
+    }
+    //make all unread count of this topic to zero
+    this.clearBadgeCountIfAny();
+  }
+
   listenToEvents() {
     //listening to platforms events
     //On app Resume & Pause
     this.platformResumeReference = this.platform.resume.subscribe(() => {
-      this.setFirebaseRef();
-      if (this.messagesRef && this.newMessagesRef) {
-        this.listenToFirebaseEvents(true);
-      }
-      //make all unread count of this topic to zero
-      this.clearBadgeCountIfAny();
+      this.resumed();
     }, error => {
     });
 

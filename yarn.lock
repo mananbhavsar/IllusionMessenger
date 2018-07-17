@@ -203,17 +203,17 @@
   version "4.5.3"
   resolved "https://registry.yarnpkg.com/@ionic-native/call-number/-/call-number-4.5.3.tgz#9d11b69d686b9fe17ef734e77bb4e4e776ba0b47"
 
-"@ionic-native/camera@^4.5.3":
-  version "4.5.3"
-  resolved "https://registry.yarnpkg.com/@ionic-native/camera/-/camera-4.5.3.tgz#44ccfc55af14b763b6e338a8514f0f7f7d387b63"
+"@ionic-native/camera@^4.9.2":
+  version "4.9.2"
+  resolved "https://registry.yarnpkg.com/@ionic-native/camera/-/camera-4.9.2.tgz#3b740db5343a6939e4aa53d4a284f6b99b55a82d"
 
 "@ionic-native/core@^4.5.3":
   version "4.5.3"
   resolved "https://registry.yarnpkg.com/@ionic-native/core/-/core-4.5.3.tgz#bd0fd39e7257ded4c55c3062bb73c9741a2263bc"
 
-"@ionic-native/device@^4.5.3":
-  version "4.5.3"
-  resolved "https://registry.yarnpkg.com/@ionic-native/device/-/device-4.5.3.tgz#34a035761029907f1b3faec6da75aede7acc01a9"
+"@ionic-native/device@^4.9.2":
+  version "4.9.2"
+  resolved "https://registry.yarnpkg.com/@ionic-native/device/-/device-4.9.2.tgz#11db24c7fdaff6eadf614051b4c8394b46bbb52d"
 
 "@ionic-native/diagnostic@^4.5.3":
   version "4.5.3"
@@ -231,37 +231,37 @@
   version "4.5.3"
   resolved "https://registry.yarnpkg.com/@ionic-native/file-opener/-/file-opener-4.5.3.tgz#3b7b8318727202098af0cbf956da50459a1a06cb"
 
-"@ionic-native/file-transfer@^4.5.3":
-  version "4.5.3"
-  resolved "https://registry.yarnpkg.com/@ionic-native/file-transfer/-/file-transfer-4.5.3.tgz#0a455974dcb3bea8fa86ef6677bb0b4e5dbc5ed6"
+"@ionic-native/file-transfer@^4.9.2":
+  version "4.9.2"
+  resolved "https://registry.yarnpkg.com/@ionic-native/file-transfer/-/file-transfer-4.9.2.tgz#25a126a2befe5355450edf6cb5c55b5521a9064d"
 
-"@ionic-native/file@^4.5.3":
-  version "4.5.3"
-  resolved "https://registry.yarnpkg.com/@ionic-native/file/-/file-4.5.3.tgz#a8af6b56a8ee4bcfdb241ff24b20a9eedb5230ef"
+"@ionic-native/file@^4.9.2":
+  version "4.9.2"
+  resolved "https://registry.yarnpkg.com/@ionic-native/file/-/file-4.9.2.tgz#68daafb308309b8a05b91f38427fe7e1933f0555"
 
 "@ionic-native/geolocation@^4.3.2":
   version "4.5.3"
   resolved "https://registry.yarnpkg.com/@ionic-native/geolocation/-/geolocation-4.5.3.tgz#18624b1f0fea844a61e668472b0ec51bb0511883"
 
-"@ionic-native/globalization@^4.5.3":
-  version "4.5.3"
-  resolved "https://registry.yarnpkg.com/@ionic-native/globalization/-/globalization-4.5.3.tgz#543e3a80b8621e22d2c8f767861f37c66b5d895d"
+"@ionic-native/globalization@^4.9.2":
+  version "4.9.2"
+  resolved "https://registry.yarnpkg.com/@ionic-native/globalization/-/globalization-4.9.2.tgz#06ff31931355f865bacf6b70a1840380218d3d36"
 
 "@ionic-native/in-app-browser@^4.5.3":
   version "4.5.3"
   resolved "https://registry.yarnpkg.com/@ionic-native/in-app-browser/-/in-app-browser-4.5.3.tgz#3e94b8aa239449a92d91d2cd02e5f19962a5c823"
 
-"@ionic-native/keyboard@^4.5.3":
-  version "4.5.3"
-  resolved "https://registry.yarnpkg.com/@ionic-native/keyboard/-/keyboard-4.5.3.tgz#4d34eb78d3e6055c646416e7274d6f647d49dad0"
+"@ionic-native/keyboard@^4.9.2":
+  version "4.9.2"
+  resolved "https://registry.yarnpkg.com/@ionic-native/keyboard/-/keyboard-4.9.2.tgz#a20b738262732b5540877554bc555d0fc13b4b74"
 
 "@ionic-native/media-capture@^4.5.3":
   version "4.5.3"
   resolved "https://registry.yarnpkg.com/@ionic-native/media-capture/-/media-capture-4.5.3.tgz#b2285f030ead80bab5e20b8040b9c293247163f9"
 
-"@ionic-native/media@^4.5.3":
-  version "4.5.3"
-  resolved "https://registry.yarnpkg.com/@ionic-native/media/-/media-4.5.3.tgz#976c6ab7a91e73ce9c72272421b330bc21ec08b5"
+"@ionic-native/media@^4.9.2":
+  version "4.9.2"
+  resolved "https://registry.yarnpkg.com/@ionic-native/media/-/media-4.9.2.tgz#1d86e388c75411506a448c919a610d27a8d2c24a"
 
 "@ionic-native/network@^4.9.0":
   version "4.9.1"
@@ -287,25 +287,25 @@
   version "4.5.3"
   resolved "https://registry.yarnpkg.com/@ionic-native/social-sharing/-/social-sharing-4.5.3.tgz#ee799ac6f03559162ff32a4247688805a17a1bb8"
 
-"@ionic-native/splash-screen@^4.9.0":
-  version "4.9.1"
-  resolved "https://registry.yarnpkg.com/@ionic-native/splash-screen/-/splash-screen-4.9.1.tgz#36b8a4964249e35aeaaaf85865c20808d33c0a97"
+"@ionic-native/splash-screen@^4.9.2":
+  version "4.9.2"
+  resolved "https://registry.yarnpkg.com/@ionic-native/splash-screen/-/splash-screen-4.9.2.tgz#fe4f6fd8ece9b3c872f7ba9f312469d709475d77"
 
 "@ionic-native/sqlite@^4.5.3":
   version "4.5.3"
   resolved "https://registry.yarnpkg.com/@ionic-native/sqlite/-/sqlite-4.5.3.tgz#c035cf488842cb1c61ec4feb997929df1adaee8f"
 
-"@ionic-native/status-bar@^4.9.0":
-  version "4.9.1"
-  resolved "https://registry.yarnpkg.com/@ionic-native/status-bar/-/status-bar-4.9.1.tgz#d300b42318b4759b743b52486fd60b0e300f2395"
+"@ionic-native/status-bar@^4.9.2":
+  version "4.9.2"
+  resolved "https://registry.yarnpkg.com/@ionic-native/status-bar/-/status-bar-4.9.2.tgz#92bbf7e5a8946cbf02dbed6dec29108f6b71d7ad"
 
 "@ionic-native/streaming-media@^4.5.3":
   version "4.5.3"
   resolved "https://registry.yarnpkg.com/@ionic-native/streaming-media/-/streaming-media-4.5.3.tgz#8ea46d1747a0163e1d8103d283c03f91ed98c5c2"
 
-"@ionic-native/unique-device-id@^4.5.3":
-  version "4.5.3"
-  resolved "https://registry.yarnpkg.com/@ionic-native/unique-device-id/-/unique-device-id-4.5.3.tgz#a632aa6538bd5ab24fff38ea6e974950fadb6ac2"
+"@ionic-native/unique-device-id@^4.9.2":
+  version "4.9.2"
+  resolved "https://registry.yarnpkg.com/@ionic-native/unique-device-id/-/unique-device-id-4.9.2.tgz#0cb830e24aac251963282dee51af303780c8db00"
 
 "@ionic-native/vibration@^4.5.3":
   version "4.5.3"
@@ -439,6 +439,13 @@ accepts@~1.3.4:
     mime-types "~2.1.16"
     negotiator "0.6.1"
 
+accepts@~1.3.5:
+  version "1.3.5"
+  resolved "https://registry.yarnpkg.com/accepts/-/accepts-1.3.5.tgz#eb777df6011723a3b14e8a72c0805c8e86746bd2"
+  dependencies:
+    mime-types "~2.1.18"
+    negotiator "0.6.1"
+
 acorn-dynamic-import@^2.0.0:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/acorn-dynamic-import/-/acorn-dynamic-import-2.0.2.tgz#c752bd210bef679501b6c6cb7fc84f8f47158cc4"
@@ -456,6 +463,10 @@ acorn@^4.0.3:
 acorn@^5.0.0, acorn@^5.2.1:
   version "5.4.1"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-5.4.1.tgz#fdc58d9d17f4a4e98d102ded826a9b9759125102"
+
+adm-zip@^0.4.7:
+  version "0.4.11"
+  resolved "https://registry.yarnpkg.com/adm-zip/-/adm-zip-0.4.11.tgz#2aa54c84c4b01a9d0fb89bb11982a51f13e3d62a"
 
 after@0.8.2:
   version "0.8.2"
@@ -1233,6 +1244,24 @@ compress-commons@^1.2.0:
     normalize-path "^2.0.0"
     readable-stream "^2.0.0"
 
+compressible@~2.0.14:
+  version "2.0.14"
+  resolved "https://registry.yarnpkg.com/compressible/-/compressible-2.0.14.tgz#326c5f507fbb055f54116782b969a81b67a29da7"
+  dependencies:
+    mime-db ">= 1.34.0 < 2"
+
+compression@^1.6.0:
+  version "1.7.3"
+  resolved "https://registry.yarnpkg.com/compression/-/compression-1.7.3.tgz#27e0e176aaf260f7f2c2813c3e440adb9f1993db"
+  dependencies:
+    accepts "~1.3.5"
+    bytes "3.0.0"
+    compressible "~2.0.14"
+    debug "2.6.9"
+    on-headers "~1.0.1"
+    safe-buffer "5.1.2"
+    vary "~1.1.2"
+
 concat-map@0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/concat-map/-/concat-map-0.0.1.tgz#d8a96bd77fd68df7793a73036a3ba0d5405d477b"
@@ -1309,6 +1338,16 @@ cordova-android@^7.1.0:
 cordova-base64-to-gallery@^4.1.3:
   version "4.1.3"
   resolved "https://registry.yarnpkg.com/cordova-base64-to-gallery/-/cordova-base64-to-gallery-4.1.3.tgz#91cf3cef498ccb77b1051ac2883ab71a160509a4"
+
+cordova-browser@~4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/cordova-browser/-/cordova-browser-4.1.0.tgz#75079065e5cd50aa6743cbd85317617053fb20c6"
+  dependencies:
+    adm-zip "^0.4.7"
+    cordova-serve "^1.0.0"
+    nopt "^3.0.6"
+    q "^1.4.1"
+    shelljs "^0.6.0"
 
 cordova-common@2.1.0:
   version "2.1.0"
@@ -1483,6 +1522,15 @@ cordova-plugin-whitelist@^1.3.3:
 cordova-registry-mapper@^1.1.8:
   version "1.1.15"
   resolved "https://registry.yarnpkg.com/cordova-registry-mapper/-/cordova-registry-mapper-1.1.15.tgz#e244b9185b8175473bff6079324905115f83dc7c"
+
+cordova-serve@^1.0.0:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/cordova-serve/-/cordova-serve-1.0.1.tgz#895c7fb4bbe630fa1c89feaf6d74779cbff66da7"
+  dependencies:
+    chalk "^1.1.1"
+    compression "^1.6.0"
+    express "^4.13.3"
+    q "^1.4.1"
 
 cordova-sqlite-storage-dependencies@1.2.0:
   version "1.2.0"
@@ -1665,7 +1713,7 @@ depd@1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/depd/-/depd-1.1.1.tgz#5783b4e1c459f06fa5ca27f991f3d06e7a310359"
 
-depd@~1.1.1:
+depd@~1.1.1, depd@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/depd/-/depd-1.1.2.tgz#9bcd52e14c097763e749b274c4346ed2e560b5a9"
 
@@ -1771,7 +1819,7 @@ emojis-list@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/emojis-list/-/emojis-list-2.1.0.tgz#4daa4d9db00f9819880c79fa457ae5b09a1fd389"
 
-encodeurl@~1.0.1:
+encodeurl@~1.0.1, encodeurl@~1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/encodeurl/-/encodeurl-1.0.2.tgz#ad3ff4c86ec2d029322f5a02c3a9a606c95b3f59"
 
@@ -2015,6 +2063,41 @@ expand-range@^1.8.1:
   dependencies:
     fill-range "^2.1.0"
 
+express@^4.13.3:
+  version "4.16.3"
+  resolved "https://registry.yarnpkg.com/express/-/express-4.16.3.tgz#6af8a502350db3246ecc4becf6b5a34d22f7ed53"
+  dependencies:
+    accepts "~1.3.5"
+    array-flatten "1.1.1"
+    body-parser "1.18.2"
+    content-disposition "0.5.2"
+    content-type "~1.0.4"
+    cookie "0.3.1"
+    cookie-signature "1.0.6"
+    debug "2.6.9"
+    depd "~1.1.2"
+    encodeurl "~1.0.2"
+    escape-html "~1.0.3"
+    etag "~1.8.1"
+    finalhandler "1.1.1"
+    fresh "0.5.2"
+    merge-descriptors "1.0.1"
+    methods "~1.1.2"
+    on-finished "~2.3.0"
+    parseurl "~1.3.2"
+    path-to-regexp "0.1.7"
+    proxy-addr "~2.0.3"
+    qs "6.5.1"
+    range-parser "~1.2.0"
+    safe-buffer "5.1.1"
+    send "0.16.2"
+    serve-static "1.13.2"
+    setprototypeof "1.1.0"
+    statuses "~1.4.0"
+    type-is "~1.6.16"
+    utils-merge "1.0.1"
+    vary "~1.1.2"
+
 express@^4.16.2:
   version "4.16.2"
   resolved "https://registry.yarnpkg.com/express/-/express-4.16.2.tgz#e35c6dfe2d64b7dca0a5cd4f21781be3299e076c"
@@ -2135,6 +2218,18 @@ finalhandler@1.1.0:
     on-finished "~2.3.0"
     parseurl "~1.3.2"
     statuses "~1.3.1"
+    unpipe "~1.0.0"
+
+finalhandler@1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/finalhandler/-/finalhandler-1.1.1.tgz#eebf4ed840079c83f4249038c9d703008301b105"
+  dependencies:
+    debug "2.6.9"
+    encodeurl "~1.0.2"
+    escape-html "~1.0.3"
+    on-finished "~2.3.0"
+    parseurl "~1.3.2"
+    statuses "~1.4.0"
     unpipe "~1.0.0"
 
 find-up@^1.0.0:
@@ -2730,6 +2825,10 @@ ios-sim@^6.1.2:
 ipaddr.js@1.5.2:
   version "1.5.2"
   resolved "https://registry.yarnpkg.com/ipaddr.js/-/ipaddr.js-1.5.2.tgz#d4b505bde9946987ccf0fc58d9010ff9607e3fa0"
+
+ipaddr.js@1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/ipaddr.js/-/ipaddr.js-1.6.0.tgz#e3fa357b773da619f26e95f049d055c72796f86b"
 
 is-absolute@^0.2.3:
   version "0.2.6"
@@ -3387,6 +3486,10 @@ miller-rabin@^4.0.0:
     bn.js "^4.0.0"
     brorand "^1.0.1"
 
+"mime-db@>= 1.34.0 < 2":
+  version "1.35.0"
+  resolved "https://registry.yarnpkg.com/mime-db/-/mime-db-1.35.0.tgz#0569d657466491283709663ad379a99b90d9ab47"
+
 mime-db@~1.30.0:
   version "1.30.0"
   resolved "https://registry.yarnpkg.com/mime-db/-/mime-db-1.30.0.tgz#74c643da2dd9d6a45399963465b26d5ca7d71f01"
@@ -3401,7 +3504,7 @@ mime-types@^2.1.12, mime-types@~2.1.15, mime-types@~2.1.16, mime-types@~2.1.17, 
   dependencies:
     mime-db "~1.30.0"
 
-mime-types@^2.1.18:
+mime-types@^2.1.18, mime-types@~2.1.18:
   version "2.1.18"
   resolved "https://registry.yarnpkg.com/mime-types/-/mime-types-2.1.18.tgz#6f323f60a83d11146f831ff11fd66e2fe5503bb8"
   dependencies:
@@ -3734,6 +3837,10 @@ on-finished@~2.3.0:
   resolved "https://registry.yarnpkg.com/on-finished/-/on-finished-2.3.0.tgz#20f1336481b083cd75337992a16971aa2d906947"
   dependencies:
     ee-first "1.1.1"
+
+on-headers@~1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/on-headers/-/on-headers-1.0.1.tgz#928f5d0f470d49342651ea6794b0857c100693f7"
 
 once@^1.3.0, once@^1.3.3, once@^1.4.0:
   version "1.4.0"
@@ -4092,6 +4199,13 @@ proxy-addr@~2.0.2:
   dependencies:
     forwarded "~0.1.2"
     ipaddr.js "1.5.2"
+
+proxy-addr@~2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/proxy-addr/-/proxy-addr-2.0.3.tgz#355f262505a621646b3130a728eb647e22055341"
+  dependencies:
+    forwarded "~0.1.2"
+    ipaddr.js "1.6.0"
 
 proxy-middleware@^0.15.0:
   version "0.15.0"
@@ -4528,7 +4642,7 @@ safe-buffer@5.1.1, safe-buffer@^5.0.1, safe-buffer@^5.1.0, safe-buffer@^5.1.1, s
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.1.1.tgz#893312af69b2123def71f57889001671eeb2c853"
 
-safe-buffer@^5.1.2:
+safe-buffer@5.1.2, safe-buffer@^5.1.2:
   version "5.1.2"
   resolved "https://registry.yarnpkg.com/safe-buffer/-/safe-buffer-5.1.2.tgz#991ec69d296e0313747d59bdfd2b745c35f8828d"
 
@@ -4604,6 +4718,24 @@ send@0.16.1:
     range-parser "~1.2.0"
     statuses "~1.3.1"
 
+send@0.16.2:
+  version "0.16.2"
+  resolved "https://registry.yarnpkg.com/send/-/send-0.16.2.tgz#6ecca1e0f8c156d141597559848df64730a6bbc1"
+  dependencies:
+    debug "2.6.9"
+    depd "~1.1.2"
+    destroy "~1.0.4"
+    encodeurl "~1.0.2"
+    escape-html "~1.0.3"
+    etag "~1.8.1"
+    fresh "0.5.2"
+    http-errors "~1.6.2"
+    mime "1.4.1"
+    ms "2.0.0"
+    on-finished "~2.3.0"
+    range-parser "~1.2.0"
+    statuses "~1.4.0"
+
 serve-static@1.13.1:
   version "1.13.1"
   resolved "https://registry.yarnpkg.com/serve-static/-/serve-static-1.13.1.tgz#4c57d53404a761d8f2e7c1e8a18a47dbf278a719"
@@ -4612,6 +4744,15 @@ serve-static@1.13.1:
     escape-html "~1.0.3"
     parseurl "~1.3.2"
     send "0.16.1"
+
+serve-static@1.13.2:
+  version "1.13.2"
+  resolved "https://registry.yarnpkg.com/serve-static/-/serve-static-1.13.2.tgz#095e8472fd5b46237db50ce486a43f4b86c6cec1"
+  dependencies:
+    encodeurl "~1.0.2"
+    escape-html "~1.0.3"
+    parseurl "~1.3.2"
+    send "0.16.2"
 
 serviceworker-cache-polyfill@^4.0.0:
   version "4.0.0"
@@ -4661,6 +4802,10 @@ shelljs@^0.2.6:
 shelljs@^0.5.3:
   version "0.5.3"
   resolved "https://registry.yarnpkg.com/shelljs/-/shelljs-0.5.3.tgz#c54982b996c76ef0c1e6b59fbdc5825f5b713113"
+
+shelljs@^0.6.0:
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/shelljs/-/shelljs-0.6.1.tgz#ec6211bed1920442088fe0f70b2837232ed2c8a8"
 
 shelljs@^0.7.5:
   version "0.7.8"
@@ -4806,7 +4951,7 @@ sshpk@^1.7.0:
     jsbn "~0.1.0"
     tweetnacl "~0.14.0"
 
-"statuses@>= 1.3.1 < 2":
+"statuses@>= 1.3.1 < 2", statuses@~1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/statuses/-/statuses-1.4.0.tgz#bb73d446da2796106efcc1b601a253d6c46bd087"
 
@@ -5173,6 +5318,13 @@ type-is@~1.6.15:
   dependencies:
     media-typer "0.3.0"
     mime-types "~2.1.15"
+
+type-is@~1.6.16:
+  version "1.6.16"
+  resolved "https://registry.yarnpkg.com/type-is/-/type-is-1.6.16.tgz#f89ce341541c672b25ee7ae3c73dee3b2be50194"
+  dependencies:
+    media-typer "0.3.0"
+    mime-types "~2.1.18"
 
 typedarray@^0.0.6:
   version "0.0.6"

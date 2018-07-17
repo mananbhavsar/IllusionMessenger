@@ -15,6 +15,13 @@ page-home {
             }
         }
     }
+    ion-header{
+        button{
+            &.button-md{
+                float: right;
+            }
+        }
+    }
     ion-segment {
         ion-segment-button {}
     }
@@ -64,5 +71,8 @@ page-home {
                 }
             }
         }
+    }
+    ion-footer{
+            text-align:  center;
     }
 }

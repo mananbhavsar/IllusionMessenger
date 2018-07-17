@@ -5,6 +5,7 @@ import { Events } from 'ionic-angular';
 import * as moment from "moment";
 import { ConnectionProvider } from '../../providers/connection/connection';
 import { DateProvider } from '../../providers/date/date';
+import { Select } from 'ionic-angular/components/select/select';
 
 
 @Component({
@@ -16,8 +17,9 @@ export class TopicComponent {
   @Input() type: string = null;
   @Input() group_id: number = 0;
   @Output() clicked = new EventEmitter();
-  @Input() selectable : boolean;
-  @Output() Selected = new EventEmitter();
+  @Input() selectable: boolean;
+  @Output() selected = new EventEmitter();
+  selectedTopics: any = [];
 
   badgeCount: number = 0;
   constructor(
@@ -27,7 +29,7 @@ export class TopicComponent {
     private _date: DateProvider,
     public events: Events
   ) {
-  
+
   }
 
   ngOnChanges() {
@@ -55,9 +57,12 @@ export class TopicComponent {
     });
   }
 
-  readMessage(ev){
+  readMessage(ev) {
     this.topic['read'] = ev.checked;
-    console.log(this.topic);
+    this.selected.emit({
+      checked: this.topic.read,
+      TopicCode: this.topic.TopicCode,
+    });
   }
 
   setPriority(event) {

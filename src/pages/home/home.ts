@@ -70,6 +70,9 @@ export class HomePage {
             key: 'Topic_Wise'
         },];
     selectedTab: string = 'star';
+    readOptions: boolean = false;
+    selectedTopic: Array<any> = [];
+    readAllSelected: boolean = true;
     constructor(
         public navCtrl: NavController,
         public connection: ConnectionProvider,
@@ -87,6 +90,7 @@ export class HomePage {
         public actionSheetController: ActionSheetController
     ) {
         this.global = Global;
+
         //listening to Resume & Pause events
         this.events.subscribe('platform:onResumed', () => {
             this.getData().catch(error => { });
@@ -158,37 +162,37 @@ export class HomePage {
 
     registerDevice() {
         //make device regsiter call
-            //if internet
-            if (this._network.type === 'none') {
-                this.deviceRegsiter = 0;
-            } else  if (this.platform.is('core')) {
-                if (this.connection.getPushID()) {
-                    this.connectToServer(this.connection.push_id);
-                } else {
-                    this.events.subscribe('pushid:created', (userId) => {
-                        this.connectToServer(userId);
-                    });
-                    //wait 15sec and check again for user id
-                    setTimeout(() => {
-                        let OneSignal = window['OneSignal'] || [];
-                        let that = this;
-                        OneSignal.push(function () {
-                            OneSignal.getUserId(function (userId: string) {
-                              if(userId){
-                                    that.connectToServer(userId);
-                                }
-                            });
+        //if internet
+        if (this._network.type === 'none') {
+            this.deviceRegsiter = 0;
+        } else if (this.platform.is('core')) {
+            if (this.connection.getPushID()) {
+                this.connectToServer(this.connection.push_id);
+            } else {
+                this.events.subscribe('pushid:created', (userId) => {
+                    this.connectToServer(userId);
+                });
+                //wait 15sec and check again for user id
+                setTimeout(() => {
+                    let OneSignal = window['OneSignal'] || [];
+                    let that = this;
+                    OneSignal.push(function () {
+                        OneSignal.getUserId(function (userId: string) {
+                            if (userId) {
+                                that.connectToServer(userId);
+                            }
                         });
                     });
-                }
-            } else if (this.platform.is('cordova')) {
-                this.deviceRegsiter = 1;
-                this._oneSignal.getIds().then((id) => {
-                    this.connectToServer(id.userId);
-                }).catch(error => {
-                    this.deviceRegsiter = 0;
                 });
             }
+        } else if (this.platform.is('cordova')) {
+            this.deviceRegsiter = 1;
+            this._oneSignal.getIds().then((id) => {
+                this.connectToServer(id.userId);
+            }).catch(error => {
+                this.deviceRegsiter = 0;
+            });
+        }
     }
 
     connectToServer(pushID) {
@@ -208,6 +212,9 @@ export class HomePage {
         this.page = 0;
         this.getData().then(status => {
             this.dataFetched = true;
+            this.selectedTopic = [];
+            this.readAllSelected = true;
+            this.readOptions = false;
             refresher.complete();
             this.connectToFireBase();
         }).catch(error => {
@@ -234,6 +241,47 @@ export class HomePage {
                 });
 
             }
+        });
+    }
+
+    openReadOptions() {
+        this.readOptions = true;
+        if (this.selectedTopic.length !== 0) {
+            this.readAllSelected = false;
+        }
+    }
+
+    checkedTopic(event) {
+        if (event.checked) {
+            if (this.selectedTopic.indexOf(event.TopicCode) === -1) {
+                this.selectedTopic.push(event);
+                this.readAllSelected = false;
+            }
+        } else {
+            this.selectedTopic.splice(this.selectedTopic.indexOf(event.TopicCode), 1);
+        }
+        if (this.selectedTopic.length === 0) {
+            this.readAllSelected = true;
+        }
+    }
+
+    readSelected() {
+        return new Promise((resolve, reject) => {
+            this.connection.doPost('Chat/readAll', {
+
+            }, false).then(response => {
+
+            });
+        });
+    }
+
+    readAll() {
+        return new Promise((resolve, reject) => {
+            this.connection.doPost('Chat/readAll', {
+
+            }, false).then(response => {
+
+            });
         });
     }
 

@@ -1,13 +1,11 @@
-import { DateProvider } from './../../../providers/date/date';
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ViewController, Events } from 'ionic-angular';
-import { Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Events, IonicPage, NavController, NavParams, Platform, ViewController } from 'ionic-angular';
+import * as moment from "moment";
 import { ConnectionProvider } from '../../../providers/connection/connection';
-import * as  moment from "moment";
-import { locale } from 'moment';
 import { UserProvider } from '../../../providers/user/user';
-import { HomePage } from '../../home/home';
 import { DateValidator } from '../../../validators/date-validator';
+import { DateProvider } from './../../../providers/date/date';
 
 @IonicPage()
 @Component({
@@ -28,7 +26,8 @@ export class AddFlashPage {
     public navParams: NavParams,
     private _date: DateProvider,
     private viewController: ViewController,
-    private events: Events
+    private events: Events,
+    private platform: Platform,
   ) {
     this.group_id = this.navParams.data.group_id;
     this.group_name = this.navParams.data.group_name;
@@ -48,6 +47,7 @@ export class AddFlashPage {
       Flash: this.addFlashForm.get('flash_message').value,
       StartDate: this._date.toUTCISOString(new Date(), false, false),
       EndDate: this._date.toUTCISOString(this.addFlashForm.get('end_date').value),
+      IsWeb: this.platform.is('core'),
     }).then((response: any) => {
       if (('Status' in response) && response.Status === 0) {
         this.events.publish('toast:error', response.Message);

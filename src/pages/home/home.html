@@ -6,9 +6,6 @@
         <span class="pickup" *ngSwitchCase="1">Connecting</span>
         <span class="secondary" *ngSwitchCase="2">Last connected at {{connectedTime | time}}</span>
     </div>
-        <button ion-button outline small icon-only (click)="openReadOptions()">
-            <ion-icon name="remove-circle"></ion-icon>
-        </button>
 </ion-header>
 <ion-content no-padding>
     <ion-refresher (ionRefresh)="refresh($event)">
@@ -18,6 +15,15 @@
     <center-spinner *ngIf="dataFetched === false;else data_template"></center-spinner>
     <ng-template #data_template>
         <flash-news [flashNews]="flashNews"></flash-news>
+        <ion-item-divider color="light">
+            <button [hidden]="!getUnreadCount()" ion-button outline small icon-right (click)="openReadOptions()">
+                Edit
+                <ion-icon name="remove-circle"></ion-icon>
+            </button>
+            <button *ngIf="isGroupSelected()" (click)="reorderGroups()" ion-button outline small icon-right>
+                Reorder Group
+            </button>
+        </ion-item-divider>
         <ion-segment [(ngModel)]="selectedTab" color="theme" padding mode="ios">
             <ion-segment-button [value]="tab.icon" *ngFor="let tab of tabs">
                 <ion-icon [name]="tab.icon"></ion-icon>
@@ -35,51 +41,58 @@
                     </h2>
                 </ion-item-divider>
                 <ng-container *ngSwitchCase="'star'">
-                    <topic [group_id]="topic.GroupID" [selectable]="readOptions" type="ActiveTopicList" [topic]="topic" *ngFor="let topic of data.Assigned_To_Me;"
+                    <topic [isChecked]="selectedTopic.indexOf(topic.TopicCode) > -1" [group_id]="topic.GroupID" [selectable]="readOptions" type="ActiveTopicList" [topic]="topic" *ngFor="let topic of data.Assigned_To_Me;"
                         (selected)="checkedTopic($event)"></topic>
                 </ng-container>
                 <ng-container *ngSwitchCase="'people'">
-                    <topic [group_id]="topic.GroupID" [selectable]="readOptions" type="ActiveTopicList" [topic]="topic" *ngFor="let topic of data.Created_By_Me;"
+                    <topic [isChecked]="selectedTopic.indexOf(topic.TopicCode) > -1" [group_id]="topic.GroupID" [selectable]="readOptions" type="ActiveTopicList" [topic]="topic" *ngFor="let topic of data.Created_By_Me;"
                         (selected)="checkedTopic($event)"></topic>
                 </ng-container>
                 <ng-container *ngSwitchCase="'list-box'">
-                    <ion-item *ngFor="let group of data.Groups_Wise" (click)="openGroup(group.GroupID,group.Group)">
-                        <h2>
-                            {{group.Group}}
-                            <span float-right>
-                                <ion-badge *ngIf="getBadge(group.GroupCode)">{{badges[group.GroupCode]}}</ion-badge>
-                            </span>
-                        </h2>
-                        <p>
-                            <ion-row>
-                                <ion-col text-start class="activetopics" *ngIf="group.ActiveTopics > 0">
-                                    <ion-icon name="ios-alarm"></ion-icon> {{group.ActiveTopics}} {{'due' + (group.ActiveTopics > 1 ? 's' : '')}}
-                                </ion-col>
-                                <ion-col text-center class="responsibletopics" *ngIf="group.ResponsibleCount && group.ResponsibleCount > 0">
-                                    <ion-icon name="ios-star"></ion-icon> {{group.ResponsibleCount}} assigned
-                                </ion-col>
-                                <ion-col text-end class="overdue" *ngIf="group.OverDueTopics > 0">
-                                    <ion-icon name="ios-alert"></ion-icon> {{group.OverDueTopics}} {{'over-due' + (group.OverDueTopics > 1 ? 's' : '')}}
-                                </ion-col>
-                            </ion-row>
-                        </p>
-                        <ion-icon name="ios-arrow-forward" item-end></ion-icon>
-                    </ion-item>
+                    <ion-item-group [reorder]="reorder" (ionItemReorder)="reorderItems($event)">
+                        <ion-item *ngFor="let group of data.Groups_Wise" (click)="openGroup(group.GroupID,group.Group)">
+                            <ion-label>
+                                <h2>
+                                    {{group.Group}}
+                                    <span float-right>
+                                        <ion-badge *ngIf="getBadge(group.GroupCode)">{{badges[group.GroupCode]}}</ion-badge>
+                                    </span>
+                                </h2>
+                                <p>
+                                    <ion-row>
+                                        <ion-col text-start class="activetopics" *ngIf="group.ActiveTopics > 0">
+                                            <ion-icon name="ios-alarm"></ion-icon> {{group.ActiveTopics}} {{'due' + (group.ActiveTopics > 1 ? 's' :
+                                            '')}}
+                                        </ion-col>
+                                        <ion-col text-center class="responsibletopics" *ngIf="group.ResponsibleCount && group.ResponsibleCount > 0">
+                                            <ion-icon name="ios-star"></ion-icon> {{group.ResponsibleCount}} assigned
+                                        </ion-col>
+                                        <ion-col text-end class="overdue" *ngIf="group.OverDueTopics > 0">
+                                            <ion-icon name="ios-alert"></ion-icon> {{group.OverDueTopics}} {{'over-due' + (group.OverDueTopics > 1 ?
+                                            's' : '')}}
+                                        </ion-col>
+                                    </ion-row>
+                                </p>
+                            </ion-label>
+                            <ion-checkbox *ngIf="readOptions" item-start color="primary" [checked]="group.IsRead" (ionChange)="readMessage($event,group)"></ion-checkbox>
+                            <ion-icon name="ios-arrow-forward" item-end></ion-icon>
+                        </ion-item>
+                    </ion-item-group>
                 </ng-container>
                 <ng-container *ngSwitchCase="'flag'">
-                    <topic [group_id]="topic.GroupID" [selectable]="readOptions" type="ActiveTopicList" [topic]="topic" *ngFor="let topic of data.Priority;"
+                    <topic [isChecked]="selectedTopic.indexOf(topic.TopicCode) > -1" [group_id]="topic.GroupID" [selectable]="readOptions" type="ActiveTopicList" [topic]="topic" *ngFor="let topic of data.Priority;"
                         (selected)="checkedTopic($event)"></topic>
                 </ng-container>
                 <ng-container *ngSwitchCase="'paper'">
-                    <topic [group_id]="topic.GroupID" [selectable]="readOptions" type="ActiveTopicList" [topic]="topic" *ngFor="let topic of data.Topic_Wise;"
+                    <topic [isChecked]="selectedTopic.indexOf(topic.TopicCode) > -1" [group_id]="topic.GroupID" [selectable]="readOptions" type="ActiveTopicList" [topic]="topic" *ngFor="let topic of data.Topic_Wise;"
                         (selected)="checkedTopic($event)"></topic>
                 </ng-container>
             </ion-list>
         </div>
-        <ion-footer *ngIf="readOptions" class="hide-on-keyboard-open">
-            <button ion-button *ngIf="readAllSelected" (click)="readAll()">Read All</button>
-            <button ion-button *ngIf="!readAllSelected" (click)="readSelected()">Mark As Read</button>
-        </ion-footer>
     </ng-template>
     <!-- <button ion-button full (click)="connectToServer('1234')">Register</button> -->
 </ion-content>
+<ion-footer *ngIf="readOptions" class="hide-on-keyboard-open">
+        <button ion-button outline *ngIf="readAllSelected" (click)="readAll()">Read All</button>
+        <button ion-button outline *ngIf="!readAllSelected" (click)="readSelected()">Mark As Read</button>
+    </ion-footer>

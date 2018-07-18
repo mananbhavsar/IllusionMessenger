@@ -15,9 +15,14 @@ page-home {
             }
         }
     }
-    ion-header{
-        button{
-            &.button-md{
+    ion-item-divider {
+        button:nth-child(1) {
+            &.button-md {
+                float: left;
+            }
+        }
+        button:nth-child(2) {
+            &.button-md {
                 float: right;
             }
         }
@@ -72,7 +77,8 @@ page-home {
             }
         }
     }
-    ion-footer{
-            text-align:  center;
+    ion-footer {
+        text-align: center;
+        background-color: white;
     }
 }

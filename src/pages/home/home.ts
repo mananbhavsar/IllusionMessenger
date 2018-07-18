@@ -1,10 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { Network } from '@ionic-native/network';
 import { OneSignal } from '@ionic-native/onesignal';
 import { Storage } from '@ionic/storage';
 import { TranslateService } from "@ngx-translate/core";
 import firebase from 'firebase';
-import { Events, IonicPage, ModalController, NavController, Platform } from 'ionic-angular';
+import { Events, IonicPage, ModalController, reorderArray, NavController, Platform } from 'ionic-angular';
 import { ActionSheetController } from 'ionic-angular';
 import * as _ from 'underscore';
 import { Global } from '../../app/global';
@@ -31,6 +31,7 @@ export class HomePage {
     firebaseConnected: boolean = false;
 
     flashNews: Array<any> = [];
+    reorder: boolean = false;
     /**
      * 0 => not connected
      * 1 => connecting
@@ -41,8 +42,9 @@ export class HomePage {
     connectedTime: string = null;
     sort_by: string = '';
     sort_order: string = '';
-
+    group_reorder: any = [];
     dataFetched: boolean = false;
+    selectedGroup: any = [];
     tabs = [
         {
             name: 'Assigned To Me',
@@ -146,6 +148,7 @@ export class HomePage {
                 this.dataFetched = true;
                 //groups
                 this.data = response;
+
                 //flash
                 if (response.FlashNews) {
                     this.flashNews = response.FlashNews;
@@ -213,6 +216,7 @@ export class HomePage {
         this.getData().then(status => {
             this.dataFetched = true;
             this.selectedTopic = [];
+            this.selectedGroup = [];
             this.readAllSelected = true;
             this.readOptions = false;
             refresher.complete();
@@ -254,35 +258,76 @@ export class HomePage {
     checkedTopic(event) {
         if (event.checked) {
             if (this.selectedTopic.indexOf(event.TopicCode) === -1) {
-                this.selectedTopic.push(event);
+                this.selectedTopic.push(event.TopicCode);
                 this.readAllSelected = false;
             }
         } else {
-            this.selectedTopic.splice(this.selectedTopic.indexOf(event.TopicCode), 1);
+            if (this.selectedTopic.indexOf(event.TopicCode) > -1) {
+                this.selectedTopic.splice(this.selectedTopic.indexOf(event.TopicCode), 1);
+            }
         }
-        if (this.selectedTopic.length === 0) {
+        if (this.selectedGroup.length === 0 && this.selectedTopic.length === 0) {
             this.readAllSelected = true;
         }
     }
 
     readSelected() {
         return new Promise((resolve, reject) => {
-            this.connection.doPost('Chat/readAll', {
-
+            this.connection.doPost('Chat/ReadAll', {
+                ReadAll: false,
+                GroupCode: '' || this.selectedGroup.map(groupCode => groupCode.GroupCode),
+                TopicCode: '' || this.selectedTopic.map(topicCode => topicCode.TopicCode),
             }, false).then(response => {
-
+                if (response) {
+                    this.getData();
+                    this.selectedTopic = [];
+                    this.selectedGroup = [];
+                    this.readAllSelected = true;
+                    this.readOptions = false;
+                    resolve(true);
+                }
+            }).catch((error) => {
+                reject();
             });
         });
     }
 
+
     readAll() {
         return new Promise((resolve, reject) => {
-            this.connection.doPost('Chat/readAll', {
-
+            this.connection.doPost('Chat/ReadAll', {
+                ReadAll: true
             }, false).then(response => {
-
+                if (response) {
+                    this.getData();
+                    this.selectedTopic = [];
+                    this.selectedGroup = [];
+                    this.readAllSelected = true;
+                    this.readOptions = false;
+                    resolve(true);
+                }
+            }).catch((error) => {
+                reject();
             });
         });
+    }
+
+    readMessage(ev, group) {
+        group.IsRead = ev.checked;
+        if (ev.checked) {
+            if (this.selectedGroup.indexOf(this.selectedGroup.GroupCode) === -1) {
+                this.selectedGroup.push({
+                    checked: group.IsRead,
+                    GroupCode: group.GroupCode,
+                });
+                this.readAllSelected = false;
+            }
+        } else {
+            this.selectedGroup.splice(this.selectedGroup.indexOf(this.selectedGroup.GroupCode), 1);
+        }
+        if (this.selectedGroup.length === 0 && this.selectedTopic.length === 0) {
+            this.readAllSelected = true;
+        }
     }
 
     useLang(lang) {
@@ -338,6 +383,13 @@ export class HomePage {
         flashModal.present();
     }
 
+    isGroupSelected() {
+        if (this.getSelectedTabName() === 'Groups') {
+            return true;
+        }
+        return false;
+    }
+
     getSelectedTabName() {
         let selectedName = '';
         this.tabs.some(tab => {
@@ -350,14 +402,26 @@ export class HomePage {
         return selectedName;
     }
 
+    getUnreadCount() {
+        let field = 'Topic_Wise' + '_Count';
+        if (this.data) {
+            if (field in this.data) {
+                if (this.data[field] > 0) {
+                    return true;
+                }
+                return false;
+            }
+        }
+        return false;
+
+    }
+
     getTabBadgeCount(key) {
         let selectedBadgeCount: any = 0;
-
         let field = key + '_Count';
         if (field in this.data) {
             selectedBadgeCount = this.data[field];
         }
-
         if (selectedBadgeCount > 100) {
             selectedBadgeCount = '100+';
         }
@@ -384,6 +448,29 @@ export class HomePage {
             selectedRowsCount = _.size(this.data[tab_key]);
         }
         return selectedRowsCount;
+    }
+
+    reorderItems(indexes) {
+        this.data.Groups_Wise = reorderArray(this.data.Groups_Wise, indexes);
+        for (let i = 0; i < this.data.Groups_Wise.length; i++) {
+            this.group_reorder.push({ 'O_Index': i, 'GroupId': this.data.Groups_Wise[i].GroupID });
+        }
+        return new Promise((resolve, reject) => {
+            this.connection.doPost('', {}, false)
+                .then((response) => {
+                    this.group_reorder = [];
+                }).catch((error) => {
+
+                })
+        });
+    }
+
+    reorderGroups() {
+        if (this.reorder) {
+            this.reorder = false;
+        } else {
+            this.reorder = true;
+        }
     }
 
     openSortOptions() {

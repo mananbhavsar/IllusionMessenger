@@ -1,7 +1,7 @@
 <ng-container *ngIf="topic">
   <ion-row>
     <ion-col *ngIf="selectable" col-1>
-      <ion-checkbox color="primary" [checked]="topic.read" (ionChange)="readMessage($event)"></ion-checkbox>
+      <ion-checkbox color="primary" [checked]="isChecked" (ionChange)="readMessage($event,topic)"></ion-checkbox>
     </ion-col>
   <ion-col col-11>
     <ion-item (click)="openTopic()">

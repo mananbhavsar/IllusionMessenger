@@ -19,6 +19,7 @@ export class TopicComponent {
   @Output() clicked = new EventEmitter();
   @Input() selectable: boolean;
   @Output() selected = new EventEmitter();
+  @Input() isChecked :boolean = false;
   selectedTopics: any = [];
 
   badgeCount: number = 0;
@@ -40,7 +41,9 @@ export class TopicComponent {
       }
       topicRef.on('value', snapshot => {
         this.badgeCount = snapshot.val();
+        
       });
+      
     }
   }
 
@@ -57,10 +60,10 @@ export class TopicComponent {
     });
   }
 
-  readMessage(ev) {
-    this.topic['read'] = ev.checked;
+  readMessage(ev, topic) {
+    this.topic.IsRead = ev.checked;
     this.selected.emit({
-      checked: this.topic.read,
+      checked: this.topic.IsRead,
       TopicCode: this.topic.TopicCode,
     });
   }

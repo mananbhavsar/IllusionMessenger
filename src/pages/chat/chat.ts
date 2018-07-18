@@ -58,6 +58,7 @@ export class ChatPage {
   groupID: string = null;
   groupCode: string = null;
   group_name: string = 'loading';
+  created_at: string;
 
   title: string = 'loading';
   isIOS: boolean = false;
@@ -628,6 +629,7 @@ export class ChatPage {
           this.data = response.Data;
           this.data.GroupID = this.groupID;
           this.group_name = this.data.Group;
+          this.created_at = this.data.CreationDate;
 
           this.headerButtons = [{ icon: 'ios-more', name: 'more-option' }];
 

@@ -4,8 +4,7 @@ import { OneSignal } from '@ionic-native/onesignal';
 import { Storage } from '@ionic/storage';
 import { TranslateService } from "@ngx-translate/core";
 import firebase from 'firebase';
-import { Events, IonicPage, ModalController, NavController, Platform } from 'ionic-angular';
-import { ActionSheetController } from 'ionic-angular';
+import { ActionSheetController, Events, IonicPage, ModalController, NavController, Platform } from 'ionic-angular';
 import * as _ from 'underscore';
 import { Global } from '../../app/global';
 import { ConnectionProvider } from '../../providers/connection/connection';
@@ -343,8 +342,7 @@ export class HomePage {
         let buttons = [];
         let sortingOptions = {
             'CreationDate': 'Creation Date',
-            'DueDate': 'Due Date',
-            'CloseDatime': 'Closed Date'
+            'DueDate': 'Due Date'
         };
         for (let key in sortingOptions) {
             let label = sortingOptions[key];

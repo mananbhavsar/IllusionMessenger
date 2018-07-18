@@ -168,6 +168,9 @@ export class ChatBubbleComponent {
       this.events.publish('toast:error', this.not_available_offline_translate);
       return;
     }
+    if(this.message.MessageType === 'Text'){
+      return;
+    }
     let file: string = this.message.URL;
     //if already downloading
     if (this.message.downloading) {

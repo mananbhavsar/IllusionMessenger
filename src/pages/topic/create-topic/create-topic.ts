@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { DateTime, Events, IonicPage, ModalController, NavController, NavParams, ViewController } from 'ionic-angular';
+import { DateTime, Events, IonicPage, ModalController, NavController, NavParams, Platform, ViewController } from 'ionic-angular';
 import { AutoCompleteComponent } from 'ionic2-auto-complete-ng5';
 import * as moment from "moment";
 import * as _ from 'underscore';
@@ -55,6 +55,7 @@ export class CreateTopicPage {
     private notifications: NotificationsProvider,
     private _date: DateProvider,
     private viewController: ViewController,
+    private platform: Platform,
   ) {
     this.group_id = this.navParams.data.group_id;
     this.group_name = this.navParams.data.group_name;
@@ -69,7 +70,7 @@ export class CreateTopicPage {
     this.createForm = this.formBuilder.group({
       private: [true],
       group_id: [''],
-      name: ['', [Validators.required,Validators.maxLength(60)]],
+      name: ['', [Validators.required, Validators.maxLength(60)]],
       assigned: [0, [Validators.required]],
       participants: [''],
       due_date: new FormControl(moment().local().add(this.hourAddition, 'hours').format())
@@ -198,6 +199,7 @@ export class CreateTopicPage {
         UserList: _.uniq(userList).join(','),
         StatusID: 1,
         Responsibles: this.createForm.get('assigned').value,
+        IsWeb: this.platform.is('core'),
       }, 'creating topic').then((response: any) => {
         if (('Status' in response) && response.Status === 0) {
           this.events.publish('toast:error', response.Message);
@@ -240,7 +242,7 @@ export class CreateTopicPage {
           assigned: data.assigned
         });
         this.setSelectedParticipants();
-        
+
       }
     });
     modal.present();

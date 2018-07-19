@@ -4,7 +4,12 @@ import { OneSignal } from '@ionic-native/onesignal';
 import { Storage } from '@ionic/storage';
 import { TranslateService } from "@ngx-translate/core";
 import firebase from 'firebase';
+<<<<<<< HEAD
+import { Events, IonicPage, ModalController, reorderArray, NavController, Platform } from 'ionic-angular';
+import { ActionSheetController } from 'ionic-angular';
+=======
 import { ActionSheetController, Events, IonicPage, ModalController, NavController, Platform } from 'ionic-angular';
+>>>>>>> 4052b22a3f307c0526db078af752d5b6c70f9a68
 import * as _ from 'underscore';
 import { Global } from '../../app/global';
 import { ConnectionProvider } from '../../providers/connection/connection';

@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { Badge } from '@ionic-native/badge';
 import { Storage } from '@ionic/storage';
 import { TranslateService } from '@ngx-translate/core';
+import * as firebase from 'firebase';
 import { AlertController, Events, Platform } from 'ionic-angular';
 import 'rxjs/add/operator/map';
 import * as _ from 'underscore';
-import * as firebase from 'firebase';
 import { Global } from "../../app/global";
 import { ConnectionProvider } from '../connection/connection';
 import { FirebaseTransactionProvider } from "../firebase-transaction/firebase-transaction";
@@ -20,7 +20,7 @@ export class UserProvider {
     HAS_SEEN_TUTORIAL: string = 'hasSeenTutorial';
     HAS_LOGGED_IN: boolean = false;
     global: any = {};
-    isFromMobile : boolean;
+    isFromMobile: boolean;
 
     bye_bye_translate: string = 'Good bye see you soon';
     logging_you_in_translate: string = 'Logging you in';
@@ -221,44 +221,53 @@ export class UserProvider {
         let OSName = 'ios';
         if (this.platform.is('android')) {
             OSName = 'android';
+        } if (this.platform.is('core')) {
+            OSName = 'web';
         }
         firebase.database().ref('VersionOptions/' + OSName).on('value', snapshot => {
             let allowAlertClose = snapshot.val();
-            firebase.database().ref('Version/' + OSName).on('value', snapshot => {
-                let AppVersion = snapshot.val();
-                if (AppVersion && this.global.AppVersion !== AppVersion) {
-                    let buttons: Array<any> = [
-                        {
-                            text: 'Update Now',
-                            handler: () => {
-                                window.open(this.global.APP_URL[OSName], '_system');
-                                return allowAlertClose;
+            if (allowAlertClose) {
+                firebase.database().ref('Version/' + OSName).on('value', snapshot => {
+                    let AppVersion = snapshot.val();
+                    if (AppVersion && this.global.AppVersion !== AppVersion) {
+                        let message = 'There is a new version available, kindly update your application now.';
+                        if (this.platform.is('core')) {
+                            this.events.publish('alert:basic', message);
+                        } else {
+                            let buttons: Array<any> = [
+                                {
+                                    text: 'Update Now',
+                                    handler: () => {
+                                        window.open(this.global.APP_URL[OSName], '_system');
+                                        return allowAlertClose;
+                                    }
+                                }
+                            ];
+                            //adding cancel option
+                            if (allowAlertClose) {
+                                buttons.push({
+                                    text: 'Not now',
+                                    role: 'cancel'
+                                });
                             }
-                        }
-                    ];
-                    //adding cancel option
-                    if (allowAlertClose) {
-                        buttons.push({
-                            text: 'Not now',
-                            role: 'cancel'
-                        });
-                    }
-                    let message = 'There is a new version available, kindly update your application now. <br/><br/>Note: if <b>open</b> button is present instead of <b>update</b>,';
-                    if (OSName === 'android') {
-                        message += ' go to <b>menu</b> of Play Store, naviagte to <b>My apps & games.</b>';
-                    } else {
-                        message += ' go to <b>updates tab</b> of App Store, <b>pull down refresh.</b>';
-                    }
+                            let message = 'There is a new version available, kindly update your application now. <br/><br/>Note: if <b>open</b> button is present instead of <b>update</b>,';
+                            if (OSName === 'android') {
+                                message += ' go to <b>menu</b> of Play Store, naviagte to <b>My apps & games.</b>';
+                            } else {
+                                message += ' go to <b>updates tab</b> of App Store, <b>pull down refresh.</b>';
+                            }
 
-                    let alert = this.alertCtrl.create({
-                        // enableBackdropDismiss: allowAlertClose,
-                        title: 'Version Update Available',
-                        message: message,
-                        buttons: buttons
-                    });
-                    alert.present();
-                }
-            });
+                            let alert = this.alertCtrl.create({
+                                // enableBackdropDismiss: allowAlertClose,
+                                title: 'Version Update Available',
+                                message: message,
+                                buttons: buttons
+                            });
+                            alert.present();
+                        }
+                    }
+                });
+            }
         });
     }
 

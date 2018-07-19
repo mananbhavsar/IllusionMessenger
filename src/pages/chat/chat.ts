@@ -224,7 +224,7 @@ export class ChatPage {
     this.events.subscribe('network:offline', () => {
       this.hasInternet = false;
     });
-    
+
     //if user switching tab
     if (this.isBrowser) {
       //on leaving
@@ -577,6 +577,9 @@ export class ChatPage {
   }
 
   ionViewDidEnter() {
+    //hiding keyboard accessory bar
+    this.keyboard.hideKeyboardAccessoryBar(true);
+    //translate
     this.doTranslate();
     //checking if user logged in
     if (!_.isEmpty(this.connection.user)) {
@@ -614,6 +617,7 @@ export class ChatPage {
   }
 
   ionViewWillLeave() {
+    this.keyboard.hideKeyboardAccessoryBar(false);
     this.doLeaving(true);
     this.clearTypingStringInterval();
   }
@@ -889,9 +893,10 @@ export class ChatPage {
     }
     if (this.message) {
       let textMessage = this.message.trim().replace(/(?:\r\n|\r|\n)/g, '<br/>');
-
+      //clear text
+      this.message = '';
+      
       this.sendToFirebase(textMessage).then(data => {
-        this.message = '';
         setTimeout(() => {
           this.messageInput.nativeElement.focus();
         });
@@ -935,8 +940,11 @@ export class ChatPage {
           };
 
           //send to Server
-          this.sendMessageToServer(data);
-          resolve(data);
+          this.sendMessageToServer(data).then(response => {
+            resolve(data);
+          }).catch(error => {
+            reject(error);
+          });
         });
       }).catch(error => {
         reject(error);
@@ -967,6 +975,16 @@ export class ChatPage {
   }
 
   keyup(event) {
+    //on browser if entered pressed, send text message
+    if (this.isBrowser) {
+      let key = event.keyCode || event.which || 0;
+      switch (key) {
+        case 13://enter
+          this.sendTextMessage(null);
+          return;
+      }
+    }
+    // set typing for all
     this.setTyping(true);
   }
 
@@ -1311,46 +1329,49 @@ export class ChatPage {
   }
 
   sendMessageToServer(message) {
-    // get live chat users
-    let userChattingNow = this.userChatting;
-    let nowTime = moment().utc().valueOf();
+    return new Promise((resolve, reject) => {
+      // get live chat users
+      let userChattingNow = this.userChatting;
+      let nowTime = moment().utc().valueOf();
 
-    var activeUserList = this.getLiveChatUsers(userChattingNow, nowTime);
+      var activeUserList = this.getLiveChatUsers(userChattingNow, nowTime);
 
-    let fileName = null;
-    let fileExtension = null;
-    //if image or audio, sending its file name & extension
-    if (message.URL) {
-      fileExtension = message.URL.substring(message.URL.lastIndexOf('.') + 1);
-      fileName = message.URL.substring(message.URL.lastIndexOf('/') + 1).replace('.' + fileExtension, '');
-    }
-
-    let params = {
-      LiveUsersOnChat: activeUserList,
-      ChattingUsers: this.common.build_query(userChattingNow),
-      TimeOnPhone: nowTime,
-      Message: message.Message ? message.Message : '',
-      MessageType: message.MessageType,
-      URL: message.URL,
-      FileName: fileName,
-      FileExtension: fileExtension,
-      TopicCode: this.topicCode,
-      TopicID: this.topicID,
-      GroupID: this.groupID,
-      IsWeb: this.platform.is('core'),
-    };
-
-    this.connection.doPost('Chat/InsertChat', params, false).then((response: any) => {
-      //send Push
-      if (Global.Push.OneSignal) {
-        this.sendPushNotification(message, response.OneSignalTransaction);
+      let fileName = null;
+      let fileExtension = null;
+      //if image or audio, sending its file name & extension
+      if (message.URL) {
+        fileExtension = message.URL.substring(message.URL.lastIndexOf('.') + 1);
+        fileName = message.URL.substring(message.URL.lastIndexOf('/') + 1).replace('.' + fileExtension, '');
       }
-      //managing firebase count
-      if (response.FireBaseTransaction) {
-        this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { })
-      }
-    }).catch(error => {
 
+      let params = {
+        LiveUsersOnChat: activeUserList,
+        ChattingUsers: this.common.build_query(userChattingNow),
+        TimeOnPhone: nowTime,
+        Message: message.Message ? message.Message : '',
+        MessageType: message.MessageType,
+        URL: message.URL,
+        FileName: fileName,
+        FileExtension: fileExtension,
+        TopicCode: this.topicCode,
+        TopicID: this.topicID,
+        GroupID: this.groupID,
+        IsWeb: this.platform.is('core'),
+      };
+
+      this.connection.doPost('Chat/InsertChat', params, false).then((response: any) => {
+        //send Push
+        if (Global.Push.OneSignal) {
+          this.sendPushNotification(message, response.OneSignalTransaction);
+        }
+        //managing firebase count
+        if (response.FireBaseTransaction) {
+          this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { })
+        }
+        resolve(response);
+      }).catch(error => {
+        reject(error);
+      });
     });
   }
 

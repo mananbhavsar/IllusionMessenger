@@ -39,6 +39,7 @@ import { SavedMediaPage } from "./chat-options/saved-media/saved-media";
 
 
 
+
 @IonicPage()
 @Component({
   selector: 'page-chat',
@@ -58,7 +59,7 @@ export class ChatPage {
   groupID: string = null;
   groupCode: string = null;
   group_name: string = 'loading';
-  created_at: string;
+  subSubTitle: string;
 
   title: string = 'loading';
   isIOS: boolean = false;
@@ -229,7 +230,7 @@ export class ChatPage {
     if (this.isBrowser) {
       //on leaving
       window.onblur = () => {
-        this.doLeaving(false);
+        this.ionViewWillLeave();
       };
       //on enter again
       window.onfocus = () => {
@@ -633,10 +634,8 @@ export class ChatPage {
           this.data = response.Data;
           this.data.GroupID = this.groupID;
           this.group_name = this.data.Group;
-          this.created_at = this.data.CreationDate;
-
+          this.subSubTitle = 'Created By ' + this.data.CreatedBy+ ' on ' +this.data.CreationDate;
           this.headerButtons = [{ icon: 'ios-more', name: 'more-option' }];
-
           this.topicCode = this.data.TopicCode;
           this.groupCode = this.data.GroupCode;
           this.setPath();
@@ -989,6 +988,7 @@ export class ChatPage {
   }
 
   keyboardKey(event) {
+    
     this.setTyping(true);
   }
 

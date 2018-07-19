@@ -4,7 +4,7 @@ import { OneSignal } from '@ionic-native/onesignal';
 import { Storage } from '@ionic/storage';
 import { TranslateService } from "@ngx-translate/core";
 import firebase from 'firebase';
-import { ActionSheetController, Events, IonicPage, ModalController, NavController, Platform } from 'ionic-angular';
+import { ActionSheetController, reorderArray, Events, IonicPage, ModalController, NavController, Platform } from 'ionic-angular';
 import * as _ from 'underscore';
 import { Global } from '../../app/global';
 import { ConnectionProvider } from '../../providers/connection/connection';
@@ -260,7 +260,7 @@ export class HomePage {
         }
     }
 
-    checkedTopic(event) {
+    checkedTopic(event) {        
         if (event.checked) {
             if (this.selectedTopic.indexOf(event.TopicCode) === -1) {
                 this.selectedTopic.push(event.TopicCode);
@@ -270,31 +270,30 @@ export class HomePage {
             if (this.selectedTopic.indexOf(event.TopicCode) > -1) {
                 this.selectedTopic.splice(this.selectedTopic.indexOf(event.TopicCode), 1);
             }
-        }
+        }        
         if (this.selectedGroup.length === 0 && this.selectedTopic.length === 0) {
             this.readAllSelected = true;
         }
     }
 
     readSelected() {
-        return new Promise((resolve, reject) => {
             this.connection.doPost('Chat/ReadAll', {
                 ReadAll: false,
-                GroupCode: '' || this.selectedGroup.map(groupCode => groupCode.GroupCode),
-                TopicCode: '' || this.selectedTopic.map(topicCode => topicCode.TopicCode),
-            }, false).then(response => {
+                GroupCode: this.selectedGroup.map(GroupCode => GroupCode.GroupCode),
+                TopicCode: this.selectedTopic.toString(),
+            }, false).then((response: any) => {
                 if (response) {
                     this.getData();
                     this.selectedTopic = [];
                     this.selectedGroup = [];
                     this.readAllSelected = true;
                     this.readOptions = false;
-                    resolve(true);
+                    if (response.FireBaseTransaction) {
+                        this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { })
+                    }
                 }
             }).catch((error) => {
-                reject();
             });
-        });
     }
 
 
@@ -302,14 +301,17 @@ export class HomePage {
         return new Promise((resolve, reject) => {
             this.connection.doPost('Chat/ReadAll', {
                 ReadAll: true
-            }, false).then(response => {
+            }, false).then((response: any) => {
                 if (response) {
                     this.getData();
                     this.selectedTopic = [];
                     this.selectedGroup = [];
                     this.readAllSelected = true;
                     this.readOptions = false;
-                    resolve(true);
+                    if (response.FireBaseTransaction) {
+                        this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { })
+                    }
+                    resolve(response);
                 }
             }).catch((error) => {
                 reject();
@@ -459,20 +461,16 @@ export class HomePage {
     reorderItems(indexes) {
         this.data.Groups_Wise = reorderArray(this.data.Groups_Wise, indexes);
         for (let i = 0; i < this.data.Groups_Wise.length; i++) {
-            this.group_reorder.push({ 'OIndex': i, 'GroupID': this.data.Groups_Wise[i].GroupID });
+            this.group_reorder.push({ 'OrderIndex': i, 'GroupID': this.data.Groups_Wise[i].GroupID });
         }
-        
-        return new Promise((resolve, reject) => {
-            this.connection.doPost('chat/reorderGroup', {
-                OIndex: this.group_reorder.map(order => order.OIndex),
-                GroupID: this.group_reorder.map(groupId => groupId.GroupID)
-            }, false).then((response) => {
-                this.group_reorder = [];
-                resolve(true);
-            }).catch((error) => {
-                reject();
-            });
+        this.connection.doPost('chat/MyGroupOrder', {
+            OrderIndex: this.group_reorder.map(order => order.OrderIndex),
+            GroupID: this.group_reorder.map(groupId => groupId.GroupID)
+        }, false).then((response) => {
+            this.group_reorder = [];
+        }).catch((error) => {
         });
+
     }
 
     reorderGroups() {

@@ -215,61 +215,66 @@ export class ChatOptionsPage {
     //only if I'm admin
     if (this.amIAdmin && this.statusID === 1) {
       let buttons = [];
-      if (participant.UserID !== this.connection.user.LoginUserID) {//can't remove/add self
-        //making user reposnsible
-        if (!participant.IsResponsible) {
-          buttons.push({
-            text: 'Mark Responsible',
-            handler: () => {
-              this.markResponsible(participant, index);
-            }
-          });
-        }
-        //make, remove admin
-        if (participant.IsAdmin) {
-          //if not by created
-          if (participant.UserID !== this.data.CreatedByID)
+      if (participant.IsResponsible) {
+          return false;
+      } else {
+        if (participant.UserID !== this.connection.user.LoginUserID) {//can't remove/add self
+          //making user reposnsible
+          if (!participant.IsResponsible) {
             buttons.push({
-              role: 'destructive',
-              text: 'Remove as Admin',
+              text: 'Mark Responsible',
               handler: () => {
-                this.removeAsAdmin(participant, index);
+                this.markResponsible(participant, index);
               }
             });
-        } else {
-          buttons.push({
-            text: 'Make Admin',
-            handler: () => {
-              this.makeAsAdmin(participant, index);
-            }
-          });
-        }
-        //remove from user 
-        if (!participant.IsResponsible && participant.UserID !== this.data.CreatedByID) {//if not responsible or created by
-          buttons.push({
-            role: 'destructive',
-            text: 'Remove from Topic',
-            handler: () => {
-              this.removeFromTopic(participant, index);
-            }
-          });
-        }
-      }
-
-      if (buttons.length) { //at least on button other than cancel
-        //cancel button
-        buttons.push({
-          role: 'cancel',
-          text: 'Cancel',
-          handler: () => {
-
           }
-        });
-        let userOptionActionSheet = this.actionSheetCtrl.create({
-          title: 'Take Action',
-          buttons: buttons
-        });
-        userOptionActionSheet.present();
+          //make, remove admin
+          if (participant.IsAdmin) {
+            //if not by created
+            if (participant.UserID !== this.data.CreatedByID)
+              buttons.push({
+                role: 'destructive',
+                text: 'Remove as Admin',
+                handler: () => {
+                  this.removeAsAdmin(participant, index);
+                }
+              });
+          } else {
+            buttons.push({
+              text: 'Make Admin',
+              handler: () => {
+                this.makeAsAdmin(participant, index);
+              }
+            });
+          }
+          //remove from user 
+          if (!participant.IsResponsible && participant.UserID !== this.data.CreatedByID) {//if not responsible or created by
+            buttons.push({
+              role: 'destructive',
+              text: 'Remove from Topic',
+              handler: () => {
+                this.removeFromTopic(participant, index);
+              }
+            });
+          }
+        }
+
+        if (buttons.length) { //at least on button other than cancel
+          //cancel button
+          buttons.push({
+            role: 'cancel',
+            text: 'Cancel',
+            handler: () => {
+
+            }
+          });
+          let userOptionActionSheet = this.actionSheetCtrl.create({
+            title: 'Take Action',
+            buttons: buttons
+          });
+
+          userOptionActionSheet.present();
+        }
       }
     }
   }

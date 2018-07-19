@@ -19,8 +19,17 @@ title {
                             padding: 3px 5px;
                         }
                     }
+                    div {
+                        &.subSubTitle {
+                            font-size: 10px;
+                            padding: 0;
+                            margin: 0;
+                        }
+                    }
                     small {
                         font-size: 11px;
+                        padding: 0;
+                        margin: 0;
                     }
                 }
             }

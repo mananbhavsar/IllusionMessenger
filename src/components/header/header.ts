@@ -12,6 +12,7 @@ export class HeaderComponent {
     @Input() subTitle: string = null;
     @Input() buttons: any = null;
     @Output() buttonClicked = new EventEmitter();
+    @Input() subSubTitle : string = null;
 
     _title: string;
     cartCounter: number = null;

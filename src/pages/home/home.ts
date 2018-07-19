@@ -121,6 +121,12 @@ export class HomePage {
         }
     }
 
+    ionViewDidLeave() {
+        if (this.selectedGroup.length > 0) {
+            this.selectedGroup = [];
+        }
+    }
+
     initData() {
         return new Promise((resolve, reject) => {
             this.getData().then(status => {
@@ -325,6 +331,7 @@ export class HomePage {
         } else {
             this.selectedGroup.splice(this.selectedGroup.indexOf(this.selectedGroup.GroupCode), 1);
         }
+
         if (this.selectedGroup.length === 0 && this.selectedTopic.length === 0) {
             this.readAllSelected = true;
         }
@@ -453,15 +460,19 @@ export class HomePage {
     reorderItems(indexes) {
         this.data.Groups_Wise = reorderArray(this.data.Groups_Wise, indexes);
         for (let i = 0; i < this.data.Groups_Wise.length; i++) {
-            this.group_reorder.push({ 'O_Index': i, 'GroupId': this.data.Groups_Wise[i].GroupID });
+            this.group_reorder.push({ 'OIndex': i, 'GroupID': this.data.Groups_Wise[i].GroupID });
         }
+        
         return new Promise((resolve, reject) => {
-            this.connection.doPost('', {}, false)
-                .then((response) => {
-                    this.group_reorder = [];
-                }).catch((error) => {
-
-                })
+            this.connection.doPost('chat/reorderGroup', {
+                OIndex: this.group_reorder.map(order => order.OIndex),
+                GroupID: this.group_reorder.map(groupId => groupId.GroupID)
+            }, false).then((response) => {
+                this.group_reorder = [];
+                resolve(true);
+            }).catch((error) => {
+                reject();
+            });
         });
     }
 

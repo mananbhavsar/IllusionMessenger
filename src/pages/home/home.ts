@@ -15,6 +15,7 @@ import { FirebaseTransactionProvider } from './../../providers/firebase-transact
 import { NotificationsProvider } from './../../providers/notifications/notifications';
 import { AddFlashPage } from './../group/add-flash/add-flash';
 import { CreateTopicPage } from './../topic/create-topic/create-topic';
+import { Response } from '@angular/http/src/static_response';
 
 
 @IonicPage()
@@ -46,6 +47,11 @@ export class HomePage {
     selectedGroup: any = [];
     tabs = [
         {
+            name: 'Task due in days',
+            icon: 'stats',
+            key: 'Task_due_in_days',
+        },
+        {
             name: 'Assigned To Me',
             icon: 'star',
             key: 'Assigned_To_Me',
@@ -70,7 +76,7 @@ export class HomePage {
             icon: 'paper',
             key: 'Topic_Wise'
         },];
-    selectedTab: string = 'star';
+    selectedTab: string = 'stats';
     readOptions: boolean = false;
     selectedTopic: Array<any> = [];
     readAllSelected: boolean = true;
@@ -153,7 +159,8 @@ export class HomePage {
                 this.dataFetched = true;
                 //groups
                 this.data = response;
-
+                console.log(this.data);
+                
                 //flash
                 if (response.FlashNews) {
                     this.flashNews = response.FlashNews;
@@ -224,6 +231,7 @@ export class HomePage {
             this.selectedGroup = [];
             this.readAllSelected = true;
             this.readOptions = false;
+            this.group_reorder = [];
             refresher.complete();
             this.connectToFireBase();
         }).catch(error => {
@@ -260,7 +268,7 @@ export class HomePage {
         }
     }
 
-    checkedTopic(event) {        
+    checkedTopic(event) {
         if (event.checked) {
             if (this.selectedTopic.indexOf(event.TopicCode) === -1) {
                 this.selectedTopic.push(event.TopicCode);
@@ -270,30 +278,30 @@ export class HomePage {
             if (this.selectedTopic.indexOf(event.TopicCode) > -1) {
                 this.selectedTopic.splice(this.selectedTopic.indexOf(event.TopicCode), 1);
             }
-        }        
+        }
         if (this.selectedGroup.length === 0 && this.selectedTopic.length === 0) {
             this.readAllSelected = true;
         }
     }
 
     readSelected() {
-            this.connection.doPost('Chat/ReadAll', {
-                ReadAll: false,
-                GroupCode: this.selectedGroup.map(GroupCode => GroupCode.GroupCode),
-                TopicCode: this.selectedTopic.toString(),
-            }, false).then((response: any) => {
-                if (response) {
-                    this.getData();
-                    this.selectedTopic = [];
-                    this.selectedGroup = [];
-                    this.readAllSelected = true;
-                    this.readOptions = false;
-                    if (response.FireBaseTransaction) {
-                        this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { })
-                    }
+        this.connection.doPost('Chat/ReadAll', {
+            ReadAll: false,
+            GroupCode: this.selectedGroup.map(GroupCode => GroupCode.GroupCode),
+            TopicCode: this.selectedTopic.toString(),
+        }, false).then((response: any) => {
+            if (response) {
+                this.getData();
+                this.selectedTopic = [];
+                this.selectedGroup = [];
+                this.readAllSelected = true;
+                this.readOptions = false;
+                if (response.FireBaseTransaction) {
+                    this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { })
                 }
-            }).catch((error) => {
-            });
+            }
+        }).catch((error) => {
+        });
     }
 
 
@@ -466,8 +474,10 @@ export class HomePage {
         this.connection.doPost('chat/MyGroupOrder', {
             OrderIndex: this.group_reorder.map(order => order.OrderIndex),
             GroupID: this.group_reorder.map(groupId => groupId.GroupID)
-        }, false).then((response) => {
-            this.group_reorder = [];
+        }, false).then((response: any) => {
+            if (response) {
+                this.group_reorder = [];
+            }
         }).catch((error) => {
         });
 

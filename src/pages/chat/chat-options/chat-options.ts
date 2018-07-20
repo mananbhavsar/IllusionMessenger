@@ -10,6 +10,7 @@ import { UserProvider } from '../../../providers/user/user';
 import { ManageParticipantsPage } from '../../topic/create-topic/manage-participants/manage-participants';
 import { DateProvider } from './../../../providers/date/date';
 import { SavedMediaPage } from "./saved-media/saved-media";
+import { Response } from '@angular/http/src/static_response';
 
 
 
@@ -25,7 +26,11 @@ export class ChatOptionsPage {
   @ViewChild('dueDate') dueDate: DateTime;
   dueDateOpened: boolean = false;
 
-  data: any = {}
+  @ViewChild('reminder') reminder: DateTime;
+  reminderOpened: boolean = false;
+
+  data: any = {};
+  reminders: any = [];
   title: string = '';
   topicCode: string = null;
   topicID: string = null;
@@ -40,6 +45,9 @@ export class ChatOptionsPage {
   amIAdmin: boolean = false;
   amIResponsible: boolean = false;
   responsibleUserID: string = null;
+  request_for_closure: boolean = true;
+  requested_for_closure: boolean = false;
+  close_request: boolean = false;
 
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
@@ -55,6 +63,10 @@ export class ChatOptionsPage {
     private _date: DateProvider,
   ) {
     this.data = this.navParams.data.data;
+
+    console.log(this.navParams.data);
+    this.reminders = this.navParams.data.reminders || [];
+
     this.title = this.navParams.data.data.Topic + '\'s options';
     this.topicID = this.navParams.data.data.TopicID;
     this.groupID = this.navParams.data.data.GroupID;
@@ -108,6 +120,38 @@ export class ChatOptionsPage {
 
     });
     savedMediaModal.present();
+  }
+
+  closureRequest() {
+    if (this.amIResponsible) {
+      this.connection.doPost('', {
+        TopicID: this.data.TopicID,
+        GroupID: this.data.GroupID,
+        IsRequested: true
+      }).then((response: any) => {
+        this.request_for_closure = false;
+        this.requested_for_closure = true;
+        this.close_request = true;
+      }).catch((error) => {
+
+      });
+    }
+  }
+
+  closeRequest() {
+    if (this.amIAdmin) {
+      this.connection.doPost('', {
+        TopicID: this.data.TopicID,
+        GroupID: this.data.GroupID,
+        Close: true
+      }).then((response: any) => {
+        this.request_for_closure = false;
+        this.requested_for_closure = false;
+        this.close_request = false;
+      }).catch((error) => {
+
+      });
+    }
   }
 
   rescheduleTopic() {
@@ -207,6 +251,84 @@ export class ChatOptionsPage {
     actionSheet.present();
   }
 
+  openReminder(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.reminder.mode = 'ios';
+    this.reminder.open();
+    this.reminder.setValue(this._date.fromServerFormat(this.data.CreationDate_UTC).format());
+    this.reminderOpened = true;
+    this.reminder.ionCancel.subscribe(cancel => {
+      this.reminderOpened = false;
+    });
+  }
+
+  setReminder(remider) {
+    if (!this.reminderOpened) {
+      return;
+    }
+    let changedDate = new Date();
+    changedDate.setFullYear(remider.year);
+    changedDate.setMonth(remider.month - 1);
+    changedDate.setDate(remider.day);
+    changedDate.setHours(remider.hour);
+    changedDate.setMinutes(remider.minute);
+    changedDate.setSeconds(remider.second);
+
+    let changedMoment = moment(changedDate);
+
+    let SelectedDateTime = moment(this._date.get(changedMoment), 'Do MMM, hh:mm A');
+    let CreationDateTime = moment(this._date.get(this.data.CreationDate_UTC), 'Do MMM, hh:mm A');
+
+    let utcString = this._date.toUTCISOString(SelectedDateTime);
+
+    if (changedMoment.isValid()) {
+      if (SelectedDateTime.isAfter(CreationDateTime)) {
+        this.connection.doPost('Chat/SetRemoveSelfReminder', {
+          GroupID: this.data.GroupID,
+          TopicID: this.data.TopicID,
+          SchedulerDateTime: utcString,
+          Message: this.data.Topic
+        }, false).then((response: any) => {
+          if (response) {
+            this.data.IsReminderSet = 'true';
+            this.reminderOpened = false;
+            this.reminders.push({
+              GroupID: this.data.GroupID,
+              TopicID: this.data.TopicID,
+              SchedulerDateTime: utcString,
+              Message: this.data.Topic
+            });
+            this.events.publish('toast:create', response.Data.Message);
+          }
+        }).catch((error) => {
+          this.reminderOpened = false;
+          this.events.publish('toast:error', error);
+        });
+      } else {
+        this.reminderOpened = false;
+        this.events.publish('toast:error', 'Reminder time should be more than now');
+      }
+    } else {
+      this.reminderOpened = false;
+      this.events.publish('toast:error', 'Invalid date');
+    }
+  }
+
+  removeRemider(event, id, index) {
+    this.connection.doPost('Chat/SetRemoveSelfReminder', {
+      TopicID: this.data.TopicID,
+      GroupID: this.data.GroupID,
+      SelfReminderID: id,
+      SchedulerDateTime: this._date.toUTCISOString(new Date(), false, false),
+    }).then((Response: any) => {
+      this.events.publish('toast:create', Response.Data.Message);
+      this.reminders.splice(index, 1);
+    }).catch((error) => {
+      this.events.publish('toast:error', error);
+    });
+  }
+
   dismiss(data) {
     this.viewController.dismiss(data);
   }
@@ -216,7 +338,7 @@ export class ChatOptionsPage {
     if (this.amIAdmin && this.statusID === 1) {
       let buttons = [];
       if (participant.IsResponsible) {
-          return false;
+        return false;
       } else {
         if (participant.UserID !== this.connection.user.LoginUserID) {//can't remove/add self
           //making user reposnsible

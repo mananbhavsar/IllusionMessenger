@@ -31,6 +31,9 @@ page-chat-options {
                         font-size: 1rem;
                         padding: 1em;
                     }
+                    ion-datetime {
+                        display: none;
+                    }
                 }
             }
             ion-item-divider {

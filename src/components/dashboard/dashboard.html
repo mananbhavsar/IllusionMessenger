@@ -1,0 +1,36 @@
+<ion-row>
+    <ion-col (click)="openTopics($event)" col-6 *ngFor="let days of dueDays" class="Day_1">
+        <ion-label>
+            {{days.Day_1}}
+        </ion-label>
+        <small>
+           1 Day
+        </small>
+    </ion-col>
+    <ion-col (click)="openTopics($event)" col-6 *ngFor="let days of dueDays" class="Day_2">
+        <ion-label>
+            {{days.Day_2}}
+        </ion-label>
+        <small>
+            2 Days
+        </small>
+    </ion-col>
+</ion-row>
+<ion-row>
+        <ion-col (click)="openTopics($event)" col-6 *ngFor="let days of dueDays" class="Day_3">
+            <ion-label>
+                {{days.Day_3}}
+            </ion-label>
+            <small>
+                3 Days
+            </small>
+        </ion-col>
+        <ion-col (click)="openTopics($event)" col-6 *ngFor="let days of dueDays" class="Day_4Plus">
+            <ion-label>
+                {{days.Day_4Plus}}
+            </ion-label>
+            <small>
+                4 + Days
+            </small>
+        </ion-col>
+    </ion-row>

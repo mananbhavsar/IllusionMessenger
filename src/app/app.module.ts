@@ -63,6 +63,7 @@ import { TopicPageModule } from '../pages/topic/topic.module';
 import { TutorialPageModule } from '../pages/tutorial/tutorial.module';
 import { WelcomePageModule } from '../pages/welcome/welcome.module';
 import { PipesModule } from "../pipes/pipes.module";
+import { DueTopicsPageModule } from '../pages/due-topics/due-topics.module';
 import { CommonProvider } from "../providers/common/common";
 import { ConnectionProvider } from '../providers/connection/connection';
 import { DateProvider } from '../providers/date/date';
@@ -115,6 +116,7 @@ export function createTranslateLoader(http: HttpClient) {
         ForgotPasswordPageModule,
         GroupPageModule,
         GroupOptionsPageModule,
+        DueTopicsPageModule,
         HelpPageModule,
         HomePageModule,
         LoginPageModule,

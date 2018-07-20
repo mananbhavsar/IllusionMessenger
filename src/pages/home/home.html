@@ -27,7 +27,7 @@
         <ion-segment [(ngModel)]="selectedTab" color="theme" padding mode="ios">
             <ion-segment-button [value]="tab.icon" *ngFor="let tab of tabs">
                 <ion-icon [name]="tab.icon"></ion-icon>
-                <span>
+                <span *ngIf="tab.icon !== 'stats'">
                     {{getTabBadgeCount(tab.key)}}
                 </span>
             </ion-segment-button>
@@ -36,17 +36,20 @@
             <ion-list>
                 <ion-item-divider color="light">
                     <h2>
-                        <span class="total-rows-count">{{getSelectedTabRowsCount()}}</span>
+                        <span class="total-rows-count" *ngIf="selectedTab !== 'stats'">{{getSelectedTabRowsCount()}}</span>
                         &nbsp;-&nbsp; {{getSelectedTabName()}}
                     </h2>
                 </ion-item-divider>
+                <ng-container *ngSwitchCase="'stats'">
+                    <dashboard [dueDays]="data.TaskDueInDays"></dashboard>
+                </ng-container>
                 <ng-container *ngSwitchCase="'star'">
-                    <topic [isChecked]="selectedTopic.indexOf(topic.TopicCode) > -1" [group_id]="topic.GroupID" [selectable]="readOptions" type="ActiveTopicList" [topic]="topic" *ngFor="let topic of data.Assigned_To_Me;"
-                        (selected)="checkedTopic($event)"></topic>
+                    <topic [isChecked]="selectedTopic.indexOf(topic.TopicCode) > -1" [group_id]="topic.GroupID" [selectable]="readOptions" type="ActiveTopicList"
+                        [topic]="topic" *ngFor="let topic of data.Assigned_To_Me;" (selected)="checkedTopic($event)"></topic>
                 </ng-container>
                 <ng-container *ngSwitchCase="'people'">
-                    <topic [isChecked]="selectedTopic.indexOf(topic.TopicCode) > -1" [group_id]="topic.GroupID" [selectable]="readOptions" type="ActiveTopicList" [topic]="topic" *ngFor="let topic of data.Created_By_Me;"
-                        (selected)="checkedTopic($event)"></topic>
+                    <topic [isChecked]="selectedTopic.indexOf(topic.TopicCode) > -1" [group_id]="topic.GroupID" [selectable]="readOptions" type="ActiveTopicList"
+                        [topic]="topic" *ngFor="let topic of data.Created_By_Me;" (selected)="checkedTopic($event)"></topic>
                 </ng-container>
                 <ng-container *ngSwitchCase="'list-box'">
                     <ion-item-group [reorder]="reorder" (ionItemReorder)="reorderItems($event)">
@@ -80,12 +83,12 @@
                     </ion-item-group>
                 </ng-container>
                 <ng-container *ngSwitchCase="'flag'">
-                    <topic [isChecked]="selectedTopic.indexOf(topic.TopicCode) > -1" [group_id]="topic.GroupID" [selectable]="readOptions" type="ActiveTopicList" [topic]="topic" *ngFor="let topic of data.Priority;"
-                        (selected)="checkedTopic($event)"></topic>
+                    <topic [isChecked]="selectedTopic.indexOf(topic.TopicCode) > -1" [group_id]="topic.GroupID" [selectable]="readOptions" type="ActiveTopicList"
+                        [topic]="topic" *ngFor="let topic of data.Priority;" (selected)="checkedTopic($event)"></topic>
                 </ng-container>
                 <ng-container *ngSwitchCase="'paper'">
-                    <topic [isChecked]="selectedTopic.indexOf(topic.TopicCode) > -1" [group_id]="topic.GroupID" [selectable]="readOptions" type="ActiveTopicList" [topic]="topic" *ngFor="let topic of data.Topic_Wise;"
-                        (selected)="checkedTopic($event)"></topic>
+                    <topic [isChecked]="selectedTopic.indexOf(topic.TopicCode) > -1" [group_id]="topic.GroupID" [selectable]="readOptions" type="ActiveTopicList"
+                        [topic]="topic" *ngFor="let topic of data.Topic_Wise;" (selected)="checkedTopic($event)"></topic>
                 </ng-container>
             </ion-list>
         </div>
@@ -93,6 +96,6 @@
     <!-- <button ion-button full (click)="connectToServer('1234')">Register</button> -->
 </ion-content>
 <ion-footer *ngIf="readOptions" class="hide-on-keyboard-open">
-        <button ion-button outline *ngIf="readAllSelected" (click)="readAll()">Read All</button>
-        <button ion-button outline *ngIf="!readAllSelected" (click)="readSelected()">Mark As Read</button>
-    </ion-footer>
+    <button ion-button outline *ngIf="readAllSelected" (click)="readAll()">Read All</button>
+    <button ion-button outline *ngIf="!readAllSelected" (click)="readSelected()">Mark As Read</button>
+</ion-footer>

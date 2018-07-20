@@ -1,0 +1,12 @@
+<ion-header no-border>
+  <modal-toolbar [title]="title" (dismiss)="dismiss($event)"></modal-toolbar>
+</ion-header>
+
+<ion-content>
+  <empty *ngIf="!topics else data_template"></empty>
+  <ng-template #data_template>
+    <topic *ngIf="topics">
+      <topic [group_id]="topic.GroupID" type="ActiveTopicList" [topic]="topic" *ngFor="let topic of data.Task_due_in_days;"></topic>
+    </topic>
+  </ng-template>
+</ion-content>

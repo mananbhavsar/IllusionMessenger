@@ -8,14 +8,11 @@
         <h2>
           <span class="topic-name">{{topic.Topic}}</span>
           <span float-right>
-            <ion-icon (click)="setReminder($event)" name="clock" color="dashboard"></ion-icon>
+            <ion-icon *ngIf="topic.IsReminderSet" name="alarm" color="payments"></ion-icon>
             <ion-icon name="ios-star" color="pickup" *ngIf="topic.IsResponsible"></ion-icon>
             <ion-badge *ngIf="badgeCount">{{badgeCount}}</ion-badge>
           </span>
         </h2>
-        <ion-item no-lines>
-            <ion-datetime displayFormat="DD MMM hh:mm A" (ionChange)="reminderDateChanged($event)" max="2050" #reminder></ion-datetime>
-          </ion-item>
         <p>
           <ion-row>
             <ion-col text-left class="pickup">

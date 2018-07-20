@@ -38,6 +38,39 @@
 			<button ion-button item-end small outline color="casestatus" *ngIf="participant && participant.IsAdmin">Admin</button>
 		</ion-item>
 	</ion-list>
+	<div *ngIf="data.StatusID !== 2">
+		<ion-item-divider color="light"></ion-item-divider>
+		<ion-list [hidden]="closeButton">
+			<ion-item (click)="openReminder($event)" class="close-topic">
+				<h2 color="pickup">Set Reminder
+					<ion-icon name="alarm"></ion-icon>
+				</h2>
+			</ion-item>
+			<ion-item no-lines>
+				<ion-datetime displayFormat="DD MMM hh:mm A" (ionChange)="setReminder($event)" max="2050" #reminder></ion-datetime>
+			</ion-item>
+			<div margin-left *ngIf="data.IsReminderSet">
+				<ion-row *ngFor="let reminder of reminders; let i = index">
+					<ion-col col-10>
+						{{reminder.SchedulerDateTime | time}}
+					</ion-col>
+					<ion-col col-2>
+						<button (click)="removeRemider($event, reminder.SelfReminderID, i)" small ion-button outline icon-only>
+							<ion-icon name="ios-trash" color="danger"></ion-icon>
+						</button>
+					</ion-col>
+				</ion-row>
+			</div>
+			<ion-item (click)="closureRequest()" *ngIf="amIResponsible && data.StatusID !== 2 && request_for_closure" class="close-topic">
+				<h2 color="danger">Request for closure</h2>
+			</ion-item>
+		</ion-list>
+	</div>
+	<div margin-left class="background-grey" *ngIf="amIResponsible && data.StatusID !== 2 && requested_for_closure">
+		<p color="secondary">
+			Requested for closure
+		</p>
+	</div>
 	<div *ngIf="amIAdmin">
 		<ion-item-divider color="light"></ion-item-divider>
 		<ion-list [hidden]="closeButton" *ngIf="data.StatusID === 1">
@@ -49,6 +82,9 @@
 			</ion-item>
 			<ion-item (click)="closeTopic()" class="close-topic">
 				<h2 color="danger">Close Topic</h2>
+			</ion-item>
+			<ion-item (click)="closeRequest()" class="close-topic" *ngIf="close_request">
+				<h2 color="danger">Close Request</h2>
 			</ion-item>
 		</ion-list>
 	</div>

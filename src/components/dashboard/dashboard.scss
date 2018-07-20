@@ -1,0 +1,29 @@
+dashboard {
+    ion-row {
+        ion-col {
+            ion-label {
+                &.label-md {
+                    font-weight: 600;
+                    color: #fff;
+                    margin: 0px 8px 5px 0;
+                    font-size: 15px;
+                }
+            }
+            small {
+                color: #fff;
+            }
+            &.Day_1 {
+                background-color: #00AAFE;
+            }
+            &.Day_2 {
+                background-color: #FDEB51;
+            }
+            &.Day_3 {
+                background-color: #FF584B;
+            }
+            &.Day_4Plus {
+                background-color: #00E4AB;
+            }
+        }
+    }
+}

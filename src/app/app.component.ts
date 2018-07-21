@@ -508,6 +508,7 @@ export class MyApp {
         if (this.platform.is('core')) {
             let OneSignal = window['OneSignal'] || [];
             //check if OneSignal not yet initialized
+            console.log(OneSignal.isActive);
             if (!OneSignal.isActive) {
                 OneSignal.push(["init", {
                     appId: Global.OneSignal.key,
@@ -603,10 +604,8 @@ export class MyApp {
 
     initBadge() {
         this.user.getUser().then(user => {
-            console.log('Badge/' + user.id + '/Total');
             firebase.database().ref('Badge/' + user.id + '/Total').on('value', snapshot => {
                 let total: any = snapshot.val();
-                console.log('total:' + total);
                 this.events.publish('badge:set', total);
                 if (total) {
                     this._badge.set(total);

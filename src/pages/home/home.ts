@@ -99,6 +99,10 @@ export class HomePage {
             this.getData().catch(error => { });
         });
 
+        this.events.subscribe('dashboard:close', (dashboard) => {
+            this.setTitle();
+        })
+
         //online offline
         if (this.platform.is('cordova')) {
             this._network.onchange().subscribe(() => {
@@ -137,7 +141,6 @@ export class HomePage {
                 }
                 resolve(true);
             }).catch(error => {
-                reject(error);
             });
         });
     }
@@ -155,7 +158,6 @@ export class HomePage {
                 this.dataFetched = true;
                 //groups
                 this.data = response;
-                console.log(this.data);
                 //flash
                 if (response.FlashNews) {
                     this.flashNews = response.FlashNews;
@@ -165,7 +167,6 @@ export class HomePage {
                 resolve(true);
             }).catch(error => {
                 this.flashNews = [];
-                reject(error);
             })
         });
     }
@@ -177,9 +178,11 @@ export class HomePage {
             this.deviceRegsiter = 0;
         } else if (this.platform.is('core')) {
             if (this.connection.getPushID()) {
+                this.deviceRegsiter = 1;
                 this.connectToServer(this.connection.push_id);
             } else {
                 this.events.subscribe('pushid:created', (userId) => {
+                    this.deviceRegsiter = 1;
                     this.connectToServer(userId);
                 });
                 //wait 15sec and check again for user id
@@ -189,6 +192,7 @@ export class HomePage {
                     OneSignal.push(function () {
                         OneSignal.getUserId(function (userId: string) {
                             if (userId) {
+                                that.deviceRegsiter = 1;
                                 that.connectToServer(userId);
                             }
                         });
@@ -324,7 +328,6 @@ export class HomePage {
                     resolve(response);
                 }
             }).catch((error) => {
-                reject();
             });
         });
     }

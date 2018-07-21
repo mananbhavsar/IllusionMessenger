@@ -136,7 +136,7 @@ export class ChatPage {
   recordTime: number = 0;
   dataDirectory = null;
   recordMediaFile: MediaObject = null;
-  reminders : any;
+  reminders: any;
   recordFile: string = null;
   recordFileName: string = 'record.wav';
   recordInterval: any = null;
@@ -232,7 +232,7 @@ export class ChatPage {
     if (this.isBrowser) {
       //on leaving
       window.onblur = () => {
-        this.ionViewWillLeave();
+        this.doLeaving(false);
       };
       //on enter again
       window.onfocus = () => {
@@ -639,11 +639,11 @@ export class ChatPage {
           this.data = response.Data;
           this.data.GroupID = this.groupID;
           this.group_name = this.data.Group;
-          this.subSubTitle = 'Created By ' + this.data.CreatedBy+ ' on ' +this.data.CreationDate;
-          this.headerButtons = [{icon : 'ios-information-circle-outline', name : 'ios-information-circle-outline'},{ icon: 'ios-more', name: 'more-option' }];
+          this.subSubTitle = 'Created By ' + this.data.CreatedBy + ' on ' + this.data.CreationDate_UTC;
+          this.headerButtons = [{ icon: 'ios-information-circle-outline', name: 'ios-information-circle-outline' }, { icon: 'ios-more', name: 'more-option' }];
           this.topicCode = this.data.TopicCode;
           this.groupCode = this.data.GroupCode;
-      
+
           this.setPath();
           this.setOfflineTopicList(this.data);
           if (response.FireBaseTransaction) {
@@ -1001,7 +1001,7 @@ export class ChatPage {
   }
 
   keyboardKey(event) {
-    
+
     this.setTyping(true);
   }
 
@@ -1620,25 +1620,25 @@ export class ChatPage {
     chatReadModal.present();
   }
 
-  headerOptions(event){
+  headerOptions(event) {
     switch (event.name) {
       case 'ios-information-circle-outline':
-          this.openTopicInfo();
-          break;
+        this.openTopicInfo();
+        break;
       case 'more-option':
-          this.openChatOptions();
-          break;
-  }
+        this.openChatOptions();
+        break;
+    }
   }
 
-  openTopicInfo(){
-   this.events.publish('toast:create',this.subSubTitle);
+  openTopicInfo() {
+    this.events.publish('toast:create', this.subSubTitle);
   }
 
   openChatOptions() {
     let params = {
       data: this.data,
-      reminders : this.reminders,
+      reminders: this.reminders,
       path: this.dataDirectory,
       folder: this.topicCode,
       group_name: this.group_name,

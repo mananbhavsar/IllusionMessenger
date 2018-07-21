@@ -61,9 +61,6 @@ export class ChatOptionsPage {
   ) {
     this.data = this.navParams.data.data;
 
-    console.log(this.navParams.data.data);
-
-
     this.reminders = this.navParams.data.reminders || [];
 
     this.topicID = this.navParams.data.data.TopicID;
@@ -135,7 +132,6 @@ export class ChatOptionsPage {
                 GroupID: this.data.GroupID,
                 IsWeb: this.platform.is('core')
               }).then((response: any) => {
-                console.log(response);
                 if (response) {
                   this.data.IsRequestedClosure = 'true';
                 }
@@ -160,7 +156,6 @@ export class ChatOptionsPage {
         GroupID: this.data.GroupID,
         IsWeb: this.platform.is('core')
       }).then((response: any) => {
-        console.log(response);
         if (response) {
           this.data.IsRequestedClosure = 'false';
         }

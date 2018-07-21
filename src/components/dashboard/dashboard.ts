@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { ModalController } from 'ionic-angular';
+import { ModalController, Events } from 'ionic-angular';
+import { Network } from '@ionic-native/network';
 
 @Component({
   selector: 'dashboard',
@@ -27,19 +28,20 @@ export class DashboardComponent {
   };
 
   constructor(
-    public modal: ModalController) {
+    public modal: ModalController,
+    public event: Events,
+    public network: Network) {
 
   }
 
   openTopics(event, day) {
-    let modal = this.modal.create('DueTopicsPage', { Day: this.days[day].value });
-    modal.onDidDismiss((data) => {
-      if (data) {
-
-      }
-    });
-    modal.present();
-
+    if (this.network.type !== 'none') {
+      let modal = this.modal.create('DueTopicsPage', { Day: this.days[day].value });
+      modal.onDidDismiss((data) => {
+        this.event.publish('dashboard:close');
+      });
+      modal.present();
+    }
   }
 
 }

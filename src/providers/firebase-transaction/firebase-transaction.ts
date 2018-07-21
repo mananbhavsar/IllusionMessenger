@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import * as _ from 'underscore';
 import * as firebase from 'firebase';
+import * as _ from 'underscore';
 
 @Injectable()
 export class FirebaseTransactionProvider {
@@ -12,6 +12,7 @@ export class FirebaseTransactionProvider {
     return new Promise((resolve, reject) => {
       if (!_.isEmpty(transations)) {
         var processed = 0;
+        console.log(transations);
         transations.forEach((object) => {
           let value: any = null;
           if (object.Value !== null) {
@@ -22,20 +23,20 @@ export class FirebaseTransactionProvider {
           }
           if (value !== null) {
             let path = object.Path;
-            firebase.database().ref(path).set(value).then(result=>{
+            firebase.database().ref(path).set(value).then(result => {
               processed++;
-              if(processed === transations.length){
+              if (processed === transations.length) {
                 resolve(true);
               }
             });
-          }else{
+          } else {
             processed++;
-            if(processed === transations.length){
+            if (processed === transations.length) {
               resolve(true);
             }
           }
         });
-      }else{
+      } else {
         reject('Empty');
       }
     });

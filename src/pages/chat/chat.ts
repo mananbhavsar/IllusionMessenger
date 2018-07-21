@@ -411,7 +411,9 @@ export class ChatPage {
   paginate(paginator) {
     if (!this.messagesLoaded || !this.readyForPagination) {
       setTimeout(() => {
-        paginator.complete();
+        if (paginator) {
+          paginator.complete();
+        }
       }, 500);
       return;
     }
@@ -693,7 +695,10 @@ export class ChatPage {
    * sets title for Chat
    */
   setTitle() {
-    this.title = this.data.Topic;
+    this.title = null;
+    setTimeout(() => {
+      this.title = this.data.Topic;
+    });
   }
 
   getSubTitle() {
@@ -722,6 +727,10 @@ export class ChatPage {
       subTitle += ', ' + 'Closed: ' + this._date.format(closedDate);
     }
     return subTitle;
+  }
+
+  getTitle() {
+    return this.title;
   }
 
   /**
@@ -891,7 +900,7 @@ export class ChatPage {
       let textMessage = this.message.trim().replace(/(?:\r\n|\r|\n)/g, '<br/>');
       //clear text
       this.message = '';
-      
+
       this.sendToFirebase(textMessage).then(data => {
         setTimeout(() => {
           this.messageInput.nativeElement.focus();
@@ -1596,8 +1605,9 @@ export class ChatPage {
       userID: this.userID,
     };
     let chatReadModal = this.modal.create(ChatReadModalPage, params);
-    chatReadModal.onDidDismiss(data => {
 
+    chatReadModal.onDidDismiss(data => {
+      this.setTitle();
     });
     chatReadModal.present();
   }
@@ -1611,6 +1621,7 @@ export class ChatPage {
     }
     let chatOptionModal = this.modal.create(ChatOptionsPage, params);
     chatOptionModal.onDidDismiss(data => {
+      this.setTitle();
       if (!_.isEmpty(data)) {
         //need to re-init
         if (data.reInitData) {
@@ -1636,7 +1647,7 @@ export class ChatPage {
         };
         let savedMediaModal = this.modal.create(SavedMediaPage, params);
         savedMediaModal.onDidDismiss(data => {
-
+          this.setTitle();
         });
         savedMediaModal.present();
         break;

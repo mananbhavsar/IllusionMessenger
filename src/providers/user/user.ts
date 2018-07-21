@@ -28,6 +28,8 @@ export class UserProvider {
 
     //total badge count
     totalBadgeCount: number = 0;
+    //firebase activity flag
+    LoadFirebaseData: boolean = true;
     constructor(
         public events: Events,
         public storage: Storage,
@@ -92,6 +94,7 @@ export class UserProvider {
         return new Promise((resolve, reject) => {
             let name = this._user.LoginUser;
             this.registerPushID('').then(response => {
+                this.LoadFirebaseData = true;
                 //removing from Storage
                 this.storage.remove('User').then(response => {
                     this.HAS_LOGGED_IN = false;
@@ -158,7 +161,7 @@ export class UserProvider {
         })
     };
 
-    registerPushID(push_id) {
+    registerPushID(push_id, isPullDown: boolean = false) {
         return new Promise((resolve, reject) => {
             //checking if logged in
             if (!_.isEmpty(this.connection.user)) {
@@ -169,7 +172,8 @@ export class UserProvider {
                 this.connection.doPost('Chat/RegisterDevice', {
                     DeviceID: push_id,
                     IsLogin: push_id !== '',
-                    IsFromMobile: this.isFromMobile
+                    IsFromMobile: this.isFromMobile,
+                    LoadFirebaseData: isPullDown || this.LoadFirebaseData,
                 }, false).then((response: any) => {
                     //LogOutForcefully
                     if (response.Data.LogOutForcefully) {
@@ -179,14 +183,16 @@ export class UserProvider {
                         this.logout();
                         reject(false);
                     } else if (response.Data.Status === 0) {
-                        this._firebaseTransaction.doTransaction(response.FireBaseTransaction).catch(error => { })
+                        this._firebaseTransaction.doTransaction(response.FireBaseTransaction).catch(error => { });
                         reject(response.Data);
                     } else {
                         //now doing firebase transaction
                         this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => {
+                            this.LoadFirebaseData = false;
                             resolve(response);
                         }).catch(error => {
                             if (error == 'Empty') {
+                                this.LoadFirebaseData = false;
                                 resolve(response);
                             } else {
                                 reject(error);

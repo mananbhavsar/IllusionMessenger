@@ -1,5 +1,5 @@
 <ion-header no-border>
-    <header [title]="'HomeScreen._Home_' | translate" [buttons]="[{icon: 'ios-flash', name: 'flash'}, { icon: 'ios-options', name: 'sort'}]"
+    <header [title]="getTitle()" [buttons]="[{icon: 'ios-flash', name: 'flash'}, { icon: 'ios-options', name: 'sort'}]"
         (buttonClicked)="headerButtonClicked($event)"></header>
     <div class="device-register" [ngSwitch]="deviceRegsiter">
         <span class="gray" *ngSwitchCase="0">Not Connected</span>

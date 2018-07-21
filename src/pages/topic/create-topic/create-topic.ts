@@ -24,6 +24,7 @@ import { UserAutoCompleteService } from './user-auto-complete';
 export class CreateTopicPage {
   @ViewChild('dueDate') dueDate: DateTime;
   hourAddition: number = 3;
+
   title: string = 'Create Topic';
 
   group_id: number = 0;
@@ -236,6 +237,7 @@ export class CreateTopicPage {
     });
 
     modal.onDidDismiss(data => {
+      this.setTitle();
       if (data) {
         this.selectedParticipantIDs = data.selectedParticipantIDs;
         this.createForm.patchValue({
@@ -258,5 +260,16 @@ export class CreateTopicPage {
 
   getErrorMessage() {
     return 'Due date should be more than ' + moment().add(this.hourAddition - 1, 'hours').format('h A');
+  }
+
+  setTitle() {
+    this.title = null;
+    setTimeout(() => {
+      this.title = 'Create Topic';
+    });
+  }
+
+  getTitle() {
+    return this.title;
   }
 }

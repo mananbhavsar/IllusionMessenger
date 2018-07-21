@@ -1,5 +1,5 @@
 <ion-header no-border (touchstart)="closeKeyboard($event)">
-  <header [title]="title" [subTitle]="userTypingString" [buttons]="headerButtons" (buttonClicked)="openChatOptions()"></header>
+  <header [title]="getTitle()" [subTitle]="userTypingString" [buttons]="headerButtons" (buttonClicked)="openChatOptions()"></header>
   <ion-toolbar class="group-header">
     <ion-title>{{group_name}}</ion-title>
   </ion-toolbar>

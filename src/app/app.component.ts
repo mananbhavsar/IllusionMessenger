@@ -1,6 +1,5 @@
 import { Component, enableProdMode, ViewChild } from '@angular/core';
 import { Badge } from '@ionic-native/badge';
-import { Diagnostic } from '@ionic-native/diagnostic';
 import { Globalization } from '@ionic-native/globalization';
 import { Keyboard } from '@ionic-native/keyboard';
 import { Network } from '@ionic-native/network';
@@ -9,6 +8,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 import { Storage } from '@ionic/storage';
 import { TranslateService } from '@ngx-translate/core';
+import * as firebase from 'firebase';
 import { AlertController, Events, LoadingController, MenuController, ModalController, Nav, Platform, ToastController } from 'ionic-angular';
 import { AccountPage } from '../pages/account/account';
 import { ChatPage } from '../pages/chat/chat';
@@ -23,7 +23,6 @@ import { UserProvider } from '../providers/user/user';
 import { GroupPage } from './../pages/group/group';
 import { Global } from './global';
 
-import * as firebase from 'firebase';
 
 export const firebaseConfig = {
     apiKey: "AIzaSyAFDZ9UPTMiDTjT4qAG0d9uVeOdhL-2PBw",
@@ -104,7 +103,6 @@ export class MyApp {
         public modalCtrl: ModalController,
         private toast: ToastController,
         private _network: Network,
-        private _diagnostic: Diagnostic,
         private _keyboard: Keyboard,
         private _badge: Badge,
         private _oneSignal: OneSignal,
@@ -509,14 +507,17 @@ export class MyApp {
     initOneSignal() {
         if (this.platform.is('core')) {
             let OneSignal = window['OneSignal'] || [];
-            OneSignal.push(["init", {
-                appId: '88b19d42-ea0e-4fa7-b35a-cf754a5ce4aa',
-                autoRegister: true,
-                allowLocalhostAsSecureOrigin: true,
-                notifyButton: {
-                    enable: false
-                },
-            }]);
+            //check if OneSignal not yet initialized
+            if (!OneSignal.isActive) {
+                OneSignal.push(["init", {
+                    appId: Global.OneSignal.key,
+                    autoRegister: true,
+                    allowLocalhostAsSecureOrigin: true,
+                    notifyButton: {
+                        enable: false
+                    },
+                }]);
+            }
             let that = this;
             OneSignal.push(function () {
                 OneSignal.isPushNotificationsEnabled(function (isEnabled) {
@@ -575,10 +576,12 @@ export class MyApp {
         if (this.platform.is('core')) {
             that.user.getUser().then(user => {
                 if (user) {
-                    OneSignal.sendTags({
-                        user_id: user.id,
-                        name: user.LoginUser
-                    });
+                    if (typeof OneSignal.sendTags === "function") {
+                        OneSignal.sendTags({
+                            user_id: user.id,
+                            name: user.LoginUser
+                        });
+                    }
                 }
             });
         } else if (this.platform.is('cordova')) {
@@ -600,8 +603,10 @@ export class MyApp {
 
     initBadge() {
         this.user.getUser().then(user => {
+            console.log('Badge/' + user.id + '/Total');
             firebase.database().ref('Badge/' + user.id + '/Total').on('value', snapshot => {
                 let total: any = snapshot.val();
+                console.log('total:' + total);
                 this.events.publish('badge:set', total);
                 if (total) {
                     this._badge.set(total);

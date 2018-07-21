@@ -37,8 +37,8 @@ export class GroupPage {
     private modalController: ModalController,
     private actionSheetController: ActionSheetController,
   ) {
-    this.title = this.navParams.data.Group;
     this.group_id = this.navParams.data.GroupID;
+    this.setTitle();
   }
 
   ionViewDidEnter() {
@@ -149,6 +149,7 @@ export class GroupPage {
       group_code: this.group['GroupDetail'][0].GroupCode,
     });
     closeTopicModal.onDidDismiss(data => {
+      this.setTitle();
       //refresh page
       this.page = 0;//to keep consistency
       this.getGroupDetails().catch(erroe => {
@@ -176,6 +177,7 @@ export class GroupPage {
       group_name: this.title,
     });
     groupOptionsModal.onDidDismiss(data => {
+      this.setTitle();
       if (data) {
         this.group = [];
         this.page = 0;
@@ -236,5 +238,16 @@ export class GroupPage {
     this.group = [];
     this.page = 0;
     this.getGroupDetails();
+  }
+
+  setTitle() {
+    this.title = null;
+    setTimeout(() => {
+      this.title = this.navParams.data.Group;
+    });
+  }
+
+  getTitle() {
+    return this.title;
   }
 }

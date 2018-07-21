@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { Network } from '@ionic-native/network';
 import { OneSignal } from '@ionic-native/onesignal';
-import { Storage } from '@ionic/storage';
 import { TranslateService } from "@ngx-translate/core";
 import firebase from 'firebase';
 import { ActionSheetController, Events, IonicPage, ModalController, NavController, Platform } from 'ionic-angular';
@@ -10,7 +9,6 @@ import { Global } from '../../app/global';
 import { ConnectionProvider } from '../../providers/connection/connection';
 import { UserProvider } from '../../providers/user/user';
 import { GroupPage } from '../group/group';
-import { DateProvider } from './../../providers/date/date';
 import { FirebaseTransactionProvider } from './../../providers/firebase-transaction/firebase-transaction';
 import { NotificationsProvider } from './../../providers/notifications/notifications';
 import { AddFlashPage } from './../group/add-flash/add-flash';
@@ -23,6 +21,7 @@ import { CreateTopicPage } from './../topic/create-topic/create-topic';
     templateUrl: 'home.html',
 })
 export class HomePage {
+    title: string = 'Home';
     global: any = {};
     data: any = null;
     badges: any = {};
@@ -74,11 +73,9 @@ export class HomePage {
         public connection: ConnectionProvider,
         public user: UserProvider,
         public events: Events,
-        private _storage: Storage,
         private translate: TranslateService,
         private _oneSignal: OneSignal,
         private platform: Platform,
-        private _date: DateProvider,
         private _network: Network,
         private modalController: ModalController,
         private notifications: NotificationsProvider,
@@ -141,6 +138,7 @@ export class HomePage {
                 this.dataFetched = true;
                 //groups
                 this.data = response;
+                console.log(this.data);
                 //flash
                 if (response.FlashNews) {
                     this.flashNews = response.FlashNews;
@@ -157,41 +155,41 @@ export class HomePage {
 
     registerDevice() {
         //make device regsiter call
-            //if internet
-            if (this._network.type === 'none') {
-                this.deviceRegsiter = 0;
-            } else  if (this.platform.is('core')) {
-                if (this.connection.getPushID()) {
-                    this.connectToServer(this.connection.push_id);
-                } else {
-                    this.events.subscribe('pushid:created', (userId) => {
-                        this.connectToServer(userId);
-                    });
-                    //wait 15sec and check again for user id
-                    setTimeout(() => {
-                        let OneSignal = window['OneSignal'] || [];
-                        let that = this;
-                        OneSignal.push(function () {
-                            OneSignal.getUserId(function (userId: string) {
-                              if(userId){
-                                    that.connectToServer(userId);
-                                }
-                            });
+        //if internet
+        if (this._network.type === 'none') {
+            this.deviceRegsiter = 0;
+        } else if (this.platform.is('core')) {
+            if (this.connection.getPushID()) {
+                this.connectToServer(this.connection.push_id);
+            } else {
+                this.events.subscribe('pushid:created', (userId) => {
+                    this.connectToServer(userId);
+                });
+                //wait 15sec and check again for user id
+                setTimeout(() => {
+                    let OneSignal = window['OneSignal'] || [];
+                    let that = this;
+                    OneSignal.push(function () {
+                        OneSignal.getUserId(function (userId: string) {
+                            if (userId) {
+                                that.connectToServer(userId);
+                            }
                         });
                     });
-                }
-            } else if (this.platform.is('cordova')) {
-                this.deviceRegsiter = 1;
-                this._oneSignal.getIds().then((id) => {
-                    this.connectToServer(id.userId);
-                }).catch(error => {
-                    this.deviceRegsiter = 0;
                 });
             }
+        } else if (this.platform.is('cordova')) {
+            this.deviceRegsiter = 1;
+            this._oneSignal.getIds().then((id) => {
+                this.connectToServer(id.userId);
+            }).catch(error => {
+                this.deviceRegsiter = 0;
+            });
+        }
     }
 
     connectToServer(pushID) {
-        this.user.registerPushID(pushID).then((response: any) => {
+        this.user.registerPushID(pushID, true).then((response: any) => {
             if (response.Data && response.Data.LastActivity) {
                 this.deviceRegsiter = 2; //connected
                 this.connectedTime = response.Data.LastActivity; //this will be utc
@@ -273,6 +271,7 @@ export class HomePage {
             group_name: null,
         });
         flashModal.onDidDismiss(data => {
+            this.setTitle();
             if (data) {
                 this.events.publish('toast:create', data.Data.Message);
                 this.notifications.sends(data.OneSignalTransaction);
@@ -382,5 +381,16 @@ export class HomePage {
         this.page = 0;
         this.data = [];
         this.getData();
+    }
+
+    setTitle() {
+        this.title = null;
+        setTimeout(() => {
+            this.title = 'Home';
+        });
+    }
+
+    getTitle() {
+        return this.title;
     }
 }

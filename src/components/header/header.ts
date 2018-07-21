@@ -9,11 +9,11 @@ import { Global } from "../../app/global";
     templateUrl: 'header.html'
 })
 export class HeaderComponent {
+    @Input() title: string = null;
     @Input() subTitle: string = null;
     @Input() buttons: any = null;
     @Output() buttonClicked = new EventEmitter();
 
-    _title: string;
     cartCounter: number = null;
     prevPageColor: string = null;
     colorHex = Global.color;
@@ -38,17 +38,9 @@ export class HeaderComponent {
     ionViewDidEnter() {
     }
 
-    @Input()
-    set title(title: string) {
-        this._title = title;
-    }
-
-    get title() {
-        return this._title;
-    }
-
     openSearch() {
     }
+
 
     getColor(name: string = null) {
         if (true || name === null) {
@@ -83,5 +75,9 @@ export class HeaderComponent {
     sendButtonClicked(button, event) {
         button.event = event;
         this.buttonClicked.emit(button);
+    }
+
+    getTitle() {
+        return this.title;
     }
 }

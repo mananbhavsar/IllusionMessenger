@@ -55,7 +55,6 @@ export class ChatOptionsPage {
     private _date: DateProvider,
   ) {
     this.data = this.navParams.data.data;
-    this.title = this.navParams.data.data.Topic + '\'s options';
     this.topicID = this.navParams.data.data.TopicID;
     this.groupID = this.navParams.data.data.GroupID;
     this.statusID = this.navParams.data.data.StatusID;
@@ -64,6 +63,7 @@ export class ChatOptionsPage {
     this.path = this.navParams.data.path;
     this.group_name = this.navParams.data.group_name;
 
+    this.setTitle();
     this.processParticipants();
   }
 
@@ -105,7 +105,7 @@ export class ChatOptionsPage {
 
     let savedMediaModal = this.modal.create(SavedMediaPage, params);
     savedMediaModal.onDidDismiss(data => {
-
+      this.setTitle();
     });
     savedMediaModal.present();
   }
@@ -441,6 +441,7 @@ export class ChatOptionsPage {
         });
 
         modal.onDidDismiss(data => {
+          this.setTitle();
           if (data) {
             //saving new users
             this.connection.doPost('Chat/Add_Participant', {
@@ -492,5 +493,16 @@ export class ChatOptionsPage {
 
   getTagColor(id) {
     return 'tag-' + (id % 10);
+  }
+
+  setTitle() {
+    this.title = null;
+    setTimeout(() => {
+      this.title = this.navParams.data.data.Topic + '\'s options';
+    });
+  }
+
+  getTitle() {
+    return this.title;
   }
 }

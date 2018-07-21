@@ -1,25 +1,24 @@
-import { Component, Input } from '@angular/core';
-import { Events } from 'ionic-angular';
-import { App } from 'ionic-angular';
+import { Component, Input, OnChanges } from '@angular/core';
+import { App, Events, NavController } from 'ionic-angular';
 import { UserProvider } from '../../providers/user/user';
 
 @Component({
   selector: 'title',
   templateUrl: 'title.html'
 })
-export class TitleComponent {
+export class TitleComponent implements OnChanges {
   @Input() title: string = null;
   @Input() subTitle: string = null;
   @Input() badgeCount: number = 0;
-
 
   constructor(
     private _app: App,
     private _events: Events,
     private _user: UserProvider,
+    public navCtrl: NavController,
   ) {
     this._events.subscribe('badge:set', total => {
-      this.setHtmlTitle();
+      this.setHtmlTitle('badge');
     });
   }
 
@@ -35,16 +34,22 @@ export class TitleComponent {
     return badgeString;
   }
 
-  ngOnChanges() {
-    this.setHtmlTitle();
+  ngOnInit() {
+    this.setHtmlTitle('init');
   }
 
-  setHtmlTitle() {
+  ngOnChanges() {
+    this.setHtmlTitle('changes');
+  }
+
+  setHtmlTitle(action) {
+    let titleToSet = this.title;
     if (this._user.totalBadgeCount) {
-      this._app.setTitle(this.title + this.getTotalBadgeCount());
-    } else {
-      this._app.setTitle(this.title);
+      titleToSet += this.getTotalBadgeCount();
     }
+    //set
+    this._app.setTitle(titleToSet);
+    document.title = titleToSet;
   }
 
   getTotalBadgeCount() {

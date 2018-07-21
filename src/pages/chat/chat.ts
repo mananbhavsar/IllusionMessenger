@@ -639,7 +639,7 @@ export class ChatPage {
           this.data = response.Data;
           this.data.GroupID = this.groupID;
           this.group_name = this.data.Group;
-          this.subSubTitle = 'Created By ' + this.data.CreatedBy + ' on ' + this.data.CreationDate_UTC;
+          this.subSubTitle = 'Created By ' + this.data.CreatedBy + ' on ' + this._date.format(this._date.get(this.data.CreationDate_UTC));
           this.headerButtons = [{ icon: 'ios-information-circle-outline', name: 'ios-information-circle-outline' }, { icon: 'ios-more', name: 'more-option' }];
           this.topicCode = this.data.TopicCode;
           this.groupCode = this.data.GroupCode;

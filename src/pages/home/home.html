@@ -14,7 +14,7 @@
     <center-spinner *ngIf="dataFetched === false;else data_template"></center-spinner>
     <ng-template #data_template>
         <flash-news [flashNews]="flashNews"></flash-news>
-        <ion-item-divider *ngIf="!getUnreadCount() && isGroupSelected()" color="light">
+        <ion-item-divider color="light">
             <button [hidden]="!getUnreadCount()" ion-button outline small icon-right (click)="openReadOptions()">
                 Edit
                 <ion-icon name="remove-circle"></ion-icon>

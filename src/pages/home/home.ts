@@ -1,9 +1,9 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component } from '@angular/core';
 import { Network } from '@ionic-native/network';
 import { OneSignal } from '@ionic-native/onesignal';
 import { TranslateService } from "@ngx-translate/core";
 import firebase from 'firebase';
-import { ActionSheetController, reorderArray, Events, IonicPage, ModalController, NavController, Platform } from 'ionic-angular';
+import { ActionSheetController, Events, IonicPage, ModalController, NavController, Platform, reorderArray } from 'ionic-angular';
 import * as _ from 'underscore';
 import { Global } from '../../app/global';
 import { ConnectionProvider } from '../../providers/connection/connection';
@@ -13,7 +13,6 @@ import { FirebaseTransactionProvider } from './../../providers/firebase-transact
 import { NotificationsProvider } from './../../providers/notifications/notifications';
 import { AddFlashPage } from './../group/add-flash/add-flash';
 import { CreateTopicPage } from './../topic/create-topic/create-topic';
-import { Response } from '@angular/http/src/static_response';
 
 
 @IonicPage()
@@ -91,7 +90,7 @@ export class HomePage {
         private modalController: ModalController,
         private notifications: NotificationsProvider,
         private _firebaseTransaction: FirebaseTransactionProvider,
-        public actionSheetController: ActionSheetController
+        public actionSheetController: ActionSheetController,
     ) {
         this.global = Global;
 

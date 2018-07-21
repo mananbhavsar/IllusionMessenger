@@ -24,11 +24,11 @@
             </ion-col>
           </ion-row>
           <ion-row>
-            <ion-col text-left *ngIf="topic.Group">
-              {{topic.Group}}
-            </ion-col>
             <ion-col text-left>
-              &nbsp;
+                {{topic.CreationDate_UTC | time:false:true }}
+            </ion-col>
+            <ion-col text-right *ngIf="topic.Group">
+              {{topic.Group}}
             </ion-col>
           </ion-row>
         </p>

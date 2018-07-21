@@ -66,8 +66,8 @@
 			</ion-item>
 		</ion-list>
 	</div>
-	<div margin-left class="background-grey" *ngIf="amIResponsible && data.StatusID !== 2 && data.IsRequestedClosure === 'true'">
-		<p [ngClass]="{ 'secondary' : data.IsRequestedClosure}">
+	<div margin-left margin-top class="background-grey" *ngIf="amIResponsible && data.StatusID !== 2 && data.IsRequestedClosure === 'true'">
+		<p [ngClass]="{ 'gray' : data.IsRequestedClosure}">
 			Requested for closure
 		</p>
 	</div>

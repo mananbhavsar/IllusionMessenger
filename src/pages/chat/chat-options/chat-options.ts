@@ -650,4 +650,8 @@ export class ChatOptionsPage {
   getTitle() {
     return this.title;
   }
+
+  trackByUserID(index, user) {
+    return user.UserID;
+  }
 }

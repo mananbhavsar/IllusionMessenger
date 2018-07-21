@@ -15,7 +15,7 @@
 			<ion-icon name="ios-add-circle" color="pickup" item-start></ion-icon>
 			Add Participants
 		</ion-item>
-		<ion-item *ngFor="let participant of data.User;let i = index" (click)="userOptionsClicked(participant, i)" [hidden]="!participant">
+		<ion-item *ngFor="let participant of data.User;let i = index;trackBy:trackByUserID" (click)="userOptionsClicked(participant, i)" [hidden]="!participant">
 			<h2 *ngIf="participant">
 				{{participant.User}}
 				<span *ngIf="isYou(participant.UserID)">(You)</span>

@@ -96,13 +96,13 @@ export class HomePage {
 
         //listening to Resume & Pause events
         this.events.subscribe('platform:onResumed', () => {
-            this.getData().catch(error => { });
+            this.getData(false).catch(error => { });
         });
 
         //online offline
         if (this.platform.is('cordova')) {
             this._network.onchange().subscribe(() => {
-                this.registerDevice();
+                this.registerDevice(false);
             });
         }
     }
@@ -111,12 +111,12 @@ export class HomePage {
     ionViewDidEnter() {
         //checking if logged in
         if (!_.isEmpty(this.connection.user)) {
-            this.initData().catch(error => { });
+            this.initData(false).catch(error => { });
         } else {
             //waiting for login
             this.events.subscribe('user:ready', (status) => {
                 if (status) {
-                    this.initData().catch(error => { });
+                    this.initData(false).catch(error => { });
                 }
             });
         }
@@ -128,9 +128,9 @@ export class HomePage {
         }
     }
 
-    initData() {
+    initData(isPullDown) {
         return new Promise((resolve, reject) => {
-            this.getData().then(status => {
+            this.getData(isPullDown).then(status => {
                 if (this.firebaseConnected === false) {
                     this.connectToFireBase();
                     this.firebaseConnected = true;
@@ -142,7 +142,7 @@ export class HomePage {
         });
     }
 
-    getData() {
+    getData(isPullDown) {
         return new Promise((resolve, reject) => {
             this.dataFetched = _.size(this.data) > 0;
             this.connection.doPost('Chat/GetTaskDetail', {
@@ -161,7 +161,7 @@ export class HomePage {
                     this.flashNews = response.FlashNews;
                 }
 
-                this.registerDevice();
+                this.registerDevice(isPullDown);
                 resolve(true);
             }).catch(error => {
                 this.flashNews = [];
@@ -170,17 +170,17 @@ export class HomePage {
         });
     }
 
-    registerDevice() {
+    registerDevice(isPullDown) {
         //make device regsiter call
         //if internet
         if (this._network.type === 'none') {
             this.deviceRegsiter = 0;
         } else if (this.platform.is('core')) {
             if (this.connection.getPushID()) {
-                this.connectToServer(this.connection.push_id);
+                this.connectToServer(this.connection.push_id, isPullDown);
             } else {
                 this.events.subscribe('pushid:created', (userId) => {
-                    this.connectToServer(userId);
+                    this.connectToServer(userId, isPullDown);
                 });
                 //wait 15sec and check again for user id
                 setTimeout(() => {
@@ -189,7 +189,7 @@ export class HomePage {
                     OneSignal.push(function () {
                         OneSignal.getUserId(function (userId: string) {
                             if (userId) {
-                                that.connectToServer(userId);
+                                that.connectToServer(userId, isPullDown);
                             }
                         });
                     });
@@ -198,15 +198,15 @@ export class HomePage {
         } else if (this.platform.is('cordova')) {
             this.deviceRegsiter = 1;
             this._oneSignal.getIds().then((id) => {
-                this.connectToServer(id.userId);
+                this.connectToServer(id.userId, isPullDown);
             }).catch(error => {
                 this.deviceRegsiter = 0;
             });
         }
     }
 
-    connectToServer(pushID) {
-        this.user.registerPushID(pushID, true).then((response: any) => {
+    connectToServer(pushID, isPullDown) {
+        this.user.registerPushID(pushID, isPullDown).then((response: any) => {
             if (response.Data && response.Data.LastActivity) {
                 this.deviceRegsiter = 2; //connected
                 this.connectedTime = response.Data.LastActivity; //this will be utc
@@ -220,7 +220,7 @@ export class HomePage {
 
     refresh(refresher) {
         this.page = 0;
-        this.getData().then(status => {
+        this.getData(true).then(status => {
             this.dataFetched = true;
             this.selectedTopic = [];
             this.selectedGroup = [];
@@ -293,7 +293,7 @@ export class HomePage {
             TopicCode: this.selectedTopic.toString(),
         }, false).then((response: any) => {
             if (response) {
-                this.getData();
+                this.getData(false);
                 this.selectedTopic = [];
                 this.selectedGroup = [];
                 this.readAllSelected = true;
@@ -313,7 +313,7 @@ export class HomePage {
                 ReadAll: true
             }, false).then((response: any) => {
                 if (response) {
-                    this.getData();
+                    this.getData(false);
                     this.selectedTopic = [];
                     this.selectedGroup = [];
                     this.readAllSelected = true;
@@ -395,7 +395,7 @@ export class HomePage {
 
                 //refresh
                 setTimeout(() => {
-                    this.getData();
+                    this.getData(false);
                 });
             }
         });
@@ -538,7 +538,7 @@ export class HomePage {
     doSorting() {
         this.page = 0;
         this.data = [];
-        this.getData();
+        this.getData(false);
     }
 
     setTitle() {

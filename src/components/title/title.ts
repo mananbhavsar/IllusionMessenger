@@ -11,7 +11,7 @@ export class TitleComponent {
   @Input() title: string = null;
   @Input() subTitle: string = null;
   @Input() badgeCount: number = 0;
-  @Input() subSubTitle : string = null;
+  @Input() subSubTitle: string = null;
 
   constructor(
     private _app: App,
@@ -21,6 +21,10 @@ export class TitleComponent {
     this._events.subscribe('badge:set', total => {
       this.setHtmlTitle();
     });
+  }
+
+  ionViewWillLeave() {
+    this.setHtmlTitle();
   }
 
   getBadgeCount() {

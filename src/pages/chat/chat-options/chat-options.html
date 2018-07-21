@@ -61,13 +61,13 @@
 					</ion-col>
 				</ion-row>
 			</div>
-			<ion-item (click)="closureRequest()" *ngIf="amIResponsible && data.StatusID !== 2 && request_for_closure" class="close-topic">
+			<ion-item (click)="closureRequest()" *ngIf="amIResponsible && data.StatusID !== 2 && data.IsRequestedClosure === 'false'" class="close-topic">
 				<h2 color="danger">Request for closure</h2>
 			</ion-item>
 		</ion-list>
 	</div>
-	<div margin-left class="background-grey" *ngIf="amIResponsible && data.StatusID !== 2 && requested_for_closure">
-		<p color="secondary">
+	<div margin-left class="background-grey" *ngIf="amIResponsible && data.StatusID !== 2 && data.IsRequestedClosure === 'true'">
+		<p [ngClass]="{ 'secondary' : data.IsRequestedClosure}">
 			Requested for closure
 		</p>
 	</div>
@@ -80,11 +80,11 @@
 			<ion-item class="height-0" *ngIf="data.RescheduleCount < 10">
 				<ion-datetime displayFormat="DD MMM YYYY, h A" (ionChange)="resheduleDateTimeChanged($event)" max="2050" #dueDate></ion-datetime>
 			</ion-item>
+			<ion-item (click)="cancelClosureRequest()" class="close-topic" *ngIf="data.IsRequestedClosure === 'true'">
+				<h2 color="danger">Cancel Closure Request</h2>
+			</ion-item>
 			<ion-item (click)="closeTopic()" class="close-topic">
 				<h2 color="danger">Close Topic</h2>
-			</ion-item>
-			<ion-item (click)="closeRequest()" class="close-topic" *ngIf="close_request">
-				<h2 color="danger">Close Request</h2>
 			</ion-item>
 		</ion-list>
 	</div>

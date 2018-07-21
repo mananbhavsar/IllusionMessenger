@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { Storage } from '@ionic/storage';
-import { ActionSheetController, DateTime, Events, IonicPage, ModalController, NavController, NavParams, ViewController } from 'ionic-angular';
+import { ActionSheetController, DateTime, Events, IonicPage, Platform, ModalController, NavController, NavParams, ViewController } from 'ionic-angular';
 import * as moment from 'moment';
 import * as _ from 'underscore';
 import { ConnectionProvider } from '../../../providers/connection/connection';
@@ -10,7 +10,6 @@ import { UserProvider } from '../../../providers/user/user';
 import { ManageParticipantsPage } from '../../topic/create-topic/manage-participants/manage-participants';
 import { DateProvider } from './../../../providers/date/date';
 import { SavedMediaPage } from "./saved-media/saved-media";
-import { Response } from '@angular/http/src/static_response';
 
 
 
@@ -45,9 +44,6 @@ export class ChatOptionsPage {
   amIAdmin: boolean = false;
   amIResponsible: boolean = false;
   responsibleUserID: string = null;
-  request_for_closure: boolean = true;
-  requested_for_closure: boolean = false;
-  close_request: boolean = false;
 
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
@@ -56,6 +52,7 @@ export class ChatOptionsPage {
     public connection: ConnectionProvider,
     public user: UserProvider,
     public events: Events,
+    public platform: Platform,
     private _firebaseTransaction: FirebaseTransactionProvider,
     private _notifications: NotificationsProvider,
     public storage: Storage,
@@ -64,7 +61,9 @@ export class ChatOptionsPage {
   ) {
     this.data = this.navParams.data.data;
 
-    console.log(this.navParams.data);
+    console.log( this.navParams.data.data);
+    
+
     this.reminders = this.navParams.data.reminders || [];
 
     this.title = this.navParams.data.data.Topic + '\'s options';
@@ -124,30 +123,32 @@ export class ChatOptionsPage {
 
   closureRequest() {
     if (this.amIResponsible) {
-      this.connection.doPost('', {
+      this.connection.doPost('Chat/RequestForClosure', {
         TopicID: this.data.TopicID,
         GroupID: this.data.GroupID,
-        IsRequested: true
+        IsWeb: this.platform.is('core')
       }).then((response: any) => {
-        this.request_for_closure = false;
-        this.requested_for_closure = true;
-        this.close_request = true;
+        console.log(response);
+        if (response) {
+          this.data.IsRequestedClosure = 'true';
+        }
       }).catch((error) => {
 
       });
     }
   }
 
-  closeRequest() {
+  cancelClosureRequest() {
     if (this.amIAdmin) {
-      this.connection.doPost('', {
+      this.connection.doPost('Chat/CancelClosureRequest', {
         TopicID: this.data.TopicID,
         GroupID: this.data.GroupID,
-        Close: true
+        IsWeb: this.platform.is('core')
       }).then((response: any) => {
-        this.request_for_closure = false;
-        this.requested_for_closure = false;
-        this.close_request = false;
+        console.log(response);
+        if (response) {
+          this.data.IsRequestedClosure = 'false';
+        }
       }).catch((error) => {
 
       });

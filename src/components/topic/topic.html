@@ -3,7 +3,7 @@
     <ion-col *ngIf="selectable" col-1>
       <ion-checkbox color="primary" [checked]="isChecked" (ionChange)="readMessage($event,topic)"></ion-checkbox>
     </ion-col>
-    <ion-col col-11>
+    <ion-col col>
       <ion-item (click)="openTopic()">
         <h2>
           <span class="topic-name">{{topic.Topic}}</span>

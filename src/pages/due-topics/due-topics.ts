@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
+import { ConnectionProvider } from '../../providers/connection/connection';
 
 @IonicPage()
 @Component({
@@ -7,16 +8,43 @@ import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angul
   templateUrl: 'due-topics.html',
 })
 export class DueTopicsPage {
-   title : string = 'Task due in days';
-   topics : any = null;
+  title: string = 'Task due in days';
+  topics: any = [];
+  day: number;
   constructor(public navCtrl: NavController,
-     public navParams: NavParams,
-    public viewCntl : ViewController) {
+    public navParams: NavParams,
+    public viewCntl: ViewController,
+    public connection: ConnectionProvider) {
+    this.day = this.navParams.data.Day;
+    this.getData();
     
   }
 
-  dismiss(){
-   this.viewCntl.dismiss();
+  dismiss() {
+    this.viewCntl.dismiss();
+  }
+
+  getData() {
+    return new Promise((resolve, reject) => {
+      this.connection.doPost('Chat/GetTaskDueInDaysDetail', {
+        Days: this.day
+      }).then((response: any) => {
+        if (response) {
+          this.topics = response.TopicList;
+          resolve(true);
+        }
+      }).catch((error) => {
+        reject();
+      });
+    });
+  }
+
+  refresh(refresher) {
+    this.getData().then(status => {
+      refresher.complete();
+    }).catch(error => {
+      refresher.complete();
+    });
   }
 
 

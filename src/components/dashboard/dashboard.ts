@@ -10,15 +10,15 @@ import { ModalController } from 'ionic-angular';
 export class DashboardComponent {
 
   @Output() buttonClicked = new EventEmitter;
-  @Input() dueDays :  Array<any> = []; 
+  @Input() dueDays: Array<any> = [];
 
   constructor(
     public modal: ModalController) {
-   
+
   }
 
-  openTopics(event) {
-    let modal = this.modal.create('DueTopicsPage');
+  openTopics(event, day) {
+    let modal = this.modal.create('DueTopicsPage',{Day : day});
     modal.present();
     modal.onDidDismiss((data) => {
       if (data) {

@@ -159,8 +159,7 @@ export class HomePage {
                 this.dataFetched = true;
                 //groups
                 this.data = response;
-                console.log(this.data);
-                
+
                 //flash
                 if (response.FlashNews) {
                     this.flashNews = response.FlashNews;
@@ -262,7 +261,14 @@ export class HomePage {
     }
 
     openReadOptions() {
-        this.readOptions = true;
+        if (this.readOptions) {
+            this.readOptions = false;
+            this.selectedTopic = [];
+            this.selectedGroup = [];
+            this.readAllSelected = true;
+        } else {
+            this.readOptions = true;
+        }
         if (this.selectedTopic.length !== 0) {
             this.readAllSelected = false;
         }

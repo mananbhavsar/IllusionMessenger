@@ -3,10 +3,12 @@
 </ion-header>
 
 <ion-content>
-  <empty *ngIf="!topics else data_template"></empty>
+    <ion-refresher (ionRefresh)="refresh($event)">
+        <ion-refresher-content pullingIcon="arrow-round-down" pullingText="Pull to refresh" refreshingSpinner="crescent" refreshingText="Refreshing...">
+        </ion-refresher-content>
+    </ion-refresher>
+  <empty *ngIf="topics.length === 0; else data_template"></empty>
   <ng-template #data_template>
-    <topic *ngIf="topics">
-      <topic [group_id]="topic.GroupID" type="ActiveTopicList" [topic]="topic" *ngFor="let topic of data.Task_due_in_days;"></topic>
-    </topic>
+      <topic [group_id]="topic.GroupID" type="ActiveTopicList" [topic]="topic" *ngFor="let topic of topics;"></topic>
   </ng-template>
 </ion-content>

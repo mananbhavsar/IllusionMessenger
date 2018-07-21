@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { Network } from '@ionic-native/network';
 import { OneSignal } from '@ionic-native/onesignal';
 import { TranslateService } from "@ngx-translate/core";
 import firebase from 'firebase';
-import { ActionSheetController, Events, IonicPage, ModalController, NavController, Platform } from 'ionic-angular';
+import { ActionSheetController, reorderArray, Events, IonicPage, ModalController, NavController, Platform } from 'ionic-angular';
 import * as _ from 'underscore';
 import { Global } from '../../app/global';
 import { ConnectionProvider } from '../../providers/connection/connection';
@@ -13,6 +13,7 @@ import { FirebaseTransactionProvider } from './../../providers/firebase-transact
 import { NotificationsProvider } from './../../providers/notifications/notifications';
 import { AddFlashPage } from './../group/add-flash/add-flash';
 import { CreateTopicPage } from './../topic/create-topic/create-topic';
+import { Response } from '@angular/http/src/static_response';
 
 
 @IonicPage()
@@ -29,6 +30,7 @@ export class HomePage {
     firebaseConnected: boolean = false;
 
     flashNews: Array<any> = [];
+    reorder: boolean = false;
     /**
      * 0 => not connected
      * 1 => connecting
@@ -39,9 +41,15 @@ export class HomePage {
     connectedTime: string = null;
     sort_by: string = '';
     sort_order: string = '';
-
+    group_reorder: any = [];
     dataFetched: boolean = false;
+    selectedGroup: any = [];
     tabs = [
+        {
+            name: 'Task due in days',
+            icon: 'stats',
+            key: 'Task_due_in_days',
+        },
         {
             name: 'Assigned To Me',
             icon: 'star',
@@ -67,7 +75,10 @@ export class HomePage {
             icon: 'paper',
             key: 'Topic_Wise'
         },];
-    selectedTab: string = 'star';
+    selectedTab: string = 'stats';
+    readOptions: boolean = false;
+    selectedTopic: Array<any> = [];
+    readAllSelected: boolean = true;
     constructor(
         public navCtrl: NavController,
         public connection: ConnectionProvider,
@@ -83,6 +94,7 @@ export class HomePage {
         public actionSheetController: ActionSheetController
     ) {
         this.global = Global;
+
         //listening to Resume & Pause events
         this.events.subscribe('platform:onResumed', () => {
             this.getData().catch(error => { });
@@ -108,6 +120,12 @@ export class HomePage {
                     this.initData().catch(error => { });
                 }
             });
+        }
+    }
+
+    ionViewDidLeave() {
+        if (this.selectedGroup.length > 0) {
+            this.selectedGroup = [];
         }
     }
 
@@ -205,6 +223,11 @@ export class HomePage {
         this.page = 0;
         this.getData().then(status => {
             this.dataFetched = true;
+            this.selectedTopic = [];
+            this.selectedGroup = [];
+            this.readAllSelected = true;
+            this.readOptions = false;
+            this.group_reorder = [];
             refresher.complete();
             this.connectToFireBase();
         }).catch(error => {
@@ -232,6 +255,98 @@ export class HomePage {
 
             }
         });
+    }
+
+    openReadOptions() {
+        if (this.readOptions) {
+            this.readOptions = false;
+            this.selectedTopic = [];
+            this.selectedGroup = [];
+            this.readAllSelected = true;
+        } else {
+            this.readOptions = true;
+        }
+        if (this.selectedTopic.length !== 0) {
+            this.readAllSelected = false;
+        }
+    }
+
+    checkedTopic(event) {
+        if (event.checked) {
+            if (this.selectedTopic.indexOf(event.TopicCode) === -1) {
+                this.selectedTopic.push(event.TopicCode);
+                this.readAllSelected = false;
+            }
+        } else {
+            if (this.selectedTopic.indexOf(event.TopicCode) > -1) {
+                this.selectedTopic.splice(this.selectedTopic.indexOf(event.TopicCode), 1);
+            }
+        }
+        if (this.selectedGroup.length === 0 && this.selectedTopic.length === 0) {
+            this.readAllSelected = true;
+        }
+    }
+
+    readSelected() {
+        this.connection.doPost('Chat/ReadAll', {
+            ReadAll: false,
+            GroupCode: this.selectedGroup.map(GroupCode => GroupCode.GroupCode),
+            TopicCode: this.selectedTopic.toString(),
+        }, false).then((response: any) => {
+            if (response) {
+                this.getData();
+                this.selectedTopic = [];
+                this.selectedGroup = [];
+                this.readAllSelected = true;
+                this.readOptions = false;
+                if (response.FireBaseTransaction) {
+                    this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { })
+                }
+            }
+        }).catch((error) => {
+        });
+    }
+
+
+    readAll() {
+        return new Promise((resolve, reject) => {
+            this.connection.doPost('Chat/ReadAll', {
+                ReadAll: true
+            }, false).then((response: any) => {
+                if (response) {
+                    this.getData();
+                    this.selectedTopic = [];
+                    this.selectedGroup = [];
+                    this.readAllSelected = true;
+                    this.readOptions = false;
+                    if (response.FireBaseTransaction) {
+                        this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { })
+                    }
+                    resolve(response);
+                }
+            }).catch((error) => {
+                reject();
+            });
+        });
+    }
+
+    readMessage(ev, group) {
+        group.IsRead = ev.checked;
+        if (ev.checked) {
+            if (this.selectedGroup.indexOf(this.selectedGroup.GroupCode) === -1) {
+                this.selectedGroup.push({
+                    checked: group.IsRead,
+                    GroupCode: group.GroupCode,
+                });
+                this.readAllSelected = false;
+            }
+        } else {
+            this.selectedGroup.splice(this.selectedGroup.indexOf(this.selectedGroup.GroupCode), 1);
+        }
+
+        if (this.selectedGroup.length === 0 && this.selectedTopic.length === 0) {
+            this.readAllSelected = true;
+        }
     }
 
     useLang(lang) {
@@ -288,6 +403,13 @@ export class HomePage {
         flashModal.present();
     }
 
+    isGroupSelected() {
+        if (this.getSelectedTabName() === 'Groups') {
+            return true;
+        }
+        return false;
+    }
+
     getSelectedTabName() {
         let selectedName = '';
         this.tabs.some(tab => {
@@ -300,14 +422,26 @@ export class HomePage {
         return selectedName;
     }
 
+    getUnreadCount() {
+        let field = 'Topic_Wise' + '_Count';
+        if (this.data) {
+            if (field in this.data) {
+                if (this.data[field] > 0) {
+                    return true;
+                }
+                return false;
+            }
+        }
+        return false;
+
+    }
+
     getTabBadgeCount(key) {
         let selectedBadgeCount: any = 0;
-
         let field = key + '_Count';
         if (field in this.data) {
             selectedBadgeCount = this.data[field];
         }
-
         if (selectedBadgeCount > 100) {
             selectedBadgeCount = '100+';
         }
@@ -334,6 +468,31 @@ export class HomePage {
             selectedRowsCount = _.size(this.data[tab_key]);
         }
         return selectedRowsCount;
+    }
+
+    reorderItems(indexes) {
+        this.data.Groups_Wise = reorderArray(this.data.Groups_Wise, indexes);
+        for (let i = 0; i < this.data.Groups_Wise.length; i++) {
+            this.group_reorder.push({ 'OrderIndex': i, 'GroupID': this.data.Groups_Wise[i].GroupID });
+        }
+        this.connection.doPost('chat/MyGroupOrder', {
+            OrderIndex: this.group_reorder.map(order => order.OrderIndex),
+            GroupID: this.group_reorder.map(groupId => groupId.GroupID)
+        }, false).then((response: any) => {
+            if (response) {
+                this.group_reorder = [];
+            }
+        }).catch((error) => {
+        });
+
+    }
+
+    reorderGroups() {
+        if (this.reorder) {
+            this.reorder = false;
+        } else {
+            this.reorder = true;
+        }
     }
 
     openSortOptions() {

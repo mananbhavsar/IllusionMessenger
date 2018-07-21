@@ -18,6 +18,7 @@ import { ReachUsComponent } from './reach-us/reach-us';
 import { RefreshComponent } from './refresh/refresh';
 import { TitleComponent } from './title/title';
 import { TopicComponent } from './topic/topic';
+import { DashboardComponent } from './dashboard/dashboard';
 
 @NgModule({
     declarations: [EmptyComponent,
@@ -34,6 +35,7 @@ import { TopicComponent } from './topic/topic';
         TopicComponent,
         TitleComponent,
         ModalToolbarComponent,
+    DashboardComponent,
     ],
     imports: [
         MomentModule,
@@ -71,6 +73,7 @@ import { TopicComponent } from './topic/topic';
         TopicComponent,
         TitleComponent,
         ModalToolbarComponent,
+    DashboardComponent,
     ]
 })
 export class ComponentsModule { }

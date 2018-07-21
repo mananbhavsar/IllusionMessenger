@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { Storage } from '@ionic/storage';
-import { ActionSheetController, DateTime, Events, IonicPage, ModalController, NavController, NavParams, ViewController } from 'ionic-angular';
+import { ActionSheetController, DateTime, Events, IonicPage, Platform, ModalController, NavController, NavParams, ViewController } from 'ionic-angular';
 import * as moment from 'moment';
 import * as _ from 'underscore';
 import { ConnectionProvider } from '../../../providers/connection/connection';
@@ -25,7 +25,11 @@ export class ChatOptionsPage {
   @ViewChild('dueDate') dueDate: DateTime;
   dueDateOpened: boolean = false;
 
-  data: any = {}
+  @ViewChild('reminder') reminder: DateTime;
+  reminderOpened: boolean = false;
+
+  data: any = {};
+  reminders: any = [];
   title: string = '';
   topicCode: string = null;
   topicID: string = null;
@@ -48,6 +52,7 @@ export class ChatOptionsPage {
     public connection: ConnectionProvider,
     public user: UserProvider,
     public events: Events,
+    public platform: Platform,
     private _firebaseTransaction: FirebaseTransactionProvider,
     private _notifications: NotificationsProvider,
     public storage: Storage,
@@ -55,6 +60,12 @@ export class ChatOptionsPage {
     private _date: DateProvider,
   ) {
     this.data = this.navParams.data.data;
+
+    console.log( this.navParams.data.data);
+    
+
+    this.reminders = this.navParams.data.reminders || [];
+
     this.topicID = this.navParams.data.data.TopicID;
     this.groupID = this.navParams.data.data.GroupID;
     this.statusID = this.navParams.data.data.StatusID;
@@ -108,6 +119,40 @@ export class ChatOptionsPage {
       this.setTitle();
     });
     savedMediaModal.present();
+  }
+
+  closureRequest() {
+    if (this.amIResponsible) {
+      this.connection.doPost('Chat/RequestForClosure', {
+        TopicID: this.data.TopicID,
+        GroupID: this.data.GroupID,
+        IsWeb: this.platform.is('core')
+      }).then((response: any) => {
+        console.log(response);
+        if (response) {
+          this.data.IsRequestedClosure = 'true';
+        }
+      }).catch((error) => {
+
+      });
+    }
+  }
+
+  cancelClosureRequest() {
+    if (this.amIAdmin) {
+      this.connection.doPost('Chat/CancelClosureRequest', {
+        TopicID: this.data.TopicID,
+        GroupID: this.data.GroupID,
+        IsWeb: this.platform.is('core')
+      }).then((response: any) => {
+        console.log(response);
+        if (response) {
+          this.data.IsRequestedClosure = 'false';
+        }
+      }).catch((error) => {
+
+      });
+    }
   }
 
   rescheduleTopic() {
@@ -207,6 +252,84 @@ export class ChatOptionsPage {
     actionSheet.present();
   }
 
+  openReminder(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.reminder.mode = 'ios';
+    this.reminder.open();
+    this.reminder.setValue(this._date.fromServerFormat(this.data.CreationDate_UTC).format());
+    this.reminderOpened = true;
+    this.reminder.ionCancel.subscribe(cancel => {
+      this.reminderOpened = false;
+    });
+  }
+
+  setReminder(remider) {
+    if (!this.reminderOpened) {
+      return;
+    }
+    let changedDate = new Date();
+    changedDate.setFullYear(remider.year);
+    changedDate.setMonth(remider.month - 1);
+    changedDate.setDate(remider.day);
+    changedDate.setHours(remider.hour);
+    changedDate.setMinutes(remider.minute);
+    changedDate.setSeconds(remider.second);
+
+    let changedMoment = moment(changedDate);
+
+    let SelectedDateTime = moment(this._date.get(changedMoment), 'Do MMM, hh:mm A');
+    let CreationDateTime = moment(this._date.get(this.data.CreationDate_UTC), 'Do MMM, hh:mm A');
+
+    let utcString = this._date.toUTCISOString(SelectedDateTime);
+
+    if (changedMoment.isValid()) {
+      if (SelectedDateTime.isAfter(CreationDateTime)) {
+        this.connection.doPost('Chat/SetRemoveSelfReminder', {
+          GroupID: this.data.GroupID,
+          TopicID: this.data.TopicID,
+          SchedulerDateTime: utcString,
+          Message: this.data.Topic
+        }, false).then((response: any) => {
+          if (response) {
+            this.data.IsReminderSet = 'true';
+            this.reminderOpened = false;
+            this.reminders.push({
+              GroupID: this.data.GroupID,
+              TopicID: this.data.TopicID,
+              SchedulerDateTime: utcString,
+              Message: this.data.Topic
+            });
+            this.events.publish('toast:create', response.Data.Message);
+          }
+        }).catch((error) => {
+          this.reminderOpened = false;
+          this.events.publish('toast:error', error);
+        });
+      } else {
+        this.reminderOpened = false;
+        this.events.publish('toast:error', 'Reminder time should be more than now');
+      }
+    } else {
+      this.reminderOpened = false;
+      this.events.publish('toast:error', 'Invalid date');
+    }
+  }
+
+  removeRemider(event, id, index) {
+    this.connection.doPost('Chat/SetRemoveSelfReminder', {
+      TopicID: this.data.TopicID,
+      GroupID: this.data.GroupID,
+      SelfReminderID: id,
+      SchedulerDateTime: this._date.toUTCISOString(new Date(), false, false),
+    }).then((Response: any) => {
+      this.events.publish('toast:create', Response.Data.Message);
+      this.reminders.splice(index, 1);
+    }).catch((error) => {
+      this.events.publish('toast:error', error);
+    });
+  }
+
   dismiss(data) {
     this.viewController.dismiss(data);
   }
@@ -215,61 +338,66 @@ export class ChatOptionsPage {
     //only if I'm admin
     if (this.amIAdmin && this.statusID === 1) {
       let buttons = [];
-      if (participant.UserID !== this.connection.user.LoginUserID) {//can't remove/add self
-        //making user reposnsible
-        if (!participant.IsResponsible) {
-          buttons.push({
-            text: 'Mark Responsible',
-            handler: () => {
-              this.markResponsible(participant, index);
-            }
-          });
-        }
-        //make, remove admin
-        if (participant.IsAdmin) {
-          //if not by created
-          if (participant.UserID !== this.data.CreatedByID)
+      if (participant.IsResponsible) {
+        return false;
+      } else {
+        if (participant.UserID !== this.connection.user.LoginUserID) {//can't remove/add self
+          //making user reposnsible
+          if (!participant.IsResponsible) {
             buttons.push({
-              role: 'destructive',
-              text: 'Remove as Admin',
+              text: 'Mark Responsible',
               handler: () => {
-                this.removeAsAdmin(participant, index);
+                this.markResponsible(participant, index);
               }
             });
-        } else {
-          buttons.push({
-            text: 'Make Admin',
-            handler: () => {
-              this.makeAsAdmin(participant, index);
-            }
-          });
-        }
-        //remove from user 
-        if (!participant.IsResponsible && participant.UserID !== this.data.CreatedByID) {//if not responsible or created by
-          buttons.push({
-            role: 'destructive',
-            text: 'Remove from Topic',
-            handler: () => {
-              this.removeFromTopic(participant, index);
-            }
-          });
-        }
-      }
-
-      if (buttons.length) { //at least on button other than cancel
-        //cancel button
-        buttons.push({
-          role: 'cancel',
-          text: 'Cancel',
-          handler: () => {
-
           }
-        });
-        let userOptionActionSheet = this.actionSheetCtrl.create({
-          title: 'Take Action',
-          buttons: buttons
-        });
-        userOptionActionSheet.present();
+          //make, remove admin
+          if (participant.IsAdmin) {
+            //if not by created
+            if (participant.UserID !== this.data.CreatedByID)
+              buttons.push({
+                role: 'destructive',
+                text: 'Remove as Admin',
+                handler: () => {
+                  this.removeAsAdmin(participant, index);
+                }
+              });
+          } else {
+            buttons.push({
+              text: 'Make Admin',
+              handler: () => {
+                this.makeAsAdmin(participant, index);
+              }
+            });
+          }
+          //remove from user 
+          if (!participant.IsResponsible && participant.UserID !== this.data.CreatedByID) {//if not responsible or created by
+            buttons.push({
+              role: 'destructive',
+              text: 'Remove from Topic',
+              handler: () => {
+                this.removeFromTopic(participant, index);
+              }
+            });
+          }
+        }
+
+        if (buttons.length) { //at least on button other than cancel
+          //cancel button
+          buttons.push({
+            role: 'cancel',
+            text: 'Cancel',
+            handler: () => {
+
+            }
+          });
+          let userOptionActionSheet = this.actionSheetCtrl.create({
+            title: 'Take Action',
+            buttons: buttons
+          });
+
+          userOptionActionSheet.present();
+        }
       }
     }
   }

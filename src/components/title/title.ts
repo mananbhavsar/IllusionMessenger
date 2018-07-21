@@ -10,7 +10,7 @@ export class TitleComponent implements OnChanges {
   @Input() title: string = null;
   @Input() subTitle: string = null;
   @Input() badgeCount: number = 0;
-
+  @Input() subSubTitle: string = null;
   constructor(
     private _app: App,
     private _events: Events,

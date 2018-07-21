@@ -1,36 +1,44 @@
 <ng-container *ngIf="topic">
-  <ion-item (click)="openTopic()">
-    <h2>
-      <span class="topic-name">{{topic.Topic}}</span>
-      <span float-right>
-        <ion-icon name="ios-star" color="pickup" *ngIf="topic.IsResponsible"></ion-icon>
-        <ion-badge *ngIf="badgeCount">{{badgeCount}}</ion-badge>
-      </span>
-    </h2>
-    <p>
-      <ion-row>
-        <ion-col text-left class="pickup">
-          Created: {{topic.CreationDate_UTC | time }}
-        </ion-col>
-        <ion-col text-right *ngIf="isExpired(topic.DueDate_UTC) !== null" [ngClass]="isExpired(topic.DueDate_UTC) ? 'danger' : 'secondary'">
-          Due: {{topic.DueDate_UTC | time }}
-          <i class="reschedule-count" [ngClass]="'reschedule-count-' + topic.RescheduleCount"></i>
-        </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col text-left *ngIf="topic.Group">
-          {{topic.Group}}
-        </ion-col>
-        <ion-col text-left>
-          &nbsp;
-        </ion-col>
-      </ion-row>
-    </p>
-    <span class="last-message" *ngIf="topic.LastMessageDateTime">
-      {{topic.LastMessageDateTime | time:true}}
-    </span>
-    <ion-icon item-end [name]="topic.IsPriority ? 'ios-flag' : 'ios-flag-outline'" (click)="setPriority($event)" color="danger"
-      class="priority"></ion-icon>
-    <ion-icon name="ios-arrow-forward" item-end></ion-icon>
-  </ion-item>
+  <ion-row>
+    <ion-col *ngIf="selectable" col-1>
+      <ion-checkbox color="primary" [checked]="isChecked" (ionChange)="readMessage($event,topic)"></ion-checkbox>
+    </ion-col>
+    <ion-col col>
+      <ion-item (click)="openTopic()">
+        <h2>
+          <span class="topic-name">{{topic.Topic}}</span>
+          <span float-right>
+            <ion-icon *ngIf="topic.IsReminderSet" name="alarm" color="payments"></ion-icon>
+            <ion-icon name="ios-star" color="pickup" *ngIf="topic.IsResponsible"></ion-icon>
+            <ion-badge *ngIf="badgeCount">{{badgeCount}}</ion-badge>
+          </span>
+        </h2>
+        <p>
+          <ion-row>
+            <ion-col text-left class="pickup">
+              Created: {{topic.CreationDate_UTC | time }}
+            </ion-col>
+            <ion-col text-right *ngIf="isExpired(topic.DueDate_UTC) !== null" [ngClass]="isExpired(topic.DueDate_UTC) ? 'danger' : 'secondary'">
+              Due: {{topic.DueDate_UTC | time }}
+              <i class="reschedule-count" [ngClass]="'reschedule-count-' + topic.RescheduleCount"></i>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col text-left *ngIf="topic.Group">
+              {{topic.Group}}
+            </ion-col>
+            <ion-col text-left>
+              &nbsp;
+            </ion-col>
+          </ion-row>
+        </p>
+        <span class="last-message" *ngIf="topic.LastMessageDateTime">
+          {{topic.LastMessageDateTime | time:true}}
+        </span>
+        <ion-icon item-end [name]="topic.IsPriority ? 'ios-flag' : 'ios-flag-outline'" (click)="setPriority($event)" color="danger"
+          class="priority"></ion-icon>
+        <ion-icon name="ios-arrow-forward" item-end></ion-icon>
+      </ion-item>
+    </ion-col>
+  </ion-row>
 </ng-container>

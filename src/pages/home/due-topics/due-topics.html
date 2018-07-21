@@ -1,0 +1,14 @@
+<ion-header no-border>
+    <modal-toolbar [title]="getTitle()" (dismiss)="dismiss($event)"></modal-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-refresher (ionRefresh)="refresh($event)">
+        <ion-refresher-content pullingIcon="arrow-round-down" pullingText="Pull to refresh" refreshingSpinner="crescent" refreshingText="Refreshing...">
+        </ion-refresher-content>
+    </ion-refresher>
+    <empty *ngIf="topics.length === 0; else data_template"></empty>
+    <ng-template #data_template>
+        <topic [group_id]="topic.GroupID" type="ActiveTopicList" [topic]="topic" *ngFor="let topic of topics;"></topic>
+    </ng-template>
+</ion-content>

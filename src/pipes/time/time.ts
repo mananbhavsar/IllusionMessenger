@@ -14,6 +14,7 @@ export class TimePipe implements PipeTransform {
   transform(value: string, aging: boolean = false) {
     if (value && moment(value).isValid()) {
       let date = this._date.get(value);
+      
       if (aging) {
         //convert to moment
         if (!moment.isMoment(date)) {

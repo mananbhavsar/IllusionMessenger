@@ -1,0 +1,12 @@
+<ion-row *ngIf="dueDays">
+    <ion-col (click)="openTopics($event, day)" col-6 *ngFor="let day of dueDays | keys">
+        <div class="wrapper">
+            <div class="title" [ngClass]="day">
+                {{days[day].label}}
+            </div>
+            <div class="value">
+                {{dueDays[day]}}
+            </div>
+        </div>
+    </ion-col>
+</ion-row>

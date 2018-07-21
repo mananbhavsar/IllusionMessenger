@@ -29,6 +29,8 @@ import { LogoutPage } from '../logout/logout';
 import { DateProvider } from './../../providers/date/date';
 import { ChatOptionsPage } from "./chat-options/chat-options";
 import { SavedMediaPage } from "./chat-options/saved-media/saved-media";
+import { Response } from '@angular/http/src/static_response';
+
 
 
 
@@ -58,6 +60,7 @@ export class ChatPage {
   groupID: string = null;
   groupCode: string = null;
   group_name: string = 'loading';
+  subSubTitle: string;
 
   title: string = 'loading';
   isIOS: boolean = false;
@@ -133,6 +136,7 @@ export class ChatPage {
   recordTime: number = 0;
   dataDirectory = null;
   recordMediaFile: MediaObject = null;
+  reminders : any;
   recordFile: string = null;
   recordFileName: string = 'record.wav';
   recordInterval: any = null;
@@ -228,7 +232,7 @@ export class ChatPage {
     if (this.isBrowser) {
       //on leaving
       window.onblur = () => {
-        this.doLeaving(false);
+        this.ionViewWillLeave();
       };
       //on enter again
       window.onfocus = () => {
@@ -236,6 +240,8 @@ export class ChatPage {
       };
     }
   }
+
+
 
   setFirebaseRef() {
     //actual chat ref
@@ -629,14 +635,15 @@ export class ChatPage {
           GroupID: this.groupID,
         };
         this.connection.doPost('Chat/GetTopicDetail', params, false).then((response: any) => {
+          this.reminders = response.Reminders;
           this.data = response.Data;
           this.data.GroupID = this.groupID;
           this.group_name = this.data.Group;
-
-          this.headerButtons = [{ icon: 'ios-more', name: 'more-option' }];
-
+          this.subSubTitle = 'Created By ' + this.data.CreatedBy+ ' on ' +this.data.CreationDate;
+          this.headerButtons = [{icon : 'ios-information-circle-outline', name : 'ios-information-circle-outline'},{ icon: 'ios-more', name: 'more-option' }];
           this.topicCode = this.data.TopicCode;
           this.groupCode = this.data.GroupCode;
+      
           this.setPath();
           this.setOfflineTopicList(this.data);
           if (response.FireBaseTransaction) {
@@ -994,6 +1001,7 @@ export class ChatPage {
   }
 
   keyboardKey(event) {
+    
     this.setTyping(true);
   }
 
@@ -1612,9 +1620,25 @@ export class ChatPage {
     chatReadModal.present();
   }
 
+  headerOptions(event){
+    switch (event.name) {
+      case 'ios-information-circle-outline':
+          this.openTopicInfo();
+          break;
+      case 'more-option':
+          this.openChatOptions();
+          break;
+  }
+  }
+
+  openTopicInfo(){
+   this.events.publish('toast:create',this.subSubTitle);
+  }
+
   openChatOptions() {
     let params = {
       data: this.data,
+      reminders : this.reminders,
       path: this.dataDirectory,
       folder: this.topicCode,
       group_name: this.group_name,

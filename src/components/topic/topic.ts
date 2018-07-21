@@ -1,10 +1,12 @@
-import { Component, EventEmitter, Input, NgZone, Output } from '@angular/core';
+import { Component, ViewChild, EventEmitter, Input, NgZone, Output } from '@angular/core';
 import * as firebase from 'firebase';
-import { NavController } from 'ionic-angular';
+import { NavController, DateTime } from 'ionic-angular';
 import { Events } from 'ionic-angular';
 import * as moment from "moment";
 import { ConnectionProvider } from '../../providers/connection/connection';
 import { DateProvider } from '../../providers/date/date';
+import { Select } from 'ionic-angular/components/select/select';
+import { Response } from '@angular/http/src/static_response';
 
 
 @Component({
@@ -16,6 +18,10 @@ export class TopicComponent {
   @Input() type: string = null;
   @Input() group_id: number = 0;
   @Output() clicked = new EventEmitter();
+  @Input() selectable: boolean;
+  @Output() selected = new EventEmitter();
+  @Input() isChecked: boolean = false;
+  selectedTopics: any = [];
 
   badgeCount: number = 0;
   constructor(
@@ -29,6 +35,7 @@ export class TopicComponent {
   }
 
   ngOnChanges() {
+
     if (this.topic) {
       let topicRef = firebase.database().ref('Badge/' + this.connection.user.id + '/Groups/' + this.topic.GroupCode + '/Topics/' + this.topic.TopicCode);
       if (this.badgeCount) {
@@ -36,7 +43,9 @@ export class TopicComponent {
       }
       topicRef.on('value', snapshot => {
         this.badgeCount = snapshot.val();
+
       });
+
     }
   }
 
@@ -50,6 +59,14 @@ export class TopicComponent {
     this.navCtrl.push('ChatPage', {
       topicID: this.topic.TopicID,
       groupID: this.group_id,
+    });
+  }
+
+  readMessage(ev, topic) {
+    this.topic.IsRead = ev.checked;
+    this.selected.emit({
+      checked: this.topic.IsRead,
+      TopicCode: this.topic.TopicCode,
     });
   }
 
@@ -72,4 +89,6 @@ export class TopicComponent {
     }
     return null;
   }
+
+  
 }

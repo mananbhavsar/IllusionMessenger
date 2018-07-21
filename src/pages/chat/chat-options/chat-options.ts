@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { Storage } from '@ionic/storage';
-import { ActionSheetController, DateTime, Events, IonicPage, Platform, ModalController, NavController, NavParams, ViewController } from 'ionic-angular';
+import { ActionSheetController, DateTime, Events, IonicPage, ModalController, NavController, NavParams, Platform, ViewController } from 'ionic-angular';
 import * as moment from 'moment';
 import * as _ from 'underscore';
 import { ConnectionProvider } from '../../../providers/connection/connection';
@@ -61,8 +61,8 @@ export class ChatOptionsPage {
   ) {
     this.data = this.navParams.data.data;
 
-    console.log( this.navParams.data.data);
-    
+    console.log(this.navParams.data.data);
+
 
     this.reminders = this.navParams.data.reminders || [];
 
@@ -123,20 +123,35 @@ export class ChatOptionsPage {
 
   closureRequest() {
     if (this.amIResponsible) {
-      this.connection.doPost('Chat/RequestForClosure', {
-        TopicID: this.data.TopicID,
-        GroupID: this.data.GroupID,
-        IsWeb: this.platform.is('core')
-      }).then((response: any) => {
-        console.log(response);
-        if (response) {
-          this.data.IsRequestedClosure = 'true';
-        }
-      }).catch((error) => {
+      let actionSheet = this.actionSheetCtrl.create({
+        title: 'Do You Want to request for closure?<br/>(Request only if task is completed)',
+        buttons: [
+          {
+            text: 'Send Request now!',
+            role: 'destructive',
+            handler: () => {
+              this.connection.doPost('Chat/RequestForClosure', {
+                TopicID: this.data.TopicID,
+                GroupID: this.data.GroupID,
+                IsWeb: this.platform.is('core')
+              }).then((response: any) => {
+                console.log(response);
+                if (response) {
+                  this.data.IsRequestedClosure = 'true';
+                }
+              }).catch((error) => {
 
+              });
+            }
+          }, {
+            text: 'Cancel',
+            role: 'cancel',
+          }]
       });
+      actionSheet.present();
     }
   }
+
 
   cancelClosureRequest() {
     if (this.amIAdmin) {
@@ -255,9 +270,11 @@ export class ChatOptionsPage {
   openReminder(event) {
     event.preventDefault();
     event.stopPropagation();
+
     this.reminder.mode = 'ios';
+    this.reminder.setValue(moment().format());
     this.reminder.open();
-    this.reminder.setValue(this._date.fromServerFormat(this.data.CreationDate_UTC).format());
+
     this.reminderOpened = true;
     this.reminder.ionCancel.subscribe(cancel => {
       this.reminderOpened = false;

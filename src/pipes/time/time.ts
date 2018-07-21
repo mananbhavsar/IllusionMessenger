@@ -11,10 +11,11 @@ export class TimePipe implements PipeTransform {
   ) {
 
   }
-  transform(value: string, aging: boolean = false) {
+  transform(value: string, aging: boolean = false, timeAgo: boolean = false) {
     if (value && moment(value).isValid()) {
       let date = this._date.get(value);
-      
+
+      //aging like whatsapp
       if (aging) {
         //convert to moment
         if (!moment.isMoment(date)) {
@@ -29,6 +30,16 @@ export class TimePipe implements PipeTransform {
           return 'YESTERDAY';
         }
         return date.format('Do MMM');
+      }
+
+      //time ago
+      if (timeAgo) {
+        //convert to moment
+        if (!moment.isMoment(date)) {
+          date = moment(date, 'Do MMM, hh:mm A');
+        }
+        return date.locale('en').fromNow();
+
       }
       return date;
     }

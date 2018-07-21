@@ -178,10 +178,19 @@ export class HomePage {
             this.deviceRegsiter = 0;
         } else if (this.platform.is('core')) {
             if (this.connection.getPushID()) {
+<<<<<<< HEAD
                 this.deviceRegsiter = 1;
+                this.connectToServer(this.connection.push_id);
             } else {
                 this.events.subscribe('pushid:created', (userId) => {
                     this.deviceRegsiter = 1;
+                    this.connectToServer(userId);
+=======
+                this.connectToServer(this.connection.push_id, isPullDown);
+            } else {
+                this.events.subscribe('pushid:created', (userId) => {
+                    this.connectToServer(userId, isPullDown);
+>>>>>>> 409a216ddab11c5b770927cf05cb103b78d08332
                 });
                 //wait 15sec and check again for user id
                 setTimeout(() => {
@@ -190,7 +199,12 @@ export class HomePage {
                     OneSignal.push(function () {
                         OneSignal.getUserId(function (userId: string) {
                             if (userId) {
+<<<<<<< HEAD
                                 that.deviceRegsiter = 1;
+                                that.connectToServer(userId);
+=======
+                                that.connectToServer(userId, isPullDown);
+>>>>>>> 409a216ddab11c5b770927cf05cb103b78d08332
                             }
                         });
                     });

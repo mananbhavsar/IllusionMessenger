@@ -65,7 +65,6 @@ export class GroupPage {
         this.setForBadge();
         resolve(true);
       }).catch(error => {
-        reject(error);
       });
     });
   }

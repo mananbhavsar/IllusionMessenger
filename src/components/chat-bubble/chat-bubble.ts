@@ -258,7 +258,6 @@ export class ChatBubbleComponent {
             this.message.downloaded = false;
             this.message['error'] = error;
             this.events.publish('toast:error', error);
-            reject(error);
           })
         });
       }

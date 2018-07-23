@@ -23,13 +23,13 @@ export class TimePipe implements PipeTransform {
         }
         //check if today
         if (date.isSame(moment(), 'd')) {
-          return date.format('hh:mm A')
+          return date.locale('en').format('hh:mm A')
         }
         //check if yesterday
         if (date.isSame(moment().subtract(1, 'days').startOf('day'), 'd')) {
           return 'YESTERDAY';
         }
-        return date.format('Do MMM');
+        return date.locale('en').format('Do MMM');
       }
 
       //time ago

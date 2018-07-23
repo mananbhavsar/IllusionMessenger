@@ -165,6 +165,11 @@ export class UserProvider {
         return new Promise((resolve, reject) => {
             //checking if logged in
             if (!_.isEmpty(this.connection.user)) {
+                //firebase data
+                let firebaseDataNeeded = this.LoadFirebaseData;
+                if(isPullDown){
+                    firebaseDataNeeded = isPullDown;
+                }
                 //setting in connection
                 this.connection.push_id = push_id;
 
@@ -173,7 +178,7 @@ export class UserProvider {
                     DeviceID: push_id,
                     IsLogin: push_id !== '',
                     IsFromMobile: this.isFromMobile,
-                    LoadFirebaseData: isPullDown || this.LoadFirebaseData,
+                    LoadFirebaseData: firebaseDataNeeded,
                 }, false).then((response: any) => {
                     //LogOutForcefully
                     if (response.Data.LogOutForcefully) {
@@ -207,7 +212,7 @@ export class UserProvider {
                 //waiting to logged in
                 this.events.subscribe('user:ready', (user) => {
                     if (user) {
-                        this.registerPushID(push_id).then(status => {
+                        this.registerPushID(push_id, isPullDown).then(status => {
                             resolve(status);
                         }).catch(error => {
                             reject(error);

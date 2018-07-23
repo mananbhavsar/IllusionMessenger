@@ -40,7 +40,7 @@ export class HomePage {
     connectedTime: string = null;
     sort_by: string = '';
     sort_order: string = '';
-    group_reorder: any = [];
+
     dataFetched: boolean = false;
     selectedGroup: any = [];
     tabs = [
@@ -99,6 +99,10 @@ export class HomePage {
             this.getData(false).catch(error => { });
         });
 
+        this.events.subscribe('dashboard:close', (dashboard) => {
+            this.setTitle();
+        })
+
         //online offline
         if (this.platform.is('cordova')) {
             this._network.onchange().subscribe(() => {
@@ -137,7 +141,6 @@ export class HomePage {
                 }
                 resolve(true);
             }).catch(error => {
-                reject(error);
             });
         });
     }
@@ -155,7 +158,6 @@ export class HomePage {
                 this.dataFetched = true;
                 //groups
                 this.data = response;
-                console.log(this.data);
                 //flash
                 if (response.FlashNews) {
                     this.flashNews = response.FlashNews;
@@ -165,7 +167,6 @@ export class HomePage {
                 resolve(true);
             }).catch(error => {
                 this.flashNews = [];
-                reject(error);
             })
         });
     }
@@ -177,10 +178,13 @@ export class HomePage {
             this.deviceRegsiter = 0;
         } else if (this.platform.is('core')) {
             if (this.connection.getPushID()) {
+                this.deviceRegsiter = 1;
                 this.connectToServer(this.connection.push_id, isPullDown);
             } else {
                 this.events.subscribe('pushid:created', (userId) => {
+                    this.deviceRegsiter = 1;
                     this.connectToServer(userId, isPullDown);
+
                 });
                 //wait 15sec and check again for user id
                 setTimeout(() => {
@@ -189,7 +193,9 @@ export class HomePage {
                     OneSignal.push(function () {
                         OneSignal.getUserId(function (userId: string) {
                             if (userId) {
+                                that.deviceRegsiter = 1;
                                 that.connectToServer(userId, isPullDown);
+
                             }
                         });
                     });
@@ -226,7 +232,7 @@ export class HomePage {
             this.selectedGroup = [];
             this.readAllSelected = true;
             this.readOptions = false;
-            this.group_reorder = [];
+
             refresher.complete();
             this.connectToFireBase();
         }).catch(error => {
@@ -324,7 +330,6 @@ export class HomePage {
                     resolve(response);
                 }
             }).catch((error) => {
-                reject();
             });
         });
     }
@@ -471,15 +476,23 @@ export class HomePage {
 
     reorderItems(indexes) {
         this.data.Groups_Wise = reorderArray(this.data.Groups_Wise, indexes);
-        for (let i = 0; i < this.data.Groups_Wise.length; i++) {
-            this.group_reorder.push({ 'OrderIndex': i, 'GroupID': this.data.Groups_Wise[i].GroupID });
-        }
+        let group_reorder = [];
+        let groupIds = [];
+
+        this.data.Groups_Wise.forEach((group, index) => {
+            if (groupIds.indexOf(group.GroupID) === -1) {
+                group_reorder.push({ 'OrderIndex': index, 'GroupID': group.GroupID });
+                groupIds.push(group.GroupID);
+            }
+
+        });
+
         this.connection.doPost('chat/MyGroupOrder', {
-            OrderIndex: this.group_reorder.map(order => order.OrderIndex),
-            GroupID: this.group_reorder.map(groupId => groupId.GroupID)
+            OrderIndex: group_reorder.map(order => order.OrderIndex),
+            GroupID: group_reorder.map(groupId => groupId.GroupID)
         }, false).then((response: any) => {
             if (response) {
-                this.group_reorder = [];
+                
             }
         }).catch((error) => {
         });

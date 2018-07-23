@@ -61,9 +61,6 @@ export class ChatOptionsPage {
   ) {
     this.data = this.navParams.data.data;
 
-    console.log(this.navParams.data.data);
-
-
     this.reminders = this.navParams.data.reminders || [];
 
     this.topicID = this.navParams.data.data.TopicID;
@@ -135,7 +132,6 @@ export class ChatOptionsPage {
                 GroupID: this.data.GroupID,
                 IsWeb: this.platform.is('core')
               }).then((response: any) => {
-                console.log(response);
                 if (response) {
                   this.data.IsRequestedClosure = 'true';
                 }
@@ -160,7 +156,6 @@ export class ChatOptionsPage {
         GroupID: this.data.GroupID,
         IsWeb: this.platform.is('core')
       }).then((response: any) => {
-        console.log(response);
         if (response) {
           this.data.IsRequestedClosure = 'false';
         }
@@ -296,12 +291,12 @@ export class ChatOptionsPage {
     let changedMoment = moment(changedDate);
 
     let SelectedDateTime = moment(this._date.get(changedMoment), 'Do MMM, hh:mm A');
-    let CreationDateTime = moment(this._date.get(this.data.CreationDate_UTC), 'Do MMM, hh:mm A');
+    let now = moment();
 
     let utcString = this._date.toUTCISOString(SelectedDateTime);
 
     if (changedMoment.isValid()) {
-      if (SelectedDateTime.isAfter(CreationDateTime)) {
+      if (SelectedDateTime.isAfter(now)) {
         this.connection.doPost('Chat/SetRemoveSelfReminder', {
           GroupID: this.data.GroupID,
           TopicID: this.data.TopicID,

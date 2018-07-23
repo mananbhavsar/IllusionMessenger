@@ -35,7 +35,7 @@ export class DueTopicsPage {
           resolve(true);
         }
       }).catch((error) => {
-        reject();
+        
       });
     });
   }

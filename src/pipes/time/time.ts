@@ -38,7 +38,7 @@ export class TimePipe implements PipeTransform {
         if (!moment.isMoment(date)) {
           date = moment(date, 'Do MMM, hh:mm A');
         }
-        return date.locale('en').fromNow();
+        return date.from(moment());
 
       }
       return date;

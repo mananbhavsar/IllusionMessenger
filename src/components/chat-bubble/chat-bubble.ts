@@ -9,7 +9,6 @@ import { Events, NavController, Platform } from 'ionic-angular';
 import { ImageViewerController } from 'ionic-img-viewer';
 import * as moment from 'moment';
 import 'moment/locale/en-gb';
-import 'moment/locale/fr';
 import * as _ from 'underscore';
 import { Global } from '../../app/global';
 import { CommonProvider } from "../../providers/common/common";

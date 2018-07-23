@@ -133,6 +133,9 @@ export class ChatOptionsPage {
                 IsWeb: this.platform.is('core')
               }).then((response: any) => {
                 if (response) {
+                  if (response.FireBaseTransaction) {
+                    this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { });
+                  }
                   this.data.IsRequestedClosure = 'true';
                 }
               }).catch((error) => {
@@ -157,6 +160,9 @@ export class ChatOptionsPage {
         IsWeb: this.platform.is('core')
       }).then((response: any) => {
         if (response) {
+          if (response.FireBaseTransaction) {
+            this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { });
+          }
           this.data.IsRequestedClosure = 'false';
         }
       }).catch((error) => {

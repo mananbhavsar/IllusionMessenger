@@ -6,7 +6,6 @@ import * as moment from "moment";
 import { ConnectionProvider } from '../../providers/connection/connection';
 import { DateProvider } from '../../providers/date/date';
 import { Select } from 'ionic-angular/components/select/select';
-import { Response } from '@angular/http/src/static_response';
 
 
 @Component({

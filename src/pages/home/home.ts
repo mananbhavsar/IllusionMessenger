@@ -391,7 +391,6 @@ export class HomePage {
         });
         flashModal.onDidDismiss(data => {
             this.setTitle();
-            console.log(data);
             
             if (data) {
                 this.events.publish('toast:create', data.Data.Message);

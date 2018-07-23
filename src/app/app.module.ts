@@ -75,6 +75,7 @@ import { NotificationsProvider } from "../providers/notifications/notifications"
 import { UserProvider } from '../providers/user/user';
 import { UserAutoCompleteService } from './../pages/topic/create-topic/user-auto-complete';
 import { MyApp } from './app.component';
+import { DailyShedulePageModule } from '../pages/topic/daily-shedule/daily-shedule.module';
 
 
 export function createTranslateLoader(http: HttpClient) {
@@ -134,6 +135,7 @@ export function createTranslateLoader(http: HttpClient) {
         OrderModule,
         ComponentsModule,
         PipesModule,
+        DailyShedulePageModule
     ],
     bootstrap: [IonicApp],
     entryComponents: [

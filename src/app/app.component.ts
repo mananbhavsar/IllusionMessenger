@@ -22,7 +22,9 @@ import { WelcomePage } from '../pages/welcome/welcome';
 import { UserProvider } from '../providers/user/user';
 import { GroupPage } from './../pages/group/group';
 import { Global } from './global';
-
+import * as _ from 'underscore';
+import * as moment from "moment";
+import { DailyShedulePage } from '../pages/topic/daily-shedule/daily-shedule';
 
 export const firebaseConfig = {
     apiKey: "AIzaSyAFDZ9UPTMiDTjT4qAG0d9uVeOdhL-2PBw",
@@ -660,6 +662,21 @@ export class MyApp {
         this.user.hasLoggedIn().then((user) => {
             if (user) {
                 this.events.publish('user:login', user);
+            }
+        });
+
+        this.events.subscribe('user:ready', (user) => {
+            if (!_.isEmpty(user)) {
+                let date = moment(new Date()).format('DD/MM/YYYY');
+                let ref = firebase.database().ref('DailySheduler/' + user.UserID + '/' + date);
+                ref.on('value', (status) => {
+                    if (status.val() === null) {
+                        //show popup
+                        this.nav.setRoot('DailyShedulePage');
+                        //update to firebase
+                        ref.set(true);
+                    }
+                });
             }
         });
     }

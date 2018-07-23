@@ -108,6 +108,7 @@ export class GroupOptionsPage {
     });
   }
 
+
   getTitle() {
     return this.title;
   }

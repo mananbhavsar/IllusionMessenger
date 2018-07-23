@@ -16,7 +16,9 @@ export class AddFlashPage {
   addFlashForm: FormGroup;
   group_id: number = 0;
   group_name: string = 'loading';
+  attachments: Array<any> = [];
   hourAddition: number = 2;
+  isBrowser: boolean;
 
   constructor(
     public navCtrl: NavController,
@@ -31,6 +33,8 @@ export class AddFlashPage {
   ) {
     this.group_id = this.navParams.data.group_id;
     this.group_name = this.navParams.data.group_name;
+
+    this.isBrowser = this.platform.is('core');
 
     this.addFlashForm = this.formBuilder.group({
       flash_message: ['', [Validators.required, Validators.maxLength(160)]],
@@ -65,5 +69,17 @@ export class AddFlashPage {
 
   getErrorMessage() {
     return 'End date should be more than ' + moment().add(this.hourAddition - 1, 'hours').format('h A');
+  }
+
+
+  captured(event) {
+    console.log(event);
+    console.log(this.attachments);
+    
+    this.attachments.push(event.url);
+  }
+
+  removeAttachment(event) {
+    this.attachments.splice(event.index, 1);
   }
 }

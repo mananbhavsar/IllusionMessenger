@@ -14,12 +14,46 @@ import { AndroidPermissions } from '@ionic-native/android-permissions';
 import { FileOpener } from '@ionic-native/file-opener';
 
 import { Global } from '../../app/global';
+import { Camera, CameraOptions } from '@ionic-native/camera';
+import { FilePath } from '@ionic-native/file-path';
+import { FileChooser } from '@ionic-native/file-chooser';
+import { CommonProvider } from '../common/common';
 
 @Injectable()
 export class FileOpsProvider {
   isIOS: boolean = false;
   isAndroid: boolean = false;
+  directory: string = null;
+  progressPercent: number = 0;
   isCordova: boolean = false;
+  //camera
+  private cameraOptions: CameraOptions = {
+    quality: 80,
+    destinationType: this.camera.DestinationType.FILE_URI,
+    encodingType: this.camera.EncodingType.JPEG,
+    mediaType: this.camera.MediaType.PICTURE,
+    correctOrientation: true,
+    targetHeight: 1024,
+    targetWidth: 1024
+  }
+  private galleryOptions: CameraOptions = {
+    quality: 80,
+    correctOrientation: true,
+    targetHeight: 1024,
+    targetWidth: 1024,
+    sourceType: this.camera.PictureSourceType.SAVEDPHOTOALBUM,
+    destinationType: this.camera.DestinationType.FILE_URI,
+    encodingType: this.camera.EncodingType.JPEG,
+    mediaType: this.camera.MediaType.PICTURE
+  }
+
+
+  private allowedMimes = [
+    'application/pdf', 'image/png', 'image/jpeg',
+    // 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    // 'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+    'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  ];
 
   constructor(
     private network: Network,
@@ -29,11 +63,23 @@ export class FileOpsProvider {
     private platform: Platform,
     private events: Events,
     private fileOpener: FileOpener,
+    private fileChooser: FileChooser,
+    private camera: Camera,
+    private filePath: FilePath,
+    private common: CommonProvider,
     private androidPermissions: AndroidPermissions,
   ) {
     this.isIOS = this.platform.is('ios');
     this.isAndroid = this.platform.is('android');
     this.isCordova = this.platform.is('cordova');
+  }
+
+  setDataDirecory() {
+    this.getDataDirectory().then((path: any) => {
+      this.directory = path;
+    }).catch(error => {
+      console.log(error);
+    });
   }
 
   getDataDirectory() {
@@ -79,10 +125,13 @@ export class FileOpsProvider {
     });
   }
 
-  isFileDownloaded(file, directory) {
+  isFileDownloaded(file, directory = null) {
     return new Promise((resolve, reject) => {
 
       let fileName = this.getFileName(file);
+      if (directory === null) {
+        directory = this.directory;
+      }
       //checking if file downloaded
       this.file.checkFile(directory, fileName).then(status => {
         resolve(status);
@@ -98,8 +147,11 @@ export class FileOpsProvider {
    * @param file remote file path
    * @param directory directory to check in
    */
-  getFile(file, directory) {
+  getFile(file, directory = null, identifier) {
     return new Promise((resolve, reject) => {
+      if (directory === null) {
+        directory = this.directory;
+      }
       this.isFileDownloaded(file, directory).then(status => {
         resolve(status);
       }).catch(error => {
@@ -114,12 +166,24 @@ export class FileOpsProvider {
     });
   }
 
-  openFile(file, directory) {
-    let nativeURL = this.getNativeURL(file, directory);
-    return this.fileOpener.open(nativeURL, mime.lookup(file));
+  openFile(file, directory, doNative: boolean = true) {
+    return new Promise((resolve, reject) => {
+      if (doNative) {
+        file = this.getNativeURL(file, directory);
+      }
+
+      this.fileOpener.open(decodeURIComponent(file), mime.lookup(file)).then(status => {
+        resolve(status);
+      }).catch(error => {
+        reject(error);
+      });
+    });
   };
 
-  getNativeURL(file, directory) {
+  getNativeURL(file, directory = null) {
+    if (directory === null) {
+      directory = this.directory;
+    }
     if (file) {
       //checking if still http
       if (file.indexOf('https') === 0) {
@@ -131,8 +195,11 @@ export class FileOpsProvider {
     return file;
   }
 
-  downloadFile(file, directory) {
+  downloadFile(file, directory, identifier = null) {
     return new Promise((resolve, reject) => {
+      if (directory === null) {
+        directory = this.directory;
+      }
       let fileName = this.getFileName(file);
 
       const fileTransfer: FileTransferObject = this.transfer.create();
@@ -142,6 +209,15 @@ export class FileOpsProvider {
         reject(error);
       }).catch(error => {
         reject(error);
+      });
+      //onProgress
+      fileTransfer.onProgress(event => {
+        if (event.lengthComputable) {
+          this.events.publish('download:progress:' + identifier, {
+            progress: parseInt('' + (event.loaded / event.total) * 100),
+            identifier: identifier
+          });
+        }
       });
     });
   }
@@ -153,6 +229,116 @@ export class FileOpsProvider {
         this.file.createDir(path, directoryName, false).catch(error => { });
       }
     });
+  }
+
+  captureAndUpload(type, identifier: string = null) {
+    return new Promise((resolve, reject) => {
+      this.capture(type).then(uri => {
+        console.log(uri);
+        this.uploadFile(uri, {
+          date: identifier || new Date().getTime(),
+        }, identifier).then(uploadedURL => {
+          resolve(uploadedURL);
+        }).catch(error => {
+          this.events.publish('toast:error', error);
+          reject(error)
+        });
+      }).catch(error => {
+
+      });
+    });
+  }
+
+  capture(type) {
+    return new Promise((resolve, reject) => {
+      switch (type) {
+        case 'camera':
+        case 'image':
+        case 'gallery':
+          let optons = type === 'camera' ? this.cameraOptions : this.galleryOptions;
+          this.camera.getPicture(optons).then(url => {
+            console.log(url);
+            
+            resolve(url);
+          }).catch(error => {
+            reject(error);
+          });
+          break;
+
+        case 'file':
+          this.fileChooser.open().then(uri => {
+            this.filePath.resolveNativePath(uri).then(file => {
+              //check if this mime type is allowed
+              let fileMime = mime.lookup(file);
+              if (this.allowedMimes.indexOf(fileMime) > -1) {
+                resolve(file);
+              } else {
+                reject('We only allow ' + this.common.joinAnd(['PDF', 'Image', 'Excel']));
+              }
+            }).catch(error => {
+              reject(error);
+            });
+          }).catch(error => {
+            reject(error);
+          });
+          break;
+      }
+    });
+  }
+
+
+  uploadFile(file, params, identifier) {
+    return new Promise((resolve, reject) => {
+      let fileName = this.getFileName(file);
+      const fileTransfer: FileTransferObject = this.transfer.create();
+
+      fileTransfer.upload(file, Global.SERVER_URL + '', this.setFileOptions(file, params)).then(data => {
+        if (data.response.indexOf('http') === -1) {
+          reject(data);
+        } else if (data.response.indexOf('>') > -1) {
+          resolve(data.response.substring(data.response.indexOf('>') + 1, data.response.lastIndexOf('<')));
+        } else {
+          resolve(JSON.parse(data.response));
+        }
+      }, (err) => {
+        this.progressPercent = 0;
+        reject(err);
+      }).catch(error => {
+        reject(error);
+      });
+
+      fileTransfer.onProgress(event => {
+        if (event.lengthComputable) {
+          this.events.publish('upload:progress:' + identifier, {
+            progress: parseInt('' + (event.loaded / event.total) * 100),
+            identifier: identifier
+          });
+        }
+      });
+    });
+  }
+
+  setFileOptions(file, params = {}): FileUploadOptions {
+    //removing ? if any
+    if (file.indexOf('?') === -1) {
+      file += '?';
+    }
+    file = file.substring(0, file.lastIndexOf('?'));
+    let fileName = this.getFileName(file);
+    let fileExtension = this.getFileExtension(file);
+
+    let options: FileUploadOptions = {
+      fileKey: 'file',
+      fileName: fileName,
+      mimeType: mime.lookup(fileExtension),
+      chunkedMode: false,
+      // headers: new Headers({
+      //   // 'Content-Type': 'application/json',
+      //   // Connection: "close",
+      // }),
+      params: params
+    }
+    return options;
   }
 
   getFileName(file) {
@@ -174,6 +360,32 @@ export class FileOpsProvider {
     if (file) {
       return file.substring(file.lastIndexOf('.') + 1);
     }
+  }
+
+  openRemoteFile(file, directory = null, identifier) {
+    return new Promise((resolve, reject) => {
+      //check if directory null
+      if (directory === null) {
+        directory = this.directory;
+      }
+      this.isFileDownloaded(file, directory).then(status => {
+        this.openFile(file, directory, identifier).then(status => {
+          resolve(status);
+        }).catch(error => {
+          reject(error);
+        });
+      }).catch(error => {
+        this.downloadFile(file, directory, identifier).then(status => {
+          this.openFile(file, directory, identifier).then(status => {
+            resolve(status);
+          }).catch(error => {
+            reject(error);
+          });
+        }).catch(error => {
+          reject(error);
+        });
+      });
+    });
   }
 
 

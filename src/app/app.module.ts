@@ -13,6 +13,8 @@ import { File } from '@ionic-native/file';
 import { FileOpener } from '@ionic-native/file-opener';
 import { FileTransfer } from '@ionic-native/file-transfer';
 import { Globalization } from '@ionic-native/globalization';
+import { FileChooser } from '@ionic-native/file-chooser';
+import { FilePath } from '@ionic-native/file-path';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { Keyboard } from '@ionic-native/keyboard';
 import { Media } from '@ionic-native/media';
@@ -157,6 +159,8 @@ export function createTranslateLoader(http: HttpClient) {
         InAppBrowser,
         Camera,
         FileTransfer,
+        FileChooser,
+        FilePath,
         File,
         MediaCapture,
         Media,

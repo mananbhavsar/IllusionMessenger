@@ -19,6 +19,8 @@ import { RefreshComponent } from './refresh/refresh';
 import { TitleComponent } from './title/title';
 import { TopicComponent } from './topic/topic';
 import { DashboardComponent } from './dashboard/dashboard';
+import { AttachmentComponent } from './attachment/attachment';
+
 
 @NgModule({
     declarations: [EmptyComponent,
@@ -35,7 +37,8 @@ import { DashboardComponent } from './dashboard/dashboard';
         TopicComponent,
         TitleComponent,
         ModalToolbarComponent,
-    DashboardComponent,
+        DashboardComponent,
+        AttachmentComponent
     ],
     imports: [
         MomentModule,
@@ -55,6 +58,7 @@ import { DashboardComponent } from './dashboard/dashboard';
         IonicPageModule.forChild(TopicComponent),
         IonicPageModule.forChild(TitleComponent),
         IonicPageModule.forChild(ModalToolbarComponent),
+        IonicPageModule.forChild(AttachmentComponent),
         PipesModule,
     ],
     exports: [
@@ -73,7 +77,8 @@ import { DashboardComponent } from './dashboard/dashboard';
         TopicComponent,
         TitleComponent,
         ModalToolbarComponent,
-    DashboardComponent,
+        DashboardComponent,
+        AttachmentComponent
     ]
 })
 export class ComponentsModule { }

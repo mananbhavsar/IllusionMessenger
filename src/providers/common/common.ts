@@ -30,4 +30,20 @@ export class CommonProvider {
       .join('&');
   }
 
+  joinAnd(array: Array<string>): string {
+    let joined = '';
+    if (array.length === 1) {
+      joined = array[0];
+    } else if (array.length === 2) {
+      //joins all with "and" but no commas
+      //example: "bob and sam"
+      joined = array.join(' and ');
+    } else if (array.length > 2) {
+      //joins all with commas, but last one gets ", and" (oxford comma!)
+      //example: "bob, joe, and sam"
+      joined = array.slice(0, -1).join(', ') + ', and ' + array.slice(-1);
+    }
+    return joined;
+  }
+
 }

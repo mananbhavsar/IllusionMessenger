@@ -32,8 +32,10 @@ $RECYCLE.BIN/
 node_modules
 #google-services.json
 #GoogleService-Info.plist
-#config.xml
+config.xml
 #src/app/global.ts
+package.json
+package-lock.json
 index.html
 .DS_Store
 Thumbs.db

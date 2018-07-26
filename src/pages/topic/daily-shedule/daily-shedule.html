@@ -3,5 +3,9 @@
 </ion-header>
 
 <ion-content padding>
-
+  <empty *ngIf="!topics"></empty>
+    <ng-container *ngIf="topics">
+        <topic [group_id]="topic.GroupID" type="ActiveTopicList"
+            [topic]="topic" *ngFor="let topic of topics;"></topic>
+    </ng-container>
 </ion-content>

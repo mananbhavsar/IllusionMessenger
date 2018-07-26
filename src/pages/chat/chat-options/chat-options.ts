@@ -10,6 +10,7 @@ import { UserProvider } from '../../../providers/user/user';
 import { ManageParticipantsPage } from '../../topic/create-topic/manage-participants/manage-participants';
 import { DateProvider } from './../../../providers/date/date';
 import { SavedMediaPage } from "./saved-media/saved-media";
+import { CallNumber } from '@ionic-native/call-number';
 
 
 
@@ -44,6 +45,8 @@ export class ChatOptionsPage {
   amIAdmin: boolean = false;
   amIResponsible: boolean = false;
   responsibleUserID: string = null;
+  isBrowser: boolean = false;
+  groupMemberCount: number = 0;
 
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
@@ -58,8 +61,10 @@ export class ChatOptionsPage {
     public storage: Storage,
     private viewController: ViewController,
     private _date: DateProvider,
+    private callNumber: CallNumber
   ) {
     this.data = this.navParams.data.data;
+    this.groupMemberCount = this.data.User.length;
 
     this.reminders = this.navParams.data.reminders || [];
 
@@ -67,9 +72,11 @@ export class ChatOptionsPage {
     this.groupID = this.navParams.data.data.GroupID;
     this.statusID = this.navParams.data.data.StatusID;
     this.topicCode = this.navParams.data.folder;
-
     this.path = this.navParams.data.path;
     this.group_name = this.navParams.data.group_name;
+    this.isBrowser = this.platform.is('core');
+
+
 
     this.setTitle();
     this.processParticipants();
@@ -168,6 +175,19 @@ export class ChatOptionsPage {
       }).catch((error) => {
 
       });
+    }
+  }
+
+  callParticipant(number) {
+    console.log(number);
+
+    if (number) {
+      if (this.platform.is('mobileweb') || this.platform.is('core')) {
+        number = "tel:" + number;
+        window.location.href = number;
+      } else if (this.platform.is('cordova')) {
+        this.callNumber.callNumber(number, true);
+      }
     }
   }
 

@@ -1,0 +1,38 @@
+<ion-header no-border>
+	<modal-toolbar [title]="title" (dismiss)="dismiss($event)"></modal-toolbar>
+</ion-header>
+
+
+<ion-content padding>
+	<form [formGroup]="createGroupForm">
+		<ion-list>
+			<ion-item>
+				<ion-label stacked>Enter Group Name</ion-label>
+				<ion-textarea required placeholder="Enter Group Name" type="text" formControlName="group_name" maxLength="30"></ion-textarea>
+			</ion-item>
+			<div class="error-message-block" *ngIf="createGroupForm.controls.group_name.errors && (createGroupForm.controls.group_name.dirty || createGroupForm.controls.group_name.touched)">
+				<span *ngIf="createGroupForm.controls.group_name.errors.required">Group name is required</span>
+				<span *ngIf="createGroupForm.controls.group_name.errors.maxlength">Max 30 Characters</span>
+				<span *ngIf="createGroupForm.controls.group_name.errors.pattern">Name should be characters only</span>
+			</div>
+			<ion-item>
+				<ion-label stacked>Enter Group Code</ion-label>
+				<ion-input required placeholder="Enter Group Code" type="text" formControlName="group_code" maxLength="10"></ion-input>
+			</ion-item>
+			<div class="error-message-block" *ngIf="createGroupForm.controls.group_code.errors && (createGroupForm.controls.group_code.dirty || createGroupForm.controls.group_code.touched)">
+				<span *ngIf="createGroupForm.controls.group_code.errors.required">Group Code is required</span>
+			</div>
+			<ion-item no-lines>
+				<ion-label>
+					Select Users
+				</ion-label>
+			</ion-item>
+				<ion-item tappable *ngFor="let user of groupDetail; let i = index;" (tap)="adminOptionClicked(user)">
+					<ion-label>{{user.User}}</ion-label>
+					<button ion-button item-end small outline color="casestatus" *ngIf="user.IsAdmin">Admin</button>
+					<ion-icon item-end *ngIf="userDetail.indexOf(user) > -1" color="secondary" name="checkmark-circle"></ion-icon>
+				</ion-item>
+			<button (click)="createGroup()" ion-button full [disabled]="!createGroupForm.valid">Create Group</button>
+		</ion-list>
+	</form>
+</ion-content>

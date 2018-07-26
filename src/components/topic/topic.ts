@@ -30,8 +30,7 @@ export class TopicComponent {
 
   }
 
-  ngOnChanges() {
-
+  ngOnChanges() {  
     if (this.topic) {
       let topicRef = firebase.database().ref('Badge/' + this.connection.user.id + '/Groups/' + this.topic.GroupCode + '/Topics/' + this.topic.TopicCode);
       if (this.badgeCount) {
@@ -45,13 +44,13 @@ export class TopicComponent {
     }
   }
 
-  openTopic() {
+  openTopic() {    
     this.zone.run(() => {
       this.clicked.emit({
         topic: this.topic,
         type: this.type
       });
-    });
+    });    
     this.navCtrl.push('ChatPage', {
       topicID: this.topic.TopicID,
       groupID: this.group_id,
@@ -73,7 +72,7 @@ export class TopicComponent {
     this.connection.doPost('Chat/SetPriority', {
       TopicID: this.topic.TopicID,
       IsPriority: !this.topic.IsPriority
-    }).then((response: any) => {
+    },false).then((response: any) => {
       this.topic.IsPriority = !this.topic.IsPriority;
       this.events.publish('toast:create', response.Data.Message);
     }).catch((error) => { });

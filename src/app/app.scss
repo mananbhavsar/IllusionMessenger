@@ -1,8 +1,9 @@
 @function repeat($times, $character) {
     $result: "";
-    @if $times == 0{
+    @if $times==0 {
         @return '';
-    }@else {
+    }
+    @else {
         @for $i from 1 through $times {
             $result: $result + $character;
         }
@@ -225,6 +226,17 @@ ion-item-divider {
         }
     }
 }
-.badge-md{
+
+.badge-md {
     border-radius: 10px;
+}
+
+button {
+    &.item-button {
+        &[button-mini] {
+            height: 1.8em;
+            font-size: 0.9rem;
+            padding: 0 0.9em;
+        }
+    }
 }

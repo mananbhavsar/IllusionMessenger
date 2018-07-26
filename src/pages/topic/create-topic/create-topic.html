@@ -30,7 +30,7 @@
         </div>
         <ng-container *ngIf="createForm.get('private').value;else publicAssignTo">
           <ion-item no-lines>
-            <button ion-button block (click)="addParticipants()">Create</button>
+            <button ion-button block (click)="addParticipants()">Add Participants</button>
           </ion-item>
           <div>
             <ion-list *ngIf="selectedParticipantIDs.length">

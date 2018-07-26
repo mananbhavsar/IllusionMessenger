@@ -76,7 +76,11 @@ import { UserProvider } from '../providers/user/user';
 import { UserAutoCompleteService } from './../pages/topic/create-topic/user-auto-complete';
 import { MyApp } from './app.component';
 import { DailyShedulePageModule } from '../pages/topic/daily-shedule/daily-shedule.module';
-
+import { SearchPageModule } from '../pages/search/search.module';
+import { CreateGroupPageModule } from '../pages/manage-group/create-group/create-group.module';
+import { CreateTagPageModule } from '../pages/create-tag/create-tag.module';
+import { CreateUserPageModule } from '../pages/create-user/create-user.module';
+import { ManageGroupPageModule } from '../pages/manage-group/manage-group.module';
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -107,6 +111,8 @@ export function createTranslateLoader(http: HttpClient) {
         IonicImageViewerModule,
         AboutPageModule,
         AddFlashPageModule,
+        CreateTagPageModule,
+        CreateUserPageModule,
         AccountPageModule,
         CloseTopicPageModule,
         TopicPageModule,
@@ -121,6 +127,7 @@ export function createTranslateLoader(http: HttpClient) {
         GroupOptionsPageModule,
         DueTopicsPageModule,
         HelpPageModule,
+        SearchPageModule,
         HomePageModule,
         LoginPageModule,
         ManageParticipantsPageModule,
@@ -134,7 +141,9 @@ export function createTranslateLoader(http: HttpClient) {
         ElasticModule,
         OrderModule,
         ComponentsModule,
+        CreateGroupPageModule,
         PipesModule,
+        ManageGroupPageModule,
         DailyShedulePageModule
     ],
     bootstrap: [IonicApp],

@@ -2,11 +2,11 @@
 	<modal-toolbar [title]="'Add Flash'" [subTitle]="group_name" (dismiss)="dismiss($event)"></modal-toolbar>
 </ion-header>
 <ion-content padding>
-	<form [formGroup]="addFlashForm" (ngSubmit)="addFlash()">
+	<form [formGroup]="addFlashForm">
 		<ion-list>
 			<ion-item>
 				<ion-label stacked>Enter Flash/News</ion-label>
-				<ion-textarea placeholder="Enter here" type="text" formControlName="flash_message" maxLength="160"></ion-textarea>
+				<ion-textarea required placeholder="Enter here" type="text" formControlName="flash_message" maxLength="160"></ion-textarea>
 			</ion-item>
 			<div text-right class="italic-small-grey">
 				({{addFlashForm.get('flash_message').value.length}}/160)
@@ -23,8 +23,8 @@
 			<div class="error-message-block" *ngIf="addFlashForm.controls.end_date.errors && (addFlashForm.controls.end_date.dirty || addFlashForm.controls.end_date.touched)">
 				<span *ngIf="addFlashForm.controls.end_date.errors?.InvalidDatetime">{{getErrorMessage()}}</span>
 			</div>
-			<!-- <attachment [editable]="true" [attachments]="attachments" (captured)="captured($event)" (removed)="removeAttachment($event)"></attachment> -->
-			<button ion-button full [disabled]="!addFlashForm.valid">Add Flash</button>
+			<attachment [isBrowser]="isBrowser" [editable]="true" [attachments]="attachments" (captured)="captured($event)" (removed)="removeAttachment($event)"></attachment>
+			<button (click)="addFlash()" ion-button full [disabled]="!addFlashForm.valid">Add Flash</button>
 		</ion-list>
 	</form>
 </ion-content>

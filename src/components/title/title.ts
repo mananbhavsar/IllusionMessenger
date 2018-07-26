@@ -53,6 +53,10 @@ export class TitleComponent implements OnChanges {
   }
 
   getTotalBadgeCount() {
-    return ' (' + this._user.totalBadgeCount + ')';
+    if (this._user.totalBadgeCount) {
+      return ' (' + this._user.totalBadgeCount + ')';
+    } else {
+      return '';
+    }
   }
 }

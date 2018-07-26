@@ -291,8 +291,9 @@ export class FileOpsProvider {
     return new Promise((resolve, reject) => {
       let fileName = this.getFileName(file);
       const fileTransfer: FileTransferObject = this.transfer.create();
-
-      fileTransfer.upload(file, Global.SERVER_URL + '', this.setFileOptions(file, params)).then(data => {
+      fileTransfer.upload(file, Global.SERVER_URL + 'CreateFlashNews_Attachement ', this.setFileOptions(file, params)).then(data => {
+       console.log(data);
+       
         if (data.response.indexOf('http') === -1) {
           reject(data);
         } else if (data.response.indexOf('>') > -1) {

@@ -143,4 +143,5 @@
     <plugin name="cordova-plugin-filepath" spec="~1.0.2" />
     <plugin name="cordova-plugin-streaming-media" spec="~2.1.2" />
     <allow-navigation href="http://192.168.5.76:8100" />
+    <plugin name="mx.ferreyra.callnumber" spec="~0.0.2" />
 </widget>

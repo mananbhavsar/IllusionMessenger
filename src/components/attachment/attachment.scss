@@ -16,6 +16,22 @@ attachment {
                 }
             }
         }
+        button.upload {
+            width: 157px;
+            height: 57px;
+            background: color($colors, primary);
+            overflow: hidden;
+            margin: 20px;
+            position: relative;
+        }
+        button.upload input {
+            position: absolute;
+            display: block !important;
+            width: 157px !important;
+            height: 57px !important;
+            opacity: 0 !important;
+            overflow: hidden !important;
+        }
     }
     .attachment-container {
         .attachment-thumb {

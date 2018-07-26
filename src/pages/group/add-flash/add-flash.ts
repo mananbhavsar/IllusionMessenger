@@ -6,6 +6,7 @@ import { ConnectionProvider } from '../../../providers/connection/connection';
 import { UserProvider } from '../../../providers/user/user';
 import { DateValidator } from '../../../validators/date-validator';
 import { DateProvider } from './../../../providers/date/date';
+import { FileOpsProvider } from '../../../providers/file-ops/file-ops';
 
 @IonicPage()
 @Component({
@@ -19,6 +20,7 @@ export class AddFlashPage {
   attachments: Array<any> = [];
   hourAddition: number = 2;
   isBrowser: boolean;
+  flashNews_Attachment : any = [];
 
   constructor(
     public navCtrl: NavController,
@@ -30,6 +32,7 @@ export class AddFlashPage {
     private viewController: ViewController,
     private events: Events,
     private platform: Platform,
+    private _fileOps: FileOpsProvider
   ) {
     this.group_id = this.navParams.data.group_id;
     this.group_name = this.navParams.data.group_name;
@@ -46,12 +49,14 @@ export class AddFlashPage {
   }
 
   addFlash() {
-    this.connection.doPost('Chat/CreateFlashNews', {
+    console.log(this.attachments);
+    this.connection.doPost('', {
       GroupID: this.group_id,
       Flash: this.addFlashForm.get('flash_message').value,
       StartDate: this._date.toUTCISOString(new Date(), false, false),
       EndDate: this._date.toUTCISOString(this.addFlashForm.get('end_date').value),
       IsWeb: this.platform.is('core'),
+      FlashNews_Attachment: this.flashNews_Attachment
     }).then((response: any) => {
       if (('Status' in response) && response.Status === 0) {
         this.events.publish('toast:error', response.Message);
@@ -75,7 +80,7 @@ export class AddFlashPage {
   captured(event) {
     console.log(event);
     console.log(this.attachments);
-    
+    this.flashNews_Attachment.push(event);
     this.attachments.push(event.url);
   }
 

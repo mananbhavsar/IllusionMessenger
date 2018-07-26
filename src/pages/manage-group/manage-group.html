@@ -1,0 +1,33 @@
+<ion-header>
+  <header [title]="title" [buttons]="[{name : 'add', icon : 'add'}]" (buttonClicked)="addGroup($event)"></header>
+</ion-header>
+
+
+<ion-content padding>
+  <ion-item *ngFor="let group of data; let i = index">
+    <ion-label>
+      <h2>
+        {{group.Group}}
+      </h2>
+      <p>
+        <ion-row>
+          <ion-col text-start class="activetopics" *ngIf="group.ActiveTopics > 0">
+            <ion-icon name="ios-alarm"></ion-icon> {{group.ActiveTopics}} {{'due' + (group.ActiveTopics > 1 ? 's' : '')}}
+          </ion-col>
+          <ion-col text-center class="responsibletopics" *ngIf="group.ResponsibleCount && group.ResponsibleCount > 0">
+            <ion-icon name="ios-star"></ion-icon> {{group.ResponsibleCount}} assigned
+          </ion-col>
+          <ion-col text-end class="overdue" *ngIf="group.OverDueTopics > 0">
+            <ion-icon name="ios-alert"></ion-icon> {{group.OverDueTopics}} {{'over-due' + (group.OverDueTopics > 1 ? 's' : '')}}
+          </ion-col>
+        </ion-row>
+      </p>
+    </ion-label>
+      <button (click)="removeGroup(i)" item-end ion-button outline>
+        Remove
+      </button>
+      <button (click)="updateGroup(group)" color="communication" item-end ion-button outline>
+        Update
+      </button>
+  </ion-item>
+</ion-content>

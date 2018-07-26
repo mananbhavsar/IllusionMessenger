@@ -13,7 +13,11 @@ import { FirebaseTransactionProvider } from './../../providers/firebase-transact
 import { NotificationsProvider } from './../../providers/notifications/notifications';
 import { AddFlashPage } from './../group/add-flash/add-flash';
 import { CreateTopicPage } from './../topic/create-topic/create-topic';
-
+import { SearchPage } from '../../pages/search/search';
+import { FlashPage } from '../../pages/flash/flash';
+import { CreateGroupPage } from '../manage-group/create-group/create-group';
+import { CreateTagPage } from '../create-tag/create-tag';
+import { CreateUserPage } from '../create-user/create-user';
 
 @IonicPage()
 @Component({
@@ -30,6 +34,7 @@ export class HomePage {
 
     flashNews: Array<any> = [];
     reorder: boolean = false;
+    hideRefresher: boolean = true;
     /**
      * 0 => not connected
      * 1 => connecting
@@ -158,6 +163,8 @@ export class HomePage {
                 this.dataFetched = true;
                 //groups
                 this.data = response;
+                console.log(this.data);
+
                 //flash
                 if (response.FlashNews) {
                     this.flashNews = response.FlashNews;
@@ -297,7 +304,7 @@ export class HomePage {
             ReadAll: false,
             GroupCode: this.selectedGroup.map(GroupCode => GroupCode.GroupCode),
             TopicCode: this.selectedTopic.toString(),
-        }, false).then((response: any) => {
+        }).then((response: any) => {
             if (response) {
                 this.getData(false);
                 this.selectedTopic = [];
@@ -317,7 +324,7 @@ export class HomePage {
         return new Promise((resolve, reject) => {
             this.connection.doPost('Chat/ReadAll', {
                 ReadAll: true
-            }, false).then((response: any) => {
+            }).then((response: any) => {
                 if (response) {
                     this.getData(false);
                     this.selectedTopic = [];
@@ -375,13 +382,46 @@ export class HomePage {
 
     headerButtonClicked(event) {
         switch (event.name) {
-            case 'flash':
-                this.addFlash();
-                break;
             case 'sort':
                 this.openSortOptions();
                 break;
+            case 'search':
+                this.searchData();
         }
+    }
+
+    fabButtonClicked(event) {
+        switch (event.name) {
+            case 'person':
+                this.createGroup();
+                break;
+            case 'ios-checkmark-circle-outline':
+                this.createTag();
+                break;
+            case 'ios-people':
+                this.createUser();
+                break;
+            case 'flash':
+                this.addFlash();
+                break;
+
+        }
+    }
+
+    createGroup() {
+        this.navCtrl.push(CreateGroupPage);
+    }
+
+    createTag() {
+        this.navCtrl.push(CreateTagPage);
+    }
+
+    createUser() {
+        this.navCtrl.push(CreateUserPage);
+    }
+
+    searchData() {
+        this.navCtrl.push('SearchPage');
     }
 
     addFlash() {
@@ -391,7 +431,7 @@ export class HomePage {
         });
         flashModal.onDidDismiss(data => {
             this.setTitle();
-            
+
             if (data) {
                 this.events.publish('toast:create', data.Data.Message);
                 this.notifications.sends(data.OneSignalTransaction);
@@ -415,11 +455,20 @@ export class HomePage {
         return false;
     }
 
+    refresherHidden() {
+        this.hideRefresher = false;
+    }
+
     getSelectedTabName() {
         let selectedName = '';
         this.tabs.some(tab => {
             if (tab.icon === this.selectedTab) {
                 selectedName = tab.name;
+                if (selectedName === 'Groups' && this.reorder) {
+                    this.hideRefresher = false;
+                } else {
+                    this.hideRefresher = true;
+                }
                 return true;
             }
             return false;
@@ -493,7 +542,7 @@ export class HomePage {
             GroupID: group_reorder.map(groupId => groupId.GroupID)
         }, false).then((response: any) => {
             if (response) {
-                
+
             }
         }).catch((error) => {
         });

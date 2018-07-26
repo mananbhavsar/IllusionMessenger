@@ -1,14 +1,14 @@
-<ion-row class="attachments" *ngIf="editable">
-    <ion-col col-4>
-        <button block ion-button color="primary" (click)="capture('file')">
-          <div>
-            <ion-icon name="ios-document"></ion-icon>
-            <label>
-              Choose File
-            </label>
-          </div>
-        </button>
-      </ion-col>
+<ion-row class="attachments" *ngIf="editable && (!isBrowser)">
+  <ion-col showWhen="android" col-4>
+    <button block ion-button color="primary" (click)="capture('file')">
+      <div>
+        <ion-icon name="ios-document"></ion-icon>
+        <label>
+          Choose File
+        </label>
+      </div>
+    </button>
+  </ion-col>
   <ion-col>
     <button block ion-button color="primary" (click)="capture('image')">
       <div>
@@ -29,6 +29,13 @@
       </div>
     </button>
   </ion-col>
+</ion-row>
+<ion-row *ngIf="isBrowser">
+  <button ion-button icon-start class="upload">
+    <input type="file" accept="application/pdf,image/*" class="upload" (change)="uplaodFile($event)">
+    <ion-icon name="ios-document"></ion-icon>
+    Choose File
+  </button>
 </ion-row>
 <div class="attachment-progress">
   <progress-bar [progress]="progresses[UUID]" *ngFor="let UUID  of progresses | keys"></progress-bar>

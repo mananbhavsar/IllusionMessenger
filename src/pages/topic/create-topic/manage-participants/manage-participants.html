@@ -3,7 +3,7 @@
 		<ion-searchbar placeholder="Search" (ionInput)="getData($event)" (ionCancel)="onCancel($event)" (ionClear)="onClear($event)"></ion-searchbar>
 		<ion-buttons end>
 			<button color="light" ion-button outline *ngIf="selectedParticipantIDs.length === 0" (click)="dismiss(null)">Close</button>
-			<button color="light" ion-button outline *ngIf="selectedParticipantIDs.length" (click)="create()">Create</button>
+			<button color="light" ion-button outline *ngIf="selectedParticipantIDs.length" (click)="create()">Add</button>
 		</ion-buttons>
 	</ion-navbar>
 </ion-header>

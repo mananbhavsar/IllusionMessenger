@@ -1,5 +1,5 @@
 <ion-header no-border>
-    <header [title]="getTitle()" [buttons]="[{icon: 'ios-flash', name: 'flash'}, { icon: 'ios-options', name: 'sort'}]" (buttonClicked)="headerButtonClicked($event)"></header>
+    <header [title]="getTitle()" [buttons]="[{icon: 'search', name : 'search'}, { icon: 'ios-options', name: 'sort'}]" (buttonClicked)="headerButtonClicked($event)"></header>
     <div class="device-register" [ngSwitch]="deviceRegsiter">
         <span class="gray" *ngSwitchCase="0">Not Connected</span>
         <span class="pickup" *ngSwitchCase="1">Connecting</span>
@@ -7,7 +7,7 @@
     </div>
 </ion-header>
 <ion-content no-padding>
-    <ion-refresher (ionRefresh)="refresh($event)">
+    <ion-refresher (ionRefresh)="refresh($event)" *ngIf="hideRefresher">
         <ion-refresher-content pullingIcon="arrow-round-down" pullingText="Pull to refresh" refreshingSpinner="crescent" refreshingText="Refreshing...">
         </ion-refresher-content>
     </ion-refresher>
@@ -15,12 +15,21 @@
     <ng-template #data_template>
         <flash-news [flashNews]="flashNews"></flash-news>
         <ion-item-divider color="light">
-            <button [hidden]="!getUnreadCount()" ion-button outline small icon-right (click)="openReadOptions()">
-                Edit
-                <ion-icon name="remove-circle"></ion-icon>
+            <button button-mini [hidden]="(!getUnreadCount()) || (selectedTab === 'stats')" ion-button outline icon-right (click)="openReadOptions()">
+                <ng-container *ngIf="readOptions;else readAll">
+                    Done
+                </ng-container>
+                <ng-template #readAll>
+                    Edit
+                </ng-template>
             </button>
-            <button *ngIf="isGroupSelected()" (click)="reorderGroups()" ion-button outline small icon-right>
-                Reorder Group
+            <button button-mini *ngIf="isGroupSelected()" (click)="reorderGroups()" ion-button outline icon-right>
+                <ng-container *ngIf="reorder;else askForReorder">
+                    Done
+                </ng-container>
+                <ng-template #askForReorder>
+                    Reorder Group
+                </ng-template>
             </button>
         </ion-item-divider>
         <ion-segment [(ngModel)]="selectedTab" color="theme" padding mode="ios">
@@ -94,6 +103,7 @@
             </ion-list>
         </div>
     </ng-template>
+    <call-fab (clicked)="fabButtonClicked($event)"></call-fab>
     <!-- <button ion-button full (click)="connectToServer('1234')">Register</button> -->
 </ion-content>
 <ion-footer *ngIf="readOptions" class="hide-on-keyboard-open">

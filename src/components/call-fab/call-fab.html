@@ -1,1 +1,19 @@
-<button ion-fab mini color="button" (click)="call()" ><ion-icon name="call"></ion-icon></button>
+<ion-fab right bottom>
+  <button ion-fab color="pickup">
+    <ion-icon name="arrow-dropup"></ion-icon>
+  </button>
+  <ion-fab-list side="top">
+    <button ion-fab (click)="openPage('person')">
+      <ion-icon name="person"></ion-icon>
+    </button>
+    <button ion-fab (click)="openPage('ios-checkmark-circle-outline')">
+      <ion-icon name="ios-checkmark-circle-outline"></ion-icon>
+    </button>
+    <button ion-fab (click)="openPage('ios-people')">
+      <ion-icon name="ios-people"></ion-icon>
+    </button>
+    <button ion-fab (click)="openPage('flash')">
+      <ion-icon name="flash"></ion-icon>
+    </button>
+  </ion-fab-list>
+</ion-fab>

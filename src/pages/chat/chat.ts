@@ -294,7 +294,8 @@ export class ChatPage {
           this.scrollBottom('first time message load').then(status => {
             this.readyForPagination = true;
             this.saveOfflineData();
-          }).catch(error => { });
+          }).catch(error => {             
+          });
         }, 100);
       });
 
@@ -354,7 +355,9 @@ export class ChatPage {
 
           setTimeout(() => {
             setTimeout(() => {
-              this.scrollBottom('new message').catch(error => { });
+              this.scrollBottom('new message').catch(error => {
+                
+               });
             });
           }, 250);
         } else {
@@ -392,7 +395,9 @@ export class ChatPage {
       this.userTyping = snapshot.val();
       if (this.typingRefLoaded) {
         setTimeout(() => {
-          this.scrollBottom('typing ref init').catch(error => { });
+          this.scrollBottom('typing ref init').catch(error => {
+            
+           });
         }, 100);
       }
       this.typingRefLoaded = true;
@@ -504,11 +509,13 @@ export class ChatPage {
     this.platformResumeReference = this.platform.resume.subscribe(() => {
       this.resumed();
     }, error => {
+      
     });
 
     this.platformPauseReference = this.platform.pause.subscribe(() => {
       this.doLeaving(false);
     }, error => {
+      
     });
 
     //notification subs
@@ -647,7 +654,9 @@ export class ChatPage {
           this.setPath();
           this.setOfflineTopicList(this.data);
           if (response.FireBaseTransaction) {
-            this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { });
+            this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => {
+              
+             });
           }
           this.setTitle();
           this.setUsers().then((chatUsersList) => {
@@ -655,6 +664,7 @@ export class ChatPage {
             resolve(true);
           }).catch(error => {
             this.navCtrl.setRoot(HomePage);
+            this.events.publish('toast:create', error);    
             reject(false);
           })
 
@@ -737,6 +747,7 @@ export class ChatPage {
   }
 
   getTitle() {
+    
     return this.title;
   }
 

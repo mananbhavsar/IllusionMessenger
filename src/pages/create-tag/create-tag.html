@@ -1,0 +1,29 @@
+
+<ion-header>
+  <header [title]="title"></header>
+
+</ion-header>
+
+
+<ion-content padding>
+  <form [formGroup]="createTagForm">
+		<ion-list>
+			<ion-item>
+				<ion-label stacked>Enter Tag</ion-label>
+				<ion-textarea required placeholder="Enter Tag" type="text" formControlName="tag" maxLength="30"></ion-textarea>
+			</ion-item>
+			<div class="error-message-block" *ngIf="createTagForm.controls.tag.errors && (createTagForm.controls.tag.dirty || createTagForm.controls.tag.touched)">
+				<span *ngIf="createTagForm.controls.tag.errors.required">Tag is required</span>
+				<span *ngIf="createTagForm.controls.tag.errors.maxlength">Max 30 Characters</span>
+			</div>
+			<ion-item>
+				<ion-label stacked>Enter Tag Code</ion-label>
+				<ion-input required placeholder="Enter Tag Code" type="text" formControlName="tag_code" maxLength="10"></ion-input>			
+			</ion-item>
+			<div class="error-message-block" *ngIf="createTagForm.controls.tag_code.errors && (createTagForm.controls.tag_code.dirty || createTagForm.controls.tag_code.touched)">
+				<span *ngIf="createTagForm.controls.tag_code.errors.required">Tag Code is required</span>
+      </div>
+			<button (click)="createTag()" ion-button full [disabled]="!createTagForm.valid">Create Tag</button>
+		</ion-list>
+	</form>
+</ion-content>

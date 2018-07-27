@@ -25,7 +25,9 @@
         "_Communication_": "la communication",
         "_ViewCommunication_": "Voir votre communication",
         "_Invoice_": "facture d'achat",
-        "_Payments_": "Paiements"
+        "_Payments_": "Paiements",
+        "_Tag_" : "Mots clés",
+        "_users_" : "Utilisateurs"
     },
     "DashboardDetail": {
         "_Payment_": "Versement",

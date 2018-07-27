@@ -26,6 +26,8 @@ import { Global } from './global';
 import * as _ from 'underscore';
 import * as moment from "moment";
 import { DailyShedulePage } from '../pages/topic/daily-shedule/daily-shedule';
+import { TagPage } from '../pages/create-tag/tag/tag';
+import { UsersPage } from '../pages/create-user/users/users';
 
 export const firebaseConfig = {
     apiKey: "AIzaSyAFDZ9UPTMiDTjT4qAG0d9uVeOdhL-2PBw",
@@ -74,6 +76,8 @@ export class MyApp {
     loggedInPages: PageInterface[] = [
         { title: 'Home', translate_key: 'HomeScreen._Home_', name: 'HomePage', component: HomePage, icon: 'home' },
         { title: 'Manage Group', translate_key: 'HomeScreen._ManageGroup_', name: 'ManageGroupPage', component: ManageGroupPage, icon: 'people' },
+        { title : 'Tag', translate_key: 'HomeScreen._Tag_', name : 'TagPage', component : TagPage, icon : 'tab'},
+        { title : 'Users', translate_key : 'HomeScreen._users_', name : 'UsersPage', component : UsersPage, icon : 'person'}
     ];
     accountPages: PageInterface[] = [
         { title: 'Account', translate_key: 'Common._Account_', name: 'AccountPage', component: AccountPage, icon: 'user' },
@@ -670,17 +674,17 @@ export class MyApp {
         this.events.subscribe('user:ready', (user) => {
             if (!_.isEmpty(user)) {
                 let date = moment().format('YYYY/MM/DD');
-                // let ref = firebase.database().ref('DailyScheduler/' + user.LoginUserID
-                //     + '/' + date);
-                // ref.on('value', (status) => {
-                //     if (status.val() === null) {
-                        //show popup
+                let ref = firebase.database().ref('DailyScheduler/' + user.LoginUserID
+                    + '/' + date);
+                ref.on('value', (status) => {
+                    if (status.val() === null) {
+                        // show popup
                         this.nav.setRoot('DailyShedulePage');
-                        //update to firebase
-                        // ref.set(true);
+                        // update to firebase
+                        ref.set(true);
                     }
-                // });
-            // }
+                });
+            }
         });
     }
 

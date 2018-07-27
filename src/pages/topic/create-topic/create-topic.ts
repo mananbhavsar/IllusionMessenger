@@ -71,7 +71,7 @@ export class CreateTopicPage {
     this.createForm = this.formBuilder.group({
       private: [true],
       group_id: [''],
-      name: ['', [Validators.required, Validators.maxLength(60)]],
+      name: ['', [Validators.required, Validators.maxLength(60),Validators.pattern('[a-zA-Z ]+$')]],
       assigned: [0, [Validators.required]],
       participants: [''],
       due_date: new FormControl(moment().local().add(this.hourAddition, 'hours').format())

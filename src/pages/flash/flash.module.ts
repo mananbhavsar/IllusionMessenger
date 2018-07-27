@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
 import { FlashPage } from './flash';
 import { ComponentsModule } from '../../components/components.module';
+import { PipesModule } from '../../pipes/pipes.module';
 
 
 @NgModule({
@@ -10,7 +11,8 @@ import { ComponentsModule } from '../../components/components.module';
   ],
   imports: [
     IonicPageModule.forChild(FlashPage),
-    ComponentsModule
+    ComponentsModule,
+    PipesModule
   ],
 })
 export class FlashPageModule {}

@@ -1,7 +1,26 @@
 <ion-header no-border>
-    <modal-toolbar [title]="title" (dismiss)="dismiss($event)"></modal-toolbar>
-  </ion-header>
+  <modal-toolbar [title]="title" (dismiss)="dismiss($event)"></modal-toolbar>
+</ion-header>
 
 <ion-content padding>
-
+  <ion-card>
+    <ion-card-header>
+      <h3>{{news.Flash}}</h3>
+    </ion-card-header>
+    <ion-card-content>
+      <img src="" alt="">
+      <p>
+        <ion-row>
+          <ion-col text-left>
+            <ion-icon name="ios-person"></ion-icon>
+            {{news.CreatedBy}}
+          </ion-col>
+          <ion-col text-right>
+            <ion-icon name="ios-clock"></ion-icon>
+            {{news.StartDate_UTC | time}}
+          </ion-col>
+        </ion-row>
+      </p>
+    </ion-card-content>
+  </ion-card>
 </ion-content>

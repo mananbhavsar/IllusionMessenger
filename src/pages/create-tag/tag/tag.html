@@ -1,0 +1,27 @@
+<ion-header>
+  <header [title]="title" [buttons]="[{name : 'add', icon : 'add'}]" (buttonClicked)="addTag($event)"></header>
+</ion-header>
+
+
+<ion-content padding>
+  <empty *ngIf="tags.length === 0;else data_template"></empty>
+  <ion-refresher (ionRefresh)="refresh($event)">
+    <ion-refresher-content pullingIcon="arrow-round-down" pullingText="Pull to refresh" refreshingSpinner="crescent" refreshingText="Refreshing...">
+    </ion-refresher-content>
+  </ion-refresher>
+  <ng-template #data_template>
+    <ion-list>
+      <ion-item *ngFor="let tag of tags;let i=index;">
+        <ion-label>
+          {{tag.Tag}}
+        </ion-label>
+        <button (click)="removeTag(tag,i)" item-end ion-button outline>
+          Remove
+        </button>
+        <button (click)="updateTag(tag)" color="communication" item-end ion-button outline>
+          Update
+        </button>
+      </ion-item>
+    </ion-list>
+  </ng-template>
+</ion-content>

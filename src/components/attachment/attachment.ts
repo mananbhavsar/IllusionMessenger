@@ -40,7 +40,7 @@ export class AttachmentComponent {
       context.uploadFileFromBrowser(fileName, fileExtension, dataURL)
         .then((data: any) => {
           context.captured.emit({
-            url: data.Data,
+            VirtualPath: data.Data,
             FileName : fileName,
             fileExtension : fileExtension
           });

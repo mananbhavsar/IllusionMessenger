@@ -73,6 +73,7 @@ export class TopicComponent {
       TopicID: this.topic.TopicID,
       IsPriority: !this.topic.IsPriority
     },false).then((response: any) => {
+      this.events.publish('priority:set');
       this.topic.IsPriority = !this.topic.IsPriority;
       this.events.publish('toast:create', response.Data.Message);
     }).catch((error) => { });

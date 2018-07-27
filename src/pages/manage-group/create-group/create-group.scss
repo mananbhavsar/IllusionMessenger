@@ -7,4 +7,17 @@ page-create-group {
         font-style: italic;
         color: color($colors, pickup);
     }
+    form {
+        ion-list {
+            ion-item {
+                button {
+                    &.outline-button {
+                        background-color: transparent;
+                        border: 1px solid color($colors, communication);
+                        color: color($colors, communication);
+                    }
+                }
+            }
+        }
+    }
 }

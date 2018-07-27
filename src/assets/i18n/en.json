@@ -25,7 +25,9 @@
         "_Communication_": "Communication",
         "_ViewCommunication_": "View your communications",
         "_Invoice_": "Invoice",
-        "_Payments_": "Payments"
+        "_Payments_": "Payments",
+        "_Tag_" : "Tags",
+        "_users_" : "Users"
     },
     "DashboardDetail": {
         "_Payment_": "Payment",

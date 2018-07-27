@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, Events, NavController, NavParams } from 'ionic-angular';
 import { ConnectionProvider } from '../../providers/connection/connection';
 import { ModalController } from 'ionic-angular/components/modal/modal-controller';
 import { CreateGroupPage } from './create-group/create-group';
@@ -17,10 +17,12 @@ export class ManageGroupPage {
   sort_order: string = '';
   data: any;
   badges: any;
+  groups: any = [];
   constructor(public navCtrl: NavController,
     public connection: ConnectionProvider,
     public navParams: NavParams,
-    public modal: ModalController) {
+    public modal: ModalController,
+    public events: Events) {
     this.getData();
   }
 
@@ -45,13 +47,43 @@ export class ManageGroupPage {
     });
   }
 
-  removeGroup(index) {
-    console.log(index);
-   this.data.splice(index,1);
+  removeGroup(group, index) {
+    return new Promise((resolve, reject) => {
+      this.connection.doPost('Chat/removeGroup', {
+        UserID: group.GroupID,
+        Group: group.Group,
+        GroupCode: group.GroupCode
+      }).then((response: any) => {
+        if (response) {
+          this.events.publish('toast:create', response.Data.Message);
+          this.groups.splice(index, 1);
+          resolve(true);
+        }
+      }).catch((error) => {
+        reject();
+      });
+    });
   }
 
-  updateGroup() {
+  updateGroup(group) {
+    let groupModal = this.modal.create(CreateGroupPage, group);
 
+    groupModal.onDidDismiss((data) => {
+      if (data) {
+        this.getData();
+      }
+    });
+    groupModal.present();
+
+  }
+
+
+  refresh(refresher){
+    this.getData().then((response) => {
+      refresher.complete();
+    }).catch((error) => {
+      refresher.complete();
+    })
   }
 
   addGroup() {
@@ -66,10 +98,4 @@ export class ManageGroupPage {
 
   }
 
-  // getBadge(groupCode) {
-  //   if (groupCode in this.badges) {
-  //     return this.badges[groupCode];
-  //   }
-  //   return false;
-  // }
 }

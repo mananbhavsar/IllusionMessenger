@@ -81,6 +81,8 @@ import { CreateGroupPageModule } from '../pages/manage-group/create-group/create
 import { CreateTagPageModule } from '../pages/create-tag/create-tag.module';
 import { CreateUserPageModule } from '../pages/create-user/create-user.module';
 import { ManageGroupPageModule } from '../pages/manage-group/manage-group.module';
+import { TagPageModule } from '../pages/create-tag/tag/tag.module';
+import { UsersPageModule } from '../pages/create-user/users/users.module';
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -116,6 +118,7 @@ export function createTranslateLoader(http: HttpClient) {
         AccountPageModule,
         CloseTopicPageModule,
         TopicPageModule,
+        UsersPageModule,
         ChangePasswordPageModule,
         ChatPageModule,
         ChatReadModalPageModule,
@@ -123,6 +126,7 @@ export function createTranslateLoader(http: HttpClient) {
         CreateTopicPageModule,
         EditProfilePageModule,
         ForgotPasswordPageModule,
+        TagPageModule,
         GroupPageModule,
         GroupOptionsPageModule,
         DueTopicsPageModule,

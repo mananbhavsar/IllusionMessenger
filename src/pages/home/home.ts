@@ -104,6 +104,10 @@ export class HomePage {
             this.getData(false).catch(error => { });
         });
 
+        this.events.subscribe('priority:set', (data) => {
+            this.getData(true).catch(error => { });
+        });
+
         this.events.subscribe('dashboard:close', (dashboard) => {
             this.setTitle();
         })
@@ -393,13 +397,13 @@ export class HomePage {
     fabButtonClicked(event) {
         switch (event.name) {
             case 'person':
-                this.createGroup();
+                this.createUser();
                 break;
-            case 'ios-checkmark-circle-outline':
+            case 'ios-bookmark':
                 this.createTag();
                 break;
             case 'ios-people':
-                this.createUser();
+                this.createGroup();
                 break;
             case 'flash':
                 this.addFlash();

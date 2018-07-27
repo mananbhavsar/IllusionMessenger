@@ -1,0 +1,26 @@
+<ion-header>
+  <header [title]="title" [buttons]="[{name : 'add', icon : 'add'}]" (buttonClicked)="addUser($event)"></header>
+
+</ion-header>
+
+
+<ion-content padding>
+  <empty *ngIf="users.length === 0;else data_template"></empty>
+  <ion-refresher (ionRefresh)="refresh($event)">
+    <ion-refresher-content pullingIcon="arrow-round-down" pullingText="Pull to refresh" refreshingSpinner="crescent" refreshingText="Refreshing...">
+    </ion-refresher-content>
+  </ion-refresher>
+  <ng-template #data_template>
+    <ion-item *ngFor="let user of users">
+      <ion-label>
+        {{user.User}}
+      </ion-label>
+      <button (click)="removeUser(user,i)" item-end ion-button outline>
+        Remove
+      </button>
+      <button (click)="updateUser(user)" color="communication" item-end ion-button outline>
+        Update
+      </button>
+    </ion-item>
+  </ng-template>
+</ion-content>

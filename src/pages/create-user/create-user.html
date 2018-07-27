@@ -1,5 +1,5 @@
 <ion-header>
-  <header [title]="title"></header>
+		<modal-toolbar [title]="title" (dismiss)="dismiss($event)"></modal-toolbar>
 </ion-header>
 
 
@@ -8,49 +8,50 @@
     <ion-list>
       <ion-item>
         <ion-label stacked>Enter User Name</ion-label>
-        <ion-input required placeholder="Enter User Name" type="text" formControlName="user_name" maxLength="30"></ion-input>
+        <ion-input required placeholder="Enter User Name" type="text" formControlName="User" maxLength="30"></ion-input>
       </ion-item>
-      <div class="error-message-block" *ngIf="createUserForm.controls.user_name.errors && (createUserForm.controls.user_name.dirty || createUserForm.controls.user_name.touched)">
-        <span *ngIf="createUserForm.controls.user_name.errors.required">Name is required</span>
-        <span *ngIf="createUserForm.controls.user_name.errors.pattern">Name should be characters only</span>
+      <div class="error-message-block" *ngIf="createUserForm.controls.User.errors && (createUserForm.controls.User.dirty || createUserForm.controls.User.touched)">
+        <span *ngIf="createUserForm.controls.User.errors.required">Name is required</span>
+        <span *ngIf="createUserForm.controls.User.errors.pattern">Name should be characters only</span>
         </div>
       <ion-item>
         <ion-label stacked>Enter user Code</ion-label>
-        <ion-input required placeholder="Enter user Code" type="text" formControlName="user_code" maxLength="10"></ion-input>
+        <ion-input required placeholder="Enter user Code" type="text" formControlName="UserCode" maxLength="10"></ion-input>
       </ion-item>
-      <div class="error-message-block" *ngIf="createUserForm.controls.user_code.errors && (createUserForm.controls.user_code.dirty || createUserForm.controls.user_code.touched)">
-        <span *ngIf="createUserForm.controls.user_code.errors.required">Enter user Code</span>
-        <span *ngIf="createUserForm.controls.user_code.errors.maxlength">Max 10 Characters</span>
+      <div class="error-message-block" *ngIf="createUserForm.controls.UserCode.errors && (createUserForm.controls.UserCode.dirty || createUserForm.controls.UserCode.touched)">
+        <span *ngIf="createUserForm.controls.UserCode.errors.required">Enter user Code</span>
+        <span *ngIf="createUserForm.controls.UserCode.errors.maxlength">Max 10 Characters</span>
         
       </div>
       <ion-item>
         <ion-label stacked>Enter Email Id</ion-label>
-        <ion-input required placeholder="Enter email" type="email" formControlName="email" maxLength="10"></ion-input>
+        <ion-input required placeholder="Enter Email" type="EmailID" formControlName="EmailID"></ion-input>
       </ion-item>
-      <div class="error-message-block" *ngIf="createUserForm.controls.email.errors && (createUserForm.controls.email.dirty || createUserForm.controls.email.touched)">
-        <span *ngIf="createUserForm.controls.email.errors.required">Email is required</span>
-        <span *ngIf="createUserForm.controls.email.errors.pattern">Invalid email</span>
+      <div class="error-message-block" *ngIf="createUserForm.controls.EmailID.errors && (createUserForm.controls.EmailID.dirty || createUserForm.controls.EmailID.touched)">
+        <span *ngIf="createUserForm.controls.EmailID.errors.required">Email is required</span>
+        <span *ngIf="createUserForm.controls.EmailID.errors.pattern">Invalid EmailID</span>
       </div>
       <ion-item>
         <ion-label stacked>Enter Phone Number</ion-label>
-        <ion-input required placeholder="Enter phone number" type="tel" formControlName="mobile_number" maxLength="10"></ion-input>
+        <ion-input required placeholder="Enter phone number" type="tel" formControlName="PhoneNo" maxLength="10"></ion-input>
       </ion-item>
-      <div class="error-message-block" *ngIf="createUserForm.controls.mobile_number.errors && (createUserForm.controls.mobile_number.dirty || createUserForm.controls.mobile_number.touched)">
-        <span *ngIf="createUserForm.controls.mobile_number.errors.required">Mobile Number is required</span>
-        <span *ngIf="createUserForm.controls.mobile_number.errors.pattern">Enter Digits</span>
-        <span *ngIf="createUserForm.controls.mobile_number.errors.minlength">Minimum Length is 10 digit</span>
-        <span *ngIf="createUserForm.controls.mobile_number.errors.maxlength">Maximum Length is 10 digit</span>
+      <div class="error-message-block" *ngIf="createUserForm.controls.PhoneNo.errors && (createUserForm.controls.PhoneNo.dirty || createUserForm.controls.PhoneNo.touched)">
+        <span *ngIf="createUserForm.controls.PhoneNo.errors.required">Mobile Number is required</span>
+        <span *ngIf="createUserForm.controls.PhoneNo.errors.pattern">Enter Digits</span>
+        <span *ngIf="createUserForm.controls.PhoneNo.errors.minlength">Minimum Length is 10 digit</span>
+        <span *ngIf="createUserForm.controls.PhoneNo.errors.maxlength">Maximum Length is 10 digit</span>
       </div>
       <ion-item>
         <ion-label stacked>Enter Password</ion-label>
-        <ion-input required placeholder="Enter Password" type="password" formControlName="password" maxLength="10"></ion-input>
+        <ion-input required placeholder="Enter Password" type="Password" formControlName="Password" maxLength="10"></ion-input>
       </ion-item>
-      <div class="error-message-block" *ngIf="createUserForm.controls.password.errors && (createUserForm.controls.password.dirty || createUserForm.controls.password.touched)">
-        <span *ngIf="createUserForm.controls.password.errors.required">Password is required</span>
-        <span *ngIf="createUserForm.controls.password.errors.minlength">Password should be minimum 8 characters</span>
-        <span *ngIf="createUserForm.controls.password.errors.maxlength">Password should be maximum 15 characters</span>
+      <div class="error-message-block" *ngIf="createUserForm.controls.Password.errors && (createUserForm.controls.Password.dirty || createUserForm.controls.Password.touched)">
+        <span *ngIf="createUserForm.controls.Password.errors.required">Password is required</span>
+        <span *ngIf="createUserForm.controls.Password.errors.minlength">Password should be minimum 8 characters</span>
+        <span *ngIf="createUserForm.controls.Password.errors.maxlength">Password should be maximum 15 characters</span>
       </div>
-      <button (click)="createuser_name()" ion-button full [disabled]="!createUserForm.valid">Create new user</button>
+      <button (click)="createUser()" ion-button full *ngIf="userBtn === 'Create User'" [disabled]="!createUserForm.valid">{{userBtn}}</button>     
+      <button (click)="updateUser()" ion-button full *ngIf="userBtn === 'Update'" [disabled]="!createUserForm.valid">{{userBtn}}</button>
     </ion-list>
   </form>
 </ion-content>

@@ -29,16 +29,6 @@ import { LogoutPage } from '../logout/logout';
 import { DateProvider } from './../../providers/date/date';
 import { ChatOptionsPage } from "./chat-options/chat-options";
 import { SavedMediaPage } from "./chat-options/saved-media/saved-media";
-import { Response } from '@angular/http/src/static_response';
-
-
-
-
-
-
-
-
-
 
 
 @IonicPage()

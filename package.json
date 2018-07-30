@@ -66,6 +66,7 @@
     "angular2-uuid": "^1.1.1",
     "buffer-crc32": "^0.2.13",
     "callsite": "^1.0.0",
+    "cli-update": "^3.2.5",
     "com-sarriaroman-photoviewer": "^1.1.16",
     "cordova-android": "^7.1.0",
     "cordova-base64-to-gallery": "^4.1.3",

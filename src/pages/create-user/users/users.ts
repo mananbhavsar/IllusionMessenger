@@ -12,6 +12,7 @@ import { ConnectionProvider } from '../../../providers/connection/connection';
 export class UsersPage {
   title: string = 'Users';
   users: any = [];
+  page: number = 1;
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public modal: ModalController,
@@ -23,14 +24,23 @@ export class UsersPage {
 
   getUsers() {
     return new Promise((resolve, reject) => {
-      this.connection.doPost('Chat/GetUserList')
-        .then((response: any) => {
-          this.users = response.UserList;
-          console.log(this.users);
-        });
+      if (this.page === -1) {
+        reject();
+      } else {
+        this.connection.doPost('Chat/GetUserList')
+          .then((response: any) => {
+            this.users = response.UserList;
+            console.log(this.users);
+            this.page++;
+            console.log(this.page);
+            
+            resolve(true);
+          });
+      }
     }).catch((error) => {
-
+      this.page = -1;
     });
+
   }
 
   addUser() {
@@ -56,18 +66,30 @@ export class UsersPage {
   removeUser(user, index) {
     return new Promise((resolve, reject) => {
       this.connection.doPost('Chat/RemoveUser', {
-        UserID: user.IserID,
-        User: user.User,
-        UserCode: user.UserCode
+        UserID: user.UserID
       }).then((response: any) => {
         if (response) {
-          this.events.publish('toast:create', response.Data.Message);
           this.users.splice(index, 1);
+          this.events.publish('toast:create', response.Data.Message);
           resolve(true);
         }
       }).catch((error) => {
         reject();
       });
+    });
+  }
+
+  paginate(paginator) {
+    this.getUsers().then(status => {
+      console.log(status);
+
+      if (status) {
+        paginator.complete();
+      } else {
+        paginator.enable(false);
+      }
+    }).catch(error => {
+      paginator.enable(false);
     });
   }
 

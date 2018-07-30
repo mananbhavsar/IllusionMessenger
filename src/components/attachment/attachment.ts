@@ -92,7 +92,7 @@ export class AttachmentComponent {
       console.log(url);
 
       this.captured.emit({
-        url: url
+        VirtualPath: url
       });
     }).catch(error => {
       this.removeProgress(identifier);

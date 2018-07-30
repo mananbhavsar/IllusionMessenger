@@ -8,7 +8,11 @@
       <h3>{{news.Flash}}</h3>
     </ion-card-header>
     <ion-card-content>
-      <img src="" alt="">
+      <ion-row *ngFor="let url of attachments">
+        <ion-col col-4>
+      <img (click)="openImage(url.VirtualPath)" id="url" center src="{{url.VirtualPath}}">         
+        </ion-col>
+      </ion-row>
       <p>
         <ion-row>
           <ion-col text-left>

@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, ViewController, NavParams } from 'ionic-angular';
+import { Component,ElementRef } from '@angular/core';
+import { IonicPage, NavController,Platform, ViewController, NavParams } from 'ionic-angular';
 import { ConnectionProvider } from '../../providers/connection/connection';
+import { ImageViewerController } from 'ionic-img-viewer';
 
 @IonicPage()
 @Component({
@@ -10,10 +11,15 @@ import { ConnectionProvider } from '../../providers/connection/connection';
 export class FlashPage {
  news: any;
   title : string;
+  element : any;
+  attachments : any = [];
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public viewCntl: ViewController,
-    private connection: ConnectionProvider) {
+    private connection: ConnectionProvider,
+    public platform : Platform,
+   public _imageViewerController : ImageViewerController,
+  public _elementRef : ElementRef) {
     this.news = this.navParams.data;
     console.log(this.news);
     this.title = this.news.Flash;
@@ -23,15 +29,26 @@ export class FlashPage {
   initData() {
     this.connection.doPost('Chat/GetFlashNews_Attachement', {
       FlashID : this.news.FlashID
-    }).then((response) => {
+    }).then((response : any) => {
       console.log(response);
-
+      this.attachments = response.FlashNews_AttachementList;
     }).catch((error) => { });
   }
 
 
   dismiss() {
     this.viewCntl.dismiss();
+  }
+
+  openImage(file){
+    if(this.platform.is('core')){
+     window.open(file,'_blank');
+    } else {
+      this.element = this._elementRef.nativeElement.querySelector('#url');
+      let image = this._imageViewerController.create(this.element);
+      console.log(image);  
+      image.present();
+    }
   }
 
 

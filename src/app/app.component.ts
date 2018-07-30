@@ -75,9 +75,9 @@ export class MyApp {
     ];
     loggedInPages: PageInterface[] = [
         { title: 'Home', translate_key: 'HomeScreen._Home_', name: 'HomePage', component: HomePage, icon: 'home' },
-        // { title: 'Manage Group', translate_key: 'HomeScreen._ManageGroup_', name: 'ManageGroupPage', component: ManageGroupPage, icon: 'people' },
-        // { title : 'Tag', translate_key: 'HomeScreen._Tag_', name : 'TagPage', component : TagPage, icon : 'tab'},
-        // { title : 'Users', translate_key : 'HomeScreen._users_', name : 'UsersPage', component : UsersPage, icon : 'person'}
+        { title: 'Manage Group', translate_key: 'HomeScreen._ManageGroup_', name: 'ManageGroupPage', component: ManageGroupPage, icon: 'people' },
+        { title : 'Tag', translate_key: 'HomeScreen._Tag_', name : 'TagPage', component : TagPage, icon : 'tab'},
+        { title : 'Users', translate_key : 'HomeScreen._users_', name : 'UsersPage', component : UsersPage, icon : 'person'}
     ];
     accountPages: PageInterface[] = [
         { title: 'Account', translate_key: 'Common._Account_', name: 'AccountPage', component: AccountPage, icon: 'user' },

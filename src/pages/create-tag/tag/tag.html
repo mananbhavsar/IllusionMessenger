@@ -15,13 +15,16 @@
         <ion-label>
           {{tag.Tag}}
         </ion-label>
-        <button (click)="removeTag(tag,i)" item-end ion-button outline>
-          Remove
+        <button (click)="removeTag(tag,i)" clear icon-only item-end ion-button>
+          <ion-icon name="ios-trash-outline"></ion-icon>
         </button>
-        <button (click)="updateTag(tag)" color="communication" item-end ion-button outline>
-          Update
+        <button (click)="updateTag(tag)" color="communication" item-end ion-button clear icon-only>
+          <ion-icon name="ios-create-outline"></ion-icon>
         </button>
       </ion-item>
     </ion-list>
+    <ion-infinite-scroll *ngIf="page !== -1" (ionInfinite)="paginate($event)">
+        <ion-infinite-scroll-content></ion-infinite-scroll-content>
+      </ion-infinite-scroll>
   </ng-template>
 </ion-content>

@@ -34,7 +34,7 @@
 			</ion-searchbar>
 			<ion-item *ngFor="let user of groupDetail; let i = index;">
 				<ion-label>{{user.User}}</ion-label>
-				<ion-checkbox (ionChange)="userAction($event,user)" checked="false"></ion-checkbox>
+				<ion-checkbox (ionChange)="userAction($event,user)" [checked]="user.IsAdmin"></ion-checkbox>
 				<button ion-button item-end small color="casestatus" [ngClass]="{'outline-button' : !user.IsAdmin}" (click)="makeAdmin(user)">Admin</button>
 			</ion-item>
 			<button (click)="createGroup()" *ngIf="groupBtn === 'Create Group'" ion-button full [disabled]="!createGroupForm.valid">{{groupBtn}}</button>			

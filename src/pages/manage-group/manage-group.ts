@@ -15,7 +15,6 @@ export class ManageGroupPage {
   title: string = 'Manage Group';
   sort_by: string = '';
   sort_order: string = '';
-  data: any;
   badges: any;
   groups: any = [];
   constructor(public navCtrl: NavController,
@@ -29,30 +28,27 @@ export class ManageGroupPage {
 
   getData() {
     return new Promise((resolve, reject) => {
-      this.connection.doPost('Chat/GetTaskDetail', {
-        PageNumber: this.page,
-        RowsPerPage: 100,
-        Query: '',
-        OrderBy: this.sort_by,
-        Order: this.sort_order,
-      }, false).then((response: any) => {
-        //groups
-        this.data = response.Groups_Wise;
-        console.log(this.data);
-
-        resolve(true);
-      }).catch(error => {
-
-      })
+      if (this.page === -1) {
+        reject();
+      } else {
+        this.connection.doPost('Chat/GetGroupDetail_Master')
+          .then((response: any) => {
+            //groups
+            this.groups = response.GroupList.Group;
+            this.page++;
+            resolve(true);
+          }).catch(error => {
+            this.page = -1;
+            reject();
+          });
+      }
     });
   }
 
   removeGroup(group, index) {
     return new Promise((resolve, reject) => {
       this.connection.doPost('Chat/RemoveGroup', {
-        UserID: group.GroupID,
-        Group: group.Group,
-        GroupCode: group.GroupCode
+        GroupID: group.GroupID
       }).then((response: any) => {
         if (response) {
           this.events.publish('toast:create', response.Data.Message);
@@ -77,8 +73,22 @@ export class ManageGroupPage {
 
   }
 
+  paginate(paginator) {
+    this.getData().then(status => {
+      console.log(status);
 
-  refresh(refresher){
+      if (status) {
+        paginator.complete();
+      } else {
+        paginator.enable(false);
+      }
+    }).catch(error => {
+      paginator.enable(false);
+    });
+  }
+
+
+  refresh(refresher) {
     this.getData().then((response) => {
       refresher.complete();
     }).catch((error) => {

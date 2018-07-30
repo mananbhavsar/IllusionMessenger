@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, group } from '@angular/core';
 import { IonicPage, Events, ViewController, ActionSheetController, NavController, NavParams } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConnectionProvider } from '../../../providers/connection/connection';
@@ -11,7 +11,7 @@ import * as _ from 'underscore';
 })
 export class CreateGroupPage {
   createGroupForm: FormGroup;
-  title = "Create Group";
+  title = "Groups";
   groupDetail: any = [];
   userDetail: any = [];
   userList: any;
@@ -28,17 +28,20 @@ export class CreateGroupPage {
     this.createGroupForm = this.formBuilder.group({
       Group: ['', [Validators.required, Validators.maxLength(30), Validators.pattern('[A-Za-z ]*')]],
       GroupCode: ['', [Validators.required, Validators.maxLength(10)]],
-      user_list: [],
       search: []
     });
-    this.getUserDetails();
-
     if (!_.isEmpty(this.navParams.data.Group)) {
       this.groupBtn = 'Update';
+      this.groupDetail = this.navParams.data.User;
+      console.log(this.groupDetail);
+
       this.createGroupForm.setValue({
         Group: this.navParams.data.Group,
-        GroupCode: this.navParams.data.GroupCode
+        GroupCode: this.navParams.data.GroupCode,
+        search : ''
       });
+    } else {
+      this.getUserDetails();
     }
   }
 
@@ -76,11 +79,15 @@ export class CreateGroupPage {
       this.groupDetail = this.groupDetail.filter((item) => {
         return (item.User.toLowerCase().indexOf(val.toLowerCase()) > -1);
       });
+    } else if (val === undefined) {
+      this.groupDetail = this.groupDetail2.filter((item) => {
+        return item.User;
+      });
+    } else {
+      this.groupDetail = this.groupDetail2.filter((item) => {
+        return (item.User.toLowerCase().indexOf(val.toLowerCase()) > -1);
+      });
     }
-
-    this.groupDetail = this.groupDetail2.filter((item) => {
-      return (item.User.toLowerCase().indexOf(val.toLowerCase()) > -1);
-    });
   }
 
   onCancel(event) {

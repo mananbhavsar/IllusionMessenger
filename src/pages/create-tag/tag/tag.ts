@@ -11,6 +11,7 @@ import { CreateTagPage } from '../create-tag';
 export class TagPage {
   title: string = 'Tags';
   tags: any = [];
+  page: number = 1;
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public connection: ConnectionProvider,
@@ -19,26 +20,31 @@ export class TagPage {
     this.getTags();
   }
 
-
-
   getTags() {
     return new Promise((resolve, reject) => {
-      this.connection.doPost('Chat/GetTagList', {
+      if (this.page === -1) {
+        reject();
+      } else {
+        this.connection.doPost('Chat/GetTagList', {
 
-      }).then((response: any) => {
-        console.log(response.TagList);
-        this.tags = response.TagList;
-
-      }).catch((error) => {
-        this.events.publish('toast:create', error);
-      });
+        }).then((response: any) => {
+          console.log(response.TagList);
+          this.tags = response.TagList;
+          this.page++;
+        }).catch((error) => {
+          this.page = -1;
+          this.events.publish('toast:create', error);
+        });
+      }
     });
   }
 
   removeTag(tag, index) {
     return new Promise((resolve, reject) => {
       this.connection.doPost('Chat/RemoveTag', {
-        TagID: tag.TagID
+        TagID: tag.TagID,
+        TagCode: null,
+        Tag: null
       }).then((response: any) => {
         if (response) {
           this.events.publish('toast:create', response.Data.Message);
@@ -48,6 +54,19 @@ export class TagPage {
       }).catch((error) => {
         reject();
       });
+    });
+  }
+  paginate(paginator) {
+    this.getTags().then(status => {
+      console.log(status);
+
+      if (status) {
+        paginator.complete();
+      } else {
+        paginator.enable(false);
+      }
+    }).catch(error => {
+      paginator.enable(false);
     });
   }
 

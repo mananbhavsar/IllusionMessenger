@@ -14,6 +14,7 @@ export class CreateUserPage {
   createUserForm: FormGroup;
   title: string = 'Create User';
   userBtn: string = 'Create User';
+  UserID : number;
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public formBuilder: FormBuilder,
@@ -31,6 +32,7 @@ export class CreateUserPage {
 
     if (!_.isEmpty(this.navParams.data.User)) {
       this.userBtn = 'Update';
+      this.UserID = this.navParams.data.UserID,
       this.createUserForm.setValue({
         User: this.navParams.data.User,
         UserCode: this.navParams.data.UserCode,
@@ -62,7 +64,8 @@ export class CreateUserPage {
 
   updateUser() {
     return new Promise((resolve, reject) => {
-      this.connection.doPost('Chat/UpdateUser', {
+      this.connection.doPost('Chat/CreateUpdateLogin', {
+        UserID : this.UserID,
         User: this.createUserForm.get('User').value,
         UserCode: this.createUserForm.get('UserCode').value,
         Password: this.createUserForm.get('Password').value,

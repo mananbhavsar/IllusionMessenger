@@ -2,7 +2,6 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA, ErrorHandler, NgModule } from '@angular/core';
 import { HttpModule } from '@angular/http';
 import { BrowserModule } from '@angular/platform-browser';
-import { AndroidPermissions } from '@ionic-native/android-permissions';
 import { Badge } from '@ionic-native/badge';
 import { CallNumber } from '@ionic-native/call-number';
 import { Camera } from '@ionic-native/camera';
@@ -10,11 +9,12 @@ import { Device } from '@ionic-native/device';
 import { Diagnostic } from '@ionic-native/diagnostic';
 import { EmailComposer } from '@ionic-native/email-composer';
 import { File } from '@ionic-native/file';
+import { AndroidPermissions } from '@ionic-native/android-permissions';
+import { FileChooser } from '@ionic-native/file-chooser';
 import { FileOpener } from '@ionic-native/file-opener';
+import { FilePath } from '@ionic-native/file-path';
 import { FileTransfer } from '@ionic-native/file-transfer';
 import { Globalization } from '@ionic-native/globalization';
-import { FileChooser } from '@ionic-native/file-chooser';
-import { FilePath } from '@ionic-native/file-path';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { Keyboard } from '@ionic-native/keyboard';
 import { Media } from '@ionic-native/media';
@@ -35,7 +35,7 @@ import { IonicStorageModule } from '@ionic/storage';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { MomentModule } from 'angular2-moment';
-import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
+import { IonicErrorHandler, IonicModule, IonicApp } from 'ionic-angular';
 import { IonicImageViewerModule } from 'ionic-img-viewer';
 import { ElasticModule } from 'ng-elastic';
 import { OrderModule } from 'ngx-order-pipe';
@@ -83,7 +83,10 @@ export function createTranslateLoader(http: HttpClient) {
 
 @NgModule({
     declarations: [
-        MyApp
+        MyApp,
+        // OverlayPortal,
+        // ClickBlock,
+        // IonicApp
     ],
     imports: [
         BrowserModule,
@@ -180,6 +183,7 @@ export function createTranslateLoader(http: HttpClient) {
         PhotoViewer,
         UserAutoCompleteService,
         DateProvider,
+
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

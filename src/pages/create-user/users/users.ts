@@ -55,7 +55,7 @@ export class UsersPage {
 
   removeUser(user, index) {
     return new Promise((resolve, reject) => {
-      this.connection.doPost('Chat/removeUser', {
+      this.connection.doPost('Chat/RemoveUser', {
         UserID: user.IserID,
         User: user.User,
         UserCode: user.UserCode

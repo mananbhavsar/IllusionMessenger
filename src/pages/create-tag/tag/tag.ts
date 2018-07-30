@@ -37,10 +37,8 @@ export class TagPage {
 
   removeTag(tag, index) {
     return new Promise((resolve, reject) => {
-      this.connection.doPost('Chat/removeTag', {
-        TagID: tag.TagID,
-        Tag: tag.Tag,
-        TagCode: tag.TagCode
+      this.connection.doPost('Chat/RemoveTag', {
+        TagID: tag.TagID
       }).then((response: any) => {
         if (response) {
           this.events.publish('toast:create', response.Data.Message);

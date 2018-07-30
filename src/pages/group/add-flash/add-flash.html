@@ -23,7 +23,7 @@
 			<div class="error-message-block" *ngIf="addFlashForm.controls.end_date.errors && (addFlashForm.controls.end_date.dirty || addFlashForm.controls.end_date.touched)">
 				<span *ngIf="addFlashForm.controls.end_date.errors?.InvalidDatetime">{{getErrorMessage()}}</span>
 			</div>
-			<attachment [isBrowser]="isBrowser" [editable]="true" [attachments]="attachments" (captured)="captured($event)" (removed)="removeAttachment($event)"></attachment>
+			<!-- <attachment [isBrowser]="isBrowser" [editable]="true" [attachments]="attachments" (captured)="captured($event)" (removed)="removeAttachment($event)"></attachment> -->
 			<button (click)="addFlash()" ion-button full [disabled]="!addFlashForm.valid">Add Flash</button>
 		</ion-list>
 	</form>

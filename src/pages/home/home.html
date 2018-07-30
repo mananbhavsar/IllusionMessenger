@@ -1,5 +1,5 @@
 <ion-header no-border>
-    <header [title]="getTitle()" [buttons]="[{icon: 'search', name : 'search'}, { icon: 'ios-options', name: 'sort'}]" (buttonClicked)="headerButtonClicked($event)"></header>
+    <header [title]="getTitle()" [buttons]="[{icon: 'flash', name : 'flash'}, { icon: 'ios-options', name: 'sort'}]" (buttonClicked)="headerButtonClicked($event)"></header>
     <div class="device-register" [ngSwitch]="deviceRegsiter">
         <span class="gray" *ngSwitchCase="0">Not Connected</span>
         <span class="pickup" *ngSwitchCase="1">Connecting</span>
@@ -103,7 +103,7 @@
             </ion-list>
         </div>
     </ng-template>
-    <call-fab (clicked)="fabButtonClicked($event)"></call-fab>
+    <!-- <call-fab (clicked)="fabButtonClicked($event)"></call-fab> -->
     <!-- <button ion-button full (click)="connectToServer('1234')">Register</button> -->
 </ion-content>
 <ion-footer *ngIf="readOptions" class="hide-on-keyboard-open">

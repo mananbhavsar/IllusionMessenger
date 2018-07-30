@@ -389,8 +389,8 @@ export class HomePage {
             case 'sort':
                 this.openSortOptions();
                 break;
-            case 'search':
-                this.searchData();
+            case 'flash':
+                this.addFlash();
         }
     }
 

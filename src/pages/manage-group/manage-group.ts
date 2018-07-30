@@ -49,7 +49,7 @@ export class ManageGroupPage {
 
   removeGroup(group, index) {
     return new Promise((resolve, reject) => {
-      this.connection.doPost('Chat/removeGroup', {
+      this.connection.doPost('Chat/RemoveGroup', {
         UserID: group.GroupID,
         Group: group.Group,
         GroupCode: group.GroupCode

@@ -1,14 +1,17 @@
 <ion-header>
-  <header [title]="title" [buttons]="[{name : 'add', icon : 'add'}]" (buttonClicked)="addTag($event)"></header>
+  <header [title]="title" [buttons]="[{name : 'search', icon : 'search'},{name : 'add', icon : 'add'}]" (buttonClicked)="headerBtnClicked($event)"></header>
 </ion-header>
 
 
 <ion-content padding>
-  <empty *ngIf="tags.length === 0;else data_template"></empty>
   <ion-refresher (ionRefresh)="refresh($event)">
     <ion-refresher-content pullingIcon="arrow-round-down" pullingText="Pull to refresh" refreshingSpinner="crescent" refreshingText="Refreshing...">
     </ion-refresher-content>
   </ion-refresher>
+  <ion-searchbar [showCancelButton]="true" *ngIf="searchInputBtn" (ionInput)="getItems($event)"
+  (ionClear)="onClear($event)" (ionCancel)="onCancel($event)">
+</ion-searchbar>
+  <empty *ngIf="tags.length === 0;else data_template"></empty>
   <ng-template #data_template>
     <ion-list>
       <ion-item *ngFor="let tag of tags;let i=index;">
@@ -27,4 +30,7 @@
         <ion-infinite-scroll-content></ion-infinite-scroll-content>
       </ion-infinite-scroll>
   </ng-template>
+  <ion-item-divider text-center [hidden]="page > 0">
+    Nothing more to show
+  </ion-item-divider>
 </ion-content>

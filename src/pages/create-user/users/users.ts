@@ -11,8 +11,8 @@ import { ConnectionProvider } from '../../../providers/connection/connection';
 })
 export class UsersPage {
   title: string = 'Users';
-  users: any = [];
-  page: number = 1;
+  users: Array<any> = [];
+  page: number = 0;
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public modal: ModalController,
@@ -27,18 +27,25 @@ export class UsersPage {
       if (this.page === -1) {
         reject();
       } else {
-        this.connection.doPost('Chat/GetUserList')
-          .then((response: any) => {
-            this.users = response.UserList;
-            console.log(this.users);
+        this.connection.doPost('Chat/GetUserList', {
+          PageNumber: this.page,
+          RowsPerPage: 20
+        }).then((response: any) => {
+          if (response.UserList.length > 0) {
+            response.UserList.forEach(list => {
+              this.users.push(list);
+            });
             this.page++;
-            console.log(this.page);
-            
             resolve(true);
-          });
+          } else {
+            this.page = -1;
+            resolve(false);
+          }
+        }).catch((error) => {
+          this.page = -1;
+          reject();
+        });
       }
-    }).catch((error) => {
-      this.page = -1;
     });
 
   }
@@ -81,8 +88,6 @@ export class UsersPage {
 
   paginate(paginator) {
     this.getUsers().then(status => {
-      console.log(status);
-
       if (status) {
         paginator.complete();
       } else {

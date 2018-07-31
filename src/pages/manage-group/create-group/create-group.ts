@@ -18,6 +18,10 @@ export class CreateGroupPage {
   searchInputBtn: boolean = false;
   groupBtn: string = 'Create Group';
   groupDetail2: any = [];
+  groupUsers: any = [];
+  selected_user: any = [];
+  page: number = 1;
+  GroupID: number;
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public formBuilder: FormBuilder,
@@ -32,28 +36,91 @@ export class CreateGroupPage {
     });
     if (!_.isEmpty(this.navParams.data.Group)) {
       this.groupBtn = 'Update';
-      this.groupDetail = this.navParams.data.User;
-      console.log(this.groupDetail);
-
+      this.GroupID = this.navParams.data.GroupID;
       this.createGroupForm.setValue({
         Group: this.navParams.data.Group,
         GroupCode: this.navParams.data.GroupCode,
-        search : ''
+        search: ''
       });
-    } else {
-      this.getUserDetails();
     }
+    this.getUserDetails();
+    this.getUserOfGroup();
+  }
+
+  getUserOfGroup() {
+    return new Promise((resolve, reject) => {
+      this.connection.doPost('Chat/GetGroupDetail_User', {
+        GroupID: this.GroupID
+      },false).then((response: any) => {
+        console.log(response);
+        this.groupUsers = response.GroupList_User;
+        this.groupUsers.forEach(user => {
+          this.selected_user[user.UserID] = user.IsAdmin;
+          this.userDetail.push(user);
+        });
+        resolve(true);
+      }).catch((error) => {
+        reject();
+      })
+    });
+  }
+
+  in_array(array, userID) {
+    return array.some((item) => {
+      return item.UserID === userID;
+    });
   }
 
 
   getUserDetails() {
-    this.connection.doPost('Chat/GetUserList').then((response: any) => {
-      if (response) {
-        this.groupDetail = response.UserList;
-        this.initialiseItems();
-      }
-    }).catch((error) => {
+    return new Promise((resolve, reject) => {
+      if (this.page === -1) {
+        reject();
+      } else {
+        this.connection.doPost('Chat/GetUserList', {
+          PageNumber: this.page,
+          RowsPerPage: 20
+        }).then((response: any) => {
+          console.log(response);
+          if (response.UserList.length > 0) {
+            response.UserList.forEach(list => {
+              this.groupDetail.push(list);
+            });
+            if (this.selected_user.length > 0) {
+              this.groupDetail.forEach((val, key) => {
+                if (val.UserID in this.selected_user) {
+                  this.groupDetail[key].IsAdmin = this.selected_user[val.UserID];
+                }
 
+              });
+              console.log(this.userDetail);
+
+            }
+            this.page++;
+            this.initialiseItems();
+            resolve(true);
+          } else {
+            this.page = -1;
+            resolve(false);
+          }
+        }).catch((error) => {
+          this.page = -1;
+          reject();
+        });
+      }
+
+    });
+  }
+
+  paginate(paginator) {
+    this.getUserDetails().then(status => {
+      if (status) {
+        paginator.complete();
+      } else {
+        paginator.enable(false);
+      }
+    }).catch(error => {
+      paginator.enable(false);
     });
   }
 
@@ -79,15 +146,12 @@ export class CreateGroupPage {
       this.groupDetail = this.groupDetail.filter((item) => {
         return (item.User.toLowerCase().indexOf(val.toLowerCase()) > -1);
       });
-    } else if (val === undefined) {
+    } else {
       this.groupDetail = this.groupDetail2.filter((item) => {
         return item.User;
       });
-    } else {
-      this.groupDetail = this.groupDetail2.filter((item) => {
-        return (item.User.toLowerCase().indexOf(val.toLowerCase()) > -1);
-      });
     }
+
   }
 
   onCancel(event) {
@@ -97,12 +161,11 @@ export class CreateGroupPage {
 
   userAction(event, user) {
     if (event.checked) {
-      if (this.userDetail.indexOf(user) === -1) {
-        user['IsAdmin'] = false;
+      if (this.in_array(this.userDetail,user.UserID)) {
         this.userDetail.push(user);
       }
     } else {
-      if (this.userDetail.indexOf(user) > -1) {
+      if (this.in_array(this.userDetail,user.UserID)) {
         this.userDetail.splice(this.userDetail.indexOf(user), 1);
         user.IsAdmin = false;
       }
@@ -113,7 +176,7 @@ export class CreateGroupPage {
 
   makeAdmin(user) {
     console.log(user);
-    if (this.userDetail.indexOf(user) !== -1) {
+    if (this.in_array(this.userDetail,user.UserID)) {
       if (user.IsAdmin) {
         this.removeAsAdmin(user);
       } else {
@@ -149,9 +212,12 @@ export class CreateGroupPage {
 
   updateGroup() {
     return new Promise((resolve, reject) => {
-      this.connection.doPost('Chat/UpdateGroup', {
+      this.connection.doPost('Chat/CreateGroup', {
+        GroupID : this.GroupID,
         Group: this.createGroupForm.get('Group').value,
         GroupCode: this.createGroupForm.get('GroupCode').value,
+        Add_UserID: this.userDetail.map(userId => userId.UserID),
+        Add_User_IsAdmin: this.userDetail.map(IsAdmin => IsAdmin.IsAdmin)
       }).then((response: any) => {
         this.events.publish('toast:create', response.Data.Message);
         this.createGroupForm.reset();

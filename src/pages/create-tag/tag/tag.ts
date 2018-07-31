@@ -10,8 +10,10 @@ import { CreateTagPage } from '../create-tag';
 })
 export class TagPage {
   title: string = 'Tags';
-  tags: any = [];
+  tags: Array<any> = [];
   page: number = 1;
+  query: string;
+  searchInputBtn: boolean = false;
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public connection: ConnectionProvider,
@@ -20,23 +22,55 @@ export class TagPage {
     this.getTags();
   }
 
+
   getTags() {
     return new Promise((resolve, reject) => {
       if (this.page === -1) {
         reject();
       } else {
         this.connection.doPost('Chat/GetTagList', {
-
-        }).then((response: any) => {
-          console.log(response.TagList);
-          this.tags = response.TagList;
-          this.page++;
+          Query: this.query,
+          PageNumber: this.page,
+          RowsPerPage: 20
+        },false).then((response: any) => {
+          if (response.TagList.length > 0) {
+          // this.tags = [];            
+            response.TagList.forEach(list => {
+              this.tags.push(list);
+            });
+            console.log(this.tags);
+            this.page++;
+            resolve(true);
+          } else {    
+            this.page = -1;
+            resolve(false);
+          }
         }).catch((error) => {
+          this.searchInputBtn = true;                      
           this.page = -1;
           this.events.publish('toast:create', error);
+          reject();
         });
       }
     });
+  }
+
+  initializeItems() {
+    this.page = 1;
+    this.tags = [];
+    this.getTags().catch(error => {
+      console.log(error);
+    });
+  }
+
+  onCancel(event) {
+    this.query = null;
+    this.initializeItems();
+  }
+
+  onClear(event) {
+    this.query = null;    
+    this.initializeItems();
   }
 
   removeTag(tag, index) {
@@ -56,10 +90,49 @@ export class TagPage {
       });
     });
   }
+
+
+  getItems(event) {
+    // set val to the value of the ev target
+    let val = event.target.value;
+    console.log(val);
+
+    if (val && val.trim() != '') {
+      // if the value is an empty string don't filter the items
+      this.query = val;
+      this.page = 1;
+      this.getTags().catch(error => {
+        console.log(error);
+      });
+    } else {
+      this.query = null;
+      this.initializeItems();
+    }
+  }
+
+  headerBtnClicked(event) {
+    console.log(event.name);
+
+    switch (event.name) {
+      case 'search':
+        this.SearchTag();
+        break;
+      case 'add':
+        this.addTag();
+        break;
+    }
+  }
+  SearchTag() {
+    this.query = null;
+    this.initializeItems();
+    if (this.searchInputBtn) {
+      this.searchInputBtn = false;
+    } else if (this.searchInputBtn === false) {
+      this.searchInputBtn = true;
+    }
+  }
   paginate(paginator) {
     this.getTags().then(status => {
-      console.log(status);
-
       if (status) {
         paginator.complete();
       } else {
@@ -80,7 +153,7 @@ export class TagPage {
     modal.present();
   }
 
-  addTag(event) {
+  addTag() {
     let modal = this.modalCntl.create(CreateTagPage);
     modal.onDidDismiss((data) => {
       if (data) {

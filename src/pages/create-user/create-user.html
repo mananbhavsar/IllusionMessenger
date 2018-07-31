@@ -1,5 +1,5 @@
 <ion-header>
-		<modal-toolbar [title]="title" (dismiss)="dismiss($event)"></modal-toolbar>
+  <modal-toolbar [title]="title" (dismiss)="dismiss($event)"></modal-toolbar>
 </ion-header>
 
 
@@ -13,7 +13,7 @@
       <div class="error-message-block" *ngIf="createUserForm.controls.User.errors && (createUserForm.controls.User.dirty || createUserForm.controls.User.touched)">
         <span *ngIf="createUserForm.controls.User.errors.required">Name is required</span>
         <span *ngIf="createUserForm.controls.User.errors.pattern">Name should be characters only</span>
-        </div>
+      </div>
       <ion-item>
         <ion-label stacked>Enter user Code</ion-label>
         <ion-input required placeholder="Enter user Code" type="text" formControlName="UserCode" maxLength="10"></ion-input>
@@ -21,7 +21,7 @@
       <div class="error-message-block" *ngIf="createUserForm.controls.UserCode.errors && (createUserForm.controls.UserCode.dirty || createUserForm.controls.UserCode.touched)">
         <span *ngIf="createUserForm.controls.UserCode.errors.required">Enter user Code</span>
         <span *ngIf="createUserForm.controls.UserCode.errors.maxlength">Max 10 Characters</span>
-        
+
       </div>
       <ion-item>
         <ion-label stacked>Enter Email Id</ion-label>
@@ -43,14 +43,20 @@
       </div>
       <ion-item>
         <ion-label stacked>Enter Password</ion-label>
-        <ion-input required placeholder="Enter Password" type="Password" formControlName="Password" maxLength="10"></ion-input>
+        <ion-input required placeholder="Enter Password" [type]="type" formControlName="Password" maxLength="10"></ion-input>
+        <button clear ion-button *ngIf="!showPassword"  item-end>
+          <ion-icon (click)="passwordShow()" name="md-eye-off"></ion-icon>
+        </button>
+        <button clear *ngIf="showPassword" ion-button item-end>
+          <ion-icon (click)="passwordShow()" name="md-eye"></ion-icon>
+        </button>
       </ion-item>
       <div class="error-message-block" *ngIf="createUserForm.controls.Password.errors && (createUserForm.controls.Password.dirty || createUserForm.controls.Password.touched)">
         <span *ngIf="createUserForm.controls.Password.errors.required">Password is required</span>
         <span *ngIf="createUserForm.controls.Password.errors.minlength">Password should be minimum 8 characters</span>
         <span *ngIf="createUserForm.controls.Password.errors.maxlength">Password should be maximum 15 characters</span>
       </div>
-      <button (click)="createUser()" ion-button full *ngIf="userBtn === 'Create User'" [disabled]="!createUserForm.valid">{{userBtn}}</button>     
+      <button (click)="createUser()" ion-button full *ngIf="userBtn === 'Create User'" [disabled]="!createUserForm.valid">{{userBtn}}</button>
       <button (click)="updateUser()" ion-button full *ngIf="userBtn === 'Update'" [disabled]="!createUserForm.valid">{{userBtn}}</button>
     </ion-list>
   </form>

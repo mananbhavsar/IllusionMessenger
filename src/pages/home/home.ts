@@ -167,8 +167,6 @@ export class HomePage {
                 this.dataFetched = true;
                 //groups
                 this.data = response;
-                console.log(this.data);
-
                 //flash
                 if (response.FlashNews) {
                     this.flashNews = response.FlashNews;

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, Events, ModalController, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, Events,ActionSheetController, ModalController, NavController, NavParams } from 'ionic-angular';
 import { ConnectionProvider } from '../../../providers/connection/connection';
 import { CreateTagPage } from '../create-tag';
 
@@ -11,14 +11,15 @@ import { CreateTagPage } from '../create-tag';
 export class TagPage {
   title: string = 'Tags';
   tags: Array<any> = [];
-  page: number = 1;
+  page: number = 0;
   query: string;
   searchInputBtn: boolean = false;
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public connection: ConnectionProvider,
     public modalCntl: ModalController,
-    public events: Events) {
+    public events: Events,
+  public actionSheetCntl : ActionSheetController ) {
     this.getTags();
   }
 
@@ -32,13 +33,11 @@ export class TagPage {
           Query: this.query,
           PageNumber: this.page,
           RowsPerPage: 20
-        },false).then((response: any) => {
+        },false).then((response: any) => {   
           if (response.TagList.length > 0) {
-          // this.tags = [];            
             response.TagList.forEach(list => {
               this.tags.push(list);
-            });
-            console.log(this.tags);
+            });            
             this.page++;
             resolve(true);
           } else {    
@@ -56,10 +55,8 @@ export class TagPage {
   }
 
   initializeItems() {
-    this.page = 1;
-    this.tags = [];
+    this.page = 0;
     this.getTags().catch(error => {
-      console.log(error);
     });
   }
 
@@ -71,6 +68,25 @@ export class TagPage {
   onClear(event) {
     this.query = null;    
     this.initializeItems();
+  }
+
+
+  getItems(event) {
+    // set val to the value of the ev target
+    let val = event.target.value;
+    if (val && val.trim() != '') {
+      // if the value is an empty string don't filter the items
+      this.query = val;
+      this.page = 0;
+      this.tags = [];       
+      this.getTags().catch(error => {
+      });       
+                
+    } else {
+      this.tags = [];
+      this.query = null;
+      this.initializeItems();
+    }
   }
 
   removeTag(tag, index) {
@@ -91,28 +107,31 @@ export class TagPage {
     });
   }
 
+  
+  actionSheetOpen(tag, index) {
+    let actionSheet = this.actionSheetCntl.create({
+      title: 'Do You Want to Remove Tag',
+      buttons: [
+        {
+          text: 'Remove Tag',
+          role: 'destructive',
+          handler: () => {
+            this.removeTag(tag, index);
+          }
+        },
+        {
+          text: 'Cancel',
+          handler: () => {
 
-  getItems(event) {
-    // set val to the value of the ev target
-    let val = event.target.value;
-    console.log(val);
-
-    if (val && val.trim() != '') {
-      // if the value is an empty string don't filter the items
-      this.query = val;
-      this.page = 1;
-      this.getTags().catch(error => {
-        console.log(error);
-      });
-    } else {
-      this.query = null;
-      this.initializeItems();
-    }
+          }
+        }
+      ]
+    });
+    actionSheet.present();
   }
 
-  headerBtnClicked(event) {
-    console.log(event.name);
 
+  headerBtnClicked(event) {
     switch (event.name) {
       case 'search':
         this.SearchTag();
@@ -123,10 +142,11 @@ export class TagPage {
     }
   }
   SearchTag() {
-    this.query = null;
-    this.initializeItems();
     if (this.searchInputBtn) {
       this.searchInputBtn = false;
+      this.tags = [];
+      this.query = null;
+      this.initializeItems();
     } else if (this.searchInputBtn === false) {
       this.searchInputBtn = true;
     }
@@ -164,6 +184,9 @@ export class TagPage {
   }
 
   refresh(refresher) {
+    this.tags = [];
+    this.page = 0;
+    this.query = null;
     this.getTags().then((response) => {
       if (response) {
         refresher.complete();

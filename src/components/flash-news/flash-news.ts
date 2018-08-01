@@ -90,7 +90,6 @@ export class FlashNewsComponent {
   }
 
   openFlashNews(flashNews){
-    console.log(flashNews);
     this.navCntl.push('FlashPage',flashNews);
   }
 

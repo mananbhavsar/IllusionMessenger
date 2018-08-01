@@ -4,7 +4,7 @@
 
 
 <ion-content padding>
-  <ion-refresher (ionRefresh)="refresh($event)">
+  <ion-refresher *ngIf="!searchInputBtn" (ionRefresh)="refresh($event)">
     <ion-refresher-content pullingIcon="arrow-round-down" pullingText="Pull to refresh" refreshingSpinner="crescent" refreshingText="Refreshing...">
     </ion-refresher-content>
   </ion-refresher>
@@ -18,7 +18,7 @@
         <ion-label>
           {{tag.Tag}}
         </ion-label>
-        <button (click)="removeTag(tag,i)" clear icon-only item-end ion-button>
+        <button (click)="actionSheetOpen(tag,i)" clear icon-only item-end ion-button>
           <ion-icon name="ios-trash-outline"></ion-icon>
         </button>
         <button (click)="updateTag(tag)" color="communication" item-end ion-button clear icon-only>

@@ -13,7 +13,6 @@ export class CallFabComponent {
   }
 
   openPage(event){
-   console.log(event);
    this.clicked.emit({
      name : event
    })

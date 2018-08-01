@@ -1,21 +1,24 @@
 <ion-header>
-  <header [title]="title" [buttons]="[{name : 'add', icon : 'add'}]" (buttonClicked)="addUser($event)"></header>
+  <header [title]="title" [buttons]="[{name : 'search', icon : 'search'},{name : 'add', icon : 'add'}]" (buttonClicked)="headerBtnClicked($event)"></header>
 
 </ion-header>
 
 
 <ion-content padding>
-  <ion-refresher (ionRefresh)="refresh($event)">
-    <ion-refresher-content pullingIcon="arrow-round-down" pullingText="Pull to refresh" refreshingSpinner="crescent" refreshingText="Refreshing...">
+  <ion-refresher (ionRefresh)="refresh($event)" *ngIf="!searchInputBtn">
+    <ion-refresher-content pullingIcon="arrow-round-down"  pullingText="Pull to refresh" refreshingSpinner="crescent" refreshingText="Refreshing...">
     </ion-refresher-content>
   </ion-refresher>
+  <ion-searchbar [showCancelButton]="true" *ngIf="searchInputBtn" (ionInput)="getItems($event)"
+  (ionClear)="onClear($event)" (ionCancel)="onCancel($event)">
+</ion-searchbar>
   <empty *ngIf="users.length === 0;else data_template"></empty>  
   <ng-template #data_template>
     <ion-item *ngFor="let user of users; let i = index">
       <ion-label>
         {{user.User}}
       </ion-label>
-      <button (click)="removeUser(user,i)" item-end clear ion-button icon-only>
+      <button (click)="actionSheetOpen(user,i)" item-end clear ion-button icon-only>
         <ion-icon name="ios-trash-outline"></ion-icon>
       </button>
       <button (click)="updateUser(user)" color="communication" clear icon-only item-end ion-button>

@@ -34,7 +34,7 @@ export class CreateUserPage {
 
     if (!_.isEmpty(this.navParams.data.User)) {
       this.userBtn = 'Update';
-      this.type = 'text';
+      this.type = 'password';
       this.UserID = this.navParams.data.UserID,
         this.createUserForm.setValue({
           User: this.navParams.data.User,

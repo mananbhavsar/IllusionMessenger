@@ -3,6 +3,7 @@ import { IonicPage, Events, ViewController, ActionSheetController, NavController
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConnectionProvider } from '../../../providers/connection/connection';
 import * as _ from 'underscore';
+import { FirebaseTransactionProvider } from '../../../providers/firebase-transaction/firebase-transaction';
 
 @IonicPage()
 @Component({
@@ -20,7 +21,8 @@ export class CreateGroupPage {
   groupDetail2: any = [];
   groupUsers: any = [];
   selected_user: any = [];
-  page: number = 1;
+  page: number = 0;
+  query: string;
   GroupID: number;
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
@@ -28,7 +30,8 @@ export class CreateGroupPage {
     public connection: ConnectionProvider,
     public viewCntl: ViewController,
     public events: Events,
-    public actionSheetCtrl: ActionSheetController) {
+    public actionSheetCtrl: ActionSheetController,
+    public _firebaseTransaction : FirebaseTransactionProvider) {
     this.createGroupForm = this.formBuilder.group({
       Group: ['', [Validators.required, Validators.maxLength(30), Validators.pattern('[A-Za-z ]*')]],
       GroupCode: ['', [Validators.required, Validators.maxLength(10)]],
@@ -51,8 +54,7 @@ export class CreateGroupPage {
     return new Promise((resolve, reject) => {
       this.connection.doPost('Chat/GetGroupDetail_User', {
         GroupID: this.GroupID
-      },false).then((response: any) => {
-        console.log(response);
+      }, false).then((response: any) => {
         this.groupUsers = response.GroupList_User;
         this.groupUsers.forEach(user => {
           this.selected_user[user.UserID] = user.IsAdmin;
@@ -78,10 +80,10 @@ export class CreateGroupPage {
         reject();
       } else {
         this.connection.doPost('Chat/GetUserList', {
+          Query : this.query,
           PageNumber: this.page,
           RowsPerPage: 20
         }).then((response: any) => {
-          console.log(response);
           if (response.UserList.length > 0) {
             response.UserList.forEach(list => {
               this.groupDetail.push(list);
@@ -93,11 +95,8 @@ export class CreateGroupPage {
                 }
 
               });
-              console.log(this.userDetail);
-
             }
             this.page++;
-            this.initialiseItems();
             resolve(true);
           } else {
             this.page = -1;
@@ -124,12 +123,12 @@ export class CreateGroupPage {
     });
   }
 
-  initialiseItems() {
-    this.groupDetail2 = this.groupDetail;
-  }
-
   searchUser() {
     if (this.searchInputBtn) {
+      this.groupDetail = [];      
+      this.query = null;
+      this.page = 0;
+      this.initializeItems();
       this.searchInputBtn = false;
       return false;
     }
@@ -137,46 +136,59 @@ export class CreateGroupPage {
     return true;
   }
 
-  getItems(event) {
-    // set val to the value of the ev target
-    let val = event.target.value;
-
-    // if the value is an empty string don't filter the items
-    if (val && val.trim() !== '') {
-      this.groupDetail = this.groupDetail.filter((item) => {
-        return (item.User.toLowerCase().indexOf(val.toLowerCase()) > -1);
-      });
-    } else {
-      this.groupDetail = this.groupDetail2.filter((item) => {
-        return item.User;
-      });
-    }
-
+  initializeItems() {
+    this.page = 0;
+    this.getUserDetails().catch(error => {
+    });
   }
 
   onCancel(event) {
-    console.log(event);
+    this.query = null;
+    this.initializeItems();
+  }
 
+  onClear(event) {
+    this.query = null;
+    this.initializeItems();
+  }
+
+
+  getItems(event) {
+    // set val to the value of the ev target
+    let val = event.target.value;
+    if (val && val.trim() != '') {
+      // if the value is an empty string don't filter the items
+      this.query = val;
+      this.page = 0;
+      this.groupDetail = [];
+      this.getUserDetails().catch(error => {
+      });
+
+    } else {
+      this.groupDetail = [];      
+      this.query = null;
+      this.initializeItems();
+    }
   }
 
   userAction(event, user) {
     if (event.checked) {
-      if (this.in_array(this.userDetail,user.UserID)) {
+      if (!this.in_array(this.userDetail, user.UserID)) {
         this.userDetail.push(user);
       }
     } else {
-      if (this.in_array(this.userDetail,user.UserID)) {
-        this.userDetail.splice(this.userDetail.indexOf(user), 1);
+      if (this.in_array(this.userDetail, user.UserID)) {
+        let removeIndex = this.userDetail.map((item) => {
+          return item.UserID
+        }).indexOf(user.UserID);
+        this.userDetail.splice(removeIndex, 1);
         user.IsAdmin = false;
       }
     }
-    console.log(this.userDetail);
-
   }
 
   makeAdmin(user) {
-    console.log(user);
-    if (this.in_array(this.userDetail,user.UserID)) {
+    if (this.in_array(this.userDetail, user.UserID)) {
       if (user.IsAdmin) {
         this.removeAsAdmin(user);
       } else {
@@ -201,6 +213,9 @@ export class CreateGroupPage {
         UserID: this.userDetail.map(userId => userId.UserID),
         IsAdmin: this.userDetail.map(IsAdmin => IsAdmin.IsAdmin)
       }).then((response: any) => {
+        if (response.FireBaseTransaction) {
+          this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { });
+        }
         this.events.publish('toast:create', response.Data.Message);
         this.createGroupForm.reset();
         this.dismiss(null);
@@ -212,8 +227,8 @@ export class CreateGroupPage {
 
   updateGroup() {
     return new Promise((resolve, reject) => {
-      this.connection.doPost('Chat/CreateGroup', {
-        GroupID : this.GroupID,
+      this.connection.doPost('Chat/UpdateGroup', {
+        GroupID: this.GroupID,
         Group: this.createGroupForm.get('Group').value,
         GroupCode: this.createGroupForm.get('GroupCode').value,
         Add_UserID: this.userDetail.map(userId => userId.UserID),

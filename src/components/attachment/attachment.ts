@@ -31,11 +31,9 @@ export class AttachmentComponent {
     let fileName = this._fileOps.getFileNameWithoutExtension(input.files[0].name);
     let fileExtension = this._fileOps.getFileExtension(input.files[0].name);
     let reader = new FileReader();
-    console.log(fileExtension,fileName);
     let context = this;
     reader.onload = function () {
       dataURL = reader.result.replace(/^data:image\/\w+;base64,/, "");
-      console.log(dataURL);
       
       context.uploadFileFromBrowser(fileName, fileExtension, dataURL)
         .then((data: any) => {
@@ -46,7 +44,6 @@ export class AttachmentComponent {
           });
           if (data.Data.indexOf('https') === 0) {
             // context.sendToFirebase('', 'Image', data.Data);
-            console.log('ready to insert into firebase');
           } else {
             context.events.publish('alert:basic', data.Data);
           }
@@ -71,12 +68,9 @@ export class AttachmentComponent {
   }
 
   capture(type) {
-    console.log(type);
-
     let identifier = UUID.UUID();
     // start listening to upload identifier
     this.events.subscribe('upload:progress:' + identifier, progress => {
-      console.log('upload:progress');
 
       let count = progress.progress;
       //remove if 100%
@@ -86,10 +80,8 @@ export class AttachmentComponent {
         this.progresses[identifier] = count;
       }
     });
-    console.log('upload');
 
     this._fileOps.captureAndUpload(type, identifier).then(url => {
-      console.log(url);
 
       this.captured.emit({
         VirtualPath: url
@@ -105,15 +97,12 @@ export class AttachmentComponent {
   }
 
   removeAttachment(index) {
-    console.log(index);
-
     this.removed.emit({
       index: index
     });
   }
 
   openAttachment(file) {
-    console.log(file);
     if (this.platform.is('core')) {
       window.open(file, '_blank');
     } else {

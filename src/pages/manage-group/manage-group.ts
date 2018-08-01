@@ -11,7 +11,7 @@ import { CreateGroupPage } from './create-group/create-group';
   templateUrl: 'manage-group.html',
 })
 export class ManageGroupPage {
-  page: number = 1;
+  page: number = 0;
   title: string = 'Manage Group';
   sort_by: string = '';
   sort_order: string = '';
@@ -36,15 +36,19 @@ export class ManageGroupPage {
       } else {
         this.connection.doPost('Chat/GetGroupDetail_Master', {
           Query: this.query,
-
-        })
-          .then((response: any) => {
-            //groups
-            console.log(response);
-
-            this.groups = response.GroupList;
-            this.page++;
-            resolve(true);
+          PageNumber: this.page,
+          RowsPerPage: 20
+        },false).then((response: any) => {
+            if (response.GroupList.length > 0) {
+              response.GroupList.forEach(list => {
+                this.groups.push(list);
+              });
+              this.page++;
+              resolve(true);
+            } else {
+              this.page = -1;
+              resolve(false);
+            }
           }).catch(error => {
             this.page = -1;
             reject();
@@ -54,8 +58,6 @@ export class ManageGroupPage {
   }
 
   headerBtnClicked(event) {
-    console.log(event.name);
-
     switch (event.name) {
       case 'search':
         this.SearchGroup();
@@ -69,38 +71,30 @@ export class ManageGroupPage {
   SearchGroup() {
     if (this.searchInputBtn) {
       this.searchInputBtn = false;
+      this.groups = [];
+      this.query = null;
+      this.initializeItems();
     } else if (this.searchInputBtn === false) {
       this.searchInputBtn = true;
     }
   }
 
-  loadSearchData() {
-    return new Promise((resolve, reject) => {
-      if (this.query && this.page > 0) {
-        this.connection.doPost('Chat/GroupSearch', {
-          query: this.query,
-          page: this.page,
-        }, false).then((response: any) => {
-          console.log(response);
-          if (response.length > 0) {
-            response.forEach(listing => {
-              // this.listings.push(listing);
-            });
-            this.page++;
-            resolve(true);
-          } else {
-            this.page = -1;
-            resolve(false);
-          }
-        }).catch(error => {
-          this.events.publish('loading:close');
-          this.events.publish('toast:error', error);
-          resolve(false);
-        });
-      }
+  initializeItems() {
+    this.page = 0;
+    this.groups = [];
+    this.getData().catch(error => {
     });
   }
 
+  onCancel(event) {
+    this.query = null;
+    this.initializeItems();
+  }
+
+  onClear(event) {
+    this.query = null;
+    this.initializeItems();
+  }
 
   getItems(event) {
     // set val to the value of the ev target
@@ -108,11 +102,14 @@ export class ManageGroupPage {
     if (val && val.trim() != '') {
       // if the value is an empty string don't filter the items
       this.query = val;
+      this.page = 0;
+      this.groups = [];
       this.getData().catch(error => {
-        console.log(error);
       });
     } else {
+      this.groups = [];      
       this.query = null;
+      this.initializeItems();
     }
   }
 
@@ -134,11 +131,11 @@ export class ManageGroupPage {
 
   actionSheetOpen(group, index) {
     let actionSheet = this.actionSheetCntl.create({
-      title: 'Remove Group',
+      title: 'Do You Want to Remove Group',
       buttons: [
         {
           text: 'Remove Group',
-          role: 'decstructive',
+          role: 'destructive',
           handler: () => {
             this.removeGroup(group, index);
           }
@@ -168,8 +165,6 @@ export class ManageGroupPage {
 
   paginate(paginator) {
     this.getData().then(status => {
-      console.log(status);
-
       if (status) {
         paginator.complete();
       } else {
@@ -182,6 +177,7 @@ export class ManageGroupPage {
 
 
   refresh(refresher) {
+    this.groups = [];
     this.getData().then((response) => {
       refresher.complete();
     }).catch((error) => {

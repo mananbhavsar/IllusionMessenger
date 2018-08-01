@@ -21,7 +21,6 @@ export class FlashPage {
    public _imageViewerController : ImageViewerController,
   public _elementRef : ElementRef) {
     this.news = this.navParams.data;
-    console.log(this.news);
     this.title = this.news.Flash;
     this.initData();
   }
@@ -30,7 +29,6 @@ export class FlashPage {
     this.connection.doPost('Chat/GetFlashNews_Attachement', {
       FlashID : this.news.FlashID
     }).then((response : any) => {
-      console.log(response);
       this.attachments = response.FlashNews_AttachementList;
     }).catch((error) => { });
   }
@@ -46,7 +44,6 @@ export class FlashPage {
     } else {
       this.element = this._elementRef.nativeElement.querySelector('#url');
       let image = this._imageViewerController.create(this.element);
-      console.log(image);  
       image.present();
     }
   }

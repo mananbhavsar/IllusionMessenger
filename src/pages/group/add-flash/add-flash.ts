@@ -51,7 +51,6 @@ export class AddFlashPage {
   addFlash() {
     let Attachment : any = {};
     Attachment = {"Attachment" : this.attachments};
-    console.log(JSON.stringify(Attachment));
     this.connection.doPost('Chat/CreateFlashNews', {
       GroupID: this.group_id,
       Flash: this.addFlashForm.get('flash_message').value,
@@ -80,8 +79,6 @@ export class AddFlashPage {
 
 
   captured(event) {
-    console.log(event);
-    console.log(this.attachments);
     this.attachments.push(event);
   }
 

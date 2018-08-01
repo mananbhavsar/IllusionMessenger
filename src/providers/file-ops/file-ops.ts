@@ -78,7 +78,6 @@ export class FileOpsProvider {
     this.getDataDirectory().then((path: any) => {
       this.directory = path;
     }).catch(error => {
-      console.log(error);
     });
   }
 
@@ -234,7 +233,6 @@ export class FileOpsProvider {
   captureAndUpload(type, identifier: string = null) {
     return new Promise((resolve, reject) => {
       this.capture(type).then(uri => {
-        console.log(uri);
         this.uploadFile(uri, {
           date: identifier || new Date().getTime(),
         }, identifier).then(uploadedURL => {
@@ -257,8 +255,6 @@ export class FileOpsProvider {
         case 'gallery':
           let optons = type === 'camera' ? this.cameraOptions : this.galleryOptions;
           this.camera.getPicture(optons).then(url => {
-            console.log(url);
-            
             resolve(url);
           }).catch(error => {
             reject(error);
@@ -292,8 +288,6 @@ export class FileOpsProvider {
       let fileName = this.getFileName(file);
       const fileTransfer: FileTransferObject = this.transfer.create();
       fileTransfer.upload(file, Global.SERVER_URL + 'CreateFlashNews_Attachement ', this.setFileOptions(file, params)).then(data => {
-       console.log(data);
-       
         if (data.response.indexOf('http') === -1) {
           reject(data);
         } else if (data.response.indexOf('>') > -1) {

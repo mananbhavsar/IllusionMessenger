@@ -179,8 +179,6 @@ export class ChatOptionsPage {
   }
 
   callParticipant(number) {
-    console.log(number);
-
     if (number) {
       if (this.platform.is('mobileweb') || this.platform.is('core')) {
         number = "tel:" + number;
@@ -189,6 +187,7 @@ export class ChatOptionsPage {
         this.callNumber.callNumber(number, true);
       }
     }
+    return false;
   }
 
   rescheduleTopic() {

@@ -3,7 +3,6 @@ import { IonicPage, Events, ActionSheetController, NavController, NavParams } fr
 import { ModalController } from 'ionic-angular/components/modal/modal-controller';
 import { CreateUserPage } from '../create-user';
 import { ConnectionProvider } from '../../../providers/connection/connection';
-import { CreateUserPage } from '../create-user';
 
 @IonicPage()
 @Component({

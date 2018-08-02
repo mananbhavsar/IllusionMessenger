@@ -23,6 +23,9 @@ import { TutorialPage } from '../pages/tutorial/tutorial';
 import { WelcomePage } from '../pages/welcome/welcome';
 import { UserProvider } from '../providers/user/user';
 import { GroupPage } from './../pages/group/group';
+import { TagPage } from '../pages/create-tag/tag/tag';
+import { UsersPage } from '../pages/create-user/users/users';
+import { ManageGroupPage } from '../pages/manage-group/manage-group';
 import { Global } from './global';
 import { ConnectionProvider } from '../providers/connection/connection';
 

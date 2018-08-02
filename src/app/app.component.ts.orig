@@ -24,7 +24,15 @@ import { WelcomePage } from '../pages/welcome/welcome';
 import { UserProvider } from '../providers/user/user';
 import { GroupPage } from './../pages/group/group';
 import { Global } from './global';
+<<<<<<< HEAD
+import * as _ from 'underscore';
+import * as moment from "moment";
+import { DailyShedulePage } from '../pages/topic/daily-shedule/daily-shedule';
+import { TagPage } from '../pages/create-tag/tag/tag';
+import { UsersPage } from '../pages/create-user/users/users';
 import { ConnectionProvider } from '../providers/connection/connection';
+=======
+>>>>>>> 1849fd038054188f5db2a9c502f29e3832b9f8da
 
 export const firebaseConfig = {
     apiKey: "AIzaSyAFDZ9UPTMiDTjT4qAG0d9uVeOdhL-2PBw",
@@ -511,7 +519,10 @@ export class MyApp {
         if (this.platform.is('core')) {
             let OneSignal = window['OneSignal'] || [];
             //check if OneSignal not yet initialized
+<<<<<<< HEAD
+=======
             
+>>>>>>> 1849fd038054188f5db2a9c502f29e3832b9f8da
             if (!OneSignal.isActive) {
                 OneSignal.push(["init", {
                     appId: Global.OneSignal.key,

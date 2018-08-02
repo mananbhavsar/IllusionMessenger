@@ -1,9 +1,8 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ConnectionProvider } from '../../providers/connection/connection';
-import { ViewController } from 'ionic-angular/navigation/view-controller';
+import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
 import * as _ from 'underscore';
+import { ConnectionProvider } from '../../providers/connection/connection';
 
 @IonicPage()
 @Component({

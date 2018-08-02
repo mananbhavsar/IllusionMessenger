@@ -3,6 +3,11 @@
   "integrations": {
     "cordova": {}
   },
+<<<<<<< HEAD
+  "type": "ionic-angular"
+}
+=======
   "type": "ionic-angular",
   "app_id": ""
 }
+>>>>>>> 1849fd038054188f5db2a9c502f29e3832b9f8da

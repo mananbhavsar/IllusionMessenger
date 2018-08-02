@@ -1,5 +1,9 @@
 import { Component } from '@angular/core';
+<<<<<<< HEAD
 import { IonicPage, Events, ActionSheetController, NavController, NavParams } from 'ionic-angular';
+=======
+import { Events, IonicPage, ModalController, NavController, NavParams } from 'ionic-angular';
+>>>>>>> 1849fd038054188f5db2a9c502f29e3832b9f8da
 import { ConnectionProvider } from '../../providers/connection/connection';
 import { CreateGroupPage } from './create-group/create-group';
 

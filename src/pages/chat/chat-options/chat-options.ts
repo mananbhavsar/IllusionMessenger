@@ -1,4 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
+import { CallNumber } from '@ionic-native/call-number';
 import { Storage } from '@ionic/storage';
 import { ActionSheetController, DateTime, Events, IonicPage, ModalController, NavController, NavParams, Platform, ViewController } from 'ionic-angular';
 import * as moment from 'moment';
@@ -10,7 +11,6 @@ import { UserProvider } from '../../../providers/user/user';
 import { ManageParticipantsPage } from '../../topic/create-topic/manage-participants/manage-participants';
 import { DateProvider } from './../../../providers/date/date';
 import { SavedMediaPage } from "./saved-media/saved-media";
-import { CallNumber } from '@ionic-native/call-number';
 
 
 
@@ -128,7 +128,7 @@ export class ChatOptionsPage {
   closureRequest() {
     if (this.amIResponsible) {
       let actionSheet = this.actionSheetCtrl.create({
-        title: 'Do You Want to request for closure?<br/>(Request only if task is completed)',
+        title: 'Do You Want to request for closure? (Request only if task is completed)',
         buttons: [
           {
             text: 'Send Request now!',

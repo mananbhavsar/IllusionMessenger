@@ -10,12 +10,12 @@ import { ConnectionProvider } from './../../../../providers/connection/connectio
   templateUrl: 'manage-participants.html',
 })
 export class ManageParticipantsPage {
-  participants: Array<any> = [];
-  participantsCopy: Array<any> = [];
+  protected _participants: Array<any> = [];
+  protected _participantsCopy: Array<any> = [];
 
-  selectedParticipantIDs: Array<number> = [];
+  protected _selectedParticipantIDs: Array<number> = [];
 
-  assigned: number = 0;
+  protected _assigned: number = 0;
 
   tags: Array<any> = [];
   tagsIdMap: Array<string> = [];
@@ -37,13 +37,13 @@ export class ManageParticipantsPage {
   ) {
     this.group_name = this.navParams.data.group_name;
 
-    this.participants = this.navParams.data.participants;
-    this.participantsCopy = this.navParams.data.participants;
+    this._participants = this.navParams.data.participants.slice();
+    this._participantsCopy = this.navParams.data.participants.slice();
 
-    this.selectedParticipantIDs = this.navParams.data.selectedParticipantIDs;
+    this._selectedParticipantIDs = this.navParams.data.selectedParticipantIDs.slice();
     this.is_from_chat = this.navParams.data.is_from_chat;
 
-    this.assigned = this.navParams.data.assigned;
+    this._assigned = this.navParams.data.assigned;
     this.setTags();
 
     this.backButtonUnregister = this.platform.registerBackButtonAction(() => { });
@@ -54,17 +54,17 @@ export class ManageParticipantsPage {
   }
 
   setTags() {
-    this.participants.forEach((user, index) => {
+    this._participants.forEach((user, index) => {
       if (user.Tag.length) {
         user.Tag.forEach(tag => {
           //selectedAt 0
           if (!('selectedAt' in user)) {
-            this.participants[index].selectedAt = 0;
+            this._participants[index].selectedAt = 0;
           }
 
           //if already selected
-          if (this.selectedParticipantIDs.indexOf(user.User[0].UserID) > -1) {
-            this.participants[index].selectedAt = new Date().getTime() + index;
+          if (this._selectedParticipantIDs.indexOf(user.User[0].UserID) > -1) {
+            this._participants[index].selectedAt = new Date().getTime() + index;
           }
 
           if (this.tagsIdMap.indexOf(tag.TagID) === -1) {
@@ -101,7 +101,7 @@ export class ManageParticipantsPage {
 
   getUserByID(userID) {
     let found = null;
-    this.participants.some(user => {
+    this._participants.some(user => {
       if (user.User[0].UserID === userID) {
         found = user;
         return true;
@@ -113,7 +113,7 @@ export class ManageParticipantsPage {
 
   getIndexByID(userID) {
     let found = null;
-    this.participants.some((user, index) => {
+    this._participants.some((user, index) => {
       if (user.User[0].UserID === userID) {
         found = index;
         return true;
@@ -125,25 +125,25 @@ export class ManageParticipantsPage {
 
   participantSelected(user_id, index, selected) {
     if (selected) {
-      if (this.selectedParticipantIDs.indexOf(user_id) === -1) {
-        this.selectedParticipantIDs.push(user_id);
+      if (this._selectedParticipantIDs.indexOf(user_id) === -1) {
+        this._selectedParticipantIDs.push(user_id);
       }
-      this.participants[this.getIndexByID(user_id)].selectedAt = new Date().getTime() + index;
+      this._participants[this.getIndexByID(user_id)].selectedAt = new Date().getTime() + index;
     } else {
       //remove user
-      this.selectedParticipantIDs.splice(this.selectedParticipantIDs.indexOf(user_id), 1);
+      this._selectedParticipantIDs.splice(this._selectedParticipantIDs.indexOf(user_id), 1);
       //checking if current user was responsible
-      if (this.assigned === user_id) {
-        this.assigned = 0;
+      if (this._assigned === user_id) {
+        this._assigned = 0;
       }
 
       //take it down
       index = this.getIndexByID(user_id);
-      this.participants[index].selectedAt = -3000;
+      this._participants[index].selectedAt = -3000;
       setTimeout(() => {
         index = this.getIndexByID(user_id);
-        if (this.participants[index].selectedAt === -3000) {
-          this.participants[index].selectedAt = 0;
+        if (this._participants[index].selectedAt === -3000) {
+          this._participants[index].selectedAt = 0;
         }
       }, 3000);
     }
@@ -159,36 +159,36 @@ export class ManageParticipantsPage {
     let val = event.target.value;
     if (val && val.trim() !== '') {
       let tempUser = [];
-      this.participants.forEach((user) => {
+      this._participants.forEach((user) => {
         if (user.User[0].User.toLowerCase().indexOf(val.toLowerCase()) > -1) {
           tempUser.push(user);
         }
       });
-      this.participants = tempUser;
+      this._participants = tempUser;
     }
   }
 
-  setParticipants(user_id) {
+  _setParticipants(user_id) {
     let index = this.getIndexByID(user_id);
     let selected: boolean = true;
-    if (this.selectedParticipantIDs.indexOf(user_id) === -1) {
+    if (this._selectedParticipantIDs.indexOf(user_id) === -1) {
       selected = true;
 
-      this.selectedParticipantIDs.push(user_id);
+      this._selectedParticipantIDs.push(user_id);
 
-      this.participants[index].selectedAt = new Date().getTime();
+      this._participants[index].selectedAt = new Date().getTime();
     } else {
-      this.selectedParticipantIDs.splice(this.selectedParticipantIDs.indexOf(user_id), 1);
+      this._selectedParticipantIDs.splice(this._selectedParticipantIDs.indexOf(user_id), 1);
       //checking if this user was assigned
-      if (this.assigned === user_id) {
-        this.assigned = 0;
+      if (this._assigned === user_id) {
+        this._assigned = 0;
       }
       //take it down
-      this.participants[index].selectedAt = -3000;
+      this._participants[index].selectedAt = -3000;
       setTimeout(() => {
         index = this.getIndexByID(user_id);
-        if (this.participants[index].selectedAt === -3000) {
-          this.participants[index].selectedAt = 0;
+        if (this._participants[index].selectedAt === -3000) {
+          this._participants[index].selectedAt = 0;
         }
       }, 3000);
 
@@ -208,7 +208,7 @@ export class ManageParticipantsPage {
         if (this.tagsSelected[tagID] === false && this.userTagsMap[tagID].indexOf(user_id) > -1) {//Tag not yet selected && has this user 
           //check if every other user selected
           if (this.userTagsMap[tagID].every(user_id_in_tag => {
-            return this.selectedParticipantIDs.indexOf(user_id_in_tag) > -1;
+            return this._selectedParticipantIDs.indexOf(user_id_in_tag) > -1;
           })) {
             this.tagsSelected[tagID] = selected;
           }
@@ -225,11 +225,11 @@ export class ManageParticipantsPage {
   }
 
   inSelectedParticipants(user_id) {
-    return this.selectedParticipantIDs && this.selectedParticipantIDs.indexOf(user_id) > -1;
+    return this._selectedParticipantIDs && this._selectedParticipantIDs.indexOf(user_id) > -1;
   }
 
   initializeItems() {
-    this.participants = this.participantsCopy;
+    this._participants = this._participantsCopy;
   }
 
   toggleAssign(user_id, event) {
@@ -237,10 +237,10 @@ export class ManageParticipantsPage {
     event.stopPropagation();
 
     //checking if same user selected
-    if (this.assigned === user_id) {
-      this.assigned = 0;
+    if (this._assigned === user_id) {
+      this._assigned = 0;
     } else {
-      this.assigned = user_id;
+      this._assigned = user_id;
     }
   }
 
@@ -253,19 +253,20 @@ export class ManageParticipantsPage {
   }
 
   create() {
-    this.dismiss({
-      selectedParticipantIDs: this.selectedParticipantIDs,
-      assigned: this.assigned,
-    });
+    //checking if Responsible is selected
+    if (this._assigned || _.isEmpty(this._selectedParticipantIDs)) {
+      this.dismiss({
+        selectedParticipantIDs: this._selectedParticipantIDs,
+        assigned: this._assigned,
+      });
+    } else if (!_.isEmpty(this._selectedParticipantIDs)) {
+      this.events.publish('alert:basic', 'No assignee selected!', 'Kindly select Responsible/Assignee');
+    }
+
   }
 
   dismiss(data) {
-    //checking if Responsible is selected
-    if (this.assigned || _.isEmpty(data)) {
-      this.viewCtrl.dismiss(data);
-    } else if (!_.isEmpty(data)) {
-      this.events.publish('alert:basic', 'No assignee selected!', 'Kindly select Responsible/Assignee');
-    }
+    this.viewCtrl.dismiss(data);
   }
 
   isHidden(user_id) {

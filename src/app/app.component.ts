@@ -10,6 +10,8 @@ import { Storage } from '@ionic/storage';
 import { TranslateService } from '@ngx-translate/core';
 import * as firebase from 'firebase';
 import { AlertController, Events, LoadingController, MenuController, ModalController, Nav, Platform, ToastController } from 'ionic-angular';
+import * as moment from "moment";
+import * as _ from 'underscore';
 import { AccountPage } from '../pages/account/account';
 import { ChatPage } from '../pages/chat/chat';
 import { ForgotPasswordPage } from '../pages/forgot-password/forgot-password';
@@ -21,13 +23,7 @@ import { TutorialPage } from '../pages/tutorial/tutorial';
 import { WelcomePage } from '../pages/welcome/welcome';
 import { UserProvider } from '../providers/user/user';
 import { GroupPage } from './../pages/group/group';
-import { ManageGroupPage } from '../pages/manage-group/manage-group';
 import { Global } from './global';
-import * as _ from 'underscore';
-import * as moment from "moment";
-import { DailyShedulePage } from '../pages/topic/daily-shedule/daily-shedule';
-import { TagPage } from '../pages/create-tag/tag/tag';
-import { UsersPage } from '../pages/create-user/users/users';
 
 export const firebaseConfig = {
     apiKey: "AIzaSyAFDZ9UPTMiDTjT4qAG0d9uVeOdhL-2PBw",
@@ -516,7 +512,7 @@ export class MyApp {
         if (this.platform.is('core')) {
             let OneSignal = window['OneSignal'] || [];
             //check if OneSignal not yet initialized
-            console.log(OneSignal.isActive);
+            
             if (!OneSignal.isActive) {
                 OneSignal.push(["init", {
                     appId: Global.OneSignal.key,

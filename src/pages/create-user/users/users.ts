@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
-import { IonicPage, Events, NavController, NavParams } from 'ionic-angular';
-import { ModalController } from 'ionic-angular/components/modal/modal-controller';
-import { CreateUserPage } from '../create-user';
+import { Events, IonicPage, ModalController, NavController, NavParams } from 'ionic-angular';
 import { ConnectionProvider } from '../../../providers/connection/connection';
+import { CreateUserPage } from '../create-user';
 
 @IonicPage()
 @Component({

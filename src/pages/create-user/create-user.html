@@ -43,7 +43,7 @@
       </div>
       <ion-item>
         <ion-label stacked>Enter Password</ion-label>
-        <ion-input required placeholder="Enter Password" [type]="type" formControlName="Password" maxLength="10"></ion-input>
+        <ion-input required placeholder="Enter Password" [type]="type" formControlName="Password"></ion-input>
         <button clear ion-button *ngIf="!showPassword"  item-end>
           <ion-icon (click)="passwordShow()" name="md-eye-off"></ion-icon>
         </button>

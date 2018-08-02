@@ -21,7 +21,7 @@ export class FlashPage {
    public _imageViewerController : ImageViewerController,
   public _elementRef : ElementRef) {
     this.news = this.navParams.data;
-    this.title = this.news.Flash;
+    this.title = this.news.CreatedBy;
     this.initData();
   }
 

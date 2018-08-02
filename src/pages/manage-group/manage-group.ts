@@ -178,6 +178,7 @@ export class ManageGroupPage {
 
   refresh(refresher) {
     this.groups = [];
+    this.page = 0;
     this.getData().then((response) => {
       refresher.complete();
     }).catch((error) => {

@@ -1,5 +1,5 @@
 import { Component, group } from '@angular/core';
-import { IonicPage, Events, ViewController, ActionSheetController, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, Events, Platform, ViewController, ActionSheetController, NavController, NavParams } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConnectionProvider } from '../../../providers/connection/connection';
 import * as _ from 'underscore';
@@ -30,8 +30,9 @@ export class CreateGroupPage {
     public connection: ConnectionProvider,
     public viewCntl: ViewController,
     public events: Events,
+    public platform : Platform,
     public actionSheetCtrl: ActionSheetController,
-    public _firebaseTransaction : FirebaseTransactionProvider) {
+    public _firebaseTransaction: FirebaseTransactionProvider) {
     this.createGroupForm = this.formBuilder.group({
       Group: ['', [Validators.required, Validators.maxLength(30), Validators.pattern('[A-Za-z ]*')]],
       GroupCode: ['', [Validators.required, Validators.maxLength(10)]],
@@ -68,11 +69,22 @@ export class CreateGroupPage {
   }
 
   in_array(array, userID) {
-    return array.some((item) => {
-      return item.UserID === userID;
-    });
+    if (userID) {
+      return array.some((item) => {
+        return item.UserID === userID;
+      });
+    }
   }
 
+  isAdminCheck(UserID) { 
+    if (this.in_array(this.userDetail, UserID)) {
+      return this.userDetail.some((item) => {
+        if (item.UserID === UserID) {
+          return item.IsAdmin;
+        }
+      });
+    }
+  }
 
   getUserDetails() {
     return new Promise((resolve, reject) => {
@@ -80,10 +92,10 @@ export class CreateGroupPage {
         reject();
       } else {
         this.connection.doPost('Chat/GetUserList', {
-          Query : this.query,
+          Query: this.query,
           PageNumber: this.page,
           RowsPerPage: 20
-        }).then((response: any) => {
+        }, false).then((response: any) => {
           if (response.UserList.length > 0) {
             response.UserList.forEach(list => {
               this.groupDetail.push(list);
@@ -125,7 +137,7 @@ export class CreateGroupPage {
 
   searchUser() {
     if (this.searchInputBtn) {
-      this.groupDetail = [];      
+      this.groupDetail = [];
       this.query = null;
       this.page = 0;
       this.initializeItems();
@@ -163,9 +175,8 @@ export class CreateGroupPage {
       this.groupDetail = [];
       this.getUserDetails().catch(error => {
       });
-
     } else {
-      this.groupDetail = [];      
+      this.groupDetail = [];
       this.query = null;
       this.initializeItems();
     }
@@ -211,7 +222,8 @@ export class CreateGroupPage {
         Group: this.createGroupForm.get('Group').value,
         GroupCode: this.createGroupForm.get('GroupCode').value,
         UserID: this.userDetail.map(userId => userId.UserID),
-        IsAdmin: this.userDetail.map(IsAdmin => IsAdmin.IsAdmin)
+        IsAdmin: this.userDetail.map(IsAdmin => IsAdmin.IsAdmin),
+        IsWeb : this.platform.is('core')
       }).then((response: any) => {
         if (response.FireBaseTransaction) {
           this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { });

@@ -21,36 +21,66 @@ export class AttachmentComponent {
     private events: Events,
     private connection: ConnectionProvider
   ) {
-    
+
   }
 
 
   uplaodFile(file) {
     let input = file.target;
-    let dataURL: string;
-    let fileName = this._fileOps.getFileNameWithoutExtension(input.files[0].name);
-    let fileExtension = this._fileOps.getFileExtension(input.files[0].name);
-    let reader = new FileReader();
-    let context = this;
-    reader.onload = function () {
-      dataURL = reader.result.replace(/^data:image\/\w+;base64,/, "");
-      
-      context.uploadFileFromBrowser(fileName, fileExtension, dataURL)
-        .then((data: any) => {
-          context.captured.emit({
-            VirtualPath: data.Data,
-            FileName : fileName,
-            fileExtension : fileExtension
+    if (input.files[0]) {
+      let dataURL: string;
+      let fileName = this._fileOps.getFileNameWithoutExtension(input.files[0].name);
+      let fileExtension = this._fileOps.getFileExtension(input.files[0].name);
+      let reader = new FileReader();
+      let context = this;
+      reader.onload = function () {
+        switch (fileExtension) {
+          case 'pdf':
+            dataURL = reader.result.replace('data:application/pdf;base64,', "");
+            break;
+          case 'doc':
+            dataURL = reader.result.replace('data:application/msword;base64,', "");
+            break;
+          case 'docx':
+            dataURL = reader.result.replace('data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,', "");
+            break;
+          case 'ppt':
+            dataURL = reader.result.replace('data:application/vnd.ms-powerpoint;base64,', "");
+            break;
+          case 'pptx':
+            dataURL = reader.result.replace('data:application/vnd.openxmlformats-officedocument.presentationml.presentation;base64,', "");
+            break;
+          case 'xls':
+            dataURL = reader.result.replace('data:application/vnd.ms-excel;base64,', "");
+            break;
+          case 'xlsx':
+            dataURL = reader.result.replace('data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,', "");
+            break;
+          case 'txt':
+            dataURL = reader.result.replace('data:text/plain;base64,', "");
+            break;
+          default:
+            dataURL = reader.result.replace(/^data:image\/\w+;base64,/, "");
+        }
+        console.log(dataURL);
+        
+        context.uploadFileFromBrowser(fileName, fileExtension, dataURL)
+          .then((data: any) => {
+            context.captured.emit({
+              VirtualPath: data.Data,
+              FileName: fileName,
+              fileExtension: fileExtension
+            });
+            if (data.Data.indexOf('https') === 0) {
+              // context.sendToFirebase('', 'Image', data.Data);
+            } else {
+              context.events.publish('alert:basic', data.Data);
+            }
+          }).catch((error) => {
           });
-          if (data.Data.indexOf('https') === 0) {
-            // context.sendToFirebase('', 'Image', data.Data);
-          } else {
-            context.events.publish('alert:basic', data.Data);
-          }
-        }).catch((error) => {
-        });
+      }
+      reader.readAsDataURL(input.files[0]);
     }
-    reader.readAsDataURL(input.files[0]);
   }
 
   uploadFileFromBrowser(fileName, fileExtension, Base64String) {

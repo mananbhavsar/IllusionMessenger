@@ -110,7 +110,7 @@ export class HomePage {
 
         this.events.subscribe('dashboard:close', (dashboard) => {
             this.setTitle();
-        })
+        });
 
         //online offline
         if (this.platform.is('cordova')) {

@@ -29,7 +29,7 @@ export class CreateUserPage {
       UserCode: ['', [Validators.required, Validators.maxLength(10)]],
       EmailID: ['', [Validators.required, Validators.pattern(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]],
       PhoneNo: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern('[0-9]*')]],
-      Password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(15)]],
+      Password: ['', [Validators.required, Validators.minLength(8)]],
     });
 
     if (!_.isEmpty(this.navParams.data.User)) {
@@ -59,7 +59,7 @@ export class CreateUserPage {
 
   createUser() {
     return new Promise((resolve, reject) => {
-      this.connection.doPost('Chat/CreateNewUser', {
+      this.connection.doPost('Chat/CreateUpdateLogin', {
         User: this.createUserForm.get('User').value,
         UserCode: this.createUserForm.get('UserCode').value,
         Password: this.createUserForm.get('Password').value,

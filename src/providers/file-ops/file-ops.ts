@@ -347,13 +347,13 @@ export class FileOpsProvider {
 
   getFileNameWithoutExtension(file) {
     if (file) {
-      return file.substring(0, file.lastIndexOf('.'));
+      return file.substring(0, file.lastIndexOf('.')).toLowerCase();
     }
   }
 
   getFileExtension(file) {
     if (file) {
-      return file.substring(file.lastIndexOf('.') + 1);
+      return file.substring(file.lastIndexOf('.') + 1).toLowerCase();
     }
   }
 

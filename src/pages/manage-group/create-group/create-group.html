@@ -35,7 +35,7 @@
 			<ion-item *ngFor="let user of groupDetail; let i = index;">
 				<ion-label>{{user.User}}</ion-label>
 				<ion-checkbox (ionChange)="userAction($event,user)" [checked]="in_array(userDetail,user.UserID)"></ion-checkbox>
-				<button ion-button item-end small color="casestatus" [ngClass]="{'outline-button' : !user.IsAdmin}" (click)="makeAdmin(user)">Admin</button>
+				<button ion-button item-end small color="casestatus" [ngClass]="{'outline-button' : !isAdminCheck(user.UserID)}" (click)="makeAdmin(user)">Admin</button>
 			</ion-item>
 			<ion-item-divider text-center [hidden]="page > 0">
 				Nothing more to show

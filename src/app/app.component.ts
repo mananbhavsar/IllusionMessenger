@@ -624,7 +624,7 @@ export class MyApp {
 
     isVisible() {
         this.user.hasLoggedIn().then((user) => {
-            if (user.LoginUserID === 266) {
+            if (user.LoginUserID === 15 || user.LoginUserID === 16 || user.LoginUserID === 5) {
                 this.loggedInPages.push({ title: 'Manage Group', translate_key: 'HomeScreen._ManageGroup_', name: 'ManageGroupPage', component: ManageGroupPage, icon: 'people' },
                     { title: 'Tag', translate_key: 'HomeScreen._Tag_', name: 'TagPage', component: TagPage, icon: 'tab' },
                     { title: 'Users', translate_key: 'HomeScreen._users_', name: 'UsersPage', component: UsersPage, icon: 'person' });

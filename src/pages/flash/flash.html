@@ -5,14 +5,14 @@
 <ion-content padding>
   <ion-card>
     <ion-card-header>
-      <h3>{{news.Flash}}</h3>
+      <h3 text-wrap>{{news.Flash}}</h3>
     </ion-card-header>
     <ion-card-content>
-      <ion-row *ngFor="let url of attachments">
-        <ion-col col-4>
-      <img (click)="openImage(url.VirtualPath)" id="url" center src="{{url.VirtualPath}}">         
-        </ion-col>
-      </ion-row>
+      <div class="attachment-container">
+          <div class="attachment-thumb" *ngFor="let url of attachments">
+              <img width="90" height="90" (click)="openImage(url.VirtualPath)" id="url" center src="{{url.VirtualPath}}">         
+          </div>
+      </div>
       <p>
         <ion-row>
           <ion-col text-left>

@@ -54,6 +54,7 @@ import { ForgotPasswordPageModule } from '../pages/forgot-password/forgot-passwo
 import { AddFlashPageModule } from '../pages/group/add-flash/add-flash.module';
 import { GroupOptionsPageModule } from '../pages/group/group-options/group-options.module';
 import { GroupPageModule } from '../pages/group/group.module';
+import { FlashPageModule } from '../pages/flash/flash.module';
 import { HelpPageModule } from '../pages/help/help.module';
 import { DueTopicsPageModule } from '../pages/home/due-topics/due-topics.module';
 import { HomePageModule } from '../pages/home/home.module';
@@ -146,6 +147,7 @@ export function createTranslateLoader(http: HttpClient) {
         WelcomePageModule,
         MomentModule,
         ElasticModule,
+        FlashPageModule,
         OrderModule,
         ComponentsModule,
         CreateGroupPageModule,

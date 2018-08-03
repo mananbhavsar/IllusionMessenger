@@ -12,6 +12,7 @@ export class FlashPage {
  news: any;
   title : string;
   element : any;
+  groupId : number;
   attachments : any = [];
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
@@ -20,13 +21,15 @@ export class FlashPage {
     public platform : Platform,
    public _imageViewerController : ImageViewerController,
   public _elementRef : ElementRef) {
-    this.news = this.navParams.data;
+    this.news = this.navParams.data.news;
+    this.groupId = this.navParams.data.id;
     this.title = this.news.CreatedBy;
     this.initData();
   }
 
   initData() {
     this.connection.doPost('Chat/GetFlashNews_Attachement', {
+      GroupID : this.groupId,
       FlashID : this.news.FlashID
     }).then((response : any) => {
       this.attachments = response.FlashNews_AttachementList;

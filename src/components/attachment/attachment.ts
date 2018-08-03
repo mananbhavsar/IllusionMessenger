@@ -61,9 +61,7 @@ export class AttachmentComponent {
             break;
           default:
             dataURL = reader.result.replace(/^data:image\/\w+;base64,/, "");
-        }
-        console.log(dataURL);
-        
+        }        
         context.uploadFileFromBrowser(fileName, fileExtension, dataURL)
           .then((data: any) => {
             context.captured.emit({

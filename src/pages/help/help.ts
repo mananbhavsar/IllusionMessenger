@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { StreamingMedia, StreamingVideoOptions } from '@ionic-native/streaming-media';
 import { VideoPlayer } from '@ionic-native/video-player';
-import { Events, IonicPage, NavController, NavParams } from 'ionic-angular';
+import { Events, IonicPage, NavController, NavParams, Platform } from 'ionic-angular';
 import { Global } from '../../app/global';
 import { FileOpsProvider } from '../../providers/file-ops/file-ops';
 
@@ -26,6 +26,7 @@ export class HelpPage {
     public navParams: NavParams,
     private fileOps: FileOpsProvider,
     private videoPlayer: VideoPlayer,
+    private platform : Platform,
     private streamingMedia: StreamingMedia,
     private events: Events
   ) {
@@ -45,9 +46,13 @@ export class HelpPage {
   }
 
   openVideo() {
-    this.videoPlayer.play(this.url).catch(error => {
-      this.events.publish('toast:create', error);
-    });
+    if (this.platform.is('core')) {
+     window.open(this.url,'_blank');
+    } else {
+      this.videoPlayer.play(this.url).catch(error => {
+        this.events.publish('toast:create', error);
+      });
+    }
   }
 
   openVideo1() {

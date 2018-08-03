@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
+import { IonicPage, NavController, Events, NavParams, ViewController } from 'ionic-angular';
 import * as _ from 'underscore';
 import { ConnectionProvider } from '../../providers/connection/connection';
+import { LoginPage } from '../login/login';
 
 @IonicPage()
 @Component({
@@ -15,14 +16,22 @@ export class CreateUserPage {
   userBtn: string = 'Create User';
   UserID: number;
   type: string = 'password';
+  query: any;
+  page: number = 0;
   showPassword: boolean = false;
+  searchInputBtn: boolean = false;
+  tags: any = [];
+  userTagsMap: any = {};
+  tagsSelected: any = [];
+  tagList: any = [];
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public formBuilder: FormBuilder,
+    public events: Events,
     public connection: ConnectionProvider,
     public viewCntl: ViewController
   ) {
-
+    this.getTagList();
     this.createUserForm = this.formBuilder.group({
       User: ['', [Validators.required, Validators.pattern('[A-Za-z ]*')]],
       UserCode: ['', [Validators.required, Validators.maxLength(10)]],
@@ -35,13 +44,15 @@ export class CreateUserPage {
       this.userBtn = 'Update';
       this.type = 'password';
       this.UserID = this.navParams.data.UserID,
-        this.createUserForm.setValue({
-          User: this.navParams.data.User,
-          UserCode: this.navParams.data.UserCode,
-          EmailID: this.navParams.data.EmailID || '',
-          PhoneNo: this.navParams.data.PhoneNo || '',
-          Password: this.navParams.data.Password || ''
-        });
+        console.log(this.navParams.data);
+      this.tagsSelected = this.navParams.data.TagList;
+      this.createUserForm.setValue({
+        User: this.navParams.data.User,
+        UserCode: this.navParams.data.UserCode,
+        EmailID: this.navParams.data.EmailID || '',
+        PhoneNo: this.navParams.data.PhoneNo || '',
+        Password: this.navParams.data.Password || ''
+      });
     }
   }
 
@@ -56,6 +67,112 @@ export class CreateUserPage {
   }
 
 
+  in_array(array, tagID) {
+    if (array && tagID) {
+      return array.some((item) => {
+        return item.TagID === tagID;
+      });
+    }
+  }
+
+
+  getTagList() {
+    return new Promise((resolve, reject) => {
+      if (this.page === -1) {
+        reject();
+      } else {
+        this.connection.doPost('Chat/GetTagList', {
+          Query: this.query,
+          PageNumber: this.page,
+          RowsPerPage: 20
+        }, false).then((response: any) => {
+          if (response.TagList.length > 0) {
+            response.TagList.forEach(list => {
+              this.tags.push(list);
+            });
+            this.page++;
+            resolve(true);
+          } else {
+            this.page = -1;
+            resolve(false);
+          }
+        }).catch((error) => {
+          this.searchInputBtn = true;
+          this.page = -1;
+          this.events.publish('toast:create', error);
+          reject();
+        });
+      }
+    });
+  }
+
+
+  initializeItems() {
+    this.page = 0;
+    this.getTagList().catch(error => {
+    });
+  }
+
+  onCancel(event) {
+    this.query = null;
+    this.initializeItems();
+  }
+
+  onClear(event) {
+    this.query = null;
+    this.initializeItems();
+  }
+
+
+  getItems(event) {
+    // set val to the value of the ev target
+    let val = event.target.value;
+    if (val && val.trim() != '') {
+      // if the value is an empty string don't filter the items
+      this.query = val;
+      this.page = 0;
+      this.tags = [];
+      this.getTagList().catch(error => {
+      });
+
+    } else {
+      this.tags = [];
+      this.query = null;
+      this.initializeItems();
+    }
+  }
+
+  searchTag() {
+    if (this.searchInputBtn) {
+      this.tags = [];
+      this.query = null;
+      this.page = 0;
+      this.initializeItems();
+      this.searchInputBtn = false;
+      return false;
+    }
+    this.searchInputBtn = true;
+    return true;
+  }
+
+
+  getTagColor(id) {
+    return 'tag-' + (id % 10);
+  }
+
+  tagClicked(tag) {
+    if (!this.in_array(this.tagsSelected, tag.TagID)) {
+      this.tagsSelected.push(tag);
+    } else {
+      if (this.in_array(this.tagsSelected, tag.TagID)) {
+        this.tagsSelected.splice(this.tagsSelected.indexOf(tag), 1);
+      }
+    }
+    console.log(this.tagsSelected);
+
+  }
+
+
   createUser() {
     return new Promise((resolve, reject) => {
       this.connection.doPost('Chat/CreateUpdateLogin', {
@@ -64,6 +181,7 @@ export class CreateUserPage {
         Password: this.createUserForm.get('Password').value,
         EmailID: this.createUserForm.get('EmailID').value,
         PhoneNo: this.createUserForm.get('PhoneNo').value,
+        TagID: this.tagsSelected.map(id => id.TagID)
       }).then((response: any) => {
         resolve(true);
         this.createUserForm.reset();
@@ -83,6 +201,7 @@ export class CreateUserPage {
         Password: this.createUserForm.get('Password').value,
         EmailID: this.createUserForm.get('EmailID').value,
         PhoneNo: this.createUserForm.get('PhoneNo').value,
+        TagID: this.tagsSelected.map(id => id.TagID)
       }).then((response: any) => {
         resolve(true);
         this.createUserForm.reset();
@@ -95,6 +214,18 @@ export class CreateUserPage {
 
   dismiss(event) {
     this.viewCntl.dismiss();
+  }
+
+  paginate(paginator) {
+    this.getTagList().then(status => {
+      if (status) {
+        paginator.complete();
+      } else {
+        paginator.enable(false);
+      }
+    }).catch(error => {
+      paginator.enable(false);
+    });
   }
 
 

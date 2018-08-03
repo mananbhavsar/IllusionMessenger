@@ -11,7 +11,7 @@
   <empty *ngIf="group === -1"></empty>
   <ng-template #group_template>
     <ion-grid *ngIf="group !== -1">
-      <flash-news [flashNews]="group.FlashNews"></flash-news>
+      <flash-news [GroupID]="group_id" [flashNews]="group.FlashNews"></flash-news>
       <ion-item-group  *ngIf="group.SystemTopicList" class="magin-bottom-5">
         <ion-item *ngFor="let topic of group.SystemTopicList;let i = index;" (click)="openGeneralTopic(topic, i, 'SystemTopicList')" color="light">
           <h2>

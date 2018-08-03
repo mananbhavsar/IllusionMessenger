@@ -39,6 +39,7 @@ import { IonicErrorHandler, IonicModule, IonicApp } from 'ionic-angular';
 import { IonicImageViewerModule } from 'ionic-img-viewer';
 import { ElasticModule } from 'ng-elastic';
 import { OrderModule } from 'ngx-order-pipe';
+import { VideoPlayer } from '@ionic-native/video-player';
 import { ComponentsModule } from '../components/components.module';
 import { AboutPageModule } from '../pages/about/about.module';
 import { AccountPageModule } from '../pages/account/account.module';
@@ -174,6 +175,7 @@ export function createTranslateLoader(http: HttpClient) {
         SQLite,
         CallNumber,
         EmailComposer,
+        VideoPlayer,
         Badge,
         Device,
         InAppBrowser,

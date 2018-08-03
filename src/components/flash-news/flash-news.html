@@ -3,8 +3,8 @@
     Flash News
   </ion-item-divider>
   <ion-slides autoplay="5000" [loop]="true" pager="true" #slides>
-    <ion-slide  *ngFor="let flashNews of flashes;trackBy:getFlashID">
-        <h1 (click)="openFlashNews(flashNews)">{{flashNews.Flash}}</h1>
+    <ion-slide GroupID="GroupID"  *ngFor="let flashNews of flashes;trackBy:getFlashID">
+        <h1 (click)="openFlashNews(flashNews,GroupID)">{{flashNews.Flash}}</h1>
         <p>
           <ion-row>
             <ion-col text-left>

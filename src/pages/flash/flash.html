@@ -9,9 +9,14 @@
     </ion-card-header>
     <ion-card-content>
       <div class="attachment-container">
-          <div class="attachment-thumb" *ngFor="let url of attachments">
-              <img width="90" height="90" (click)="openImage(url.VirtualPath)" id="url" center src="{{url.VirtualPath}}">         
-          </div>
+        <div class="attachment-thumb" *ngFor="let url of attachments">
+          <img *ngIf="url.FileExtension === 'pdf'" src="assets/img/pdf.png" (click)="openImage(url.VirtualPath)">
+          <img *ngIf="url.FileExtension === 'png' || url.FileExtension === 'jpg'" width="90" height="90" (click)="openImage(url.VirtualPath)" id="url" center src="{{url.VirtualPath}}">
+          <img *ngIf="url.FileExtension === 'doc' || url.FileExtension === 'docx'" src="assets/img/doc_icon.png" (click)="openImage(url.VirtualPath)"  width="90" height="90" >
+          <img *ngIf="url.FileExtension === 'xls' || url.FileExtension === 'xlsx'" src="assets/img/xls.jpg" (click)="openImage(url.VirtualPath)"  width="90" height="90" >
+          <img *ngIf="url.FileExtension === 'ppt' || url.FileExtension === 'pptx'" src="assets/img/ppt.png" (click)="openImage(url.VirtualPath)"  width="90" height="90" > 
+          <img *ngIf="url.FileExtension === 'txt'" src="assets/img/txt.png" (click)="openImage(url.VirtualPath)"  width="90" height="90">
+        </div>
       </div>
       <p>
         <ion-row>

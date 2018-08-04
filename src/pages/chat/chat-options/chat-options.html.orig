@@ -40,7 +40,11 @@
 				<ion-icon item-end name="ios-star" color="pickup" *ngIf="participant && participant.IsResponsible"></ion-icon>
 				<button ion-button item-end small outline color="casestatus" *ngIf="participant && participant.IsAdmin">Admin</button>
 			</ion-item>
+<<<<<<< HEAD
 			<ion-item-options *ngIf="participant.ContactNo !== '0'" side="right">
+=======
+			<ion-item-options side="right" *ngIf="participant.ContactNo !== '0'">
+>>>>>>> 1849fd038054188f5db2a9c502f29e3832b9f8da
 				<button ion-button icon-only color="communication" (click)="callParticipant(participant.ContactNo)">
 					<ion-icon name="call"></ion-icon>
 				</button>

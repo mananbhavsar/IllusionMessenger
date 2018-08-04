@@ -187,6 +187,7 @@ export class ChatOptionsPage {
         this.callNumber.callNumber(number, true);
       }
     }
+    return false;
   }
 
   rescheduleTopic() {

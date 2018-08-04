@@ -10,7 +10,7 @@ import * as _ from 'underscore';
   templateUrl: 'daily-shedule.html',
 })
 export class DailyShedulePage {
-  title: string = 'Daily Sheduler';
+  title: string = 'Task due today';
   topics: any;
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
@@ -43,6 +43,14 @@ export class DailyShedulePage {
         reject();
       });
     });
+  }
+
+  refresh(refresher) {
+    this.getData().then((response) => {
+      refresher.complete();
+    }).catch((error) => {
+      refresher.complete();
+    })
   }
 
 }

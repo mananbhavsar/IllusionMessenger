@@ -23,7 +23,11 @@ import { WelcomePage } from '../pages/welcome/welcome';
 import { TranslateServiceProvider } from '../providers/translate-service/translate-service';
 import { UserProvider } from '../providers/user/user';
 import { GroupPage } from './../pages/group/group';
+import { TagPage } from '../pages/create-tag/tag/tag';
+import { UsersPage } from '../pages/create-user/users/users';
+import { ManageGroupPage } from '../pages/manage-group/manage-group';
 import { Global } from './global';
+import { ConnectionProvider } from '../providers/connection/connection';
 
 export const firebaseConfig = {
     apiKey: "AIzaSyAFDZ9UPTMiDTjT4qAG0d9uVeOdhL-2PBw",
@@ -70,9 +74,6 @@ export class MyApp {
     ];
     loggedInPages: PageInterface[] = [
         { title: 'Home', translate_key: 'HomeScreen._Home_', name: 'HomePage', component: HomePage, icon: 'home' },
-        // { title: 'Manage Group', translate_key: 'HomeScreen._ManageGroup_', name: 'ManageGroupPage', component: ManageGroupPage, icon: 'people' },
-        // { title : 'Tag', translate_key: 'HomeScreen._Tag_', name : 'TagPage', component : TagPage, icon : 'tab'},
-        // { title : 'Users', translate_key : 'HomeScreen._users_', name : 'UsersPage', component : UsersPage, icon : 'person'}
     ];
     accountPages: PageInterface[] = [
         { title: 'Account', translate_key: 'Common._Account_', name: 'AccountPage', component: AccountPage, icon: 'user' },
@@ -99,6 +100,7 @@ export class MyApp {
         public platform: Platform,
         private _statusBar: StatusBar,
         public storage: Storage,
+        private connection: ConnectionProvider,
         public splashScreen: SplashScreen,
         public user: UserProvider,
         public loadingCtrl: LoadingController,
@@ -606,6 +608,16 @@ export class MyApp {
         });
     }
 
+    isVisible() {
+        this.user.hasLoggedIn().then((user) => {
+            if (user.LoginUserID === 15 || user.LoginUserID === 16 || user.LoginUserID === 5) {
+                this.loggedInPages.push({ title: 'Manage Group', translate_key: 'HomeScreen._ManageGroup_', name: 'ManageGroupPage', component: ManageGroupPage, icon: 'people' },
+                    { title: 'Tag', translate_key: 'HomeScreen._Tag_', name: 'TagPage', component: TagPage, icon: 'tab' },
+                    { title: 'Users', translate_key: 'HomeScreen._users_', name: 'UsersPage', component: UsersPage, icon: 'person' });
+            }
+        });
+    }
+
     listenToLoginEvents() {
         this.events.subscribe('user:login', (user) => {
             this.loggedIn = true;
@@ -616,7 +628,7 @@ export class MyApp {
             this.translate.use(user.MyLanguage);
 
             this.nav.setRoot(HomePage);
-
+            this.isVisible();
             setTimeout(() => {
                 let full_name = user ? user.LoginUser : '';
                 this.events.publish('toast:create', this.welcome_translate + ' ' + full_name);

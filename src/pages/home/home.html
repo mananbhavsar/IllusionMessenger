@@ -23,7 +23,7 @@
                     Edit
                 </ng-template>
             </button>
-            <button button-mini *ngIf="isGroupSelected()" (click)="reorderGroups()" ion-button outline icon-right>
+            <button button-mini *ngIf="isGroupSelected() && data.Groups_Wise.length !== 0" (click)="reorderGroups()" ion-button outline icon-right>
                 <ng-container *ngIf="reorder;else askForReorder">
                     Done
                 </ng-container>

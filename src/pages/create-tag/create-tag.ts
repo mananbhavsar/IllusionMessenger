@@ -24,7 +24,6 @@ export class CreateTagPage {
       Tag: ['', [Validators.required, Validators.maxLength(30)]],
       TagCode: ['', [Validators.required, Validators.maxLength(10)]],
     });
-    console.log(this.navParams.data);
     if (!_.isEmpty(this.navParams.data.Tag)) {
       this.tagButton = 'Update';
       this.TagID = this.navParams.data.TagID;

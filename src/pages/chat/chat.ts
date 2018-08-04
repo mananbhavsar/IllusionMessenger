@@ -737,7 +737,6 @@ export class ChatPage {
   }
 
   getTitle() {
-    
     return this.title;
   }
 

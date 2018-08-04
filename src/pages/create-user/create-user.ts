@@ -13,6 +13,9 @@ export class CreateUserPage {
   createUserForm: FormGroup;
   title: string = 'Create User';
   userBtn: string = 'Create User';
+  UserID: number;
+  type: string = 'password';
+  showPassword: boolean = false;
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public formBuilder: FormBuilder,
@@ -25,25 +28,37 @@ export class CreateUserPage {
       UserCode: ['', [Validators.required, Validators.maxLength(10)]],
       EmailID: ['', [Validators.required, Validators.pattern(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]],
       PhoneNo: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern('[0-9]*')]],
-      Password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(15)]],
+      Password: ['', [Validators.required, Validators.minLength(8)]],
     });
 
     if (!_.isEmpty(this.navParams.data.User)) {
       this.userBtn = 'Update';
-      this.createUserForm.setValue({
-        User: this.navParams.data.User,
-        UserCode: this.navParams.data.UserCode,
-        EmailID: this.navParams.data.EmailID || '',
-        PhoneNo: this.navParams.data.PhoneNo || '',
-        Password: this.navParams.data.Password || ''
-      });
+      this.type = 'password';
+      this.UserID = this.navParams.data.UserID,
+        this.createUserForm.setValue({
+          User: this.navParams.data.User,
+          UserCode: this.navParams.data.UserCode,
+          EmailID: this.navParams.data.EmailID || '',
+          PhoneNo: this.navParams.data.PhoneNo || '',
+          Password: this.navParams.data.Password || ''
+        });
+    }
+  }
+
+  passwordShow() {
+    if (this.type === 'text') {
+      this.type = 'password';
+      this.showPassword = false;
+    } else if (this.type === 'password') {
+      this.type = 'text';
+      this.showPassword = true;
     }
   }
 
 
   createUser() {
     return new Promise((resolve, reject) => {
-      this.connection.doPost('Chat/CreateNewUser', {
+      this.connection.doPost('Chat/CreateUpdateLogin', {
         User: this.createUserForm.get('User').value,
         UserCode: this.createUserForm.get('UserCode').value,
         Password: this.createUserForm.get('Password').value,
@@ -61,7 +76,8 @@ export class CreateUserPage {
 
   updateUser() {
     return new Promise((resolve, reject) => {
-      this.connection.doPost('Chat/UpdateUser', {
+      this.connection.doPost('Chat/CreateUpdateLogin', {
+        UserID: this.UserID,
         User: this.createUserForm.get('User').value,
         UserCode: this.createUserForm.get('UserCode').value,
         Password: this.createUserForm.get('Password').value,

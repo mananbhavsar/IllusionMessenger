@@ -4,7 +4,34 @@ page-flash {
         font-style: italic;
         color: #555;
         ion-row {
-            ion-col {}
+            ion-col {
+            }
+        }
+    }
+     .attachment-container {
+        .attachment-thumb {
+            position: relative;
+            width: 102px;
+            height: 102px;
+            float: left;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin: 0 0 5px 5px;
+            ion-icon {
+                position: absolute;
+                z-index: 1;
+                right: 0;
+                width: 20px;
+                height: 20px;
+                top: 0;
+                text-align: center;
+                font-size: 2em;
+            }
+            ion-img {
+                width: 90px;
+                height: 90px;
+            }
         }
     }
 }

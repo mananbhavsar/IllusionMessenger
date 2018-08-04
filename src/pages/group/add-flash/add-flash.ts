@@ -49,14 +49,15 @@ export class AddFlashPage {
   }
 
   addFlash() {
-    console.log(this.attachments);
+    let Attachment : any = {};
+    Attachment = {"Attachment" : this.attachments};
     this.connection.doPost('Chat/CreateFlashNews', {
       GroupID: this.group_id,
       Flash: this.addFlashForm.get('flash_message').value,
       StartDate: this._date.toUTCISOString(new Date(), false, false),
       EndDate: this._date.toUTCISOString(this.addFlashForm.get('end_date').value),
       IsWeb: this.platform.is('core'),
-      FlashNews_Attachment: JSON.stringify(this.attachments)
+      FlashNews_Attachment: JSON.stringify(Attachment)
     }).then((response: any) => {
       if (('Status' in response) && response.Status === 0) {
         this.events.publish('toast:error', response.Message);
@@ -78,8 +79,6 @@ export class AddFlashPage {
 
 
   captured(event) {
-    console.log(event);
-    console.log(this.attachments);
     this.attachments.push(event);
   }
 

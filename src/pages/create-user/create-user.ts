@@ -44,7 +44,6 @@ export class CreateUserPage {
       this.userBtn = 'Update';
       this.type = 'password';
       this.UserID = this.navParams.data.UserID,
-        console.log(this.navParams.data);
       this.tagsSelected = this.navParams.data.TagList;
       this.createUserForm.setValue({
         User: this.navParams.data.User,
@@ -168,8 +167,6 @@ export class CreateUserPage {
         this.tagsSelected.splice(this.tagsSelected.indexOf(tag), 1);
       }
     }
-    console.log(this.tagsSelected);
-
   }
 
 

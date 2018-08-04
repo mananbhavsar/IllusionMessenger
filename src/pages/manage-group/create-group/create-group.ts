@@ -45,8 +45,7 @@ export class CreateGroupPage {
       this.createGroupForm.setValue({
         Group: this.navParams.data.Group,
         GroupCode: this.navParams.data.GroupCode,
-        search: '',
-        users : ''
+        search: ''
       });
     }
     this.getUserDetails();

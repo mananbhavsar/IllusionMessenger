@@ -289,7 +289,7 @@ export class MyApp {
         });
         this.events.subscribe('user:ready', (user) => {
             if (user) {
-                if (user.LoginUserID === 266 || user.LoginUserID === 15 || user.LoginUserID === 16 || user.LoginUserID === 5) {
+                if (user.LoginUserID === 15 || user.LoginUserID === 16 || user.LoginUserID === 5) {
                     this.hide = false;
                 } else {
                     this.hide = true;

@@ -35,8 +35,6 @@ export class UsersPage {
           PageNumber: this.page,
           RowsPerPage: 20
         },false).then((response: any) => {
-          console.log(response);
-          
           if (response.UserList.length > 0) {
             response.UserList.forEach(list => {
               this.users.push(list);

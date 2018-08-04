@@ -19,8 +19,9 @@
     <ng-container *ngFor="let message of messages;trackBy:getTrackByField | orderBy:'CreateAt'">
       <chat-bubble [id]="'message-'+message.key" class="message-wrapper" [message]="message" [userID]="userID" [topicID]="topicID"
         [topicCode]="topicCode" [groupID]="groupID" [groupCode]="groupCode" [users]="chatUsers" [myLanguage]="myLanguage" [responsibleUserID]="responsibleUserID"
-        (press)="openReading($event, message, false)"></chat-bubble>
+       (press)="getOptions($event)"></chat-bubble>
     </ng-container>
+    <!--  (press)="openReading($event, message, false)" -->
   </div>
   <!-- <div class="typing-container">
     <div class="typing" *ngFor="let typingUserId of userTyping | keys" [hidden]="typingUserId == userID || !isWithinRange(userTyping[typingUserId])">

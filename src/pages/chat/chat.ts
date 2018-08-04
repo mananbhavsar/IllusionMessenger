@@ -136,6 +136,7 @@ export class ChatPage {
   keyboardOpen: boolean = false;
   hasInternet: boolean = true;
   lastReadingTime: number = 0;
+  textToCopy: any;
   offlineMessageText: string = 'The message cannot be downloaded as there is\'nt any internet connection';
 
   myLanguage: string = null;
@@ -284,7 +285,7 @@ export class ChatPage {
           this.scrollBottom('first time message load').then(status => {
             this.readyForPagination = true;
             this.saveOfflineData();
-          }).catch(error => {             
+          }).catch(error => {
           });
         }, 100);
       });
@@ -346,8 +347,8 @@ export class ChatPage {
           setTimeout(() => {
             setTimeout(() => {
               this.scrollBottom('new message').catch(error => {
-                
-               });
+
+              });
             });
           }, 250);
         } else {
@@ -386,8 +387,8 @@ export class ChatPage {
       if (this.typingRefLoaded) {
         setTimeout(() => {
           this.scrollBottom('typing ref init').catch(error => {
-            
-           });
+
+          });
         }, 100);
       }
       this.typingRefLoaded = true;
@@ -499,13 +500,13 @@ export class ChatPage {
     this.platformResumeReference = this.platform.resume.subscribe(() => {
       this.resumed();
     }, error => {
-      
+
     });
 
     this.platformPauseReference = this.platform.pause.subscribe(() => {
       this.doLeaving(false);
     }, error => {
-      
+
     });
 
     //notification subs
@@ -586,10 +587,14 @@ export class ChatPage {
     //checking if user logged in
     if (!_.isEmpty(this.connection.user)) {
       this.initUser();
+      console.log('title');
+
       //get Chat info before we load
       this.initData().then(status => {
         this.listenToEvents();
       }).catch(error => {
+        console.log(error);
+
         this.navCtrl.pop();
       });
     } else {
@@ -645,8 +650,8 @@ export class ChatPage {
           this.setOfflineTopicList(this.data);
           if (response.FireBaseTransaction) {
             this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => {
-              
-             });
+
+            });
           }
           this.setTitle();
           this.setUsers().then((chatUsersList) => {
@@ -654,7 +659,7 @@ export class ChatPage {
             resolve(true);
           }).catch(error => {
             this.navCtrl.setRoot(HomePage);
-            this.events.publish('toast:create', error);    
+            this.events.publish('toast:create', error);
             reject(false);
           })
 
@@ -702,6 +707,8 @@ export class ChatPage {
    * sets title for Chat
    */
   setTitle() {
+    console.log(this.data.Topic);
+
     this.title = null;
     setTimeout(() => {
       this.title = this.data.Topic;
@@ -984,6 +991,54 @@ export class ChatPage {
     } else {
 
     }
+  }
+
+
+  getOptions(element) {
+    this.textToCopy = element.target;
+    this.headerButtons = [];
+    this.headerButtons.push(
+      {
+        icon: 'md-clipboard',
+        name: 'md-clipboard'
+      },
+      {
+        icon: 'ios-copy',
+        name: 'ios-copy'
+      },
+      {
+        icon: 'ios-redo',
+        name: 'ios-redo'
+      },
+      {
+        icon: 'ios-information-circle-outline',
+        name: 'ios-information-circle-outline'
+      },
+      {
+        icon: 'ios-more',
+        name: 'more-option'
+      }, );
+  }
+
+  copyText() {
+    this.copyToClipboard(this.textToCopy.innerHTML);
+    this.headerButtons.splice(0, 3, 1);
+    this.events.publish('toast:create', 'Message copied');
+  }
+
+  copyToClipboard(text) {
+    let textArea = document.createElement('textarea');
+    textArea.setAttribute
+      ('id', 'clipboard');
+
+    console.log(textArea);
+    document.body.appendChild(textArea);
+    textArea.value = text;
+    textArea.select();
+    document.execCommand('copy');
+    // document.body.removeChild(textArea);
+    document.getElementById('clipboard').remove();
+    console.log(textArea.value);
   }
 
   keyup(event) {
@@ -1621,12 +1676,17 @@ export class ChatPage {
   }
 
   headerOptions(event) {
+    console.log(event.name);
+
     switch (event.name) {
       case 'ios-information-circle-outline':
         this.openTopicInfo();
         break;
       case 'more-option':
         this.openChatOptions();
+        break;
+      case 'ios-copy':
+        this.copyText();
         break;
     }
   }

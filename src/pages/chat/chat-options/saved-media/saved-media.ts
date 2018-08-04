@@ -1,19 +1,17 @@
 import { Component, ElementRef } from '@angular/core';
-import { IonicPage, Events, ActionSheetController, NavController, NavParams, normalizeURL, ViewController } from 'ionic-angular';
-
 import { File } from '@ionic-native/file';
-import { VideoEditor, CreateThumbnailOptions } from '@ionic-native/video-editor';
 import { PhotoLibrary } from '@ionic-native/photo-library';
-import { StreamingMedia, StreamingVideoOptions } from '@ionic-native/streaming-media';
-
-import * as _ from 'underscore';
-import * as mime from 'mime-types';
-import * as moment from 'moment';
-import { Global } from '../../../../app/global';
+import { StreamingMedia } from '@ionic-native/streaming-media';
+import { VideoEditor } from '@ionic-native/video-editor';
 import { UUID } from 'angular2-uuid';
-import { TranslateService } from "@ngx-translate/core";
-
+import { ActionSheetController, Events, IonicPage, NavController, NavParams, normalizeURL, ViewController } from 'ionic-angular';
 import { ImageViewerController } from 'ionic-img-viewer';
+import * as mime from 'mime-types';
+import { Global } from '../../../../app/global';
+import { TranslateServiceProvider } from '../../../../providers/translate-service/translate-service';
+
+
+
 
 @IonicPage()
 @Component({
@@ -50,7 +48,7 @@ export class SavedMediaPage {
     private streamingMedia: StreamingMedia,
     private _elementRef: ElementRef,
     private _imageViewerController: ImageViewerController,
-    private translate: TranslateService,
+    private translate: TranslateServiceProvider,
   ) {
     this.path = this.navParams.data.path;
     this.folder = this.navParams.data.folder;

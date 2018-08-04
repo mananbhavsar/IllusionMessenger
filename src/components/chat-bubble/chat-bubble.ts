@@ -3,7 +3,6 @@ import { File } from '@ionic-native/file';
 import { FileTransfer } from '@ionic-native/file-transfer';
 import { Network } from '@ionic-native/network';
 import { StreamingMedia } from '@ionic-native/streaming-media';
-import { TranslateService } from "@ngx-translate/core";
 import * as firebase from 'firebase';
 import { Events, NavController, Platform } from 'ionic-angular';
 import { ImageViewerController } from 'ionic-img-viewer';
@@ -13,6 +12,7 @@ import * as _ from 'underscore';
 import { Global } from '../../app/global';
 import { CommonProvider } from "../../providers/common/common";
 import { FileOpsProvider } from "../../providers/file-ops/file-ops";
+import { TranslateServiceProvider } from '../../providers/translate-service/translate-service';
 
 
 
@@ -59,7 +59,7 @@ export class ChatBubbleComponent {
     private _elementRef: ElementRef,
     private common: CommonProvider,
     private network: Network,
-    private translate: TranslateService,
+    private translate: TranslateServiceProvider,
     private fileOps: FileOpsProvider,
   ) {
     this.global = Global;

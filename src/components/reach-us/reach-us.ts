@@ -1,14 +1,13 @@
 import { Component, Input } from '@angular/core';
-import { ModalController, NavController, ViewController, Events } from 'ionic-angular';
-
-import { ContactUsPage } from '../../pages/contact-us/contact-us';
-
+import { CallNumber } from '@ionic-native/call-number';
+import { Events, ModalController, NavController, ViewController } from 'ionic-angular';
 import { Global } from '../../app/global';
-
+import { ContactUsPage } from '../../pages/contact-us/contact-us';
 import { UserProvider } from '../../providers/user/user';
 
-import { EmailComposer } from '@ionic-native/email-composer';
-import { CallNumber } from '@ionic-native/call-number';
+
+
+
 
 
 @Component({
@@ -22,7 +21,6 @@ export class ReachUsComponent {
     constructor(
         public nav: NavController,
         public viewConrtoller: ViewController,
-        private _emailComposer: EmailComposer,
         private _callNumber: CallNumber,
         public modalCtrl: ModalController,
         public user: UserProvider,
@@ -62,16 +60,7 @@ export class ReachUsComponent {
     }
 
     openEmail(email) {
-        this._emailComposer.isAvailable().then((available: boolean) => {
-            if (available) {
-                this._emailComposer.open({
-                    to: email,
-                    subject: Global.APP_NAME + ' App Support',
-                    body: '',
-                    isHtml: true
-                });
-            }
-        });
+        
     }
 
 }

@@ -10,7 +10,6 @@ import { Vibration } from '@ionic-native/vibration';
 import { MediaFile, VideoCapturePlus, VideoCapturePlusOptions } from '@ionic-native/video-capture-plus';
 import { VideoEditor } from '@ionic-native/video-editor';
 import { Storage } from '@ionic/storage';
-import { TranslateService } from "@ngx-translate/core";
 import * as firebase from 'firebase';
 import { ActionSheetController, Content, Events, IonicPage, ModalController, NavController, NavParams, normalizeURL, Platform, ToastController } from 'ionic-angular';
 import * as mime from 'mime-types';
@@ -24,6 +23,7 @@ import { ConnectionProvider } from '../../providers/connection/connection';
 import { FileOpsProvider } from "../../providers/file-ops/file-ops";
 import { FirebaseTransactionProvider } from '../../providers/firebase-transaction/firebase-transaction';
 import { NotificationsProvider } from "../../providers/notifications/notifications";
+import { TranslateServiceProvider } from '../../providers/translate-service/translate-service';
 import { HomePage } from '../home/home';
 import { LogoutPage } from '../logout/logout';
 import { DateProvider } from './../../providers/date/date';
@@ -172,7 +172,7 @@ export class ChatPage {
     private modal: ModalController,
     private common: CommonProvider,
     public http: Http,
-    private translate: TranslateService,
+    private translate: TranslateServiceProvider,
     private _notifications: NotificationsProvider,
     private _fileOps: FileOpsProvider,
     private _date: DateProvider,

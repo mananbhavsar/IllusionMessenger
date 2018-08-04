@@ -9,7 +9,6 @@ import { ChatPage } from './../chat/chat';
 import { GroupOptionsPage } from './../group/group-options/group-options';
 import { CloseTopicPage } from './../topic/close-topic/close-topic';
 import { CreateTopicPage } from './../topic/create-topic/create-topic';
-import { reorderArray } from 'ionic-angular';
 
 
 @IonicPage()

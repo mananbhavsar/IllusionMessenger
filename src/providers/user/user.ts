@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Badge } from '@ionic-native/badge';
 import { Storage } from '@ionic/storage';
-import { TranslateService } from '@ngx-translate/core';
 import * as firebase from 'firebase';
 import { AlertController, Events, Platform } from 'ionic-angular';
 import 'rxjs/add/operator/map';
@@ -9,6 +8,7 @@ import * as _ from 'underscore';
 import { Global } from "../../app/global";
 import { ConnectionProvider } from '../connection/connection';
 import { FirebaseTransactionProvider } from "../firebase-transaction/firebase-transaction";
+import { TranslateServiceProvider } from '../translate-service/translate-service';
 
 
 
@@ -38,7 +38,7 @@ export class UserProvider {
         public platform: Platform,
         public alertCtrl: AlertController,
         private badge: Badge,
-        private translate: TranslateService,
+        private translate: TranslateServiceProvider,
     ) {
         this.global = Global;
 

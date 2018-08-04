@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, Events } from 'ionic-angular';
-
-import { UserProvider } from '../../providers/user/user';
 import { Network } from '@ionic-native/network';
-
 import { Storage } from '@ionic/storage';
-import { TranslateService } from "@ngx-translate/core";
+import { Events, IonicPage, NavController, NavParams } from 'ionic-angular';
+import { TranslateServiceProvider } from '../../providers/translate-service/translate-service';
+import { UserProvider } from '../../providers/user/user';
+
+
 
 @IonicPage()
 @Component({
@@ -21,7 +21,7 @@ export class LogoutPage {
         public navParams: NavParams,
         public user: UserProvider,
         private network: Network,
-        private translate: TranslateService,
+        private translate: TranslateServiceProvider,
         private events: Events,
         private storage: Storage,
     ) {

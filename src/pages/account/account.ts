@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { Network } from '@ionic-native/network';
-import { TranslateService } from '@ngx-translate/core';
 import { Events, IonicPage, ModalController, NavController, ViewController } from 'ionic-angular';
 import { Global } from '../../app/global';
 import { ConnectionProvider } from '../../providers/connection/connection';
+import { TranslateServiceProvider } from '../../providers/translate-service/translate-service';
 import { UserProvider } from '../../providers/user/user';
 import { ChangePasswordPage } from './change-password/change-password';
 import { EditProfilePage } from "./edit-profile/edit-profile";
@@ -33,7 +33,7 @@ export class AccountPage {
         public viewCtrl: ViewController,
         public events: Events,
         private network: Network,
-        private translate: TranslateService,
+        private translate: TranslateServiceProvider,
     ) {
         this.global = Global;
         this.user = this._user._user;

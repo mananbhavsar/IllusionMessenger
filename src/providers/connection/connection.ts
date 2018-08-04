@@ -4,13 +4,13 @@ import { Device } from '@ionic-native/device';
 import { Network } from '@ionic-native/network';
 import { UniqueDeviceID } from '@ionic-native/unique-device-id';
 import { Storage } from '@ionic/storage';
-import { TranslateService } from "@ngx-translate/core";
 import * as firebase from 'firebase';
 import { Events, Platform } from 'ionic-angular';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/timeout';
 import * as _ from 'underscore';
 import { Global } from '../../app/global';
+import { TranslateServiceProvider } from '../translate-service/translate-service';
 
 
 
@@ -36,7 +36,7 @@ export class ConnectionProvider {
         public platform: Platform,
         public device: Device,
         private uniqueDeviceID: UniqueDeviceID,
-        private translate: TranslateService,
+        private translate: TranslateServiceProvider,
     ) {
         this.URL = Global.SERVER_URL;
 

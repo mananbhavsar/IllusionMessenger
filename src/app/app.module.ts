@@ -1,15 +1,13 @@
-import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { CUSTOM_ELEMENTS_SCHEMA, ErrorHandler, NgModule } from '@angular/core';
 import { HttpModule } from '@angular/http';
 import { BrowserModule } from '@angular/platform-browser';
+import { AndroidPermissions } from '@ionic-native/android-permissions';
 import { Badge } from '@ionic-native/badge';
 import { CallNumber } from '@ionic-native/call-number';
 import { Camera } from '@ionic-native/camera';
 import { Device } from '@ionic-native/device';
 import { Diagnostic } from '@ionic-native/diagnostic';
-import { EmailComposer } from '@ionic-native/email-composer';
 import { File } from '@ionic-native/file';
-import { AndroidPermissions } from '@ionic-native/android-permissions';
 import { FileChooser } from '@ionic-native/file-chooser';
 import { FileOpener } from '@ionic-native/file-opener';
 import { FilePath } from '@ionic-native/file-path';
@@ -32,10 +30,8 @@ import { Vibration } from '@ionic-native/vibration';
 import { VideoCapturePlus } from '@ionic-native/video-capture-plus';
 import { VideoEditor } from '@ionic-native/video-editor';
 import { IonicStorageModule } from '@ionic/storage';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { MomentModule } from 'angular2-moment';
-import { IonicErrorHandler, IonicModule, IonicApp } from 'ionic-angular';
+import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { IonicImageViewerModule } from 'ionic-img-viewer';
 import { ElasticModule } from 'ng-elastic';
 import { OrderModule } from 'ngx-order-pipe';
@@ -50,6 +46,10 @@ import { SavedMediaPageModule } from "../pages/chat/chat-options/saved-media/sav
 import { ChatReadModalPageModule } from "../pages/chat/chat-read-modal/chat-read-modal.module";
 import { ChatPageModule } from "../pages/chat/chat.module";
 import { ContactUsPageModule } from '../pages/contact-us/contact-us.module';
+import { CreateTagPageModule } from '../pages/create-tag/create-tag.module';
+import { TagPageModule } from '../pages/create-tag/tag/tag.module';
+import { CreateUserPageModule } from '../pages/create-user/create-user.module';
+import { UsersPageModule } from '../pages/create-user/users/users.module';
 import { ForgotPasswordPageModule } from '../pages/forgot-password/forgot-password.module';
 import { AddFlashPageModule } from '../pages/group/add-flash/add-flash.module';
 import { GroupOptionsPageModule } from '../pages/group/group-options/group-options.module';
@@ -58,9 +58,13 @@ import { HelpPageModule } from '../pages/help/help.module';
 import { DueTopicsPageModule } from '../pages/home/due-topics/due-topics.module';
 import { HomePageModule } from '../pages/home/home.module';
 import { LoginPageModule } from '../pages/login/login.module';
+import { CreateGroupPageModule } from '../pages/manage-group/create-group/create-group.module';
+import { ManageGroupPageModule } from '../pages/manage-group/manage-group.module';
+import { SearchPageModule } from '../pages/search/search.module';
 import { CloseTopicPageModule } from '../pages/topic/close-topic/close-topic.module';
 import { CreateTopicPageModule } from '../pages/topic/create-topic/create-topic.module';
 import { ManageParticipantsPageModule } from "../pages/topic/create-topic/manage-participants/manage-participants.module";
+import { DailyShedulePageModule } from '../pages/topic/daily-shedule/daily-shedule.module';
 import { TopicOptionsPageModule } from '../pages/topic/topic-options/topic-options.module';
 import { TopicPageModule } from '../pages/topic/topic.module';
 import { TutorialPageModule } from '../pages/tutorial/tutorial.module';
@@ -72,21 +76,10 @@ import { DateProvider } from '../providers/date/date';
 import { FileOpsProvider } from '../providers/file-ops/file-ops';
 import { FirebaseTransactionProvider } from '../providers/firebase-transaction/firebase-transaction';
 import { NotificationsProvider } from "../providers/notifications/notifications";
+import { TranslateServiceProvider } from '../providers/translate-service/translate-service';
 import { UserProvider } from '../providers/user/user';
 import { UserAutoCompleteService } from './../pages/topic/create-topic/user-auto-complete';
 import { MyApp } from './app.component';
-import { DailyShedulePageModule } from '../pages/topic/daily-shedule/daily-shedule.module';
-import { SearchPageModule } from '../pages/search/search.module';
-import { CreateGroupPageModule } from '../pages/manage-group/create-group/create-group.module';
-import { CreateTagPageModule } from '../pages/create-tag/create-tag.module';
-import { CreateUserPageModule } from '../pages/create-user/create-user.module';
-import { ManageGroupPageModule } from '../pages/manage-group/manage-group.module';
-import { TagPageModule } from '../pages/create-tag/tag/tag.module';
-import { UsersPageModule } from '../pages/create-user/users/users.module';
-
-export function createTranslateLoader(http: HttpClient) {
-    return new TranslateHttpLoader(http, './assets/i18n/', '.json');
-}
 
 @NgModule({
     declarations: [
@@ -99,14 +92,6 @@ export function createTranslateLoader(http: HttpClient) {
         BrowserModule,
         IonicModule.forRoot(MyApp, {
             mode: 'md',
-        }),
-        HttpClientModule,
-        TranslateModule.forRoot({
-            loader: {
-                provide: TranslateLoader,
-                useFactory: (createTranslateLoader),
-                deps: [HttpClient]
-            }
         }),
         HttpModule,
         IonicStorageModule.forRoot({
@@ -171,7 +156,6 @@ export function createTranslateLoader(http: HttpClient) {
         Diagnostic,
         SQLite,
         CallNumber,
-        EmailComposer,
         Badge,
         Device,
         InAppBrowser,
@@ -198,6 +182,7 @@ export function createTranslateLoader(http: HttpClient) {
         PhotoViewer,
         UserAutoCompleteService,
         DateProvider,
+        TranslateServiceProvider,
 
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]

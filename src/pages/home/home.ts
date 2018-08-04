@@ -1,23 +1,21 @@
 import { Component } from '@angular/core';
 import { Network } from '@ionic-native/network';
 import { OneSignal } from '@ionic-native/onesignal';
-import { TranslateService } from "@ngx-translate/core";
-import firebase from 'firebase';
+import * as firebase from 'firebase';
 import { ActionSheetController, Events, IonicPage, ModalController, NavController, Platform, reorderArray } from 'ionic-angular';
 import * as _ from 'underscore';
 import { Global } from '../../app/global';
 import { ConnectionProvider } from '../../providers/connection/connection';
+import { TranslateServiceProvider } from '../../providers/translate-service/translate-service';
 import { UserProvider } from '../../providers/user/user';
+import { CreateTagPage } from '../create-tag/create-tag';
+import { CreateUserPage } from '../create-user/create-user';
 import { GroupPage } from '../group/group';
+import { CreateGroupPage } from '../manage-group/create-group/create-group';
 import { FirebaseTransactionProvider } from './../../providers/firebase-transaction/firebase-transaction';
 import { NotificationsProvider } from './../../providers/notifications/notifications';
 import { AddFlashPage } from './../group/add-flash/add-flash';
 import { CreateTopicPage } from './../topic/create-topic/create-topic';
-import { SearchPage } from '../../pages/search/search';
-import { FlashPage } from '../../pages/flash/flash';
-import { CreateGroupPage } from '../manage-group/create-group/create-group';
-import { CreateTagPage } from '../create-tag/create-tag';
-import { CreateUserPage } from '../create-user/create-user';
 
 @IonicPage()
 @Component({
@@ -88,7 +86,7 @@ export class HomePage {
         public connection: ConnectionProvider,
         public user: UserProvider,
         public events: Events,
-        private translate: TranslateService,
+        private translate: TranslateServiceProvider,
         private _oneSignal: OneSignal,
         private platform: Platform,
         private _network: Network,
@@ -167,7 +165,6 @@ export class HomePage {
                 this.dataFetched = true;
                 //groups
                 this.data = response;
-                console.log(this.data);
 
                 //flash
                 if (response.FlashNews) {

@@ -16,10 +16,13 @@
     <ion-infinite-scroll *ngIf="messagesLoaded" [hidden]="showNoMoreMessages" (ionInfinite)="paginate($event)" position="top">
       <ion-infinite-scroll-content></ion-infinite-scroll-content>
     </ion-infinite-scroll>
-    <ng-container *ngFor="let message of messages;trackBy:getTrackByField | orderBy:'CreateAt'">
-      <chat-bubble [id]="'message-'+message.key" class="message-wrapper" [message]="message" [userID]="userID" [topicID]="topicID"
+    <ng-container  *ngFor="let message of messages;trackBy:getTrackByField | orderBy:'CreateAt'">
+      <chat-bubble (click)="openReading($event, message, false)" (press)="getOptions($event)" [id]="'message-'+message.key" class="message-wrapper" [message]="message" [userID]="userID" [topicID]="topicID"
         [topicCode]="topicCode" [groupID]="groupID" [groupCode]="groupCode" [users]="chatUsers" [myLanguage]="myLanguage" [responsibleUserID]="responsibleUserID"
-       (press)="getOptions($event)"></chat-bubble>
+       ></chat-bubble>
+    </ng-container>
+    <ng-container>
+      
     </ng-container>
     <!--  (press)="openReading($event, message, false)" -->
   </div>

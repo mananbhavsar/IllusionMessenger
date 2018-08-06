@@ -35,7 +35,7 @@ export class DueTopicsPage {
           resolve(true);
         }
       }).catch((error) => {
-        
+
       });
     });
   }
@@ -58,5 +58,6 @@ export class DueTopicsPage {
   getTitle() {
     return this.title;
   }
+
 
 }

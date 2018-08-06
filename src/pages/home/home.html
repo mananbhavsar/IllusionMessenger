@@ -1,5 +1,5 @@
 <ion-header no-border>
-    <header [title]="getTitle()" [buttons]="[{icon: 'flash', name : 'flash'}, { icon: 'ios-options', name: 'sort'}]" (buttonClicked)="headerButtonClicked($event)"></header>
+    <header [title]="getTitle()" [buttons]="[{icon : 'search', name : 'search'},{ icon: 'ios-options', name: 'sort'}]" (buttonClicked)="headerButtonClicked($event)"></header>
     <div class="device-register" [ngSwitch]="deviceRegsiter">
         <span class="gray" *ngSwitchCase="0">Not Connected</span>
         <span class="pickup" *ngSwitchCase="1">Connecting</span>
@@ -7,7 +7,7 @@
     </div>
 </ion-header>
 <ion-content no-padding>
-    <ion-refresher (ionRefresh)="refresh($event)" *ngIf="hideRefresher">
+    <ion-refresher (ionRefresh)="refresh($event)" *ngIf="hideRefresher && !searchInputBtn">
         <ion-refresher-content pullingIcon="arrow-round-down" pullingText="Pull to refresh" refreshingSpinner="crescent" refreshingText="Refreshing...">
         </ion-refresher-content>
     </ion-refresher>
@@ -23,7 +23,8 @@
                     Edit
                 </ng-template>
             </button>
-            <button button-mini *ngIf="isGroupSelected() && data.Groups_Wise.length !== 0" (click)="reorderGroups()" ion-button outline icon-right>
+            <button button-mini *ngIf="isGroupSelected() && data.Groups_Wise.length !== 0" (click)="reorderGroups()" ion-button outline
+                icon-right>
                 <ng-container *ngIf="reorder;else askForReorder">
                     Done
                 </ng-container>
@@ -40,6 +41,9 @@
                 </span>
             </ion-segment-button>
         </ion-segment>
+        <ion-searchbar [showCancelButton]="true" *ngIf="searchInputBtn" (ionInput)="getItems($event)" (ionClear)="onClear($event)"
+            (ionCancel)="onCancel($event)">
+        </ion-searchbar>
         <div padding-horizontal [ngSwitch]="selectedTab">
             <ion-list>
                 <ion-item-divider color="light">
@@ -102,8 +106,11 @@
                 </ng-container>
             </ion-list>
         </div>
+        <ion-infinite-scroll *ngIf="page !== -1" (ionInfinite)="paginate($event)">
+            <ion-infinite-scroll-content></ion-infinite-scroll-content>
+        </ion-infinite-scroll>
     </ng-template>
-    <!-- <call-fab (clicked)="fabButtonClicked($event)"></call-fab> -->
+    <call-fab (clicked)="fabButtonClicked($event)"></call-fab>
     <!-- <button ion-button full (click)="connectToServer('1234')">Register</button> -->
 </ion-content>
 <ion-footer *ngIf="readOptions" class="hide-on-keyboard-open">

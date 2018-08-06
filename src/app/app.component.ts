@@ -10,7 +10,6 @@ import { Storage } from '@ionic/storage';
 import { TranslateService } from '@ngx-translate/core';
 import * as firebase from 'firebase';
 import { AlertController, Events, LoadingController, MenuController, ModalController, Nav, Platform, ToastController } from 'ionic-angular';
-import * as moment from "moment";
 import * as _ from 'underscore';
 import { AccountPage } from '../pages/account/account';
 import { ChatPage } from '../pages/chat/chat';
@@ -23,11 +22,13 @@ import { TutorialPage } from '../pages/tutorial/tutorial';
 import { WelcomePage } from '../pages/welcome/welcome';
 import { UserProvider } from '../providers/user/user';
 import { GroupPage } from './../pages/group/group';
+import * as moment from "moment";
 import { TagPage } from '../pages/create-tag/tag/tag';
 import { UsersPage } from '../pages/create-user/users/users';
 import { ManageGroupPage } from '../pages/manage-group/manage-group';
 import { Global } from './global';
 import { ConnectionProvider } from '../providers/connection/connection';
+import { DailyShedulePage } from '../pages/topic/daily-shedule/daily-shedule';
 
 export const firebaseConfig = {
     apiKey: "AIzaSyAFDZ9UPTMiDTjT4qAG0d9uVeOdhL-2PBw",
@@ -692,11 +693,11 @@ export class MyApp {
                 let ref = firebase.database().ref('DailyScheduler/' + user.LoginUserID
                     + '/' + date);
                 ref.on('value', (status) => {
+                    console.log(status.val());
+                    
                     if (status.val() === null) {
                         // show popup
-                        this.nav.setRoot('DailyShedulePage');
-                        // update to firebase
-                        ref.set(true);
+                        this.nav.setRoot(DailyShedulePage);
                     }
                 });
             }

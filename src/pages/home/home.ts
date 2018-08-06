@@ -29,6 +29,8 @@ export class HomePage {
     global: any = {};
     data: any = null;
     badges: any = {};
+    query: string;
+    searchInputBtn : boolean = false;
 
     firebaseConnected: boolean = false;
 
@@ -160,7 +162,7 @@ export class HomePage {
             this.connection.doPost('Chat/GetTaskDetail', {
                 PageNumber: this.page,
                 RowsPerPage: 100,
-                Query: '',
+                Query: this.query,
                 OrderBy: this.sort_by,
                 Order: this.sort_order,
             }, false).then((response: any) => {
@@ -248,6 +250,18 @@ export class HomePage {
             refresher.complete();
         });
     }
+
+    paginate(paginator) {
+        this.getData(false).then(status => {
+          if (status) {
+            paginator.complete();
+          } else {
+            paginator.enable(false);
+          }
+        }).catch(error => {
+          paginator.enable(false);
+        });
+      }
 
     connectToFireBase() {
         //user setting
@@ -387,10 +401,11 @@ export class HomePage {
             case 'sort':
                 this.openSortOptions();
                 break;
-            case 'flash':
-                this.addFlash();
+            case 'search':
+                this.searchData();
         }
     }
+
 
     fabButtonClicked(event) {
         switch (event.name) {
@@ -423,8 +438,51 @@ export class HomePage {
     }
 
     searchData() {
-        this.navCtrl.push('SearchPage');
+        if (this.searchInputBtn) {
+            this.searchInputBtn = false;
+            this.data = [];
+            this.query = null;
+            this.initializeItems();
+          } else if (this.searchInputBtn === false) {
+            this.searchInputBtn = true;
+          } 
     }
+
+    initializeItems() {
+        this.page = 0;
+        this.initData(false).catch(error => {
+        });
+      }
+    
+      onCancel(event) {
+        this.query = null;
+        this.initializeItems();
+      }
+    
+      onClear(event) {
+        this.query = null;
+        this.initializeItems();
+      }
+    
+    
+      getItems(event) {
+        // set val to the value of the ev target
+        let val = event.target.value;
+        if (val && val.trim() != '') {
+          // if the value is an empty string don't filter the items
+          this.query = val;
+          this.page = 0;
+          this.data = [];
+          this.initData(false).catch(error => {
+          });
+    
+        } else {
+          this.data = [];      
+          this.query = null;
+          this.initializeItems();
+        }
+      }
+    
 
     addFlash() {
         let flashModal = this.modalController.create(AddFlashPage, {

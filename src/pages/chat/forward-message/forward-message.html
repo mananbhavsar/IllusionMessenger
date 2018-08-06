@@ -1,0 +1,29 @@
+<ion-header>
+  <header [title]="title" [buttons]="[{name : 'search', icon : 'search'}]" (buttonClicked)="searchTopic($event)"></header>
+</ion-header>
+
+
+<ion-content padding>
+    <ion-searchbar [showCancelButton]="true" *ngIf="searchInputBtn" (ionInput)="getItems($event)"
+    (ionClear)="onClear($event)" (ionCancel)="onCancel($event)">
+  </ion-searchbar>
+  <ion-list>
+    <ion-item (click)="selectTopic(topic)" *ngFor="let topic of topicList">
+      <ion-label>
+        {{topic.TopicName}}
+      </ion-label>
+      <ion-checkbox (ionChange)="selectTopic(topic)" *ngIf="in_array(SelectedTopics,topic.TopicID)" [checked]="in_array(SelectedTopics,topic.TopicID)" item-end color="primary"></ion-checkbox>
+    </ion-item>
+  </ion-list>
+  <ion-infinite-scroll *ngIf="page !== -1" (ionInfinite)="paginate($event)">
+      <ion-infinite-scroll-content></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  <!-- <ion-item-divider text-center [hidden]="page > 0">
+    Nothing more to show
+  </ion-item-divider> -->
+</ion-content>
+<ion-footer *ngIf="SelectedTopics.length > 0" class="hide-on-keyboard-open">
+  <ion-fab right bottom>
+    <button ion-fab outline (click)="send()"><ion-icon name="send"></ion-icon></button>
+  </ion-fab>
+</ion-footer>

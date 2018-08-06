@@ -29,6 +29,7 @@ import { LogoutPage } from '../logout/logout';
 import { DateProvider } from './../../providers/date/date';
 import { ChatOptionsPage } from "./chat-options/chat-options";
 import { SavedMediaPage } from "./chat-options/saved-media/saved-media";
+import { ForwardMessagePage } from './forward-message/forward-message';
 
 
 @IonicPage()
@@ -51,6 +52,7 @@ export class ChatPage {
   groupCode: string = null;
   group_name: string = 'loading';
   subSubTitle: string;
+  users : any = [];
 
   title: string = 'loading';
   isIOS: boolean = false;
@@ -645,6 +647,11 @@ export class ChatPage {
           this.headerButtons = [{ icon: 'ios-information-circle-outline', name: 'ios-information-circle-outline' }, { icon: 'ios-more', name: 'more-option' }];
           this.topicCode = this.data.TopicCode;
           this.groupCode = this.data.GroupCode;
+          this.data.User.forEach(user => {
+            if (user.UserID !== this.connection.user.LoginUserID) {
+              this.users.push(user.User);
+            }
+          });
 
           this.setPath();
           this.setOfflineTopicList(this.data);
@@ -995,12 +1002,14 @@ export class ChatPage {
 
 
   getOptions(element) {
+    console.log(element);
+    
     this.textToCopy = element.target;
     this.headerButtons = [];
     this.headerButtons.push(
       {
-        icon: 'md-clipboard',
-        name: 'md-clipboard'
+        icon: 'ios-undo',
+        name: 'ios-undo'
       },
       {
         icon: 'ios-copy',
@@ -1018,6 +1027,14 @@ export class ChatPage {
         icon: 'ios-more',
         name: 'more-option'
       }, );
+  }
+
+  forwardMessage() {
+    this.navCtrl.push(ForwardMessagePage, this.textToCopy);
+  }
+
+  replyToMessage() {
+
   }
 
   copyText() {
@@ -1050,13 +1067,15 @@ export class ChatPage {
           this.sendTextMessage(null);
           return;
       }
+      if (this.message.indexOf('@') > -1) {
+        console.log(this.users);
+      }
     }
     // set typing for all
     this.setTyping(true);
   }
 
   keyboardKey(event) {
-
     this.setTyping(true);
   }
 
@@ -1688,6 +1707,11 @@ export class ChatPage {
       case 'ios-copy':
         this.copyText();
         break;
+      case 'ios-redo':
+        this.forwardMessage();
+        break;
+      case 'ios-undo':
+        this.replyToMessage();
     }
   }
 

@@ -68,6 +68,7 @@ import { TopicPageModule } from '../pages/topic/topic.module';
 import { TutorialPageModule } from '../pages/tutorial/tutorial.module';
 import { WelcomePageModule } from '../pages/welcome/welcome.module';
 import { PipesModule } from "../pipes/pipes.module";
+import { ForwardMessagePageModule } from '../pages/chat/forward-message/forward-message.module';
 import { CommonProvider } from "../providers/common/common";
 import { ConnectionProvider } from '../providers/connection/connection';
 import { DateProvider } from '../providers/date/date';
@@ -85,6 +86,7 @@ import { CreateUserPageModule } from '../pages/create-user/create-user.module';
 import { ManageGroupPageModule } from '../pages/manage-group/manage-group.module';
 import { TagPageModule } from '../pages/create-tag/tag/tag.module';
 import { UsersPageModule } from '../pages/create-user/users/users.module';
+import { FlashNewsProvider } from '../providers/flash-news/flash-news';
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -131,6 +133,7 @@ export function createTranslateLoader(http: HttpClient) {
         CreateTopicPageModule,
         EditProfilePageModule,
         ForgotPasswordPageModule,
+        ForwardMessagePageModule,
         TagPageModule,
         GroupPageModule,
         GroupOptionsPageModule,
@@ -202,6 +205,7 @@ export function createTranslateLoader(http: HttpClient) {
         PhotoViewer,
         UserAutoCompleteService,
         DateProvider,
+    FlashNewsProvider,
 
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]

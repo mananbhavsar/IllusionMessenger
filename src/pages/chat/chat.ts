@@ -40,9 +40,11 @@ import { ForwardMessagePage } from './forward-message/forward-message';
 export class ChatPage {
   @ViewChild(Content) content: Content;
   @ViewChild('messageInput') messageInput: any;
+  @ViewChild('itemSelected') itemSelected:any;
   global: any = Global;
   platformResumeReference = null;
   platformPauseReference = null;
+  arrowKey:any;
 
   data: any = {};
 
@@ -52,7 +54,7 @@ export class ChatPage {
   groupCode: string = null;
   group_name: string = 'loading';
   subSubTitle: string;
-  users : any = [];
+  users: any = [];
 
   title: string = 'loading';
   isIOS: boolean = false;
@@ -63,6 +65,7 @@ export class ChatPage {
   basePath: string = '';
   path: string = '';
   topicClosePath: string = '';
+  showUsers: boolean = false;
 
   messagesRef: firebase.database.Reference;
   newMessagesRef: firebase.database.Query;
@@ -1003,7 +1006,7 @@ export class ChatPage {
 
   getOptions(element) {
     console.log(element);
-    
+
     this.textToCopy = element.target;
     this.headerButtons = [];
     this.headerButtons.push(
@@ -1058,6 +1061,8 @@ export class ChatPage {
     console.log(textArea.value);
   }
 
+  
+
   keyup(event) {
     //on browser if entered pressed, send text message
     if (this.isBrowser) {
@@ -1067,13 +1072,24 @@ export class ChatPage {
           this.sendTextMessage(null);
           return;
       }
-      if (this.message.indexOf('@') > -1) {
-        console.log(this.users);
-      }
+      
     }
+    // if (this.message[this.message.length - 1] === '@') {
+    //   console.log(this.users);
+    //   this.showUsers = true;
+    // } else {
+    //   this.showUsers = false;
+    // }
     // set typing for all
     this.setTyping(true);
   }
+
+  // selectedUser(user) {
+  //   this.message = this.message + user;
+  //   console.log(this.message);
+  //   this.showUsers = false;
+
+  // }
 
   keyboardKey(event) {
     this.setTyping(true);

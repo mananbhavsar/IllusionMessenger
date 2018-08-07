@@ -182,5 +182,26 @@ page-chat {
                 background-color: map-get($colors, primary);
             }
         }
+    
     }
+
+    .fixed-outside{
+        position: absolute;
+        bottom: 0;
+        color:white;
+        width: 100%;
+        text-align:center;
+        z-index: 999;
+        ion-list{
+                &.list-md{
+         margin-bottom: 45px;
+                }
+                ion-item{
+                    &.active{
+                        background-color: black;
+                    }
+                }
+        }
+      }
+
 }

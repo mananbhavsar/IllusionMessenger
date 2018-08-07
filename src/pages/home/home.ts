@@ -18,6 +18,7 @@ import { FlashPage } from '../../pages/flash/flash';
 import { CreateGroupPage } from '../manage-group/create-group/create-group';
 import { CreateTagPage } from '../create-tag/create-tag';
 import { CreateUserPage } from '../create-user/create-user';
+import { FlashNewsProvider } from '../../providers/flash-news/flash-news';
 
 @IonicPage()
 @Component({
@@ -29,9 +30,8 @@ export class HomePage {
     global: any = {};
     data: any = null;
     badges: any = {};
-    query: string;
-    searchInputBtn : boolean = false;
-
+    query: any = null;
+    searchInputBtn: boolean = false;
     firebaseConnected: boolean = false;
 
     flashNews: Array<any> = [];
@@ -91,9 +91,11 @@ export class HomePage {
         public user: UserProvider,
         public events: Events,
         private translate: TranslateService,
+        public flashNewsProvider: FlashNewsProvider,
         private _oneSignal: OneSignal,
         private platform: Platform,
         private _network: Network,
+        private _flashNews: FlashNewsProvider,
         private modalController: ModalController,
         private notifications: NotificationsProvider,
         private _firebaseTransaction: FirebaseTransactionProvider,
@@ -158,7 +160,7 @@ export class HomePage {
 
     getData(isPullDown) {
         return new Promise((resolve, reject) => {
-            this.dataFetched = _.size(this.data) > 0;
+            // this.dataFetched = _.size(this.data) > 0;
             this.connection.doPost('Chat/GetTaskDetail', {
                 PageNumber: this.page,
                 RowsPerPage: 100,
@@ -169,14 +171,26 @@ export class HomePage {
                 this.dataFetched = true;
                 //groups
                 this.data = response;
-                //flash
-                if (response.FlashNews) {
-                    this.flashNews = response.FlashNews;
-                }
+                console.log(this.data);
 
-                this.registerDevice(isPullDown);
-                resolve(true);
+                if (this.data) {
+                    //flash
+                    if (response.FlashNews) {
+                        this.flashNews = response.FlashNews;
+                        // this.flashNews.forEach((val, key) => {
+                        //     console.log(val);
+                        //     this.flashNewsProvider.openUnreadFlashNews(val);
+                        // });
+                    }
+                    this.registerDevice(isPullDown);
+                    this.page++;
+                    resolve(true);
+                } else {
+                    this.page = -1;
+                    resolve(false);
+                }
             }).catch(error => {
+                this.page = -1;
                 this.flashNews = [];
             })
         });
@@ -253,15 +267,15 @@ export class HomePage {
 
     paginate(paginator) {
         this.getData(false).then(status => {
-          if (status) {
-            paginator.complete();
-          } else {
-            paginator.enable(false);
-          }
+            if (status) {
+                paginator.complete();
+            } else {
+                paginator.enable(false);
+            }
         }).catch(error => {
-          paginator.enable(false);
+            paginator.enable(false);
         });
-      }
+    }
 
     connectToFireBase() {
         //user setting
@@ -403,6 +417,10 @@ export class HomePage {
                 break;
             case 'search':
                 this.searchData();
+                break;
+            case 'flash':
+                this.addFlash();
+                break;
         }
     }
 
@@ -443,46 +461,48 @@ export class HomePage {
             this.data = [];
             this.query = null;
             this.initializeItems();
-          } else if (this.searchInputBtn === false) {
+        } else if (this.searchInputBtn === false) {
             this.searchInputBtn = true;
-          } 
+        }
     }
 
     initializeItems() {
         this.page = 0;
-        this.initData(false).catch(error => {
+        this.getData(false).catch(error => {
         });
-      }
-    
-      onCancel(event) {
+    }
+
+    onCancel(event) {
         this.query = null;
         this.initializeItems();
-      }
-    
-      onClear(event) {
+    }
+
+    onClear(event) {
         this.query = null;
         this.initializeItems();
-      }
-    
-    
-      getItems(event) {
+    }
+
+
+    getItems(event) {
         // set val to the value of the ev target
         let val = event.target.value;
         if (val && val.trim() != '') {
-          // if the value is an empty string don't filter the items
-          this.query = val;
-          this.page = 0;
-          this.data = [];
-          this.initData(false).catch(error => {
-          });
-    
+            // if the value is an empty string don't filter the items
+            this.query = val;
+            this.page = 0;
+            this.data = [];
+            this.getData(true).catch(error => {
+            });
+
         } else {
-          this.data = [];      
-          this.query = null;
-          this.initializeItems();
+            this.data = [];
+            this.query = null;
+            this.initializeItems();
         }
-      }
-    
+        console.log(val);
+
+    }
+
 
     addFlash() {
         let flashModal = this.modalController.create(AddFlashPage, {

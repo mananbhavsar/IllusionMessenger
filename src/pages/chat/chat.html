@@ -3,11 +3,11 @@
   <ion-toolbar class="group-header">
     <ion-title>{{group_name}}</ion-title>
   </ion-toolbar>
-    <!-- <ion-toolbar class="sub-header" *ngIf="data && data.StatusID !== 0">
+  <!-- <ion-toolbar class="sub-header" *ngIf="data && data.StatusID !== 0">
     <ion-title>{{getSubTitle()}}</ion-title>
   </ion-toolbar> -->
 </ion-header>
-<ion-content class="chat" delegate-handle="chatScroll" (touchstart)="closeKeyboard($event)">
+<ion-content class="chat has-bottom" delegate-handle="chatScroll" (touchstart)="closeKeyboard($event)">
   <div class="message-list">
     <div id="noMore" class="no-more" *ngIf="showNoMoreMessages">
       <span *ngIf="hasInternet || data.firstMessageKey === firstMessageKey">{{'Common._NothingToShow_' | translate}}</span>
@@ -16,13 +16,10 @@
     <ion-infinite-scroll *ngIf="messagesLoaded" [hidden]="showNoMoreMessages" (ionInfinite)="paginate($event)" position="top">
       <ion-infinite-scroll-content></ion-infinite-scroll-content>
     </ion-infinite-scroll>
-    <ng-container  *ngFor="let message of messages;trackBy:getTrackByField | orderBy:'CreateAt'">
-      <chat-bubble (click)="openReading($event, message, false)" (press)="getOptions($event)" [id]="'message-'+message.key" class="message-wrapper" [message]="message" [userID]="userID" [topicID]="topicID"
-        [topicCode]="topicCode" [groupID]="groupID" [groupCode]="groupCode" [users]="chatUsers" [myLanguage]="myLanguage" [responsibleUserID]="responsibleUserID"
-       ></chat-bubble>
-    </ng-container>
-    <ng-container>
-      
+    <ng-container *ngFor="let message of messages;trackBy:getTrackByField | orderBy:'CreateAt'">
+      <chat-bubble (click)="openReading($event, message, false)" (press)="openReading($event, message, false)" [id]="'message-'+message.key" class="message-wrapper"
+        [message]="message" [userID]="userID" [topicID]="topicID" [topicCode]="topicCode" [groupID]="groupID" [groupCode]="groupCode"
+        [users]="chatUsers" [myLanguage]="myLanguage" [responsibleUserID]="responsibleUserID"></chat-bubble>
     </ng-container>
     <!--  (press)="openReading($event, message, false)" -->
   </div>
@@ -48,13 +45,13 @@
         <button ion-button clear icon-only>
           <ion-icon name="images"></ion-icon>
         </button>
-        <input type="file" name="file" id="file" class="inputfile" accept="image/*" (change)="handleImageFiles($event)"/>
+        <input type="file" name="file" id="file" class="inputfile" accept="image/*" (change)="handleImageFiles($event)" />
       </div>
 
       <label class="item-input-wrapper" [ngClass]="{'send': message.trim().length > 0}">
         <!-- fz-elastic -->
-        <textarea autocomplete="on" autocorrect="on" fz-elastic rows="1" #messageInput [(ngModel)]="message"
-          dir="auto" (keyup)="keyup($event)" (keypress)="keyboardKey($event)" (focus)="onFocus($event)" (blur)="onBlur($event)"></textarea>
+        <textarea autocomplete="on" autocorrect="on" fz-elastic rows="1" #messageInput [(ngModel)]="message" dir="auto" (keyup)="keyup($event)"
+          (keypress)="keyboardKey($event)" (focus)="onFocus($event)" (blur)="onBlur($event)"></textarea>
       </label>
 
       <span *ngIf="message.trim().length > 0">
@@ -75,7 +72,7 @@
           </button>
         </span>
       </span>
-      
+
     </ng-container>
     <ng-container *ngIf="hasInternet && aboutToRecord === true">
       <ion-grid no-padding class="recording">
@@ -107,6 +104,14 @@
     </ng-container>
   </ng-template>
 </ion-footer>
+
+<!-- <div class="fixed-outside" *ngIf="showUsers">
+    <ion-list class="user-list">
+      <ion-item [ngClass]="{'active' : i == arrowKey}" (click)="selectedUser(user)" *ngFor="let user of users; let i = index">
+        {{user}}
+      </ion-item>
+    </ion-list>
+  </div> -->
 
 <div class="file-uploader-progress" *ngIf="progressPercent > 0">
   <div class="progress-outer">

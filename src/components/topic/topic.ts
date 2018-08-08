@@ -4,6 +4,7 @@ import { Events, NavController } from 'ionic-angular';
 import * as moment from "moment";
 import { ConnectionProvider } from '../../providers/connection/connection';
 import { DateProvider } from '../../providers/date/date';
+import { ForwardTopicPage } from '../../pages/topic/forward-topic/forward-topic';
 
 @Component({
   selector: 'topic',
@@ -84,6 +85,10 @@ export class TopicComponent {
       return (new Date().getTime() - this._date.fromServerFormat(date).toDate().getTime()) > 0;
     }
     return null;
+  }
+
+  forwardToGroup(topic){
+   this.navCtrl.push(ForwardTopicPage,topic);
   }
 
   

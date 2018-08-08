@@ -290,7 +290,7 @@ export class MyApp {
         });
         this.events.subscribe('user:ready', (user) => {
             if (user) {
-                if (user.LoginUserID === 15 || user.LoginUserID === 16 || user.LoginUserID === 5) {
+                if (user.LoginUserID === 266 || user.LoginUserID === 15 || user.LoginUserID === 16 || user.LoginUserID === 5) {
                     this.hide = false;
                 } else {
                     this.hide = true;
@@ -298,7 +298,11 @@ export class MyApp {
             }
         });
 
-
+        this.events.subscribe('page:setroot', (data) => {
+            console.log(data);
+            
+            this.nav.setRoot(data.page, data.params);
+        });
 
         this.events.subscribe('alert:basic', (title, subTitle, buttons) => {
             try {
@@ -694,7 +698,7 @@ export class MyApp {
                     + '/' + date);
                 ref.on('value', (status) => {
                     console.log(status.val());
-                    
+
                     if (status.val() === null) {
                         // show popup
                         this.nav.setRoot(DailyShedulePage);

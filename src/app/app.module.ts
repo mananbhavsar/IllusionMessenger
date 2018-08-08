@@ -87,6 +87,7 @@ import { ManageGroupPageModule } from '../pages/manage-group/manage-group.module
 import { TagPageModule } from '../pages/create-tag/tag/tag.module';
 import { UsersPageModule } from '../pages/create-user/users/users.module';
 import { FlashNewsProvider } from '../providers/flash-news/flash-news';
+import { ForwardTopicPageModule } from '../pages/topic/forward-topic/forward-topic.module';
 
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -135,6 +136,7 @@ export function createTranslateLoader(http: HttpClient) {
         ForgotPasswordPageModule,
         ForwardMessagePageModule,
         TagPageModule,
+        ForwardTopicPageModule,
         GroupPageModule,
         GroupOptionsPageModule,
         DueTopicsPageModule,

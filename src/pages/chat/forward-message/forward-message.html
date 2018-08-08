@@ -7,10 +7,12 @@
     <ion-searchbar [showCancelButton]="true" *ngIf="searchInputBtn" (ionInput)="getItems($event)"
     (ionClear)="onClear($event)" (ionCancel)="onCancel($event)">
   </ion-searchbar>
+  <empty *ngIf="topicList.length === 0 else data_template"></empty>
+  <ng-template data_template>
   <ion-list>
     <ion-item (click)="selectTopic(topic)" *ngFor="let topic of topicList">
       <ion-label>
-        {{topic.TopicName}}
+        {{topic.Topic}}
       </ion-label>
       <ion-checkbox (ionChange)="selectTopic(topic)" *ngIf="in_array(SelectedTopics,topic.TopicID)" [checked]="in_array(SelectedTopics,topic.TopicID)" item-end color="primary"></ion-checkbox>
     </ion-item>
@@ -21,6 +23,7 @@
   <!-- <ion-item-divider text-center [hidden]="page > 0">
     Nothing more to show
   </ion-item-divider> -->
+</ng-template>
 </ion-content>
 <ion-footer *ngIf="SelectedTopics.length > 0" class="hide-on-keyboard-open">
   <ion-fab right bottom>

@@ -40,11 +40,11 @@ import { ForwardMessagePage } from './forward-message/forward-message';
 export class ChatPage {
   @ViewChild(Content) content: Content;
   @ViewChild('messageInput') messageInput: any;
-  @ViewChild('itemSelected') itemSelected:any;
+  @ViewChild('itemSelected') itemSelected: any;
   global: any = Global;
   platformResumeReference = null;
   platformPauseReference = null;
-  arrowKey:any;
+  arrowKey: any;
 
   data: any = {};
 
@@ -129,6 +129,7 @@ export class ChatPage {
   aboutToRecord: boolean = false;
   recordingInProgress: boolean = false;
   recordTime: number = 0;
+  taggedID: any = [];
   dataDirectory = null;
   recordMediaFile: MediaObject = null;
   reminders: any;
@@ -652,7 +653,7 @@ export class ChatPage {
           this.groupCode = this.data.GroupCode;
           this.data.User.forEach(user => {
             if (user.UserID !== this.connection.user.LoginUserID) {
-              this.users.push(user.User);
+              this.users.push(user);
             }
           });
 
@@ -921,6 +922,11 @@ export class ChatPage {
       return false;
     }
     if (this.message) {
+      this.users.forEach((user, key) => {
+        if (this.message.indexOf(user.User) > -1) {
+          this.taggedID.push(user);
+        }
+      });
       let textMessage = this.message.trim().replace(/(?:\r\n|\r|\n)/g, '<br/>');
       //clear text
       this.message = '';
@@ -996,10 +1002,11 @@ export class ChatPage {
   }
 
   onBlur(event) {
-    if (this.keyboardOpen) {
-      event.target.focus();
-    } else {
+    console.log(event);
+    if (this.platform.is('core')) {
 
+    } else if (this.keyboardOpen) {
+      event.target.focus();
     }
   }
 
@@ -1012,11 +1019,12 @@ export class ChatPage {
     this.headerButtons.push(
       {
         icon: 'ios-undo',
-        name: 'ios-undo'
+        name: 'ios-undo',
       },
       {
         icon: 'ios-copy',
-        name: 'ios-copy'
+        name: 'ios-copy',
+        value: element.target
       },
       {
         icon: 'ios-redo',
@@ -1033,35 +1041,31 @@ export class ChatPage {
   }
 
   forwardMessage() {
-    this.navCtrl.push(ForwardMessagePage, this.textToCopy);
+    this.navCtrl.push(ForwardMessagePage, this.data);
   }
 
   replyToMessage() {
 
   }
 
-  copyText() {
-    this.copyToClipboard(this.textToCopy.innerHTML);
+  copyText(element) {
+    this.copyToClipboard(element);
     this.headerButtons.splice(0, 3, 1);
     this.events.publish('toast:create', 'Message copied');
   }
 
   copyToClipboard(text) {
-    let textArea = document.createElement('textarea');
-    textArea.setAttribute
-      ('id', 'clipboard');
+    let input = document.createElement('input');
+    document.body.appendChild(input);
+    input.value = text.textContent;
+    input.focus();
+    input.select();
+    document.execCommand('copy', false);
+    input.remove();
 
-    console.log(textArea);
-    document.body.appendChild(textArea);
-    textArea.value = text;
-    textArea.select();
-    document.execCommand('copy');
-    // document.body.removeChild(textArea);
-    document.getElementById('clipboard').remove();
-    console.log(textArea.value);
   }
 
-  
+
 
   keyup(event) {
     //on browser if entered pressed, send text message
@@ -1072,24 +1076,23 @@ export class ChatPage {
           this.sendTextMessage(null);
           return;
       }
-      
     }
-    // if (this.message[this.message.length - 1] === '@') {
-    //   console.log(this.users);
-    //   this.showUsers = true;
-    // } else {
-    //   this.showUsers = false;
-    // }
+
+    if (this.message[this.message.length - 1] === '@') {
+      console.log(this.users);
+      this.showUsers = true;
+    } else {
+      this.showUsers = false;
+    }
     // set typing for all
     this.setTyping(true);
   }
 
-  // selectedUser(user) {
-  //   this.message = this.message + user;
-  //   console.log(this.message);
-  //   this.showUsers = false;
+  selectedUser(user) {
+    this.message = this.message + user.User;
+    this.showUsers = false;
 
-  // }
+  }
 
   keyboardKey(event) {
     this.setTyping(true);
@@ -1459,6 +1462,7 @@ export class ChatPage {
         TopicCode: this.topicCode,
         TopicID: this.topicID,
         GroupID: this.groupID,
+        TaggedUserID: this.taggedID.map(user => user.UserID),
         IsWeb: this.platform.is('core'),
       };
 
@@ -1721,7 +1725,7 @@ export class ChatPage {
         this.openChatOptions();
         break;
       case 'ios-copy':
-        this.copyText();
+        this.copyText(event.value);
         break;
       case 'ios-redo':
         this.forwardMessage();

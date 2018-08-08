@@ -1,6 +1,6 @@
 <ion-toolbar ion-text [color]="color">
   <title [title]="title" [subTitle]="subTitle" [badgeCount]="badgeCount"></title>
-  <ion-buttons end>
+  <ion-buttons end *ngIf="!close">
     <button color="light" ion-button outline (click)="sendDismiss(null)">
       {{'Common._Close' | translate}}
     </button>

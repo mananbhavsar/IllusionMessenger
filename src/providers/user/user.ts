@@ -262,6 +262,7 @@ export class UserProvider {
                                 });
                             }
                             let message = 'There is a new version available, kindly update your application now. <br/><br/>Note: if <b>open</b> button is present instead of <b>update</b>,';
+                            if(OSName)
                             if (OSName === 'android') {
                                 message += ' go to <b>menu</b> of Play Store, naviagte to <b>My apps & games.</b>';
                             } else {

@@ -4,12 +4,11 @@ page-flash {
         font-style: italic;
         color: #555;
         ion-row {
-            ion-col {
-            }
+            ion-col {}
         }
     }
-     .attachment-container {
-         display: -webkit-box;
+    .attachment-container {
+        display: -webkit-box;
         .attachment-thumb {
             position: relative;
             width: 102px;
@@ -33,6 +32,11 @@ page-flash {
                 width: 90px;
                 height: 90px;
             }
+        }
+    }
+    div {
+        &.btn-ok {
+            text-align: center;
         }
     }
 }

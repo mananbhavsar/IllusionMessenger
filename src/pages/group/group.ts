@@ -10,6 +10,7 @@ import { GroupOptionsPage } from './../group/group-options/group-options';
 import { CloseTopicPage } from './../topic/close-topic/close-topic';
 import { CreateTopicPage } from './../topic/create-topic/create-topic';
 import { reorderArray } from 'ionic-angular';
+import { FlashNewsProvider } from '../../providers/flash-news/flash-news';
 
 
 @IonicPage()
@@ -36,6 +37,7 @@ export class GroupPage {
     private connection: ConnectionProvider,
     private _date: DateProvider,
     private modalController: ModalController,
+    public flashNewsProvider : FlashNewsProvider,
     private actionSheetController: ActionSheetController,
   ) {
     this.group_id = this.navParams.data.GroupID;
@@ -61,7 +63,9 @@ export class GroupPage {
         Order: this.sort_order,
       }, false).then((response: any) => {
         this.group = response;
-
+        this.group.FlashNews.forEach((news, key) => {
+          this.flashNewsProvider.openUnreadFlashNews(news);
+      });
         this.setForBadge();
         resolve(true);
       }).catch(error => {

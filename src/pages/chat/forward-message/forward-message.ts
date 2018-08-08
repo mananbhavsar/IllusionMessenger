@@ -13,27 +13,13 @@ export class ForwardMessagePage {
   topicList : any = [];
   query : string;
   page : number = 0;
+  data : any;
   searchInputBtn : boolean = false;
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
    public connection : ConnectionProvider) {
-    console.log(this.navParams.data);
-    this.topicList.push({
-      TopicName: 'asv',
-      TopicID: 1
-    },
-      {
-        TopicName: 'hmjhg',
-        TopicID: 2
-      },
-      {
-        TopicName: 'ghjgh',
-        TopicID: 3
-      },
-      {
-        TopicName: 'ghjgh',
-        TopicID: 4
-      })
+    this.data = this.navParams.data;
+    this.getTopics();
   }
 
   getTopics(){
@@ -41,13 +27,15 @@ export class ForwardMessagePage {
       if (this.page === -1) {
         reject();
       } else {
-        this.connection.doPost('Chat/', {
+        this.connection.doPost('Chat/GetActiveTopicListForForward', {
+          GroupID : this.data.GroupID,
+          ExcludeTopicID : this.data.TopicID,
           Query: this.query,
           PageNumber: this.page,
           RowsPerPage: 20
         },false).then((response: any) => {
-          if (response.TopicList.length > 0) {
-            response.TopicList.forEach(list => {
+          if (response.GetActiveTopicList.length > 0) {
+            response.GetActiveTopicList.forEach(list => {
               this.topicList.push(list);
             });
             this.page++;
@@ -65,14 +53,10 @@ export class ForwardMessagePage {
   }
 
   selectTopic(topic) {
-    console.log(topic);
-    
     if (!this.in_array(this.SelectedTopics, topic.TopicID)) {
       this.SelectedTopics.push(topic);
     } else {
       if (this.in_array(this.SelectedTopics, topic.TopicID)) {
-    console.log(this.SelectedTopics);
-
         this.SelectedTopics.splice(this.SelectedTopics.indexOf(topic), 1);
       }
     }    

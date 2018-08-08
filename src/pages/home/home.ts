@@ -158,9 +158,11 @@ export class HomePage {
         });
     }
 
-    getData(isPullDown) {
+    getData(isPullDown, search: boolean = false) {
         return new Promise((resolve, reject) => {
-            // this.dataFetched = _.size(this.data) > 0;
+            if (!search) {
+                this.dataFetched = _.size(this.data) > 0;
+            }
             this.connection.doPost('Chat/GetTaskDetail', {
                 PageNumber: this.page,
                 RowsPerPage: 100,
@@ -173,16 +175,18 @@ export class HomePage {
                 this.data = response;
                 console.log(this.data);
 
-                if (this.data) {
+                if (!_.isEmpty(this.data)) {
                     //flash
                     if (response.FlashNews) {
                         this.flashNews = response.FlashNews;
-                        // this.flashNews.forEach((val, key) => {
-                        //     console.log(val);
-                        //     this.flashNewsProvider.openUnreadFlashNews(val);
-                        // });
+                        this.flashNews.forEach((news, key) => {
+                            console.log(news);
+                            this.flashNewsProvider.openUnreadFlashNews(news);
+                        });
                     }
-                    this.registerDevice(isPullDown);
+                    if (!search) {
+                        this.registerDevice(isPullDown);
+                    }
                     this.page++;
                     resolve(true);
                 } else {
@@ -468,7 +472,7 @@ export class HomePage {
 
     initializeItems() {
         this.page = 0;
-        this.getData(false).catch(error => {
+        this.getData(false,true).catch(error => {
         });
     }
 
@@ -491,7 +495,7 @@ export class HomePage {
             this.query = val;
             this.page = 0;
             this.data = [];
-            this.getData(true).catch(error => {
+            this.getData(false,true).catch(error => {
             });
 
         } else {

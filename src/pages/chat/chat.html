@@ -17,7 +17,7 @@
       <ion-infinite-scroll-content></ion-infinite-scroll-content>
     </ion-infinite-scroll>
     <ng-container *ngFor="let message of messages;trackBy:getTrackByField | orderBy:'CreateAt'">
-      <chat-bubble (click)="openReading($event, message, false)" (press)="openReading($event, message, false)" [id]="'message-'+message.key" class="message-wrapper"
+      <chat-bubble (press)="getOptions($event)" [id]="'message-'+message.key" class="message-wrapper"
         [message]="message" [userID]="userID" [topicID]="topicID" [topicCode]="topicCode" [groupID]="groupID" [groupCode]="groupCode"
         [users]="chatUsers" [myLanguage]="myLanguage" [responsibleUserID]="responsibleUserID"></chat-bubble>
     </ng-container>
@@ -105,13 +105,13 @@
   </ng-template>
 </ion-footer>
 
-<!-- <div class="fixed-outside" *ngIf="showUsers">
+<div class="fixed-outside" *ngIf="showUsers">
     <ion-list class="user-list">
       <ion-item [ngClass]="{'active' : i == arrowKey}" (click)="selectedUser(user)" *ngFor="let user of users; let i = index">
-        {{user}}
+        {{user.User}}
       </ion-item>
     </ion-list>
-  </div> -->
+  </div>
 
 <div class="file-uploader-progress" *ngIf="progressPercent > 0">
   <div class="progress-outer">

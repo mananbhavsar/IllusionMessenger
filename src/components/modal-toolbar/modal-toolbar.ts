@@ -9,7 +9,7 @@ export class ModalToolbarComponent {
   @Input() subTitle: string = null;
   @Input() badgeCount: number = 0;
   @Input() color: string = 'primary';
-
+  @Input() close:boolean = false;
   @Output() dismiss = new EventEmitter();
   constructor() {
 

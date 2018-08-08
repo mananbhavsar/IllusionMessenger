@@ -1,6 +1,6 @@
-import { Injectable,ViewChild } from '@angular/core';
+import { Injectable } from '@angular/core';
 import * as firebase from 'firebase';
-import { Events, Nav} from 'ionic-angular';
+import { Events, Nav } from 'ionic-angular';
 import * as _ from 'underscore';
 import { UserProvider } from '../user/user';
 import { FlashPage } from '../../pages/flash/flash';
@@ -9,31 +9,60 @@ import { HomePage } from '../../pages/home/home';
 
 @Injectable()
 export class FlashNewsProvider {
-  flashNews: any = [];
-  @ViewChild(Nav) nav: Nav;
+  flashNews: any = {};
+  currentlyopened: number = 0;
+  flashID: number;
+  wastheredataLastTime: boolean = false;
   constructor(
     private events: Events,
-    private user : UserProvider
+    private user: UserProvider
   ) {
-
+    //this will check on regular interval if any pending
+    setInterval(() => {
+      this.checkAndOpen();
+    }, 30000);
   }
 
   openUnreadFlashNews(FlashNews) {
-    console.log('flash');
-    this.user.hasLoggedIn().then((user) => {
-      if (!_.isEmpty(user)) {
-        let ref = firebase.database().ref('FlashNews/' + user.LoginUserID
-          + '/' + FlashNews.FlashID);
-        ref.on('value', (status) => {
-          console.log(status.val());
-          // if (status.val() === true) {
-          //   // show popup
-          //   ref.set(true);
-          //   // this.nav.setRoot(HomePage, { news: FlashNews, id: FlashNews.FlashID });
-          // }
-        });
+    this.flashID = FlashNews.FlashID;
+    //check if this flash has opened
+    console.log(this.flashID);
+
+    firebase.database().ref('FlashNews/' + this.flashID + '/' + this.user._user.LoginUserID).once('value', (status) => {
+      if (status.val() === null) {
+        if (!(this.flashID in this.flashNews)) {
+          this.flashNews[this.flashID] = FlashNews;
+        }
       }
     });
+  }
 
+  checkAndOpen() {
+    if (!_.isEmpty(this.flashNews) && this.currentlyopened === 0) {
+      this.wastheredataLastTime = true;
+      let flash: any = this.flashNews[this.flashID];
+      this.currentlyopened = flash.FlashID;
+      // show popup
+      this.events.publish('page:setroot', {
+        page: 'FlashPage',
+        params: { news: flash, id: flash.FlashID }
+      });
+    }
+    else {
+      if (this.wastheredataLastTime) {
+        this.wastheredataLastTime = false;
+        this.events.publish('page:setroot', {
+          page: 'HomePage',
+          params: null
+        });
+      }
+    }
+  }
+
+  markRead(flashID) {
+    firebase.database().ref('FlashNews/' + flashID + '/' + this.user._user.LoginUserID).set(true);
+    delete this.flashNews[flashID];
+    this.currentlyopened = 0;
+    this.checkAndOpen();
   }
 }

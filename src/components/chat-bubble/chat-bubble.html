@@ -11,7 +11,7 @@
       <ion-spinner name="crescent" *ngIf="message.downloading"></ion-spinner>
     </div>
     <ng-container [ngSwitch]="message.MessageType">
-      <div *ngSwitchCase="'Text'" class="text" [innerHTML]="getTextMessage()"></div>
+      <div *ngSwitchCase="'Text'" class="text all-copy" [innerHTML]="getTextMessage()"></div>
       <div *ngSwitchCase="'Image'" class="picture" [ngClass]="message.downloaded ? 'done' : 'image-center-small'">
         <img *ngIf="message.downloaded" [id]="'message-image-'+message.key" [src]="message.nativeURL || message.URL" width="160" height="160" />
         <img *ngIf="message.downloaded === false" src="assets/img/camera.png" />

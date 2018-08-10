@@ -19,6 +19,7 @@ import { CreateGroupPage } from '../manage-group/create-group/create-group';
 import { CreateTagPage } from '../create-tag/create-tag';
 import { CreateUserPage } from '../create-user/create-user';
 import { FlashNewsProvider } from '../../providers/flash-news/flash-news';
+import { ReadMessageProvider } from '../../providers/read-message/read-message';
 
 @IonicPage()
 @Component({
@@ -89,6 +90,7 @@ export class HomePage {
         public navCtrl: NavController,
         public connection: ConnectionProvider,
         public user: UserProvider,
+        public read: ReadMessageProvider,
         public events: Events,
         private translate: TranslateService,
         public flashNewsProvider: FlashNewsProvider,
@@ -334,22 +336,14 @@ export class HomePage {
     }
 
     readSelected() {
-        this.connection.doPost('Chat/ReadAll', {
-            ReadAll: false,
-            GroupCode: this.selectedGroup.map(GroupCode => GroupCode.GroupCode),
-            TopicCode: this.selectedTopic.toString(),
-        }).then((response: any) => {
+        this.read.readMessage(this.selectedGroup, this.selectedTopic).then((response) => {
             if (response) {
                 this.getData(false);
                 this.selectedTopic = [];
                 this.selectedGroup = [];
                 this.readAllSelected = true;
                 this.readOptions = false;
-                if (response.FireBaseTransaction) {
-                    this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { })
-                }
             }
-        }).catch((error) => {
         });
     }
 
@@ -472,7 +466,7 @@ export class HomePage {
 
     initializeItems() {
         this.page = 0;
-        this.getData(false,true).catch(error => {
+        this.getData(false, true).catch(error => {
         });
     }
 
@@ -495,7 +489,7 @@ export class HomePage {
             this.query = val;
             this.page = 0;
             this.data = [];
-            this.getData(false,true).catch(error => {
+            this.getData(false, true).catch(error => {
             });
 
         } else {

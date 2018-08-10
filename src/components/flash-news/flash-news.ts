@@ -91,7 +91,7 @@ export class FlashNewsComponent {
     });
   }
 
-  openFlashNews(flashNews, GroupID) {
+  openFlashNews(event,flashNews, GroupID) {
     this.modalCntl.create(FlashPage, { news: flashNews, id: GroupID }).present();
   }
 

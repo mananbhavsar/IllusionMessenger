@@ -112,6 +112,8 @@ export class ChatBubbleComponent {
   }
 
   doReading() {
+    console.log(this.message);
+    
     //only if active page is chat
     if (Global.getActiveComponentName(this.navCtlr.getActive()) === 'ChatPage') {
       //adding myself to read list
@@ -198,6 +200,7 @@ export class ChatBubbleComponent {
   }
 
   openImage() {
+    event.preventDefault();
     this.element = this._elementRef.nativeElement.querySelector('#message-image-' + this.message.key);
     let image = this._imageViewerController.create(this.element);
     image.present();

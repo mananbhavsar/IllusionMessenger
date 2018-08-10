@@ -38,6 +38,7 @@
               <ion-list-header>
                 Selected Participants
               </ion-list-header>
+              <ion-note color="communication">{{participantsCount}} participants</ion-note>              
               <ion-item *ngFor="let userID of selectedParticipantIDs" [hidden]="isMe(userID)">
                 {{participantsName[userID]}}
                 <ion-icon item-end color="pickup" *ngIf="this.createForm.get('assigned').value === userID" name="ios-star"></ion-icon>

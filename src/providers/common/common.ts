@@ -30,6 +30,11 @@ export class CommonProvider {
       .join('&');
   }
 
+  hasClass(element, cls) {
+    return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1;
+  }
+
+
   joinAnd(array: Array<string>): string {
     let joined = '';
     if (array.length === 1) {
@@ -48,11 +53,12 @@ export class CommonProvider {
 
   sortByKey(array) {
     array.sort((a, b) => {
-      console.log(a,b);
-      
+      console.log(a, b);
+
       console.log(b.name - a.name);
-      
-      return b.name - a.name; });
+
+      return b.name - a.name;
+    });
   }
 
 }

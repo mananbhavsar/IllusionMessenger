@@ -26,7 +26,8 @@ export class GroupPage {
   group: any = {};
   badges: any = {};
   page: number = 0;
-
+  query: string = null;
+  searchInputBtn: boolean = false;
 
   //sort option
   sort_by: string = 'CreationDate';
@@ -37,7 +38,7 @@ export class GroupPage {
     private connection: ConnectionProvider,
     private _date: DateProvider,
     private modalController: ModalController,
-    public flashNewsProvider : FlashNewsProvider,
+    public flashNewsProvider: FlashNewsProvider,
     private actionSheetController: ActionSheetController,
   ) {
     this.group_id = this.navParams.data.GroupID;
@@ -54,22 +55,32 @@ export class GroupPage {
 
   getGroupDetails() {
     return new Promise((resolve, reject) => {
-      this.connection.doPost('Chat/GetGroupDetail', {
-        GroupID: this.group_id,
-        PageNumber: this.page,
-        RowsPerPage: 20,
-        Query: '',
-        OrderBy: this.sort_by,
-        Order: this.sort_order,
-      }, false).then((response: any) => {
-        this.group = response;
-        this.group.FlashNews.forEach((news, key) => {
-          this.flashNewsProvider.openUnreadFlashNews(news);
-      });
-        this.setForBadge();
-        resolve(true);
-      }).catch(error => {
-      });
+      if (this.page === -1) {
+        reject();
+      } else {
+        this.connection.doPost('Chat/GetGroupDetail', {
+          GroupID: this.group_id,
+          PageNumber: this.page,
+          RowsPerPage: 20,
+          Query: this.query,
+          OrderBy: this.sort_by,
+          Order: this.sort_order,
+        }, false).then((response: any) => {
+          this.group = response;
+          if (this.group) {
+            this.group.FlashNews.forEach((news, key) => {
+              this.flashNewsProvider.openUnreadFlashNews(news);
+            });
+            this.setForBadge();
+            this.page++;
+            resolve(true);
+          } else {
+            this.page = -1;
+            resolve(false);
+          }
+        }).catch(error => {
+        });
+      }
     });
   }
 
@@ -96,6 +107,18 @@ export class GroupPage {
     }).catch(error => {
       refresher.complete();
     })
+  }
+
+  paginate(paginator) {
+    this.getGroupDetails().then(status => {
+      if (status) {
+        paginator.complete();
+      } else {
+        paginator.enable(false);
+      }
+    }).catch(error => {
+      paginator.enable(false);
+    });
   }
 
   isExpired(date) {
@@ -171,9 +194,63 @@ export class GroupPage {
 
       case 'create-topic':
         this.navCtrl.push(CreateTopicPage, this.group_id);
-        break
+        break;
+
+      case 'search':
+        this.searchData();
+
     }
   }
+
+  searchData() {
+    if (this.searchInputBtn) {
+      this.searchInputBtn = false;
+      this.group = [];
+      this.query = null;
+      this.initializeItems();
+    } else if (this.searchInputBtn === false) {
+      this.searchInputBtn = true;
+    }
+  }
+
+  initializeItems() {
+    this.page = 0;
+    this.getGroupDetails().catch(error => {
+    });
+  }
+
+  onCancel(event) {
+    this.query = null;
+    this.initializeItems();
+  }
+
+  onClear(event) {
+    this.query = null;
+    this.initializeItems();
+  }
+
+
+  getItems(event) {
+    // set val to the value of the ev target
+    let val = event.target.value;
+    if (val && val.trim() != '') {
+      // if the value is an empty string don't filter the items
+      this.query = val;
+      this.page = 0;
+      this.group = [];
+      this.getGroupDetails().catch(error => {
+      });
+
+    } else {
+      this.group = [];
+      this.query = null;
+      this.initializeItems();
+    }
+    console.log(val);
+
+  }
+
+
 
   openGroupOptions(event) {
     let groupOptionsModal = this.modalController.create(GroupOptionsPage, {

@@ -6,8 +6,8 @@ page-chat {
                 background: gray;
             }
             ion-title {
-               .toolbar-title {
-                height:23px;
+                .toolbar-title {
+                    height: 23px;
                     color: white;
                     font-size: 1em;
                     text-align: center;
@@ -21,8 +21,9 @@ page-chat {
         width: 3.1px;
         height: 3.1px;
     }
-    
-
+    .reply-to {
+        opacity: 0.5;
+    }
     .header-picture {
         max-width: 33px;
         max-height: 33px;
@@ -130,8 +131,8 @@ page-chat {
         }
         .send-button {
             font-size: 11px;
-            ion-spinner{
-                circle{
+            ion-spinner {
+                circle {
                     fill: #FFF;
                 }
             }
@@ -159,6 +160,9 @@ page-chat {
             }
         }
     }
+    .selectedMessage {
+        background-color: aqua;
+    }
     .file-uploader-progress {
         position: fixed;
         top: 0px;
@@ -182,26 +186,23 @@ page-chat {
                 background-color: map-get($colors, primary);
             }
         }
-    
     }
-
-    .fixed-outside{
+    .fixed-outside {
         position: absolute;
         bottom: 0;
-        color:white;
+        color: white;
         width: 100%;
-        text-align:center;
+        text-align: center;
         z-index: 999;
-        ion-list{
-                &.list-md{
-         margin-bottom: 45px;
+        ion-list {
+            &.list-md {
+                margin-bottom: 45px;
+            }
+            ion-item {
+                &.active {
+                    background-color: black;
                 }
-                ion-item{
-                    &.active{
-                        background-color: black;
-                    }
-                }
+            }
         }
-      }
-
+    }
 }

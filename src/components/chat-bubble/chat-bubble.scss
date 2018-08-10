@@ -50,7 +50,7 @@ chat-bubble {
                 align-items: center;
                 justify-content: center;
                 border-radius: 5px 5px 0 0;
-                &.message-other{
+                &.message-other {
                     height: calc(100% - 38px);
                     border-radius: 0;
                 }
@@ -82,12 +82,13 @@ chat-bubble {
                     display: inline;
                 }
             }
-            .all-copy {  
-                -webkit-user-select: all;  /* Chrome all / Safari all */
-                -moz-user-select: all;     /* Firefox all */
-                -ms-user-select: all;      /* IE 10+ */
-                user-select: all;          /* Likely future */   
-              }
+            .forward-message {
+                color: #aaa;
+                font-size: 0.8em;
+                margin: 2px 5px;
+                font-style: italic;
+            }
+         
             .picture {
                 &.done {
                     padding: 4px 4px 0;

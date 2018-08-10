@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { ConnectionProvider } from '../../../providers/connection/connection';
+import { ViewController } from 'ionic-angular/navigation/view-controller';
 
 @IonicPage()
 @Component({
@@ -15,11 +16,14 @@ export class ForwardMessagePage {
   page : number = 0;
   data : any;
   searchInputBtn : boolean = false;
+  topicId : number;
+  groupId : number; 
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
-   public connection : ConnectionProvider) {
-    this.data = this.navParams.data;
+   public connection : ConnectionProvider,
+  public viewCntl : ViewController) {  
     this.getTopics();
+    console.log(this.navParams.data.topicID,this.navParams.data.groupID);
   }
 
   getTopics(){
@@ -28,8 +32,8 @@ export class ForwardMessagePage {
         reject();
       } else {
         this.connection.doPost('Chat/GetActiveTopicListForForward', {
-          GroupID : this.data.GroupID,
-          ExcludeTopicID : this.data.TopicID,
+          GroupID : this.navParams.data.groupID,
+          ExcludeTopicID : this.navParams.data.topicID,
           Query: this.query,
           PageNumber: this.page,
           RowsPerPage: 20
@@ -38,6 +42,8 @@ export class ForwardMessagePage {
             response.GetActiveTopicList.forEach(list => {
               this.topicList.push(list);
             });
+            console.log(this.topicList);
+            
             this.page++;
             resolve(true);
           } else {
@@ -116,7 +122,12 @@ export class ForwardMessagePage {
     }
   }
 
-  InsertChat(){
+  dismiss(event){
+    this.viewCntl.dismiss(null);
+  }
+
+  send(){
+    this.viewCntl.dismiss(this.SelectedTopics);
 
   }
 

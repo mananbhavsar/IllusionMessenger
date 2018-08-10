@@ -40,6 +40,7 @@ export class CreateTopicPage {
 
   selectedParticipant: Array<string> = [];
   participantsName: any = {};
+  participantsCount : number = 0;
   global: any = {};
 
   createForm: FormGroup;
@@ -239,6 +240,7 @@ export class CreateTopicPage {
     modal.onDidDismiss(data => {
       this.setTitle();
       if (data) {
+    this.participantsCount = data.selectedParticipantIDs.length;
         this.selectedParticipantIDs = data.selectedParticipantIDs;
         this.createForm.patchValue({
           assigned: data.assigned

@@ -1,7 +1,7 @@
 <ion-header no-border (touchstart)="closeKeyboard($event)">
   <header [title]="getTitle()" [subTitle]="userTypingString" [buttons]="headerButtons" (buttonClicked)="headerOptions($event)"></header>
   <ion-toolbar class="group-header">
-    <ion-title>{{group_name}}</ion-title>
+    <ion-title>Group : {{group_name}} - {{this.subSubTitle}}</ion-title>
   </ion-toolbar>
   <!-- <ion-toolbar class="sub-header" *ngIf="data && data.StatusID !== 0">
     <ion-title>{{getSubTitle()}}</ion-title>
@@ -17,11 +17,13 @@
       <ion-infinite-scroll-content></ion-infinite-scroll-content>
     </ion-infinite-scroll>
     <ng-container *ngFor="let message of messages;trackBy:getTrackByField | orderBy:'CreateAt'">
-      <chat-bubble (press)="getOptions($event)" [id]="'message-'+message.key" class="message-wrapper"
-        [message]="message" [userID]="userID" [topicID]="topicID" [topicCode]="topicCode" [groupID]="groupID" [groupCode]="groupCode"
-        [users]="chatUsers" [myLanguage]="myLanguage" [responsibleUserID]="responsibleUserID"></chat-bubble>
+      <div id="chat">
+        <chat-bubble (press)="openReading($event, message, false)" (click)="getOptions($event,message)" [id]="'message-'+message.key" class="message-wrapper" [message]="message" [userID]="userID"
+          [topicID]="topicID" [topicCode]="topicCode" [groupID]="groupID" [groupCode]="groupCode" [users]="chatUsers" [myLanguage]="myLanguage"
+          [responsibleUserID]="responsibleUserID"></chat-bubble>
+      </div>
     </ng-container>
-    <!--  (press)="openReading($event, message, false)" -->
+    <!--   -->
   </div>
   <!-- <div class="typing-container">
     <div class="typing" *ngFor="let typingUserId of userTyping | keys" [hidden]="typingUserId == userID || !isWithinRange(userTyping[typingUserId])">
@@ -106,12 +108,17 @@
 </ion-footer>
 
 <div class="fixed-outside" *ngIf="showUsers">
-    <ion-list class="user-list">
-      <ion-item [ngClass]="{'active' : i == arrowKey}" (click)="selectedUser(user)" *ngFor="let user of users; let i = index">
-        {{user.User}}
-      </ion-item>
-    </ion-list>
-  </div>
+  <ion-list class="user-list">
+    <ion-item [ngClass]="{'active' : i == arrowKey}" (click)="selectedUser(user)" *ngFor="let user of users; let i = index">
+      {{user.User}}
+    </ion-item>
+  </ion-list>
+</div>
+
+<!-- <div class="fixed-outside reply-to">
+  <chat-bubble [id]="'message-'+message.key" class="message-wrapper" [message]="message" [userID]="userID" [topicID]="topicID"
+    [topicCode]="topicCode" [groupID]="groupID" [groupCode]="groupCode" [users]="chatUsers"></chat-bubble>
+</div> -->
 
 <div class="file-uploader-progress" *ngIf="progressPercent > 0">
   <div class="progress-outer">

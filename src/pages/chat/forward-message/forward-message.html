@@ -1,5 +1,5 @@
 <ion-header>
-  <header [title]="title" [buttons]="[{name : 'search', icon : 'search'}]" (buttonClicked)="searchTopic($event)"></header>
+  <modal-toolbar [title]="title" (dismiss)="dismiss($event)"></modal-toolbar>
 </ion-header>
 
 
@@ -7,8 +7,7 @@
     <ion-searchbar [showCancelButton]="true" *ngIf="searchInputBtn" (ionInput)="getItems($event)"
     (ionClear)="onClear($event)" (ionCancel)="onCancel($event)">
   </ion-searchbar>
-  <empty *ngIf="topicList.length === 0 else data_template"></empty>
-  <ng-template data_template>
+  <!-- <empty *ngIf="topicList.length === 0 else data_template"></empty> -->
   <ion-list>
     <ion-item (click)="selectTopic(topic)" *ngFor="let topic of topicList">
       <ion-label>
@@ -23,7 +22,7 @@
   <!-- <ion-item-divider text-center [hidden]="page > 0">
     Nothing more to show
   </ion-item-divider> -->
-</ng-template>
+
 </ion-content>
 <ion-footer *ngIf="SelectedTopics.length > 0" class="hide-on-keyboard-open">
   <ion-fab right bottom>

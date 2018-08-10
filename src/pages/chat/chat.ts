@@ -129,7 +129,7 @@ export class ChatPage {
   aboutToRecord: boolean = false;
   recordingInProgress: boolean = false;
   recordTime: number = 0;
-  taggedID: any = [];
+
   dataDirectory = null;
   recordMediaFile: MediaObject = null;
   reminders: any;
@@ -142,7 +142,7 @@ export class ChatPage {
   keyboardOpen: boolean = false;
   hasInternet: boolean = true;
   lastReadingTime: number = 0;
-  textToCopy: any;
+  selectedMessageElement: any;
   offlineMessageText: string = 'The message cannot be downloaded as there is\'nt any internet connection';
 
   myLanguage: string = null;
@@ -172,6 +172,7 @@ export class ChatPage {
     private vibration: Vibration,
     private keyboard: Keyboard,
     private _network: Network,
+    public _elementRef: ElementRef,
     private _firebaseTransaction: FirebaseTransactionProvider,
     private videoCapturePlus: VideoCapturePlus,
     private videoEditor: VideoEditor,
@@ -191,6 +192,8 @@ export class ChatPage {
     this.global = Global;
 
     this.topicID = this.navParams.data.topicID;
+    console.log(this.topicID);
+
     this.groupID = this.navParams.data.groupID;
 
     this._fileOps.getDataDirectory().then(path => {
@@ -922,11 +925,7 @@ export class ChatPage {
       return false;
     }
     if (this.message) {
-      this.users.forEach((user, key) => {
-        if (this.message.indexOf(user.User) > -1) {
-          this.taggedID.push(user);
-        }
-      });
+
       let textMessage = this.message.trim().replace(/(?:\r\n|\r|\n)/g, '<br/>');
       //clear text
       this.message = '';
@@ -943,8 +942,23 @@ export class ChatPage {
     }
   }
 
-  sendToFirebase(message: string = '', type: string = 'Text', url: any = false) {
+  sendToFirebase(message: string = '', type: string = 'Text', url: any = false,
+    topicID: any = 0, topicCode: string = '', isForwarded: string = null, isReplied: string = null) {
     return new Promise((resolve, reject) => {
+      if (topicID === 0) {
+        topicID = this.topicID;
+      }
+      if (topicCode === '') {
+        topicCode = this.topicCode;
+      }
+
+      //find tagged users
+      let taggedUsersID: any = [];
+      this.users.forEach((user, key) => {
+        if (this.message.indexOf(user.User) > -1) {
+          taggedUsersID.push(user.LoginUserID);
+        }
+      });
       let readObject = {};
       readObject[this.userID] = firebase.database.ServerValue.TIMESTAMP;
 
@@ -961,10 +975,15 @@ export class ChatPage {
           Status: 0,
           URL: url,
           Read: readObject,
-          TopicCode: this.topicCode,
+          TopicCode: topicCode,
+          TaggedUsers: taggedUsersID,
+          TopicID: topicID,
+          IsForward: isForwarded,
+          IsReply: isReplied,
         };
 
-        this.messagesRef.push(values).then((messageFromFirebase) => {
+        //add message to firebase
+        firebase.database().ref('Communications/' + this.groupCode + '/' + topicCode + '/' + 'Chat').push(values).then((messageFromFirebase) => {
           let data = {
             Message: message,
             MessageType: type,
@@ -972,6 +991,11 @@ export class ChatPage {
             key: messageFromFirebase.key,
             Translation: translatedMessages,
             MessageLanguage: this.myLanguage,
+            TaggedUsers: taggedUsersID,
+            TopicID: topicID,
+            TopicCode: topicCode,
+            IsForward: isForwarded,
+            IsReply: isReplied,
           };
 
           //send to Server
@@ -1010,16 +1034,29 @@ export class ChatPage {
     }
   }
 
+  getElementMessageKey(element){
+    if(this.common.hasClass(element,'message-wrapper')){
+      return element.id.replace('message-','');
+    }
+    return this.getElementMessageKey(element.parentElement);
+  }
+
 
   getOptions(element) {
-    console.log(element);
+    event.preventDefault();
+    
+    this.selectedMessageElement = element.target;
 
-    this.textToCopy = element.target;
+    let messageKey = this.getElementMessageKey(this.selectedMessageElement);
+    console.log(messageKey);
+
+    
     this.headerButtons = [];
     this.headerButtons.push(
       {
         icon: 'ios-undo',
         name: 'ios-undo',
+        value: this.selectedMessageElement
       },
       {
         icon: 'ios-copy',
@@ -1028,7 +1065,7 @@ export class ChatPage {
       },
       {
         icon: 'ios-redo',
-        name: 'ios-redo'
+        name: 'ios-redo',
       },
       {
         icon: 'ios-information-circle-outline',
@@ -1041,11 +1078,54 @@ export class ChatPage {
   }
 
   forwardMessage() {
-    this.navCtrl.push(ForwardMessagePage, this.data);
+    if (this.selectedMessageElement) {
+      let message = this.selectedMessageElement.innerHTML;
+      let messageType = 'Text';
+      let url = null;
+
+      //identify message type
+      if (this.common.hasClass(this.selectedMessageElement, 'picture')) {
+        messageType = 'Image';
+        url = this.selectedMessageElement.src;
+      }
+      if (this.common.hasClass(this.selectedMessageElement, 'video')) {
+        messageType = 'Video';
+      }
+      if (this.common.hasClass(this.selectedMessageElement, 'audio')) {
+        messageType = 'Audio';
+      }
+      let modal = this.modal.create('ForwardMessagePage', { topicID: this.topicID, groupID: this.groupID });
+      modal.onDidDismiss(data => {
+        if (data) {
+          //loop
+          data.forEach((topic) => {
+            console.log(topic);
+            this.sendToFirebase(message, messageType, url, topic.TopicID, topic.TopicCode, topic.TopicID).then((data) => {
+              if (data) {
+                this.headerButtons.splice(0, 3, 1);
+              }
+            });
+          });
+        }
+      });
+      modal.present();
+    }
+  }
+
+  getElementToReply(element) {
+    console.log(element);
+    this.message = element.innerHTML;
+    console.log(this.message);
+
+
   }
 
   replyToMessage() {
-
+    // this.sendToFirebase(message, messageType, url, topic.TopicID, topic.TopicCode,null,topic.TopicID).then((data) => {
+    //   if (data) {
+    //     this.headerButtons.splice(0, 3, 1);
+    //   }
+    //});
   }
 
   copyText(element) {
@@ -1054,10 +1134,10 @@ export class ChatPage {
     this.events.publish('toast:create', 'Message copied');
   }
 
-  copyToClipboard(text) {
+  copyToClipboard(element) {
     let input = document.createElement('input');
     document.body.appendChild(input);
-    input.value = text.textContent;
+    input.value = element.textContent;
     input.focus();
     input.select();
     document.execCommand('copy', false);
@@ -1450,6 +1530,9 @@ export class ChatPage {
         fileName = message.URL.substring(message.URL.lastIndexOf('/') + 1).replace('.' + fileExtension, '');
       }
 
+      console.log(message);
+
+
       let params = {
         LiveUsersOnChat: activeUserList,
         ChattingUsers: this.common.build_query(userChattingNow),
@@ -1459,11 +1542,13 @@ export class ChatPage {
         URL: message.URL,
         FileName: fileName,
         FileExtension: fileExtension,
-        TopicCode: this.topicCode,
-        TopicID: this.topicID,
+        TopicCode: message.TopicCode,
+        TopicID: message.TopicID,
         GroupID: this.groupID,
-        TaggedUserID: this.taggedID.map(user => user.UserID),
+        TaggedUserID: message.TaggedUsers.join(','),
         IsWeb: this.platform.is('core'),
+        IsForward: message.IsForwarded,
+        IsReply: message.IsReplied,
       };
 
       this.connection.doPost('Chat/InsertChat', params, false).then((response: any) => {
@@ -1692,6 +1777,7 @@ export class ChatPage {
   }
 
   openReading(event, message) {
+    event.preventDefault();
     let time = new Date().getTime();
     if ((time - this.lastReadingTime) < 1000) {
       return;
@@ -1731,7 +1817,7 @@ export class ChatPage {
         this.forwardMessage();
         break;
       case 'ios-undo':
-        this.replyToMessage();
+        this.getElementToReply(event.value);
     }
   }
 

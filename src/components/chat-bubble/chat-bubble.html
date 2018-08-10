@@ -6,14 +6,17 @@
     </div>
   </div>
   <div class="message-body" (click)="openFile()">
+    <ng-container *ngIf="message.IsForward">
+      <div class="forward-message"><ion-icon name="ios-redo"></ion-icon> Forwarded</div>
+    </ng-container>
     <div class="download" *ngIf="message.downloaded === false" [ngClass]="{'message-other': message.UserID !== userID }">
       <ion-icon name="md-download" *ngIf="!message.downloading"></ion-icon>
       <ion-spinner name="crescent" *ngIf="message.downloading"></ion-spinner>
     </div>
     <ng-container [ngSwitch]="message.MessageType">
-      <div *ngSwitchCase="'Text'" class="text all-copy" [innerHTML]="getTextMessage()"></div>
+      <div *ngSwitchCase="'Text'" class="text" [innerHTML]="getTextMessage()"></div>
       <div *ngSwitchCase="'Image'" class="picture" [ngClass]="message.downloaded ? 'done' : 'image-center-small'">
-        <img *ngIf="message.downloaded" [id]="'message-image-'+message.key" [src]="message.nativeURL || message.URL" width="160" height="160" />
+        <img *ngIf="message.downloaded"  class="picture" [id]="'message-image-'+message.key" [src]="message.nativeURL || message.URL" width="160" height="160" />
         <img *ngIf="message.downloaded === false" src="assets/img/camera.png" />
       </div>
       <div *ngSwitchCase="'Audio'" class="audio image-center-small" [ngClass]="{'done':message.downloaded}">

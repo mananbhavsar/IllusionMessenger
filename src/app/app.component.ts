@@ -701,7 +701,7 @@ export class MyApp {
 
                     if (status.val() === null) {
                         // show popup
-                        this.nav.setRoot(DailyShedulePage);
+                        // this.nav.setRoot(DailyShedulePage);
                     }
                 });
             }

@@ -26,8 +26,6 @@ export class FlashNewsProvider {
   openUnreadFlashNews(FlashNews) {
     this.flashID = FlashNews.FlashID;
     //check if this flash has opened
-    console.log(this.flashID);
-
     firebase.database().ref('FlashNews/' + this.flashID + '/' + this.user._user.LoginUserID).once('value', (status) => {
       if (status.val() === null) {
         if (!(this.flashID in this.flashNews)) {

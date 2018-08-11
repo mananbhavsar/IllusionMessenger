@@ -175,14 +175,11 @@ export class HomePage {
                 this.dataFetched = true;
                 //groups
                 this.data = response;
-                console.log(this.data);
-
                 if (!_.isEmpty(this.data)) {
                     //flash
                     if (response.FlashNews) {
                         this.flashNews = response.FlashNews;
                         this.flashNews.forEach((news, key) => {
-                            console.log(news);
                             this.flashNewsProvider.openUnreadFlashNews(news);
                         });
                     }
@@ -454,13 +451,17 @@ export class HomePage {
     }
 
     searchData() {
-        if (this.searchInputBtn) {
-            this.searchInputBtn = false;
-            this.data = [];
-            this.query = null;
-            this.initializeItems();
-        } else if (this.searchInputBtn === false) {
-            this.searchInputBtn = true;
+        if (this.selectedTab === 'stats') {
+            this.events.publish('toast:create', 'Search not available here');
+        } else {
+            if (this.searchInputBtn) {
+                this.searchInputBtn = false;
+                this.data = [];
+                this.query = null;
+                this.initializeItems();
+            } else if (this.searchInputBtn === false) {
+                this.searchInputBtn = true;
+            }
         }
     }
 
@@ -497,8 +498,6 @@ export class HomePage {
             this.query = null;
             this.initializeItems();
         }
-        console.log(val);
-
     }
 
 

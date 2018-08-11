@@ -34,12 +34,14 @@ export class ChatBubbleComponent {
   @Input() users: any = {};
   @Input() myLanguage: string = 'en';
   @Input() responsibleUserID: number = 0;
+  @Input() replyMessage:string;
 
   global: any = Global;
 
   pathIdentifier: string = null;
   basePath: string = '';
   messagePath: string = '';
+  attachRepliedMessage: string;
   statusRef = null;
   dataDirectory: string = null;
   downloadDirectory: string = null;
@@ -112,8 +114,6 @@ export class ChatBubbleComponent {
   }
 
   doReading() {
-    console.log(this.message);
-    
     //only if active page is chat
     if (Global.getActiveComponentName(this.navCtlr.getActive()) === 'ChatPage') {
       //adding myself to read list

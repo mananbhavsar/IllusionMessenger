@@ -51,14 +51,4 @@ export class CommonProvider {
     return joined;
   }
 
-  sortByKey(array) {
-    array.sort((a, b) => {
-      console.log(a, b);
-
-      console.log(b.name - a.name);
-
-      return b.name - a.name;
-    });
-  }
-
 }

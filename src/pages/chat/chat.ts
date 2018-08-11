@@ -66,6 +66,9 @@ export class ChatPage {
   path: string = '';
   topicClosePath: string = '';
   showUsers: boolean = false;
+  messageKey: any;
+  replyTo: any;
+  attachRepliedMessage: any = {};
 
   messagesRef: firebase.database.Reference;
   newMessagesRef: firebase.database.Query;
@@ -192,8 +195,6 @@ export class ChatPage {
     this.global = Global;
 
     this.topicID = this.navParams.data.topicID;
-    console.log(this.topicID);
-
     this.groupID = this.navParams.data.groupID;
 
     this._fileOps.getDataDirectory().then(path => {
@@ -244,6 +245,9 @@ export class ChatPage {
 
 
   setFirebaseRef() {
+
+
+
     //actual chat ref
     this.messagesRef = firebase.database().ref(this.basePath + 'Chat');
 
@@ -269,6 +273,14 @@ export class ChatPage {
     });
   }
 
+  replyMesageKey(key) {
+    firebase.database().ref(this.basePath + 'Chat' + '/' + key).once("value", (snapshot) => {
+      if (snapshot.val()) {
+        this.attachRepliedMessage = snapshot.val();
+      }
+    });
+  }
+
   connectFireBase() {
     this.setFirebaseRef();
     //actual data/messages
@@ -282,6 +294,7 @@ export class ChatPage {
       for (let key in messages) {
         let message = messages[key];
         message['key'] = key;
+        this.replyMesageKey(messages[key].ReplyMessageKey);
         this.pushItem(message, true);
       }
 
@@ -317,6 +330,9 @@ export class ChatPage {
         this.setOfflineTopicList(this.data);
       }
     });
+
+    //replyedMessage
+
   }
 
   listenToFirebaseEvents(ignoredStart) {
@@ -596,13 +612,11 @@ export class ChatPage {
     //checking if user logged in
     if (!_.isEmpty(this.connection.user)) {
       this.initUser();
-      console.log('title');
 
       //get Chat info before we load
       this.initData().then(status => {
         this.listenToEvents();
       }).catch(error => {
-        console.log(error);
 
         this.navCtrl.pop();
       });
@@ -710,6 +724,7 @@ export class ChatPage {
 
     this.basePath = 'Communications/' + this.pathIdentifier + '/';
 
+
     //Chat close event
     this.topicClosePath = 'CloseTopics/' + this.pathIdentifier + '/' + this.userID;
 
@@ -721,7 +736,6 @@ export class ChatPage {
    * sets title for Chat
    */
   setTitle() {
-    console.log(this.data.Topic);
 
     this.title = null;
     setTimeout(() => {
@@ -930,15 +944,25 @@ export class ChatPage {
       //clear text
       this.message = '';
 
-      this.sendToFirebase(textMessage).then(data => {
-        setTimeout(() => {
-          this.messageInput.nativeElement.focus();
+      if (this.replyTo) {
+        this.sendToFirebase(textMessage, 'Text', null, this.topicID, this.topicCode, null, this.topicID).then((data) => {
+          if (data) {
+            this.headerButtons.splice(0, 3, 1);
+            this.replyTo = null;
+            this.messageKey = null;
+          }
         });
-      }).catch(error => {
+      } else if (!this.replyTo) {
+        this.sendToFirebase(textMessage).then(data => {
+          setTimeout(() => {
+            this.messageInput.nativeElement.focus();
+          });
+        }).catch(error => {
+          this.message = '';
+        });
+      } else {
         this.message = '';
-      });
-    } else {
-      this.message = '';
+      }
     }
   }
 
@@ -980,6 +1004,7 @@ export class ChatPage {
           TopicID: topicID,
           IsForward: isForwarded,
           IsReply: isReplied,
+          ReplyMessageKey: this.messageKey
         };
 
         //add message to firebase
@@ -996,6 +1021,8 @@ export class ChatPage {
             TopicCode: topicCode,
             IsForward: isForwarded,
             IsReply: isReplied,
+            ReplyMessageKey: this.messageKey
+
           };
 
           //send to Server
@@ -1026,7 +1053,6 @@ export class ChatPage {
   }
 
   onBlur(event) {
-    console.log(event);
     if (this.platform.is('core')) {
 
     } else if (this.keyboardOpen) {
@@ -1034,23 +1060,18 @@ export class ChatPage {
     }
   }
 
-  getElementMessageKey(element){
-    if(this.common.hasClass(element,'message-wrapper')){
-      return element.id.replace('message-','');
+  getElementMessageKey(element) {
+    if (this.common.hasClass(element, 'message-wrapper')) {
+      return element.id.replace('message-', '');
     }
     return this.getElementMessageKey(element.parentElement);
   }
 
 
-  getOptions(element) {
-    event.preventDefault();
-    
+  getOptions(element, message) {
+    this.messageKey = this.getElementMessageKey(element.target);
     this.selectedMessageElement = element.target;
 
-    let messageKey = this.getElementMessageKey(this.selectedMessageElement);
-    console.log(messageKey);
-
-    
     this.headerButtons = [];
     this.headerButtons.push(
       {
@@ -1069,13 +1090,24 @@ export class ChatPage {
       },
       {
         icon: 'ios-information-circle-outline',
-        name: 'ios-information-circle-outline'
+        name: 'ios-information-circle-outline',
+        value: message
       },
       {
         icon: 'ios-more',
         name: 'more-option'
       }, );
   }
+
+  deselectOptions(event) {
+    event.preventDefault();
+    this.messageKey = null;
+    this.selectedMessageElement = null;
+    if (this.headerButtons.length > 2) {
+      this.headerButtons.splice(0, 3, 1);
+    }
+  }
+
 
   forwardMessage() {
     if (this.selectedMessageElement) {
@@ -1099,7 +1131,6 @@ export class ChatPage {
         if (data) {
           //loop
           data.forEach((topic) => {
-            console.log(topic);
             this.sendToFirebase(message, messageType, url, topic.TopicID, topic.TopicCode, topic.TopicID).then((data) => {
               if (data) {
                 this.headerButtons.splice(0, 3, 1);
@@ -1113,19 +1144,12 @@ export class ChatPage {
   }
 
   getElementToReply(element) {
-    console.log(element);
-    this.message = element.innerHTML;
-    console.log(this.message);
-
-
+    this.replyTo = element.innerHTML;
   }
 
-  replyToMessage() {
-    // this.sendToFirebase(message, messageType, url, topic.TopicID, topic.TopicCode,null,topic.TopicID).then((data) => {
-    //   if (data) {
-    //     this.headerButtons.splice(0, 3, 1);
-    //   }
-    //});
+  closeReply(event) {
+    this.replyTo = null;
+    this.messageKey = null;
   }
 
   copyText(element) {
@@ -1159,7 +1183,6 @@ export class ChatPage {
     }
 
     if (this.message[this.message.length - 1] === '@') {
-      console.log(this.users);
       this.showUsers = true;
     } else {
       this.showUsers = false;
@@ -1530,9 +1553,6 @@ export class ChatPage {
         fileName = message.URL.substring(message.URL.lastIndexOf('/') + 1).replace('.' + fileExtension, '');
       }
 
-      console.log(message);
-
-
       let params = {
         LiveUsersOnChat: activeUserList,
         ChattingUsers: this.common.build_query(userChattingNow),
@@ -1776,7 +1796,7 @@ export class ChatPage {
     });
   }
 
-  openReading(event, message) {
+  openReading(message) {
     event.preventDefault();
     let time = new Date().getTime();
     if ((time - this.lastReadingTime) < 1000) {
@@ -1801,11 +1821,9 @@ export class ChatPage {
   }
 
   headerOptions(event) {
-    console.log(event.name);
-
     switch (event.name) {
       case 'ios-information-circle-outline':
-        this.openTopicInfo();
+        this.openReading(event.value);
         break;
       case 'more-option':
         this.openChatOptions();

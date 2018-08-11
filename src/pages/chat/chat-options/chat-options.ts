@@ -11,6 +11,7 @@ import { UserProvider } from '../../../providers/user/user';
 import { ManageParticipantsPage } from '../../topic/create-topic/manage-participants/manage-participants';
 import { DateProvider } from './../../../providers/date/date';
 import { SavedMediaPage } from "./saved-media/saved-media";
+import { RatingPage } from '../rating/rating';
 
 
 
@@ -244,6 +245,9 @@ export class ChatOptionsPage {
   }
 
   closeTopic() {
+    let modal = this.modal.create(RatingPage, {
+    });
+    modal.present();
     let actionSheet = this.actionSheetCtrl.create({
       title: 'Do You Want to Close ',
       buttons: [

@@ -23,7 +23,6 @@ export class ForwardMessagePage {
    public connection : ConnectionProvider,
   public viewCntl : ViewController) {  
     this.getTopics();
-    console.log(this.navParams.data.topicID,this.navParams.data.groupID);
   }
 
   getTopics(){
@@ -42,8 +41,6 @@ export class ForwardMessagePage {
             response.GetActiveTopicList.forEach(list => {
               this.topicList.push(list);
             });
-            console.log(this.topicList);
-            
             this.page++;
             resolve(true);
           } else {

@@ -34,7 +34,7 @@
                 </ng-template>
             </button>
         </ion-item-divider>
-        <ion-searchbar [showCancelButton]="true" *ngIf="searchInputBtn" (ionInput)="getItems($event)"
+        <ion-searchbar [showCancelButton]="true" *ngIf="searchInputBtn && selectedTab !== 'stats'" (ionInput)="getItems($event)"
             (ionClear)="onClear($event)" (ionCancel)="onCancel($event)">
         </ion-searchbar>
         <ion-segment [(ngModel)]="selectedTab" color="theme" padding mode="ios">

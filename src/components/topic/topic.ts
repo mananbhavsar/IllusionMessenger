@@ -69,7 +69,6 @@ export class TopicComponent {
   }
 
   readSelected(topic) {
-    console.log(topic);
     this.read.readMessage(null, topic.TopicCode).then((response: any) => {
       if (response) {
        

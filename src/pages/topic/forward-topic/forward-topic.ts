@@ -17,7 +17,6 @@ export class ForwardTopicPage {
   constructor(public navCtrl: NavController,
      public navParams: NavParams,
     public connection : ConnectionProvider) {
-  console.log(this.navParams.data);
   this.groups.push(
     {
       Group : 'gdvg',
@@ -64,14 +63,10 @@ export class ForwardTopicPage {
   }
 
   selectGroup(group) {
-    console.log(group);
-    
     if (!this.in_array(this.SelectedGroup, group.GroupID)) {
       this.SelectedGroup.push(group);
     } else {
       if (this.in_array(this.SelectedGroup, group.GroupID)) {
-    console.log(this.SelectedGroup);
-
         this.SelectedGroup.splice(this.SelectedGroup.indexOf(group), 1);
       }
     }    

@@ -299,7 +299,6 @@ export class MyApp {
         });
 
         this.events.subscribe('page:setroot', (data) => {
-            console.log(data);
             
             this.nav.setRoot(data.page, data.params);
         });
@@ -697,8 +696,6 @@ export class MyApp {
                 let ref = firebase.database().ref('DailyScheduler/' + user.LoginUserID
                     + '/' + date);
                 ref.on('value', (status) => {
-                    console.log(status.val());
-
                     if (status.val() === null) {
                         // show popup
                         // this.nav.setRoot(DailyShedulePage);

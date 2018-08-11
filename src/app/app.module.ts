@@ -89,7 +89,7 @@ import { UsersPageModule } from '../pages/create-user/users/users.module';
 import { FlashNewsProvider } from '../providers/flash-news/flash-news';
 import { ForwardTopicPageModule } from '../pages/topic/forward-topic/forward-topic.module';
 import { ReadMessageProvider } from '../providers/read-message/read-message';
-
+import{ RatingPageModule } from '../pages/chat/rating/rating.module';
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
@@ -160,7 +160,8 @@ export function createTranslateLoader(http: HttpClient) {
         CreateGroupPageModule,
         PipesModule,
         ManageGroupPageModule,
-        DailyShedulePageModule
+        DailyShedulePageModule,
+        RatingPageModule
     ],
     bootstrap: [IonicApp],
     entryComponents: [

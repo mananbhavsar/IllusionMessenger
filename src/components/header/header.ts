@@ -13,6 +13,7 @@ export class HeaderComponent {
     @Input() subTitle: string = null;
     @Input() buttons: any = null;
     @Output() buttonClicked = new EventEmitter();
+    @Input() hideTitle: boolean = false;
 
     cartCounter: number = null;
     prevPageColor: string = null;

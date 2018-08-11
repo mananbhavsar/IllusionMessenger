@@ -23,10 +23,10 @@ export class GroupPage {
 
   group_id: number = 0;
   title: string = '';
-  group: any = {};
+  group: any = [];
   badges: any = {};
   page: number = 0;
-  query: string = null;
+  query: string;
   searchInputBtn: boolean = false;
 
   //sort option
@@ -65,9 +65,9 @@ export class GroupPage {
           Query: this.query,
           OrderBy: this.sort_by,
           Order: this.sort_order,
-        }, false).then((response: any) => {
+        }, false,).then((response: any) => {
           this.group = response;
-          if (this.group) {
+          if (this.group.length > 0) {
             this.group.FlashNews.forEach((news, key) => {
               this.flashNewsProvider.openUnreadFlashNews(news);
             });
@@ -237,17 +237,13 @@ export class GroupPage {
       // if the value is an empty string don't filter the items
       this.query = val;
       this.page = 0;
-      this.group = [];
       this.getGroupDetails().catch(error => {
       });
 
     } else {
-      this.group = [];
       this.query = null;
       this.initializeItems();
     }
-    console.log(val);
-
   }
 
 

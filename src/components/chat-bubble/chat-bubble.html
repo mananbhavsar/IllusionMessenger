@@ -6,6 +6,9 @@
     </div>
   </div>
   <div class="message-body" (click)="openFile()">
+      <ng-container *ngIf="message.IsReply">
+          <div class="reply-message">{{replyMessage}}</div>
+        </ng-container>
     <ng-container *ngIf="message.IsForward">
       <div class="forward-message"><ion-icon name="ios-redo"></ion-icon> Forwarded</div>
     </ng-container>

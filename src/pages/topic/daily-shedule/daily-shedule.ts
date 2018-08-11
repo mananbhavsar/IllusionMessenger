@@ -35,7 +35,6 @@ export class DailyShedulePage {
       this.connectionProvider.doPost('Chat/MyTaskDueToday', {
 
       }).then((response: any) => {
-        console.log(response);  
         if (_.isEmpty(response.TopicList)) {
           this.navCtrl.setRoot('HomePage');
         } else {

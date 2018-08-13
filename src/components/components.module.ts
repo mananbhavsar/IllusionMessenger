@@ -20,6 +20,7 @@ import { TitleComponent } from './title/title';
 import { TopicComponent } from './topic/topic';
 import { DashboardComponent } from './dashboard/dashboard';
 import { AttachmentComponent } from './attachment/attachment';
+import { RatingComponent } from './rating/rating';
 
 
 @NgModule({
@@ -38,7 +39,8 @@ import { AttachmentComponent } from './attachment/attachment';
         TitleComponent,
         ModalToolbarComponent,
         DashboardComponent,
-        AttachmentComponent
+        AttachmentComponent,
+        RatingComponent
     ],
     imports: [
         MomentModule,
@@ -59,6 +61,7 @@ import { AttachmentComponent } from './attachment/attachment';
         IonicPageModule.forChild(TitleComponent),
         IonicPageModule.forChild(ModalToolbarComponent),
         IonicPageModule.forChild(AttachmentComponent),
+        IonicPageModule.forChild(RatingComponent),
         PipesModule,
     ],
     exports: [
@@ -78,6 +81,7 @@ import { AttachmentComponent } from './attachment/attachment';
         TitleComponent,
         ModalToolbarComponent,
         DashboardComponent,
+        RatingComponent,
         AttachmentComponent
     ]
 })

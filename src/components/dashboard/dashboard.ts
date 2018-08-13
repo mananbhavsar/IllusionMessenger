@@ -13,7 +13,7 @@ export class DashboardComponent {
   days = {
     Today : {
       label : 'Today',
-      value : 100
+      value : 0
     },
     Day_1: {
       label: '1 Day',
@@ -31,7 +31,7 @@ export class DashboardComponent {
     },
     Past_Day : {
       label : 'Past Due Days',
-      value : 0
+      value : -1
     }
   };
 

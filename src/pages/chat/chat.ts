@@ -30,6 +30,8 @@ import { DateProvider } from './../../providers/date/date';
 import { ChatOptionsPage } from "./chat-options/chat-options";
 import { SavedMediaPage } from "./chat-options/saved-media/saved-media";
 import { ForwardMessagePage } from './forward-message/forward-message';
+import { Contacts, Contact, ContactField, ContactName, ContactFieldType, ContactFindOptions } from '@ionic-native/contacts';
+
 
 
 @IonicPage()
@@ -55,6 +57,7 @@ export class ChatPage {
   group_name: string = 'loading';
   subSubTitle: string;
   users: any = [];
+  hideWhenReply: boolean = false;
 
   title: string = 'loading';
   isIOS: boolean = false;
@@ -66,7 +69,7 @@ export class ChatPage {
   path: string = '';
   topicClosePath: string = '';
   showUsers: boolean = false;
-  messageKey: any;
+  messageKey: any = null;
   replyTo: any;
   attachRepliedMessage: any = {};
 
@@ -159,6 +162,7 @@ export class ChatPage {
   audio_tranlate: string = 'Audio';
   video_translate: string = 'Video';
   cancel_translate: string = 'Cancel';
+  contact_translate: string = 'Contact';
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -182,6 +186,7 @@ export class ChatPage {
     private elementRef: ElementRef,
     private modal: ModalController,
     private common: CommonProvider,
+    private contacts: Contacts,
     public http: Http,
     private translate: TranslateService,
     private _notifications: NotificationsProvider,
@@ -912,6 +917,13 @@ export class ChatPage {
           }
         },
         {
+          text: this.contact_translate,
+          icon: 'ios-contacts-outline',
+          handler: () => {
+            this.attachContact();
+          }
+        },
+        {
           text: this.cancel_translate,
           role: 'cancel',
           handler: () => {
@@ -923,6 +935,18 @@ export class ChatPage {
 
     actionSheet.present();
   }
+
+  attachContact() {
+    this.contacts.pickContact().then((data: any) => {
+      console.log(data);
+      this.contacts = data._objectInstance;
+    this.sendToFirebase('','Contact',null,this.topicID,this.topicCode,null,null,this.contacts);
+    }).then((error: any) => {
+      console.error('Error opening contact.', error)
+    });
+  }
+
+
 
   sendTextMessage(event) {
     if (this.keyboardOpen) {
@@ -947,9 +971,10 @@ export class ChatPage {
       if (this.replyTo) {
         this.sendToFirebase(textMessage, 'Text', null, this.topicID, this.topicCode, null, this.topicID).then((data) => {
           if (data) {
-            this.headerButtons.splice(0, 3, 1);
+            this.headerButtons.splice(0, 3);
             this.replyTo = null;
             this.messageKey = null;
+            this.hideWhenReply = false;
           }
         });
       } else if (!this.replyTo) {
@@ -967,7 +992,8 @@ export class ChatPage {
   }
 
   sendToFirebase(message: string = '', type: string = 'Text', url: any = false,
-    topicID: any = 0, topicCode: string = '', isForwarded: string = null, isReplied: string = null) {
+    topicID: any = 0, topicCode: string = '', isForwarded: string = null, isReplied: string = null,
+    contact : any = {}) {
     return new Promise((resolve, reject) => {
       if (topicID === 0) {
         topicID = this.topicID;
@@ -1004,7 +1030,8 @@ export class ChatPage {
           TopicID: topicID,
           IsForward: isForwarded,
           IsReply: isReplied,
-          ReplyMessageKey: this.messageKey
+          ReplyMessageKey: this.messageKey,
+          Contact : contact 
         };
 
         //add message to firebase
@@ -1021,7 +1048,8 @@ export class ChatPage {
             TopicCode: topicCode,
             IsForward: isForwarded,
             IsReply: isReplied,
-            ReplyMessageKey: this.messageKey
+            ReplyMessageKey: this.messageKey,
+            Contact : contact 
 
           };
 
@@ -1068,10 +1096,10 @@ export class ChatPage {
   }
 
 
-  getOptions(element, message) {
+  getOptions(ref, element, message) {
     this.messageKey = this.getElementMessageKey(element.target);
     this.selectedMessageElement = element.target;
-
+    console.log(element);
     this.headerButtons = [];
     this.headerButtons.push(
       {
@@ -1103,28 +1131,34 @@ export class ChatPage {
     event.preventDefault();
     this.messageKey = null;
     this.selectedMessageElement = null;
+    this.hideWhenReply = false;
     if (this.headerButtons.length > 2) {
-      this.headerButtons.splice(0, 3, 1);
+      this.headerButtons.splice(0, 3);
     }
   }
 
 
   forwardMessage() {
     if (this.selectedMessageElement) {
-      let message = this.selectedMessageElement.innerHTML;
+      let message = '';
       let messageType = 'Text';
       let url = null;
 
       //identify message type
+      if (this.common.hasClass(this.selectedMessageElement, 'text')) {
+        message = this.selectedMessageElement.innerHTML;
+      }
       if (this.common.hasClass(this.selectedMessageElement, 'picture')) {
         messageType = 'Image';
-        url = this.selectedMessageElement.src;
+        url = this.selectedMessageElement.parentElement.getAttribute('data-url');
       }
       if (this.common.hasClass(this.selectedMessageElement, 'video')) {
         messageType = 'Video';
+        url = this.selectedMessageElement.parentElement.getAttribute('data-url');
       }
       if (this.common.hasClass(this.selectedMessageElement, 'audio')) {
         messageType = 'Audio';
+        url = this.selectedMessageElement.parentElement.getAttribute('data-url');
       }
       let modal = this.modal.create('ForwardMessagePage', { topicID: this.topicID, groupID: this.groupID });
       modal.onDidDismiss(data => {
@@ -1133,7 +1167,7 @@ export class ChatPage {
           data.forEach((topic) => {
             this.sendToFirebase(message, messageType, url, topic.TopicID, topic.TopicCode, topic.TopicID).then((data) => {
               if (data) {
-                this.headerButtons.splice(0, 3, 1);
+                this.headerButtons.splice(0, 3);
               }
             });
           });
@@ -1145,16 +1179,21 @@ export class ChatPage {
 
   getElementToReply(element) {
     this.replyTo = element.innerHTML;
+    this.hideWhenReply = true;
   }
 
   closeReply(event) {
+    this.hideWhenReply = false;
     this.replyTo = null;
     this.messageKey = null;
+    this.headerButtons.splice(0, 3);
+    console.log(this.headerButtons);
+
   }
 
   copyText(element) {
     this.copyToClipboard(element);
-    this.headerButtons.splice(0, 3, 1);
+    this.headerButtons.splice(0, 3);
     this.events.publish('toast:create', 'Message copied');
   }
 

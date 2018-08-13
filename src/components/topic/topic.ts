@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, NgZone, Output } from '@angular/core';
 import * as firebase from 'firebase';
-import { Events, NavController } from 'ionic-angular';
+import { Events, NavController, ModalController } from 'ionic-angular';
 import * as moment from "moment";
 import { ConnectionProvider } from '../../providers/connection/connection';
 import { DateProvider } from '../../providers/date/date';
@@ -28,7 +28,8 @@ export class TopicComponent {
     private connection: ConnectionProvider,
     private _date: DateProvider,
     public events: Events,
-    public read: ReadMessageProvider
+    public read: ReadMessageProvider,
+    public modal : ModalController
   ) {
 
   }
@@ -98,7 +99,10 @@ export class TopicComponent {
   }
 
   forwardToGroup(topic) {
-    this.navCtrl.push(ForwardTopicPage, topic);
+    console.log(topic);
+    
+    let modal = this.modal.create(ForwardTopicPage,topic);
+    modal.present();
   }
 
 

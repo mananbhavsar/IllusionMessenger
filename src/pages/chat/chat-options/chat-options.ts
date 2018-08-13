@@ -48,6 +48,7 @@ export class ChatOptionsPage {
   responsibleUserID: string = null;
   isBrowser: boolean = false;
   groupMemberCount: number = 0;
+  value:number;
 
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
@@ -76,6 +77,7 @@ export class ChatOptionsPage {
     this.path = this.navParams.data.path;
     this.group_name = this.navParams.data.group_name;
     this.isBrowser = this.platform.is('core');
+    this.value = this.navParams.data.data.Rating;
 
 
 
@@ -245,9 +247,6 @@ export class ChatOptionsPage {
   }
 
   closeTopic() {
-    let modal = this.modal.create(RatingPage, {
-    });
-    modal.present();
     let actionSheet = this.actionSheetCtrl.create({
       title: 'Do You Want to Close ',
       buttons: [
@@ -255,33 +254,43 @@ export class ChatOptionsPage {
           text: 'Close it now!',
           role: 'destructive',
           handler: () => {
-            this.connection.doPost('Chat/UpdateTopicStatus', {
-              GroupID: this.groupID,
-              TopicID: this.topicID,
-              StatusID: 2
-            }).then((response: any) => {
-              this.data.StatusID = 2;
+            let modal = this.modal.create(RatingPage, {
+            });
+            modal.onDidDismiss(data => {
+              if (data) {
+                console.log(data);
+                this.connection.doPost('Chat/UpdateTopicStatus', {
+                  GroupID: this.groupID,
+                  TopicID: this.topicID,
+                  StatusID: 2,
+                  Comment: data.Comment,
+                  Rating: data.Rate
+                }).then((response: any) => {
+                  this.data.StatusID = 2;
 
-              if (this.data.StatusID = 2) {
-                this.closeButton = true;
-                this.data.CloseDatime_UTC = this._date.toUTCISOString(new Date(), false);
-              }
-              if (response.Data.Message) {
-                this.events.publish('toast:create', response.Data.Message);
-              }
-              //firebase 
-              if (response.FireBaseTransaction) {
-                this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { });
-              }
-              //send notification
-              if (response.OneSignalTransaction) {
-                this._notifications.sends(response.OneSignalTransaction, 'ChatPage', {
-                  topicID: this.topicID,
-                  groupID: this.groupID,
+                  if (this.data.StatusID = 2) {
+                    this.closeButton = true;
+                    this.data.CloseDatime_UTC = this._date.toUTCISOString(new Date(), false);
+                  }
+                  if (response.Data.Message) {
+                    this.events.publish('toast:create', response.Data.Message);
+                  }
+                  //firebase 
+                  if (response.FireBaseTransaction) {
+                    this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { });
+                  }
+                  //send notification
+                  if (response.OneSignalTransaction) {
+                    this._notifications.sends(response.OneSignalTransaction, 'ChatPage', {
+                      topicID: this.topicID,
+                      groupID: this.groupID,
+                    });
+                  }
+                }).catch(error => {
                 });
               }
-            }).catch(error => {
             });
+            modal.present();
           }
         }, {
           text: 'Cancel',

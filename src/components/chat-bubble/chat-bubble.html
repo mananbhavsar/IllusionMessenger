@@ -5,7 +5,7 @@
       <ion-icon name="ios-star" *ngIf="message.UserID === responsibleUserID"></ion-icon>
     </div>
   </div>
-  <div class="message-body" (click)="openFile()">
+  <div class="message-body" (click)="openFile()" [attr.data-url]="message.URL">
       <ng-container *ngIf="message.IsReply">
           <div class="reply-message">{{replyMessage}}</div>
         </ng-container>
@@ -28,6 +28,11 @@
       <div *ngSwitchCase="'Video'" class="video image-center-small" [ngClass]="{'done':message.downloaded}">
         <img src="assets/img/video.png" />
       </div>
+      <div *ngSwitchCase="'Contact'"  class="contact image-center-small">
+        <img src="assets/img/contact.png">
+      </div>
+      
+      
     </ng-container>
   </div>
   <div class="message-footer" *ngIf="message.UserID !== 0">

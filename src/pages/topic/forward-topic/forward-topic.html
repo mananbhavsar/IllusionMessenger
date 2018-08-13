@@ -1,11 +1,11 @@
 <ion-header>
-  <header [title]="title" [buttons]="[{name : 'search', icon : 'search'}]" (buttonClicked)="searchGroup($event)"></header>
+  <modal-toolbar [title]="title" [buttons]="[{name : 'search', icon : 'search' }]" (buttonClicked)="headerOptions($event)" (dismiss)="dismiss($event)"></modal-toolbar>
 </ion-header>
 <ion-content>
   <ion-searchbar [showCancelButton]="true" *ngIf="searchInputBtn" (ionInput)="getItems($event)" (ionClear)="onClear($event)"
     (ionCancel)="onCancel($event)">
   </ion-searchbar>
-  <empty *ngIf="groups else data_template"></empty>
+  <empty *ngIf="groups.length === 0 else data_template"></empty>
   <ng-template #data_template>
     <ion-list>
       <ion-item (click)="selectGroup(group)" *ngFor="let group of groups">
@@ -27,7 +27,7 @@
 </ion-content>
 <ion-footer *ngIf="SelectedGroup.length > 0" class="hide-on-keyboard-open">
   <ion-fab right bottom>
-    <button ion-fab outline (click)="send()">
+    <button ion-fab outline (click)="forward()">
       <ion-icon name="send"></ion-icon>
     </button>
   </ion-fab>

@@ -11,32 +11,32 @@ import { ViewController } from 'ionic-angular/navigation/view-controller';
 export class ForwardMessagePage {
   title: string = 'Forward To..';
   SelectedTopics: any = [];
-  topicList : any = [];
-  query : string;
-  page : number = 0;
-  data : any;
-  searchInputBtn : boolean = false;
-  topicId : number;
-  groupId : number; 
+  topicList: any = [];
+  query: string;
+  page: number = 0;
+  data: any;
+  searchInputBtn: boolean = false;
+  topicId: number;
+  groupId: number;
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
-   public connection : ConnectionProvider,
-  public viewCntl : ViewController) {  
+    public connection: ConnectionProvider,
+    public viewCntl: ViewController) {
     this.getTopics();
   }
 
-  getTopics(){
+  getTopics() {
     return new Promise((resolve, reject) => {
       if (this.page === -1) {
         reject();
       } else {
         this.connection.doPost('Chat/GetActiveTopicListForForward', {
-          GroupID : this.navParams.data.groupID,
-          ExcludeTopicID : this.navParams.data.topicID,
+          GroupID: this.navParams.data.groupID,
+          ExcludeTopicID: this.navParams.data.topicID,
           Query: this.query,
           PageNumber: this.page,
           RowsPerPage: 20
-        },false).then((response: any) => {
+        }, false).then((response: any) => {
           if (response.GetActiveTopicList.length > 0) {
             response.GetActiveTopicList.forEach(list => {
               this.topicList.push(list);
@@ -55,6 +55,13 @@ export class ForwardMessagePage {
     });
   }
 
+  headerOptions(event) {
+    switch (event.name) {
+      case 'search':
+        this.searchTopic();
+    }
+  }
+
   selectTopic(topic) {
     if (!this.in_array(this.SelectedTopics, topic.TopicID)) {
       this.SelectedTopics.push(topic);
@@ -62,7 +69,7 @@ export class ForwardMessagePage {
       if (this.in_array(this.SelectedTopics, topic.TopicID)) {
         this.SelectedTopics.splice(this.SelectedTopics.indexOf(topic), 1);
       }
-    }    
+    }
   }
 
   in_array(array, TopicID) {
@@ -102,13 +109,13 @@ export class ForwardMessagePage {
       // });
 
     } else {
-      this.topicList = [];      
+      this.topicList = [];
       this.query = null;
       this.initializeItems();
     }
   }
 
-  searchTopic(){
+  searchTopic() {
     if (this.searchInputBtn) {
       this.searchInputBtn = false;
       this.topicList = [];
@@ -119,11 +126,11 @@ export class ForwardMessagePage {
     }
   }
 
-  dismiss(event){
+  dismiss(event) {
     this.viewCntl.dismiss(null);
   }
 
-  send(){
+  send() {
     this.viewCntl.dismiss(this.SelectedTopics);
 
   }

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage,Events, NavController, NavParams, ViewController } from 'ionic-angular';
 import { ConnectionProvider } from '../../../providers/connection/connection';
 
 @IonicPage()
@@ -8,42 +8,46 @@ import { ConnectionProvider } from '../../../providers/connection/connection';
   templateUrl: 'forward-topic.html',
 })
 export class ForwardTopicPage {
-  title : string = 'Forward To ..';
-  groups : any = [];
+  title: string = 'Forward To ..';
+  groups: any = [];
   SelectedGroup: any = [];
-  query : string;
-  page : number = 0;
-  searchInputBtn : boolean = false;
+  query: string;
+  page: number = 0;
+  topicID : any = {};
+  searchInputBtn: boolean = false;
   constructor(public navCtrl: NavController,
-     public navParams: NavParams,
-    public connection : ConnectionProvider) {
-  this.groups.push(
-    {
-      Group : 'gdvg',
-      GroupID : 1
-    },
-    {
-      group : 'gdvg',
-      GroupID : 2
-    },
-    {
-      group : 'gdvg',
-      GroupID : 3
-    },
-  )
+    public navParams: NavParams,
+    public connection: ConnectionProvider,
+    public viewCtrl: ViewController,
+    public events : Events) {
+     this.topicID = this.navParams.data.TopicID;    
+    this.groups.push(
+      {
+        Group: 'gdvg',
+        GroupID: 1
+      },
+      {
+        Group: 'hfghhf',
+        GroupID: 2
+      },
+      {
+        Group: 'hfghfg',
+        GroupID: 3
+      },
+    )
   }
 
-  getGroupList(){
+  getGroupList() {
     return new Promise((resolve, reject) => {
       if (this.page === -1) {
         reject();
       } else {
         this.connection.doPost('Chat/', {
-         
+
           Query: this.query,
           PageNumber: this.page,
           RowsPerPage: 20
-        },false).then((response: any) => {
+        }, false).then((response: any) => {
           if (response.TopicList.length > 0) {
             response.TopicList.forEach(list => {
               this.groups.push(list);
@@ -62,14 +66,21 @@ export class ForwardTopicPage {
     });
   }
 
+  dismiss(event) {
+    this.viewCtrl.dismiss();
+  }
+
   selectGroup(group) {
     if (!this.in_array(this.SelectedGroup, group.GroupID)) {
+      this.SelectedGroup = [];
       this.SelectedGroup.push(group);
     } else {
       if (this.in_array(this.SelectedGroup, group.GroupID)) {
         this.SelectedGroup.splice(this.SelectedGroup.indexOf(group), 1);
       }
-    }    
+    }
+    console.log(this.SelectedGroup);
+
   }
 
   in_array(array, GroupID) {
@@ -109,13 +120,13 @@ export class ForwardTopicPage {
       // });
 
     } else {
-      this.groups = [];      
+      this.groups = [];
       this.query = null;
       this.initializeItems();
     }
   }
 
-  searchGroup(){
+  searchGroup() {
     if (this.searchInputBtn) {
       this.searchInputBtn = false;
       this.groups = [];
@@ -123,6 +134,24 @@ export class ForwardTopicPage {
       this.initializeItems();
     } else if (this.searchInputBtn === false) {
       this.searchInputBtn = true;
+    }
+  }
+
+  forward(){
+    this.connection.doPost('Chat/',{
+     GroupID : this.SelectedGroup.GroupID,
+     TopicID : this.topicID
+    }).then((response : any) => { 
+     this.events.publish('toast:create',response.Data.Message);
+    }).catch((error) => {
+
+    });
+  }
+
+  headerOptions(event) {
+    switch (event.name) {
+      case 'search':
+        this.searchGroup();
     }
   }
 

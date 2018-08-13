@@ -17,7 +17,7 @@
       <ion-infinite-scroll-content></ion-infinite-scroll-content>
     </ion-infinite-scroll>
     <ng-container *ngFor="let message of messages;trackBy:getTrackByField | orderBy:'CreateAt'"> 
-      <chat-bubble (press)="getOptions($event,message)" [id]="'message-'+message.key" class="message-wrapper" [message]="message"
+      <chat-bubble (press)="getOptions(this,$event,message)" [id]="'message-'+message.key" class="message-wrapper" [message]="message"
           [userID]="userID" [topicID]="topicID" [topicCode]="topicCode" [groupID]="groupID" [replyMessage]="attachRepliedMessage.Message"
           [groupCode]="groupCode" [users]="chatUsers" [myLanguage]="myLanguage" [responsibleUserID]="responsibleUserID">
         </chat-bubble>
@@ -39,10 +39,10 @@
   </ng-container>
   <ng-template #chatOpened>
     <ng-container *ngIf="hasInternet && messagesLoaded && aboutToRecord === false">
-      <button *ngIf="!isBrowser" ion-button clear icon-only (click)="openUploadOptions()">
+      <button *ngIf="!isBrowser && !hideWhenReply" ion-button clear icon-only (click)="openUploadOptions()">
         <ion-icon name="ios-add-outline"></ion-icon>
       </button>
-      <div *ngIf="isBrowser" style="display: flex;">
+      <div *ngIf="isBrowser && !hideWhenReply" style="display: flex;">
         <button ion-button clear icon-only>
           <ion-icon name="images"></ion-icon>
         </button>
@@ -60,7 +60,7 @@
           {{'ChatScreen._Send_' | translate}}
         </button>
       </span>
-      <span *ngIf="!isBrowser">
+      <span *ngIf="!isBrowser && !hideWhenReply">
         <span *ngIf="!message || message.trim().length === 0">
           <button (click)="captureImage()" clear ion-button icon-only>
             <ion-icon name="ios-camera-outline"></ion-icon>

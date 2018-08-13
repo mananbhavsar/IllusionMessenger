@@ -35,7 +35,6 @@ export class ChatBubbleComponent {
   @Input() myLanguage: string = 'en';
   @Input() responsibleUserID: number = 0;
   @Input() replyMessage:string;
-
   global: any = Global;
 
   pathIdentifier: string = null;
@@ -75,6 +74,8 @@ export class ChatBubbleComponent {
     this.events.subscribe('platform:onPause', (event) => {
 
     });
+
+    
 
   }
 

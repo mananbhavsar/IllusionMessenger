@@ -89,7 +89,8 @@ import { UsersPageModule } from '../pages/create-user/users/users.module';
 import { FlashNewsProvider } from '../providers/flash-news/flash-news';
 import { ForwardTopicPageModule } from '../pages/topic/forward-topic/forward-topic.module';
 import { ReadMessageProvider } from '../providers/read-message/read-message';
-import{ RatingPageModule } from '../pages/chat/rating/rating.module';
+import { RatingPageModule } from '../pages/chat/rating/rating.module';
+import { Contacts } from '@ionic-native/contacts';
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
@@ -184,6 +185,7 @@ export function createTranslateLoader(http: HttpClient) {
         EmailComposer,
         VideoPlayer,
         Badge,
+        Contacts,
         Device,
         InAppBrowser,
         Camera,
@@ -209,8 +211,8 @@ export function createTranslateLoader(http: HttpClient) {
         PhotoViewer,
         UserAutoCompleteService,
         DateProvider,
-    FlashNewsProvider,
-    ReadMessageProvider,
+        FlashNewsProvider,
+        ReadMessageProvider,
 
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]

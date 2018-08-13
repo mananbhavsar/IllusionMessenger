@@ -51,7 +51,16 @@ export class DueTopicsPage {
   setTitle() {
     this.title = null;
     setTimeout(() => {
-      this.title = 'Task due in ' + this.day + ' days';
+      switch (this.day) {
+        case -1:
+          this.title = 'Past task due days';
+          break;
+        case 0:
+          this.title = 'Task due today';
+          break;
+        default:
+          this.title = 'Task due in ' + this.day + ' days';
+      }
     });
   }
 

@@ -28,6 +28,7 @@
     "@ionic-native/base64-to-gallery": "4.11.0",
     "@ionic-native/call-number": "4.11.0",
     "@ionic-native/camera": "4.11.0",
+    "@ionic-native/contacts": "^4.11.0",
     "@ionic-native/core": "4.11.0",
     "@ionic-native/device": "4.11.0",
     "@ionic-native/diagnostic": "4.11.0",

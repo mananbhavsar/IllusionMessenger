@@ -1,0 +1,33 @@
+<ion-header>
+  <modal-toolbar [title]="title" (dismiss)="dismiss($event)"></modal-toolbar>
+</ion-header>
+
+
+<ion-content padding>
+  <ion-list *ngIf="contactData.displayName">
+    <ion-item>
+      <ion-label>
+        {{contactData.displayName}}
+      </ion-label>
+    <button *ngIf="!isBrowser" (click)="saveContact()" item-end ion-button>Save</button>
+    </ion-item>
+  </ion-list>
+  <div margin-left *ngIf="contactNumbers.length > 0">
+    <ion-row *ngFor="let phoneNo of contactNumbers">
+      <ion-col col-1>
+        <ion-icon name="ios-call-outline"></ion-icon>
+      </ion-col>
+      <ion-col>
+        {{phoneNo.value}}
+      </ion-col>
+    </ion-row>
+  </div>
+  <div  margin-left *ngIf="contactData.emails">
+    <ion-row *ngFor="let email of contactData.emails">
+        <ion-icon name="ios-mail-outline"></ion-icon>
+      <ion-col>
+        {{email.value}}
+      </ion-col>
+    </ion-row>
+  </div>
+</ion-content>

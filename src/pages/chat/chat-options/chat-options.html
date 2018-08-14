@@ -104,7 +104,7 @@
 			{{data.Comment}}
 		</div>
 		<div *ngIf="data.Rating">
-			<rating [readOnly]="false" [value]="" ></rating>
+			<rating [readOnly]="true" [value]="data.Rating"></rating>
 		</div>
 	</div>
 	<div margin-left class="background-grey" *ngIf="data.StatusID !== 0">

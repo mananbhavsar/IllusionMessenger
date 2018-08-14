@@ -31,7 +31,9 @@ export class CommonProvider {
   }
 
   hasClass(element, cls) {
-    return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1;
+    if (element && cls) {
+      return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1;
+    }
   }
 
 

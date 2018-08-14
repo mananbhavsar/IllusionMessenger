@@ -5,7 +5,7 @@ import { Network } from '@ionic-native/network';
 import { StreamingMedia } from '@ionic-native/streaming-media';
 import { TranslateService } from "@ngx-translate/core";
 import * as firebase from 'firebase';
-import { Events, NavController, Platform } from 'ionic-angular';
+import { Events, NavController, ModalController, Platform } from 'ionic-angular';
 import { ImageViewerController } from 'ionic-img-viewer';
 import * as moment from 'moment';
 import 'moment/locale/en-gb';
@@ -13,6 +13,7 @@ import * as _ from 'underscore';
 import { Global } from '../../app/global';
 import { CommonProvider } from "../../providers/common/common";
 import { FileOpsProvider } from "../../providers/file-ops/file-ops";
+import { ContactDetailPage } from '../../pages/chat/contact-detail/contact-detail';
 
 
 
@@ -34,13 +35,13 @@ export class ChatBubbleComponent {
   @Input() users: any = {};
   @Input() myLanguage: string = 'en';
   @Input() responsibleUserID: number = 0;
-  @Input() replyMessage:string;
+  @Input() replyMessage: string;
   global: any = Global;
 
   pathIdentifier: string = null;
   basePath: string = '';
   messagePath: string = '';
-  attachRepliedMessage: string;
+  attachRepliedMessage: any;
   statusRef = null;
   dataDirectory: string = null;
   downloadDirectory: string = null;
@@ -62,6 +63,7 @@ export class ChatBubbleComponent {
     private network: Network,
     private translate: TranslateService,
     private fileOps: FileOpsProvider,
+    private modal: ModalController
   ) {
     this.global = Global;
     this.isCordova = this.platform.is('cordova');
@@ -75,7 +77,7 @@ export class ChatBubbleComponent {
 
     });
 
-    
+
 
   }
 
@@ -103,6 +105,14 @@ export class ChatBubbleComponent {
 
         this.processFile();
       }).catch(error => {
+      });
+
+      firebase.database().ref(this.basePath + 'Chat' + '/' + this.message.ReplyMessageKey).once("value", (snapshot) => {
+        if (snapshot.val()) {
+          this.attachRepliedMessage = snapshot.val();
+        }
+        console.log(this.attachRepliedMessage);
+        
       });
 
       // this.processBadgeCount();
@@ -193,11 +203,20 @@ export class ChatBubbleComponent {
           case 'Video':
             this.openVideo();
             break;
+          case 'Contact':
+            this.openContact();
         }
       }
 
     }).catch(error => {
     });
+  }
+
+  openContact() {
+    console.log('opened');
+
+    let modalCtrl = this.modal.create(ContactDetailPage, this.message);
+    modalCtrl.present();
   }
 
   openImage() {

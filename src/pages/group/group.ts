@@ -67,8 +67,10 @@ export class GroupPage {
           Order: this.sort_order,
         }, false,).then((response: any) => {
           this.group = response;
-          if (this.group.length > 0) {
+          if (this.group) {
             this.group.FlashNews.forEach((news, key) => {
+              console.log(news);
+              
               this.flashNewsProvider.openUnreadFlashNews(news);
             });
             this.setForBadge();

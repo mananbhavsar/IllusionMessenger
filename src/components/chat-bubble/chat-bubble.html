@@ -7,10 +7,11 @@
   </div>
   <div class="message-body" (click)="openFile()" [attr.data-url]="message.URL">
       <ng-container *ngIf="message.IsReply">
-          <div class="reply-message">{{replyMessage}}</div>
+        <div class="reply-image-message"></div>
+          <div class="reply-message" *ngIf="attachRepliedMessage">{{attachRepliedMessage.Message}}</div>
         </ng-container>
     <ng-container *ngIf="message.IsForward">
-      <div class="forward-message"><ion-icon name="ios-redo"></ion-icon> Forwarded</div>
+      <div class="forward-message"><ion-icon name="ios-redo"></ion-icon>Forwarded</div>
     </ng-container>
     <div class="download" *ngIf="message.downloaded === false" [ngClass]="{'message-other': message.UserID !== userID }">
       <ion-icon name="md-download" *ngIf="!message.downloading"></ion-icon>
@@ -29,7 +30,8 @@
         <img src="assets/img/video.png" />
       </div>
       <div *ngSwitchCase="'Contact'"  class="contact image-center-small">
-        <img src="assets/img/contact.png">
+        <div><img src="assets/img/contact.png"></div>
+        <div>{{message.Contact.displayName}}</div>
       </div>
       
       

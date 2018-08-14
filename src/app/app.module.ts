@@ -91,6 +91,8 @@ import { ForwardTopicPageModule } from '../pages/topic/forward-topic/forward-top
 import { ReadMessageProvider } from '../providers/read-message/read-message';
 import { RatingPageModule } from '../pages/chat/rating/rating.module';
 import { Contacts } from '@ionic-native/contacts';
+import { Clipboard } from '@ionic-native/clipboard';
+import { ContactDetailPageModule } from '../pages/chat/contact-detail/contact-detail.module';
 export function createTranslateLoader(http: HttpClient) {
     return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
@@ -141,6 +143,7 @@ export function createTranslateLoader(http: HttpClient) {
         ForwardTopicPageModule,
         GroupPageModule,
         GroupOptionsPageModule,
+        ContactDetailPageModule,
         DueTopicsPageModule,
         HelpPageModule,
         SearchPageModule,
@@ -180,6 +183,7 @@ export function createTranslateLoader(http: HttpClient) {
         Keyboard,
         SplashScreen,
         Diagnostic,
+        Clipboard,
         SQLite,
         CallNumber,
         EmailComposer,

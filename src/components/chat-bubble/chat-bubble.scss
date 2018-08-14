@@ -126,6 +126,9 @@ chat-bubble {
                     height: 70px;
                 }
             }
+            .contact{
+                flex-direction: column;
+            }
             .audio {
                 audio-track {
                     ion-item {

@@ -110,6 +110,12 @@ export class HomePage {
             this.getData(false).catch(error => { });
         });
 
+        this.events.subscribe('read:message', (response) => {
+            if (response) {
+                this.getData(false);
+            }
+        });
+
         this.events.subscribe('priority:set', (data) => {
             this.getData(true).catch(error => { });
         });
@@ -333,9 +339,8 @@ export class HomePage {
     }
 
     readSelected() {
-        this.read.readMessage(this.selectedGroup, this.selectedTopic).then((response) => {
+        this.read.read(this.selectedGroup, this.selectedTopic).then((response) => {
             if (response) {
-                this.getData(false);
                 this.selectedTopic = [];
                 this.selectedGroup = [];
                 this.readAllSelected = true;

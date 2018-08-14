@@ -30,7 +30,8 @@ import { DateProvider } from './../../providers/date/date';
 import { ChatOptionsPage } from "./chat-options/chat-options";
 import { SavedMediaPage } from "./chat-options/saved-media/saved-media";
 import { ForwardMessagePage } from './forward-message/forward-message';
-import { Contacts, Contact, ContactField, ContactName, ContactFieldType, ContactFindOptions } from '@ionic-native/contacts';
+import { Contacts } from '@ionic-native/contacts';
+import { Clipboard } from '@ionic-native/clipboard';
 
 
 
@@ -47,6 +48,8 @@ export class ChatPage {
   platformResumeReference = null;
   platformPauseReference = null;
   arrowKey: any;
+  replytoImg: any = null;
+  replytoText: any = null;
 
   data: any = {};
 
@@ -70,7 +73,7 @@ export class ChatPage {
   topicClosePath: string = '';
   showUsers: boolean = false;
   messageKey: any = null;
-  replyTo: any;
+  replyTo: boolean = false;
   attachRepliedMessage: any = {};
 
   messagesRef: firebase.database.Reference;
@@ -188,6 +191,7 @@ export class ChatPage {
     private common: CommonProvider,
     private contacts: Contacts,
     public http: Http,
+    public clipboard: Clipboard,
     private translate: TranslateService,
     private _notifications: NotificationsProvider,
     private _fileOps: FileOpsProvider,
@@ -278,13 +282,7 @@ export class ChatPage {
     });
   }
 
-  replyMesageKey(key) {
-    firebase.database().ref(this.basePath + 'Chat' + '/' + key).once("value", (snapshot) => {
-      if (snapshot.val()) {
-        this.attachRepliedMessage = snapshot.val();
-      }
-    });
-  }
+
 
   connectFireBase() {
     this.setFirebaseRef();
@@ -299,7 +297,6 @@ export class ChatPage {
       for (let key in messages) {
         let message = messages[key];
         message['key'] = key;
-        this.replyMesageKey(messages[key].ReplyMessageKey);
         this.pushItem(message, true);
       }
 
@@ -940,7 +937,7 @@ export class ChatPage {
     this.contacts.pickContact().then((data: any) => {
       console.log(data);
       this.contacts = data._objectInstance;
-    this.sendToFirebase('','Contact',null,this.topicID,this.topicCode,null,null,this.contacts);
+      this.sendToFirebase('', 'Contact', null, this.topicID, this.topicCode, null, null, this.contacts);
     }).then((error: any) => {
       console.error('Error opening contact.', error)
     });
@@ -969,15 +966,16 @@ export class ChatPage {
       this.message = '';
 
       if (this.replyTo) {
+        this.replyTo = false;
         this.sendToFirebase(textMessage, 'Text', null, this.topicID, this.topicCode, null, this.topicID).then((data) => {
           if (data) {
             this.headerButtons.splice(0, 3);
-            this.replyTo = null;
             this.messageKey = null;
             this.hideWhenReply = false;
           }
         });
       } else if (!this.replyTo) {
+        this.replyTo = false;
         this.sendToFirebase(textMessage).then(data => {
           setTimeout(() => {
             this.messageInput.nativeElement.focus();
@@ -993,7 +991,7 @@ export class ChatPage {
 
   sendToFirebase(message: string = '', type: string = 'Text', url: any = false,
     topicID: any = 0, topicCode: string = '', isForwarded: string = null, isReplied: string = null,
-    contact : any = {}) {
+    contact: any = {}) {
     return new Promise((resolve, reject) => {
       if (topicID === 0) {
         topicID = this.topicID;
@@ -1031,7 +1029,7 @@ export class ChatPage {
           IsForward: isForwarded,
           IsReply: isReplied,
           ReplyMessageKey: this.messageKey,
-          Contact : contact 
+          Contact: contact
         };
 
         //add message to firebase
@@ -1049,7 +1047,7 @@ export class ChatPage {
             IsForward: isForwarded,
             IsReply: isReplied,
             ReplyMessageKey: this.messageKey,
-            Contact : contact 
+            Contact: contact
 
           };
 
@@ -1095,36 +1093,98 @@ export class ChatPage {
     return this.getElementMessageKey(element.parentElement);
   }
 
+  getChildElement(element, className) {
+    console.log(element);
+    switch (className) {
+      case '.text':
+        return element.target.parentElement.querySelector('.text');
+      case '.audio':
+        return element.target.parentElement.querySelector('.audio');
+      case '.video':
+        return element.target.parentElement.querySelector('.video');
+      case '.picture':
+        return element.target.parentElement.querySelector('.picture');
+    }
+  }
+
 
   getOptions(ref, element, message) {
     this.messageKey = this.getElementMessageKey(element.target);
-    this.selectedMessageElement = element.target;
-    console.log(element);
+    if (this.getChildElement(element, '.text')) {
+      this.selectedMessageElement = this.getChildElement(element, '.text');
+    }
+    if (this.getChildElement(element, '.video')) {
+      this.selectedMessageElement = this.getChildElement(element, '.video');
+    }
+    if (this.getChildElement(element, '.picture')) {
+      this.selectedMessageElement = this.getChildElement(element, '.picture');
+    }
+    if (this.getChildElement(element, '.audio')) {
+      this.selectedMessageElement = this.getChildElement(element, '.audio');
+    }
+    console.log(this.selectedMessageElement);
+
+
     this.headerButtons = [];
-    this.headerButtons.push(
-      {
-        icon: 'ios-undo',
-        name: 'ios-undo',
-        value: this.selectedMessageElement
-      },
-      {
-        icon: 'ios-copy',
-        name: 'ios-copy',
-        value: element.target
-      },
-      {
-        icon: 'ios-redo',
-        name: 'ios-redo',
-      },
-      {
-        icon: 'ios-information-circle-outline',
-        name: 'ios-information-circle-outline',
-        value: message
-      },
-      {
-        icon: 'ios-more',
-        name: 'more-option'
-      }, );
+    if (this.common.hasClass(this.selectedMessageElement, 'text')) {
+      this.headerButtons.push(
+        {
+          icon: 'ios-undo',
+          name: 'ios-undo',
+          value: this.selectedMessageElement
+        },
+        {
+          icon: 'ios-copy',
+          name: 'ios-copy',
+          value: this.selectedMessageElement
+        },
+        {
+          icon: 'ios-redo',
+          name: 'ios-redo',
+        },
+        {
+          icon: 'ios-information-circle-outline',
+          name: 'ios-information-circle-outline',
+          value: message
+        },
+        {
+          icon: 'ios-more',
+          name: 'more-option'
+        });
+    } else if (this.common.hasClass(this.selectedMessageElement, 'video') ||
+      this.common.hasClass(this.selectedMessageElement, 'audio') ||
+      this.common.hasClass(this.selectedMessageElement, 'picture')) {
+      this.headerButtons.push(
+        {
+          icon: 'ios-undo',
+          name: 'ios-undo',
+          value: this.selectedMessageElement
+        },
+        {
+          icon: 'ios-redo',
+          name: 'ios-redo',
+        },
+        {
+          icon: 'ios-information-circle-outline',
+          name: 'ios-information-circle-outline',
+          value: message
+        },
+        {
+          icon: 'ios-more',
+          name: 'more-option'
+        });
+    } else {
+      this.headerButtons.push(
+        {
+          icon: 'ios-information-circle-outline',
+          name: 'ios-information-circle-outline',
+          value: message
+        },
+        {
+          icon: 'ios-more',
+          name: 'more-option'
+        });
+    }
   }
 
   deselectOptions(event) {
@@ -1136,30 +1196,43 @@ export class ChatPage {
       this.headerButtons.splice(0, 3);
     }
   }
+  checkMessageType(type) {
+    //identify message type
+    switch (type) {
+      case 'text':
+        return this.selectedMessageElement.innerHTML;
+      case 'picture':
+      case 'video':
+      case 'audio':
+        console.log(this.selectedMessageElement.parentElement.getAttribute('data-url'));
 
+        return this.selectedMessageElement.parentElement.getAttribute('data-url');
+    }
+  }
 
   forwardMessage() {
+    console.log(this.selectedMessageElement);
+
     if (this.selectedMessageElement) {
       let message = '';
       let messageType = 'Text';
       let url = null;
-
-      //identify message type
       if (this.common.hasClass(this.selectedMessageElement, 'text')) {
-        message = this.selectedMessageElement.innerHTML;
+        message = this.checkMessageType('text');
       }
       if (this.common.hasClass(this.selectedMessageElement, 'picture')) {
+        url = this.checkMessageType('picture');
         messageType = 'Image';
-        url = this.selectedMessageElement.parentElement.getAttribute('data-url');
       }
       if (this.common.hasClass(this.selectedMessageElement, 'video')) {
+        url = this.checkMessageType('video');
         messageType = 'Video';
-        url = this.selectedMessageElement.parentElement.getAttribute('data-url');
       }
       if (this.common.hasClass(this.selectedMessageElement, 'audio')) {
+        url = this.checkMessageType('audio');
         messageType = 'Audio';
-        url = this.selectedMessageElement.parentElement.getAttribute('data-url');
       }
+
       let modal = this.modal.create('ForwardMessagePage', { topicID: this.topicID, groupID: this.groupID });
       modal.onDidDismiss(data => {
         if (data) {
@@ -1178,7 +1251,18 @@ export class ChatPage {
   }
 
   getElementToReply(element) {
-    this.replyTo = element.innerHTML;
+    this.replyTo = true;
+    if (this.common.hasClass(element, 'text')) {
+      this.replytoText = this.checkMessageType('text');
+    } else if(this.common.hasClass(element, 'picture')){
+      this.replytoImg = 'assets/img/camera.png';
+    } else if(this.common.hasClass(element, 'audio')){
+      this.replytoImg = 'assets/img/audio.png';
+    } else if(this.common.hasClass(element, 'audio')){
+      this.replytoImg = 'assets/img/video.png';
+    }
+    console.log(this.replytoImg);
+
     this.hideWhenReply = true;
   }
 
@@ -1187,14 +1271,16 @@ export class ChatPage {
     this.replyTo = null;
     this.messageKey = null;
     this.headerButtons.splice(0, 3);
-    console.log(this.headerButtons);
-
   }
 
   copyText(element) {
-    this.copyToClipboard(element);
     this.headerButtons.splice(0, 3);
     this.events.publish('toast:create', 'Message copied');
+    if (this.isBrowser) {
+      this.copyToClipboard(element);
+    } else {
+      this.clipboard.copy(element.innerHTML);
+    }
   }
 
   copyToClipboard(element) {
@@ -1205,10 +1291,7 @@ export class ChatPage {
     input.select();
     document.execCommand('copy', false);
     input.remove();
-
   }
-
-
 
   keyup(event) {
     //on browser if entered pressed, send text message

@@ -233,9 +233,13 @@ export class FileOpsProvider {
   captureAndUpload(type, identifier: string = null) {
     return new Promise((resolve, reject) => {
       this.capture(type).then(uri => {
+        console.log(uri);
+        
         this.uploadFile(uri, {
           date: identifier || new Date().getTime(),
         }, identifier).then(uploadedURL => {
+          console.log(uploadedURL);
+          
           resolve(uploadedURL);
         }).catch(error => {
           this.events.publish('toast:error', error);
@@ -285,9 +289,11 @@ export class FileOpsProvider {
 
   uploadFile(file, params, identifier) {
     return new Promise((resolve, reject) => {
-      let fileName = this.getFileName(file);
+      let fileName = this.getFileName(file);    
       const fileTransfer: FileTransferObject = this.transfer.create();
       fileTransfer.upload(file, Global.SERVER_URL + 'CreateFlashNews_Attachement ', this.setFileOptions(file, params)).then(data => {
+       console.log(data.response);
+       
         if (data.response.indexOf('http') === -1) {
           reject(data);
         } else if (data.response.indexOf('>') > -1) {
@@ -297,8 +303,11 @@ export class FileOpsProvider {
         }
       }, (err) => {
         this.progressPercent = 0;
+        console.log("upload error");
         reject(err);
       }).catch(error => {
+        console.log("upload error");
+        
         reject(error);
       });
 

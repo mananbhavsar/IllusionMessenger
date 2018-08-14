@@ -110,11 +110,13 @@ export class AttachmentComponent {
     });
 
     this._fileOps.captureAndUpload(type, identifier).then(url => {
-
+      console.log(url);
+      
       this.captured.emit({
         VirtualPath: url
       });
     }).catch(error => {
+      console.log("upload error");         
       this.removeProgress(identifier);
     });
   }

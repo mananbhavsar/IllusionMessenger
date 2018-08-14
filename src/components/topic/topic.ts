@@ -70,10 +70,7 @@ export class TopicComponent {
   }
 
   readSelected(topic) {
-    this.read.readMessage(null, topic.TopicCode).then((response: any) => {
-      if (response) {
-       
-      }
+    this.read.read(null, topic.TopicCode).then((response: any) => {
     });
   }
 

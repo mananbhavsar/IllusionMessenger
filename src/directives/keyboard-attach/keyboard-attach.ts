@@ -2,39 +2,7 @@ import { Directive, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
 import { Keyboard } from '@ionic-native/keyboard';
 import { Content, Platform } from 'ionic-angular';
 import { timer } from 'rxjs/observable/timer';
-import { Subscription } from 'rxjs/Subscription';
 
-
-/**
- * @name KeyboardAttachDirective
- * @source https://gist.github.com/rdlabo/942671d8c9cffb02676756cdd56aa1c0
- * @forked https://gist.github.com/Manduro/bc121fd39f21558df2a952b39e907754
- * @description
- * The `keyboardAttach` directive will cause an element to float above the
- * keyboard when the keyboard shows. Currently only supports the `ion-footer` element.
- *
- * ### Notes
- * - This directive requires [Ionic Native](https://github.com/driftyco/ionic-native)
- * and the [Ionic Keyboard Plugin](https://github.com/driftyco/ionic-plugin-keyboard).
- * - Currently only tested to work on iOS.
- * - If there is an input in your footer, you will need to set
- *   `Keyboard.disableScroll(true)`.
- *
- * @usage
- *
- * ```html
- * <ion-content #content>
- * </ion-content>
- *
- * <ion-footer [keyboardAttach]="content">
- *   <ion-toolbar>
- *     <ion-item>
- *       <ion-input></ion-input>
- *     </ion-item>
- *   </ion-toolbar>
- * </ion-footer>
- * ```
- */
 
 @Directive({
     selector: '[keyboardAttach]'
@@ -42,9 +10,9 @@ import { Subscription } from 'rxjs/Subscription';
 export class KeyboardAttachDirective implements OnInit, OnDestroy {
     @Input('keyboardAttach') content: Content;
 
-    private onShowSubscription: Subscription;
-    private onHideSubscription: Subscription;
-    private onShowWindowSubscription: Subscription;
+    private onShowSubscription;
+    private onHideSubscription;
+    private onShowWindowSubscription;
 
     constructor(
         private elementRef: ElementRef,

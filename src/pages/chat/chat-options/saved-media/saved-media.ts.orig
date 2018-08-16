@@ -1,12 +1,17 @@
 import { Component, ElementRef } from '@angular/core';
 import { File } from '@ionic-native/file';
+<<<<<<< HEAD
 import { VideoEditor } from '@ionic-native/video-editor';
+import { PhotoLibrary } from '@ionic-native/photo-library';
+import { StreamingMedia } from '@ionic-native/streaming-media';
+=======
 import { PhotoLibrary } from '@ionic-native/photo-library';
 import { StreamingMedia } from '@ionic-native/streaming-media';
 import { VideoEditor } from '@ionic-native/video-editor';
 import { UUID } from 'angular2-uuid';
 import { ActionSheetController, Events, IonicPage, NavController, NavParams, normalizeURL, ViewController } from 'ionic-angular';
 import { ImageViewerController } from 'ionic-img-viewer';
+>>>>>>> e6019f9270f79c6696861d6eadd1ceea640376f9
 import * as mime from 'mime-types';
 import { Global } from '../../../../app/global';
 import { TranslateServiceProvider } from '../../../../providers/translate-service/translate-service';

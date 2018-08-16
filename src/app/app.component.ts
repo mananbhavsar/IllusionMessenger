@@ -7,7 +7,6 @@ import { OneSignal } from '@ionic-native/onesignal';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 import { Storage } from '@ionic/storage';
-import { TranslateService } from '@ngx-translate/core';
 import * as firebase from 'firebase';
 import { AlertController, Events, LoadingController, MenuController, ModalController, Nav, Platform, ToastController } from 'ionic-angular';
 import * as _ from 'underscore';
@@ -20,6 +19,7 @@ import { LoginPage } from '../pages/login/login';
 import { LogoutPage } from '../pages/logout/logout';
 import { TutorialPage } from '../pages/tutorial/tutorial';
 import { WelcomePage } from '../pages/welcome/welcome';
+import { TranslateServiceProvider } from '../providers/translate-service/translate-service';
 import { UserProvider } from '../providers/user/user';
 import { GroupPage } from './../pages/group/group';
 import * as moment from "moment";
@@ -48,7 +48,6 @@ export interface PageInterface {
     component: any;
     icon: string;
     logsOut?: boolean;
-    index?: number;
     tabName?: string;
     tabComponent?: any;
 }
@@ -116,7 +115,7 @@ export class MyApp {
         private _keyboard: Keyboard,
         private _badge: Badge,
         private _oneSignal: OneSignal,
-        private translate: TranslateService,
+        private translate: TranslateServiceProvider,
         private globalization: Globalization,
     ) {
         this.translate.setDefaultLang('en');
@@ -150,39 +149,26 @@ export class MyApp {
         }
         let params = {};
 
-        // the nav component was found using @ViewChild(Nav)
-        // setRoot on the nav to remove previous pages and only have this page
-        // we wouldn't want the back button to show in this scenario
-        if (page.index) {
-            params = { tabIndex: page.index };
-        }
 
-        // If we are already on tabs just change the selected tab
-        // don't setRoot again, this maintains the history stack of the
-        // tabs even if changing them from the menu
-        if (this.nav.getActiveChildNavs().length && page.index != undefined) {
-            this.nav.getActiveChildNavs()[0].select(page.index);
+        //checking if logging out and need to ask for confirmation
+        if (page.name === 'LogoutPage') {
+            let logoutConfirmation = this.alertCtrl.create({
+                title: this.alert_translate,
+                message: this.logout_message_translate,
+                buttons: [{
+                    text: this.cancel_translate,
+                    role: 'cancel'
+                }, {
+                    text: this.ok_translate,
+                    handler: () => {
+                        this.nav.push(page.name, params);
+                    }
+                }]
+            });
+            logoutConfirmation.present();
         } else {
-            //checking if logging out and need to ask for confirmation
-            if (page.name === 'LogoutPage') {
-                let logoutConfirmation = this.alertCtrl.create({
-                    title: this.alert_translate,
-                    message: this.logout_message_translate,
-                    buttons: [{
-                        text: this.cancel_translate,
-                        role: 'cancel'
-                    }, {
-                        text: this.ok_translate,
-                        handler: () => {
-                            this.nav.push(page.name, params);
-                        }
-                    }]
-                });
-                logoutConfirmation.present();
-            } else {
-                // Set the root of the nav with params if it's a tab index
-                this.nav.push(page.name, params);
-            }
+            // Set the root of the nav with params if it's a tab index
+            this.nav.push(page.name, params);
         }
 
         if (page.logsOut === true) {
@@ -196,7 +182,7 @@ export class MyApp {
     }
 
     isActive(page: PageInterface) {
-        let childNav = this.nav.getActiveChildNavs()[0];
+        let childNav = this.nav.getActiveChildNav()[0];
 
         // Tabs are a special case because they have their own navigation
         if (childNav) {

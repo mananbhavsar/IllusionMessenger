@@ -16,8 +16,14 @@ import { FirebaseTransactionProvider } from './../../providers/firebase-transact
 import { NotificationsProvider } from './../../providers/notifications/notifications';
 import { AddFlashPage } from './../group/add-flash/add-flash';
 import { CreateTopicPage } from './../topic/create-topic/create-topic';
+<<<<<<< HEAD
+import { CreateGroupPage } from '../manage-group/create-group/create-group';
+import { CreateTagPage } from '../create-tag/create-tag';
+import { CreateUserPage } from '../create-user/create-user';
 import { FlashNewsProvider } from '../../providers/flash-news/flash-news';
 import { ReadMessageProvider } from '../../providers/read-message/read-message';
+=======
+>>>>>>> e6019f9270f79c6696861d6eadd1ceea640376f9
 
 @IonicPage()
 @Component({
@@ -90,8 +96,12 @@ export class HomePage {
         public user: UserProvider,
         public read: ReadMessageProvider,
         public events: Events,
-        private translate: TranslateServiceProvider,
+<<<<<<< HEAD
+        private translate: TranslateService,
         public flashNewsProvider: FlashNewsProvider,
+=======
+        private translate: TranslateServiceProvider,
+>>>>>>> e6019f9270f79c6696861d6eadd1ceea640376f9
         private _oneSignal: OneSignal,
         private platform: Platform,
         private _network: Network,

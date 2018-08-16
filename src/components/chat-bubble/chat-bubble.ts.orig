@@ -12,8 +12,11 @@ import * as _ from 'underscore';
 import { Global } from '../../app/global';
 import { CommonProvider } from "../../providers/common/common";
 import { FileOpsProvider } from "../../providers/file-ops/file-ops";
+<<<<<<< HEAD
 import { ContactDetailPage } from '../../pages/chat/contact-detail/contact-detail';
+=======
 import { TranslateServiceProvider } from '../../providers/translate-service/translate-service';
+>>>>>>> e6019f9270f79c6696861d6eadd1ceea640376f9
 
 
 

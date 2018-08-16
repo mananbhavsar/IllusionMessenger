@@ -19,7 +19,12 @@ import { ReachUsComponent } from './reach-us/reach-us';
 import { RefreshComponent } from './refresh/refresh';
 import { TitleComponent } from './title/title';
 import { TopicComponent } from './topic/topic';
+<<<<<<< HEAD
+import { DashboardComponent } from './dashboard/dashboard';
+import { AttachmentComponent } from './attachment/attachment';
 import { RatingComponent } from './rating/rating';
+=======
+>>>>>>> e6019f9270f79c6696861d6eadd1ceea640376f9
 
 
 @NgModule({

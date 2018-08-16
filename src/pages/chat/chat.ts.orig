@@ -190,8 +190,12 @@ export class ChatPage {
     private common: CommonProvider,
     private contacts: Contacts,
     public http: Http,
+<<<<<<< HEAD
     public clipboard: Clipboard,
+    private translate: TranslateService,
+=======
     private translate: TranslateServiceProvider,
+>>>>>>> e6019f9270f79c6696861d6eadd1ceea640376f9
     private _notifications: NotificationsProvider,
     private _fileOps: FileOpsProvider,
     private _date: DateProvider,

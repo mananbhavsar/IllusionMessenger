@@ -1,6 +1,5 @@
 import { Component, ElementRef } from '@angular/core';
 import { File } from '@ionic-native/file';
-import { VideoEditor } from '@ionic-native/video-editor';
 import { PhotoLibrary } from '@ionic-native/photo-library';
 import { StreamingMedia } from '@ionic-native/streaming-media';
 import { VideoEditor } from '@ionic-native/video-editor';

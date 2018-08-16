@@ -9,20 +9,20 @@
       <ion-label>
         {{contactData.displayName}}
       </ion-label>
-    <button *ngIf="!isBrowser" (click)="saveContact()" item-end ion-button>Save</button>
+      <button *ngIf="!isBrowser" (click)="saveContact()" item-end ion-button>Save</button>
     </ion-item>
   </ion-list>
-  <div margin-left *ngIf="contactNumbers.length > 0">
-    <ion-row *ngFor="let phoneNo of contactNumbers">
-      <ion-icon color="primary" name="ios-call-outline"></ion-icon>     
+  <div margin-left *ngIf="contactData.phoneNumbers">
+    <ion-row *ngFor="let phoneNo of contactData.phoneNumbers">
+      <ion-icon color="primary" name="ios-call-outline"></ion-icon>
       <ion-col>
         {{phoneNo.value}}
       </ion-col>
     </ion-row>
   </div>
-  <div  margin-left *ngIf="contactData.emails">
+  <div margin-left *ngIf="contactData.emails">
     <ion-row *ngFor="let email of contactData.emails">
-        <ion-icon color="primary" name="ios-mail-outline"></ion-icon>
+      <ion-icon color="primary" name="ios-mail-outline"></ion-icon>
       <ion-col>
         {{email.value}}
       </ion-col>

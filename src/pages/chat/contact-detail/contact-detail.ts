@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
-import { IonicPage, Platform, NavController, NavParams } from 'ionic-angular';
-import { Contacts, Contact, ContactName, ContactField } from '@ionic-native/contacts';
-import { ViewController } from 'ionic-angular';
+import { Contact, ContactField, ContactName, Contacts } from '@ionic-native/contacts';
+import { IonicPage, NavController, NavParams, Platform, ViewController } from 'ionic-angular';
 
 @IonicPage()
 @Component({
@@ -11,16 +10,14 @@ import { ViewController } from 'ionic-angular';
 export class ContactDetailPage {
   title: string = 'View Contact';
   contactData: any;
-  contactNumbers: any = [];
   isBrowser: boolean = false;
-  contact: Contact = this.contacts.create();
   constructor(public navCtrl: NavController,
     public contacts: Contacts,
     public navParams: NavParams,
     public platform: Platform,
-    public viewCtrl: ViewController) {
+    public viewCtrl: ViewController,
+  ) {
     this.contactData = this.navParams.data.Contact;
-    this.contactNumbers = this.navParams.data.Contact.phoneNumbers;
     this.isBrowser = this.platform.is('core');
   }
 
@@ -29,16 +26,42 @@ export class ContactDetailPage {
   }
 
   saveContact() {
-    this.contact.name = new ContactName(this.contactData.formatted, this.contactData.familyName, this.contactData.givenName, this.contactData.displayName);
-    this.contactNumbers.forEach((number) => {
-      this.contact.phoneNumbers = [new ContactField(number.type,number.value)];
+    //create instance
+    let contact: Contact = this.contacts.create();
+    contact.displayName = this.contactData.displayName;
+    contact.nickname = this.contactData.displayName;
+    //name
+    contact.name = new ContactName(
+      this.contactData.formatted,
+      this.contactData.familyName,
+      this.contactData.givenName,
+      this.contactData.displayName
+    );
+    //number
+    if (this.contactData.phoneNumbers) {
+      let contactNumbers = [];
+      this.contactData.phoneNumbers.forEach((number) => {
+        contactNumbers.push(new ContactField(number.type, number.value));
+      });
+      contact.phoneNumbers = contactNumbers;
+    }
+
+    //email
+    if (this.contactData.emails) {
+      let emails = [];
+      this.contactData.emails.forEach((email) => {
+        emails.push(new ContactField(email.type, email.value));
+      });
+      contact.emails = emails;
+    }
+    console.log(contact);
+    //save
+    contact.save().then(contact => {
+      console.log(contact);
+      // this.viewCtrl.dismiss(contact);
+    }).catch(error => {
+      console.log(error);
     });
-    this.contact.save().then(
-      (contact) => {
-        this.viewCtrl.dismiss(contact);
-      }).catch(
-        (error: any) => console.error('Error saving contact.', error)
-      );
   }
 
   dismiss(event) {

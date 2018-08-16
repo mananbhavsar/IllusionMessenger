@@ -14,12 +14,10 @@ export class RatingComponent {
 
   stars: any = [];
 
-  constructor() {
+  constructor() {    
+    setTimeout(() => {
     this.calc();
-  }
-
-  ionViewDidEnter() {
-
+    }, 1000);
   }
 
   calc() {

@@ -1,5 +1,10 @@
 page-group {
 	ion-content {
+		&.extraTop {
+            .scroll-content {
+                margin-top: 136px !important;
+            }
+        }
 		ion-grid {
 			ion-item-divider {
 				ion-label {

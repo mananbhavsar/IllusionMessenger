@@ -57,10 +57,12 @@ export class GroupPage {
           Query: this.query,
           OrderBy: this.sort_by,
           Order: this.sort_order,
-        }, false,).then((response: any) => {
+        }, false, ).then((response: any) => {
           this.group = response;
           if (this.group) {
             this.group.FlashNews.forEach((news, key) => {
+              console.log(news);
+
               this.flashNewsProvider.openUnreadFlashNews(news);
             });
             this.setForBadge();

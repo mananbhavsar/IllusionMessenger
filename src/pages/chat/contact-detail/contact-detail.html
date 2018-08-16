@@ -14,9 +14,7 @@
   </ion-list>
   <div margin-left *ngIf="contactNumbers.length > 0">
     <ion-row *ngFor="let phoneNo of contactNumbers">
-      <ion-col col-1>
-        <ion-icon name="ios-call-outline"></ion-icon>
-      </ion-col>
+      <ion-icon color="primary" name="ios-call-outline"></ion-icon>     
       <ion-col>
         {{phoneNo.value}}
       </ion-col>
@@ -24,7 +22,7 @@
   </div>
   <div  margin-left *ngIf="contactData.emails">
     <ion-row *ngFor="let email of contactData.emails">
-        <ion-icon name="ios-mail-outline"></ion-icon>
+        <ion-icon color="primary" name="ios-mail-outline"></ion-icon>
       <ion-col>
         {{email.value}}
       </ion-col>

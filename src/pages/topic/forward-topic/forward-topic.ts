@@ -79,7 +79,6 @@ export class ForwardTopicPage {
         this.SelectedGroup.splice(this.SelectedGroup.indexOf(group), 1);
       }
     }
-    console.log(this.SelectedGroup);
 
   }
 

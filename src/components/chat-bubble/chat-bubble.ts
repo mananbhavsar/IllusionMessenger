@@ -111,8 +111,6 @@ export class ChatBubbleComponent {
         if (snapshot.val()) {
           this.attachRepliedMessage = snapshot.val();
         }
-        console.log(this.attachRepliedMessage);
-        
       });
 
       // this.processBadgeCount();
@@ -183,6 +181,10 @@ export class ChatBubbleComponent {
     if (this.message.MessageType === 'Text') {
       return;
     }
+    if (this.message.MessageType === 'Contact') {
+      this.message.downloading = true;
+      this.openContact();
+    }
     let file: string = this.message.URL;
     //if already downloading
     if (this.message.downloading) {
@@ -203,8 +205,6 @@ export class ChatBubbleComponent {
           case 'Video':
             this.openVideo();
             break;
-          case 'Contact':
-            this.openContact();
         }
       }
 
@@ -213,14 +213,11 @@ export class ChatBubbleComponent {
   }
 
   openContact() {
-    console.log('opened');
-
     let modalCtrl = this.modal.create(ContactDetailPage, this.message);
     modalCtrl.present();
   }
 
   openImage() {
-    event.preventDefault();
     this.element = this._elementRef.nativeElement.querySelector('#message-image-' + this.message.key);
     let image = this._imageViewerController.create(this.element);
     image.present();

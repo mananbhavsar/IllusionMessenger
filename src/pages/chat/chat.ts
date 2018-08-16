@@ -29,7 +29,6 @@ import { LogoutPage } from '../logout/logout';
 import { DateProvider } from './../../providers/date/date';
 import { ChatOptionsPage } from "./chat-options/chat-options";
 import { SavedMediaPage } from "./chat-options/saved-media/saved-media";
-import { ForwardMessagePage } from './forward-message/forward-message';
 import { Contacts } from '@ionic-native/contacts';
 import { Clipboard } from '@ionic-native/clipboard';
 
@@ -935,7 +934,6 @@ export class ChatPage {
 
   attachContact() {
     this.contacts.pickContact().then((data: any) => {
-      console.log(data);
       this.contacts = data._objectInstance;
       this.sendToFirebase('', 'Contact', null, this.topicID, this.topicCode, null, null, this.contacts);
     }).then((error: any) => {
@@ -1094,7 +1092,6 @@ export class ChatPage {
   }
 
   getChildElement(element, className) {
-    console.log(element);
     switch (className) {
       case '.text':
         return element.target.parentElement.querySelector('.text');
@@ -1108,7 +1105,7 @@ export class ChatPage {
   }
 
 
-  getOptions(ref, element, message) {
+  getOptions(element, message) {
     this.messageKey = this.getElementMessageKey(element.target);
     if (this.getChildElement(element, '.text')) {
       this.selectedMessageElement = this.getChildElement(element, '.text');
@@ -1122,9 +1119,6 @@ export class ChatPage {
     if (this.getChildElement(element, '.audio')) {
       this.selectedMessageElement = this.getChildElement(element, '.audio');
     }
-    console.log(this.selectedMessageElement);
-
-
     this.headerButtons = [];
     if (this.common.hasClass(this.selectedMessageElement, 'text')) {
       this.headerButtons.push(
@@ -1156,11 +1150,6 @@ export class ChatPage {
       this.common.hasClass(this.selectedMessageElement, 'picture')) {
       this.headerButtons.push(
         {
-          icon: 'ios-undo',
-          name: 'ios-undo',
-          value: this.selectedMessageElement
-        },
-        {
           icon: 'ios-redo',
           name: 'ios-redo',
         },
@@ -1185,6 +1174,9 @@ export class ChatPage {
           name: 'more-option'
         });
     }
+    if(this.common.hasClass(this.selectedMessageElement, 'contact')){
+      return false;
+    }
   }
 
   deselectOptions(event) {
@@ -1204,15 +1196,11 @@ export class ChatPage {
       case 'picture':
       case 'video':
       case 'audio':
-        console.log(this.selectedMessageElement.parentElement.getAttribute('data-url'));
-
         return this.selectedMessageElement.parentElement.getAttribute('data-url');
     }
   }
 
   forwardMessage() {
-    console.log(this.selectedMessageElement);
-
     if (this.selectedMessageElement) {
       let message = '';
       let messageType = 'Text';
@@ -1261,8 +1249,6 @@ export class ChatPage {
     } else if(this.common.hasClass(element, 'audio')){
       this.replytoImg = 'assets/img/video.png';
     }
-    console.log(this.replytoImg);
-
     this.hideWhenReply = true;
   }
 

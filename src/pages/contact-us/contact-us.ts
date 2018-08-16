@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, Events } from 'ionic-angular';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { ModalController, ViewController } from 'ionic-angular';
+import { ViewController } from 'ionic-angular';
 
 
 import { ConnectionProvider } from '../../providers/connection/connection';

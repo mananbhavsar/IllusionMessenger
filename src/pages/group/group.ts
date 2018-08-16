@@ -9,7 +9,6 @@ import { ChatPage } from './../chat/chat';
 import { GroupOptionsPage } from './../group/group-options/group-options';
 import { CloseTopicPage } from './../topic/close-topic/close-topic';
 import { CreateTopicPage } from './../topic/create-topic/create-topic';
-import { reorderArray } from 'ionic-angular';
 import { FlashNewsProvider } from '../../providers/flash-news/flash-news';
 
 
@@ -43,14 +42,7 @@ export class GroupPage {
   ) {
     this.group_id = this.navParams.data.GroupID;
     this.setTitle();
-  }
-
-  ionViewDidEnter() {
-    this.getGroupDetails().then(status => {
-
-    }).catch(error => {
-
-    });
+    this.getGroupDetails();
   }
 
   getGroupDetails() {
@@ -69,8 +61,6 @@ export class GroupPage {
           this.group = response;
           if (this.group) {
             this.group.FlashNews.forEach((news, key) => {
-              console.log(news);
-              
               this.flashNewsProvider.openUnreadFlashNews(news);
             });
             this.setForBadge();

@@ -1,7 +1,12 @@
 page-contact-detail {
 ion-list{
-    &.list-md[inset]{
+    &.list-md{
         border-bottom: 1px solid gainsboro;
+    }
+}
+ion-row{
+    ion-icon{
+      padding: 8px 0;
     }
 }
 }

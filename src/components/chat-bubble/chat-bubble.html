@@ -5,10 +5,9 @@
       <ion-icon name="ios-star" *ngIf="message.UserID === responsibleUserID"></ion-icon>
     </div>
   </div>
-  <div class="message-body" (click)="openFile()" [attr.data-url]="message.URL">
+  <div class="message-body" (tap)="openFile()" [attr.data-url]="message.URL">
       <ng-container *ngIf="message.IsReply">
-        <div class="reply-image-message"></div>
-          <div class="reply-message" *ngIf="attachRepliedMessage">{{attachRepliedMessage.Message}}</div>
+          <div [ngClass]="message.UserID === userID ? 'reply-message-mine' : 'reply-message-others'" class="reply-message" *ngIf="attachRepliedMessage">{{attachRepliedMessage.Message}}</div>
         </ng-container>
     <ng-container *ngIf="message.IsForward">
       <div class="forward-message"><ion-icon name="ios-redo"></ion-icon>Forwarded</div>
@@ -24,14 +23,14 @@
         <img *ngIf="message.downloaded === false" src="assets/img/camera.png" />
       </div>
       <div *ngSwitchCase="'Audio'" class="audio image-center-small" [ngClass]="{'done':message.downloaded}">
-        <img src="assets/img/audio.png" />
+        <img class="audio" src="assets/img/audio.png" />
       </div>
       <div *ngSwitchCase="'Video'" class="video image-center-small" [ngClass]="{'done':message.downloaded}">
-        <img src="assets/img/video.png" />
+        <img class="video" src="assets/img/video.png" />
       </div>
       <div *ngSwitchCase="'Contact'"  class="contact image-center-small">
         <div><img src="assets/img/contact.png"></div>
-        <div>{{message.Contact.displayName}}</div>
+        <div text-wrap class="contact-name">{{message.Contact.displayName}}</div>
       </div>
       
       

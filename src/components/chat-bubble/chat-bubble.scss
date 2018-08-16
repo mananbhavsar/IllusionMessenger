@@ -40,6 +40,16 @@ chat-bubble {
                 color: orange;
             }
         }
+        .contact{
+            &.img{
+                width: 60px;
+            }
+        }
+        .contact-name{
+            margin: 0px 10px;
+            width: 165px;
+            word-break: break-word;
+        }
         .message-body {
             .download {
                 position: absolute;
@@ -96,7 +106,13 @@ chat-bubble {
                 overflow: hidden;
                 -webkit-line-clamp: 2;
                 -webkit-box-orient: vertical;
-                background: #c9e1ad;
+            }
+
+            .reply-message-mine{
+                background-color: rgb(200, 226, 166);
+            }
+            .reply-message-others{
+                background-color: #eeecec;
             }
             .picture {
                 &.done {

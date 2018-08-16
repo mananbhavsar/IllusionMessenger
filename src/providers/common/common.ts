@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Platform, ModalController, Events, normalizeURL } from 'ionic-angular';
-
-import { Global } from '../../app/global';
+import { Platform, Events } from 'ionic-angular';
 
 import { File } from '@ionic-native/file';
 

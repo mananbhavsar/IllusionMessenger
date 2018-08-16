@@ -2,13 +2,10 @@ import { Component, ElementRef } from '@angular/core';
 import { IonicPage, Events, ActionSheetController, NavController, NavParams, normalizeURL, ViewController } from 'ionic-angular';
 
 import { File } from '@ionic-native/file';
-import { VideoEditor, CreateThumbnailOptions } from '@ionic-native/video-editor';
+import { VideoEditor } from '@ionic-native/video-editor';
 import { PhotoLibrary } from '@ionic-native/photo-library';
-import { StreamingMedia, StreamingVideoOptions } from '@ionic-native/streaming-media';
-
-import * as _ from 'underscore';
+import { StreamingMedia } from '@ionic-native/streaming-media';
 import * as mime from 'mime-types';
-import * as moment from 'moment';
 import { Global } from '../../../../app/global';
 import { UUID } from 'angular2-uuid';
 import { TranslateService } from "@ngx-translate/core";

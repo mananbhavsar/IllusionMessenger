@@ -42,7 +42,6 @@ export class TopicComponent {
       }
       topicRef.on('value', snapshot => {
         this.badgeCount = snapshot.val();
-
       });
 
     }
@@ -96,8 +95,6 @@ export class TopicComponent {
   }
 
   forwardToGroup(topic) {
-    console.log(topic);
-    
     let modal = this.modal.create(ForwardTopicPage,topic);
     modal.present();
   }

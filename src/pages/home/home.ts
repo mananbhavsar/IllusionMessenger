@@ -13,8 +13,6 @@ import { FirebaseTransactionProvider } from './../../providers/firebase-transact
 import { NotificationsProvider } from './../../providers/notifications/notifications';
 import { AddFlashPage } from './../group/add-flash/add-flash';
 import { CreateTopicPage } from './../topic/create-topic/create-topic';
-import { SearchPage } from '../../pages/search/search';
-import { FlashPage } from '../../pages/flash/flash';
 import { CreateGroupPage } from '../manage-group/create-group/create-group';
 import { CreateTagPage } from '../create-tag/create-tag';
 import { CreateUserPage } from '../create-user/create-user';

@@ -67,7 +67,6 @@ export class MyApp {
     lastOfflineMessageShown: number = 0;
     latitude: number = 0.0;
     longitude: number = 0.0;
-    hide: boolean = true;
     // List of pages that can be navigated to from the left menu
     // the left menu only works after login
     // the login page disables the left menu
@@ -77,6 +76,9 @@ export class MyApp {
     ];
     loggedInPages: PageInterface[] = [
         { title: 'Home', translate_key: 'HomeScreen._Home_', name: 'HomePage', component: HomePage, icon: 'home' },
+        { title: 'Manage Group', translate_key: 'HomeScreen._ManageGroup_', name: 'ManageGroupPage', component: ManageGroupPage, icon: 'people' },
+        { title: 'Tag', translate_key: 'HomeScreen._Tag_', name: 'TagPage', component: TagPage, icon: 'tab' },
+        { title: 'Users', translate_key: 'HomeScreen._users_', name: 'UsersPage', component: UsersPage, icon: 'person' }
     ];
     accountPages: PageInterface[] = [
         { title: 'Account', translate_key: 'Common._Account_', name: 'AccountPage', component: AccountPage, icon: 'user' },
@@ -86,12 +88,6 @@ export class MyApp {
         { title: 'Login', translate_key: 'LoginPage._log_in', name: 'LoginPage', component: LoginPage, icon: 'log-in' },
         { title: 'Forgot Password', translate_key: 'LoginPage._Forgot_Password', name: 'ForgotPasswordPage', component: ForgotPasswordPage, icon: 'key' },
     ];
-
-    hiddenPages: PageInterface[] = [
-        { title: 'Manage Group', translate_key: 'HomeScreen._ManageGroup_', name: 'ManageGroupPage', component: ManageGroupPage, icon: 'people' },
-        { title: 'Tag', translate_key: 'HomeScreen._Tag_', name: 'TagPage', component: TagPage, icon: 'tab' },
-        { title: 'Users', translate_key: 'HomeScreen._users_', name: 'UsersPage', component: UsersPage, icon: 'person' }
-    ]
 
     //mubass
     error_translate: string = 'Error occurred! Try again';
@@ -216,13 +212,19 @@ export class MyApp {
         return;
     }
 
+
     /**
      * checking post login if user is Authorized to access this page
      * @param page 
      */
     isAuthorized(page: PageInterface) {
         if (this.user && this.user._user) {
-            return true;
+            //creation rights
+            if (['ManageGroupPage', 'TagPage', 'UsersPage'].indexOf(page.name) > -1) {
+                return [5, 15, 16].indexOf(this.user._user.LoginUserID) > -1;
+            } else {
+                return true;
+            }
         }
         return false;
     }
@@ -288,18 +290,9 @@ export class MyApp {
                 }
             }
         });
-        this.events.subscribe('user:ready', (user) => {
-            if (user) {
-                if (user.LoginUserID === 266 || user.LoginUserID === 15 || user.LoginUserID === 16 || user.LoginUserID === 5) {
-                    this.hide = false;
-                } else {
-                    this.hide = true;
-                }
-            }
-        });
 
         this.events.subscribe('page:setroot', (data) => {
-            
+
             this.nav.setRoot(data.page, data.params);
         });
 

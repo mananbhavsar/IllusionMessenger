@@ -3,8 +3,6 @@ import * as firebase from 'firebase';
 import { Events, Nav } from 'ionic-angular';
 import * as _ from 'underscore';
 import { UserProvider } from '../user/user';
-import { FlashPage } from '../../pages/flash/flash';
-import { HomePage } from '../../pages/home/home';
 
 
 @Injectable()

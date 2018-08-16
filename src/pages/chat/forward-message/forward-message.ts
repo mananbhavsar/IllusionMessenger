@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController,  ViewController,  NavParams } from 'ionic-angular';
 import { ConnectionProvider } from '../../../providers/connection/connection';
-import { ViewController } from 'ionic-angular/navigation/view-controller';
 
 @IonicPage()
 @Component({

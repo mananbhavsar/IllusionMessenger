@@ -258,7 +258,6 @@ export class ChatOptionsPage {
             });
             modal.onDidDismiss(data => {
               if (data) {
-                console.log(data);
                 this.connection.doPost('Chat/UpdateTopicStatus', {
                   GroupID: this.groupID,
                   TopicID: this.topicID,

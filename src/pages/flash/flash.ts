@@ -3,7 +3,6 @@ import { IonicPage, NavController, Platform, ViewController, NavParams } from 'i
 import { ConnectionProvider } from '../../providers/connection/connection';
 import { ImageViewerController } from 'ionic-img-viewer';
 import { FlashNewsProvider } from '../../providers/flash-news/flash-news';
-import { HomePage } from '../home/home';
 
 @IonicPage()
 @Component({

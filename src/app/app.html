@@ -51,12 +51,6 @@
                     <!-- <ion-icon [name]="p.icon" [color]="isActive(p)"></ion-icon> -->
                     {{p.translate_key | translate}}
                 </button>
-                <div *ngIf="!hide">
-                    <button ion-item menuClose *ngFor="let p of hiddenPages" (click)="openPage(p)" [hidden]="!isAuthorized(p)">
-                        <!-- <ion-icon [name]="p.icon" [color]="isActive(p)"></ion-icon> -->
-                        {{p.translate_key | translate}}
-                    </button>
-                </div>
             </ion-list>
 
 

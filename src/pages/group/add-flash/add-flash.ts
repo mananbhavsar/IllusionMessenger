@@ -20,7 +20,7 @@ export class AddFlashPage {
   attachments: Array<any> = [];
   hourAddition: number = 2;
   isBrowser: boolean;
-  flashNews_Attachment : any = [];
+  flashNews_Attachment: any = [];
 
   constructor(
     public navCtrl: NavController,
@@ -49,8 +49,8 @@ export class AddFlashPage {
   }
 
   addFlash() {
-    let Attachment : any = {};
-    Attachment = {"Attachment" : this.attachments};
+    let Attachment: any = {};
+    Attachment = { "Attachment": this.attachments };
     this.connection.doPost('Chat/CreateFlashNews', {
       GroupID: this.group_id,
       Flash: this.addFlashForm.get('flash_message').value,

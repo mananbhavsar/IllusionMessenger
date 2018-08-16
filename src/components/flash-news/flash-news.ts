@@ -1,5 +1,5 @@
 import { DateProvider } from './../../providers/date/date';
-import { Slides, NavController, ModalController} from 'ionic-angular';
+import { Slides, NavController, ModalController } from 'ionic-angular';
 import { Component, Input, SimpleChanges, ViewChild } from '@angular/core';
 import { FlashPage } from '../../pages/flash/flash';
 
@@ -10,6 +10,7 @@ import { FlashPage } from '../../pages/flash/flash';
 export class FlashNewsComponent {
   @ViewChild('slides') slides: Slides;
   @Input() flashNews: Array<any> = [];
+  @Input() GroupID: number;
 
   flashTimer = null;
   flashes: Array<any> = [];
@@ -19,8 +20,8 @@ export class FlashNewsComponent {
 
   constructor(
     private _date: DateProvider,
-    private navCntl : NavController,
-    public modalCntl : ModalController
+    private navCntl: NavController,
+    public modalCntl: ModalController
   ) {
 
   }
@@ -90,8 +91,9 @@ export class FlashNewsComponent {
     });
   }
 
-  openFlashNews(flashNews){
-    this.modalCntl.create(FlashPage,flashNews).present();
+  openFlashNews(event,flashNews, GroupID) {
+    event.preventDefault();
+    this.modalCntl.create(FlashPage, { news: flashNews, id: GroupID }).present();
   }
 
 }

@@ -40,6 +40,7 @@ export class CreateTopicPage {
 
   selectedParticipant: Array<string> = [];
   participantsName: any = {};
+  participantsCount : number = 0;
   global: any = {};
 
   createForm: FormGroup;
@@ -71,7 +72,7 @@ export class CreateTopicPage {
     this.createForm = this.formBuilder.group({
       private: [true],
       group_id: [''],
-      name: ['', [Validators.required, Validators.maxLength(60),Validators.pattern('[a-zA-Z ]+$')]],
+      name: ['', [Validators.required, Validators.maxLength(60)]],
       assigned: [0, [Validators.required]],
       participants: [''],
       due_date: new FormControl(moment().local().add(this.hourAddition, 'hours').format())
@@ -239,6 +240,7 @@ export class CreateTopicPage {
     modal.onDidDismiss(data => {
       this.setTitle();
       if (data) {
+    this.participantsCount = data.selectedParticipantIDs.length;
         this.selectedParticipantIDs = data.selectedParticipantIDs;
         this.createForm.patchValue({
           assigned: data.assigned

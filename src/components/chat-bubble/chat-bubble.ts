@@ -4,7 +4,7 @@ import { FileTransfer } from '@ionic-native/file-transfer';
 import { Network } from '@ionic-native/network';
 import { StreamingMedia } from '@ionic-native/streaming-media';
 import * as firebase from 'firebase';
-import { Events, NavController, Platform } from 'ionic-angular';
+import { Events, NavController, ModalController, Platform } from 'ionic-angular';
 import { ImageViewerController } from 'ionic-img-viewer';
 import * as moment from 'moment';
 import 'moment/locale/en-gb';
@@ -12,6 +12,7 @@ import * as _ from 'underscore';
 import { Global } from '../../app/global';
 import { CommonProvider } from "../../providers/common/common";
 import { FileOpsProvider } from "../../providers/file-ops/file-ops";
+import { ContactDetailPage } from '../../pages/chat/contact-detail/contact-detail';
 import { TranslateServiceProvider } from '../../providers/translate-service/translate-service';
 
 
@@ -34,12 +35,13 @@ export class ChatBubbleComponent {
   @Input() users: any = {};
   @Input() myLanguage: string = 'en';
   @Input() responsibleUserID: number = 0;
-
+  @Input() replyMessage: string;
   global: any = Global;
 
   pathIdentifier: string = null;
   basePath: string = '';
   messagePath: string = '';
+  attachRepliedMessage: any;
   statusRef = null;
   dataDirectory: string = null;
   downloadDirectory: string = null;
@@ -61,6 +63,7 @@ export class ChatBubbleComponent {
     private network: Network,
     private translate: TranslateServiceProvider,
     private fileOps: FileOpsProvider,
+    private modal: ModalController
   ) {
     this.global = Global;
     this.isCordova = this.platform.is('cordova');
@@ -73,6 +76,8 @@ export class ChatBubbleComponent {
     this.events.subscribe('platform:onPause', (event) => {
 
     });
+
+
 
   }
 
@@ -100,6 +105,12 @@ export class ChatBubbleComponent {
 
         this.processFile();
       }).catch(error => {
+      });
+
+      firebase.database().ref(this.basePath + 'Chat' + '/' + this.message.ReplyMessageKey).once("value", (snapshot) => {
+        if (snapshot.val()) {
+          this.attachRepliedMessage = snapshot.val();
+        }
       });
 
       // this.processBadgeCount();
@@ -167,8 +178,12 @@ export class ChatBubbleComponent {
       this.events.publish('toast:error', this.not_available_offline_translate);
       return;
     }
-    if(this.message.MessageType === 'Text'){
+    if (this.message.MessageType === 'Text') {
       return;
+    }
+    if (this.message.MessageType === 'Contact') {
+      this.message.downloading = true;
+      this.openContact();
     }
     let file: string = this.message.URL;
     //if already downloading
@@ -195,6 +210,11 @@ export class ChatBubbleComponent {
 
     }).catch(error => {
     });
+  }
+
+  openContact() {
+    let modalCtrl = this.modal.create(ContactDetailPage, this.message);
+    modalCtrl.present();
   }
 
   openImage() {
@@ -421,4 +441,5 @@ export class ChatBubbleComponent {
     }
     return this.message.Translation[this.myLanguage];
   }
+
 }

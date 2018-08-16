@@ -16,6 +16,8 @@ import { FirebaseTransactionProvider } from './../../providers/firebase-transact
 import { NotificationsProvider } from './../../providers/notifications/notifications';
 import { AddFlashPage } from './../group/add-flash/add-flash';
 import { CreateTopicPage } from './../topic/create-topic/create-topic';
+import { FlashNewsProvider } from '../../providers/flash-news/flash-news';
+import { ReadMessageProvider } from '../../providers/read-message/read-message';
 
 @IonicPage()
 @Component({
@@ -27,7 +29,8 @@ export class HomePage {
     global: any = {};
     data: any = null;
     badges: any = {};
-
+    query: any = null;
+    searchInputBtn: boolean = false;
     firebaseConnected: boolean = false;
 
     flashNews: Array<any> = [];
@@ -85,11 +88,14 @@ export class HomePage {
         public navCtrl: NavController,
         public connection: ConnectionProvider,
         public user: UserProvider,
+        public read: ReadMessageProvider,
         public events: Events,
         private translate: TranslateServiceProvider,
+        public flashNewsProvider: FlashNewsProvider,
         private _oneSignal: OneSignal,
         private platform: Platform,
         private _network: Network,
+        private _flashNews: FlashNewsProvider,
         private modalController: ModalController,
         private notifications: NotificationsProvider,
         private _firebaseTransaction: FirebaseTransactionProvider,
@@ -100,6 +106,12 @@ export class HomePage {
         //listening to Resume & Pause events
         this.events.subscribe('platform:onResumed', () => {
             this.getData(false).catch(error => { });
+        });
+
+        this.events.subscribe('read:message', (response) => {
+            if (response) {
+                this.getData(false);
+            }
         });
 
         this.events.subscribe('priority:set', (data) => {
@@ -152,27 +164,40 @@ export class HomePage {
         });
     }
 
-    getData(isPullDown) {
+    getData(isPullDown, search: boolean = false) {
         return new Promise((resolve, reject) => {
-            this.dataFetched = _.size(this.data) > 0;
+            if (!search) {
+                this.dataFetched = _.size(this.data) > 0;
+            }
             this.connection.doPost('Chat/GetTaskDetail', {
                 PageNumber: this.page,
                 RowsPerPage: 100,
-                Query: '',
+                Query: this.query,
                 OrderBy: this.sort_by,
                 Order: this.sort_order,
             }, false).then((response: any) => {
                 this.dataFetched = true;
                 //groups
                 this.data = response;
-                //flash
-                if (response.FlashNews) {
-                    this.flashNews = response.FlashNews;
+                if (!_.isEmpty(this.data)) {
+                    //flash
+                    if (response.FlashNews) {
+                        this.flashNews = response.FlashNews;
+                        this.flashNews.forEach((news, key) => {
+                            this.flashNewsProvider.openUnreadFlashNews(news);
+                        });
+                    }
+                    if (!search) {
+                        this.registerDevice(isPullDown);
+                    }
+                    this.page++;
+                    resolve(true);
+                } else {
+                    this.page = -1;
+                    resolve(false);
                 }
-
-                this.registerDevice(isPullDown);
-                resolve(true);
             }).catch(error => {
+                this.page = -1;
                 this.flashNews = [];
             })
         });
@@ -247,6 +272,18 @@ export class HomePage {
         });
     }
 
+    paginate(paginator) {
+        this.getData(false).then(status => {
+            if (status) {
+                paginator.complete();
+            } else {
+                paginator.enable(false);
+            }
+        }).catch(error => {
+            paginator.enable(false);
+        });
+    }
+
     connectToFireBase() {
         //user setting
         this.user.getUser().then(user => {
@@ -300,22 +337,13 @@ export class HomePage {
     }
 
     readSelected() {
-        this.connection.doPost('Chat/ReadAll', {
-            ReadAll: false,
-            GroupCode: this.selectedGroup.map(GroupCode => GroupCode.GroupCode),
-            TopicCode: this.selectedTopic.toString(),
-        }).then((response: any) => {
+        this.read.read(this.selectedGroup, this.selectedTopic).then((response) => {
             if (response) {
-                this.getData(false);
                 this.selectedTopic = [];
                 this.selectedGroup = [];
                 this.readAllSelected = true;
                 this.readOptions = false;
-                if (response.FireBaseTransaction) {
-                    this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { })
-                }
             }
-        }).catch((error) => {
         });
     }
 
@@ -385,10 +413,15 @@ export class HomePage {
             case 'sort':
                 this.openSortOptions();
                 break;
+            case 'search':
+                this.searchData();
+                break;
             case 'flash':
                 this.addFlash();
+                break;
         }
     }
+
 
     fabButtonClicked(event) {
         switch (event.name) {
@@ -421,8 +454,55 @@ export class HomePage {
     }
 
     searchData() {
-        this.navCtrl.push('SearchPage');
+        if (this.selectedTab === 'stats') {
+            this.events.publish('toast:create', 'Search not available here');
+        } else {
+            if (this.searchInputBtn) {
+                this.searchInputBtn = false;
+                this.data = [];
+                this.query = null;
+                this.initializeItems();
+            } else if (this.searchInputBtn === false) {
+                this.searchInputBtn = true;
+            }
+        }
     }
+
+    initializeItems() {
+        this.page = 0;
+        this.getData(false, true).catch(error => {
+        });
+    }
+
+    onCancel(event) {
+        this.query = null;
+        this.initializeItems();
+    }
+
+    onClear(event) {
+        this.query = null;
+        this.initializeItems();
+    }
+
+
+    getItems(event) {
+        // set val to the value of the ev target
+        let val = event.target.value;
+        if (val && val.trim() != '') {
+            // if the value is an empty string don't filter the items
+            this.query = val;
+            this.page = 0;
+            this.data = [];
+            this.getData(false, true).catch(error => {
+            });
+
+        } else {
+            this.data = [];
+            this.query = null;
+            this.initializeItems();
+        }
+    }
+
 
     addFlash() {
         let flashModal = this.modalController.create(AddFlashPage, {

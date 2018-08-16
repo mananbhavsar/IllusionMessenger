@@ -35,6 +35,7 @@ import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { IonicImageViewerModule } from 'ionic-img-viewer';
 import { ElasticModule } from 'ng-elastic';
 import { OrderModule } from 'ngx-order-pipe';
+import { VideoPlayer } from '@ionic-native/video-player';
 import { ComponentsModule } from '../components/components.module';
 import { AboutPageModule } from '../pages/about/about.module';
 import { AccountPageModule } from '../pages/account/account.module';
@@ -71,6 +72,7 @@ import { TopicPageModule } from '../pages/topic/topic.module';
 import { TutorialPageModule } from '../pages/tutorial/tutorial.module';
 import { WelcomePageModule } from '../pages/welcome/welcome.module';
 import { PipesModule } from "../pipes/pipes.module";
+import { ForwardMessagePageModule } from '../pages/chat/forward-message/forward-message.module';
 import { CommonProvider } from "../providers/common/common";
 import { ConnectionProvider } from '../providers/connection/connection';
 import { DateProvider } from '../providers/date/date';
@@ -81,6 +83,13 @@ import { TranslateServiceProvider } from '../providers/translate-service/transla
 import { UserProvider } from '../providers/user/user';
 import { UserAutoCompleteService } from './../pages/topic/create-topic/user-auto-complete';
 import { MyApp } from './app.component';
+import { FlashNewsProvider } from '../providers/flash-news/flash-news';
+import { ForwardTopicPageModule } from '../pages/topic/forward-topic/forward-topic.module';
+import { ReadMessageProvider } from '../providers/read-message/read-message';
+import { RatingPageModule } from '../pages/chat/rating/rating.module';
+import { Contacts } from '@ionic-native/contacts';
+import { Clipboard } from '@ionic-native/clipboard';
+import { ContactDetailPageModule } from '../pages/chat/contact-detail/contact-detail.module';
 
 @NgModule({
     declarations: [
@@ -115,9 +124,12 @@ import { MyApp } from './app.component';
         CreateTopicPageModule,
         EditProfilePageModule,
         ForgotPasswordPageModule,
+        ForwardMessagePageModule,
         TagPageModule,
+        ForwardTopicPageModule,
         GroupPageModule,
         GroupOptionsPageModule,
+        ContactDetailPageModule,
         DueTopicsPageModule,
         HelpPageModule,
         SearchPageModule,
@@ -138,7 +150,8 @@ import { MyApp } from './app.component';
         CreateGroupPageModule,
         PipesModule,
         ManageGroupPageModule,
-        DailyShedulePageModule
+        DailyShedulePageModule,
+        RatingPageModule
     ],
     bootstrap: [IonicApp],
     entryComponents: [
@@ -156,9 +169,12 @@ import { MyApp } from './app.component';
         Keyboard,
         SplashScreen,
         Diagnostic,
+        Clipboard,
         SQLite,
         CallNumber,
+        VideoPlayer,
         Badge,
+        Contacts,
         Device,
         InAppBrowser,
         Camera,
@@ -184,7 +200,9 @@ import { MyApp } from './app.component';
         PhotoViewer,
         UserAutoCompleteService,
         DateProvider,
+        FlashNewsProvider,
         TranslateServiceProvider,
+        ReadMessageProvider,
 
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]

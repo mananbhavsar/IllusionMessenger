@@ -1,9 +1,11 @@
 import { Component, EventEmitter, Input, NgZone, Output } from '@angular/core';
 import * as firebase from 'firebase';
-import { Events, NavController } from 'ionic-angular';
+import { Events, NavController, ModalController } from 'ionic-angular';
 import * as moment from "moment";
 import { ConnectionProvider } from '../../providers/connection/connection';
 import { DateProvider } from '../../providers/date/date';
+import { ForwardTopicPage } from '../../pages/topic/forward-topic/forward-topic';
+import { ReadMessageProvider } from '../../providers/read-message/read-message';
 
 @Component({
   selector: 'topic',
@@ -25,12 +27,14 @@ export class TopicComponent {
     private zone: NgZone,
     private connection: ConnectionProvider,
     private _date: DateProvider,
-    public events: Events
+    public events: Events,
+    public read: ReadMessageProvider,
+    public modal : ModalController
   ) {
 
   }
 
-  ngOnChanges() {  
+  ngOnChanges() {
     if (this.topic) {
       let topicRef = firebase.database().ref('Badge/' + this.connection.user.id + '/Groups/' + this.topic.GroupCode + '/Topics/' + this.topic.TopicCode);
       if (this.badgeCount) {
@@ -38,19 +42,18 @@ export class TopicComponent {
       }
       topicRef.on('value', snapshot => {
         this.badgeCount = snapshot.val();
-
       });
 
     }
   }
 
-  openTopic() {    
+  openTopic() {
     this.zone.run(() => {
       this.clicked.emit({
         topic: this.topic,
         type: this.type
       });
-    });    
+    });
     this.navCtrl.push('ChatPage', {
       topicID: this.topic.TopicID,
       groupID: this.group_id,
@@ -65,6 +68,11 @@ export class TopicComponent {
     });
   }
 
+  readSelected(topic) {
+    this.read.read(null, topic.TopicCode).then((response: any) => {
+    });
+  }
+
   setPriority(event) {
     event.preventDefault();
     event.stopPropagation();
@@ -72,7 +80,7 @@ export class TopicComponent {
     this.connection.doPost('Chat/SetPriority', {
       TopicID: this.topic.TopicID,
       IsPriority: !this.topic.IsPriority
-    },false).then((response: any) => {
+    }, false).then((response: any) => {
       this.events.publish('priority:set');
       this.topic.IsPriority = !this.topic.IsPriority;
       this.events.publish('toast:create', response.Data.Message);
@@ -86,5 +94,10 @@ export class TopicComponent {
     return null;
   }
 
-  
+  forwardToGroup(topic) {
+    let modal = this.modal.create(ForwardTopicPage,topic);
+    modal.present();
+  }
+
+
 }

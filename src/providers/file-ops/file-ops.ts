@@ -1,12 +1,9 @@
-import { Storage } from '@ionic/storage';
 import { Injectable } from '@angular/core';
 import { Platform, Events, normalizeURL } from 'ionic-angular';
-
-import * as _ from 'underscore';
 import * as mime from 'mime-types';
 import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer';
 import { File } from '@ionic-native/file';
-import { StreamingMedia, StreamingVideoOptions } from '@ionic-native/streaming-media';
+import { StreamingMedia } from '@ionic-native/streaming-media';
 
 import { Network } from '@ionic-native/network';
 import { AndroidPermissions } from '@ionic-native/android-permissions';
@@ -285,9 +282,9 @@ export class FileOpsProvider {
 
   uploadFile(file, params, identifier) {
     return new Promise((resolve, reject) => {
-      let fileName = this.getFileName(file);
+      let fileName = this.getFileName(file);    
       const fileTransfer: FileTransferObject = this.transfer.create();
-      fileTransfer.upload(file, Global.SERVER_URL + 'CreateFlashNews_Attachement ', this.setFileOptions(file, params)).then(data => {
+      fileTransfer.upload(file, Global.SERVER_URL + 'Chat/CreateFlashNews_Attachement', this.setFileOptions(file, params)).then(data => {
         if (data.response.indexOf('http') === -1) {
           reject(data);
         } else if (data.response.indexOf('>') > -1) {
@@ -321,7 +318,6 @@ export class FileOpsProvider {
     file = file.substring(0, file.lastIndexOf('?'));
     let fileName = this.getFileName(file);
     let fileExtension = this.getFileExtension(file);
-
     let options: FileUploadOptions = {
       fileKey: 'file',
       fileName: fileName,

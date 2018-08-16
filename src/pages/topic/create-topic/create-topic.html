@@ -18,7 +18,6 @@
             ({{createForm.get('name').value.length}}/60)
           </div>
         <div class="error-message-block" *ngIf="createForm.controls.name.errors && (createForm.controls.name.dirty || createForm.controls.name.touched)">
-            <span *ngIf="createForm.controls.name.errors.pattern">Enter valid topic name</span>
             <span *ngIf="createForm.controls.name.errors.maxlength">max 60 character only</span>        
           <span *ngIf="createForm.controls.name.errors.required">Name is required</span>
         </div>
@@ -39,6 +38,7 @@
               <ion-list-header>
                 Selected Participants
               </ion-list-header>
+              <ion-note color="communication">{{participantsCount}} participants</ion-note>              
               <ion-item *ngFor="let userID of selectedParticipantIDs" [hidden]="isMe(userID)">
                 {{participantsName[userID]}}
                 <ion-icon item-end color="pickup" *ngIf="this.createForm.get('assigned').value === userID" name="ios-star"></ion-icon>

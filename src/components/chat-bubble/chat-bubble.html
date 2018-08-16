@@ -5,7 +5,13 @@
       <ion-icon name="ios-star" *ngIf="message.UserID === responsibleUserID"></ion-icon>
     </div>
   </div>
-  <div class="message-body" (click)="openFile()">
+  <div class="message-body" (tap)="openFile()" [attr.data-url]="message.URL">
+      <ng-container *ngIf="message.IsReply">
+          <div [ngClass]="message.UserID === userID ? 'reply-message-mine' : 'reply-message-others'" class="reply-message" *ngIf="attachRepliedMessage">{{attachRepliedMessage.Message}}</div>
+        </ng-container>
+    <ng-container *ngIf="message.IsForward">
+      <div class="forward-message"><ion-icon name="ios-redo"></ion-icon>Forwarded</div>
+    </ng-container>
     <div class="download" *ngIf="message.downloaded === false" [ngClass]="{'message-other': message.UserID !== userID }">
       <ion-icon name="md-download" *ngIf="!message.downloading"></ion-icon>
       <ion-spinner name="crescent" *ngIf="message.downloading"></ion-spinner>
@@ -13,15 +19,21 @@
     <ng-container [ngSwitch]="message.MessageType">
       <div *ngSwitchCase="'Text'" class="text" [innerHTML]="getTextMessage()"></div>
       <div *ngSwitchCase="'Image'" class="picture" [ngClass]="message.downloaded ? 'done' : 'image-center-small'">
-        <img *ngIf="message.downloaded" [id]="'message-image-'+message.key" [src]="message.nativeURL || message.URL" width="160" height="160" />
+        <img *ngIf="message.downloaded"  class="picture" [id]="'message-image-'+message.key" [src]="message.nativeURL || message.URL" width="160" height="160" />
         <img *ngIf="message.downloaded === false" src="assets/img/camera.png" />
       </div>
       <div *ngSwitchCase="'Audio'" class="audio image-center-small" [ngClass]="{'done':message.downloaded}">
-        <img src="assets/img/audio.png" />
+        <img class="audio" src="assets/img/audio.png" />
       </div>
       <div *ngSwitchCase="'Video'" class="video image-center-small" [ngClass]="{'done':message.downloaded}">
-        <img src="assets/img/video.png" />
+        <img class="video" src="assets/img/video.png" />
       </div>
+      <div *ngSwitchCase="'Contact'"  class="contact image-center-small">
+        <div><img src="assets/img/contact.png"></div>
+        <div text-wrap class="contact-name">{{message.Contact.displayName}}</div>
+      </div>
+      
+      
     </ng-container>
   </div>
   <div class="message-footer" *ngIf="message.UserID !== 0">

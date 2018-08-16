@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { IonicPage, ViewController, NavController, NavParams } from 'ionic-angular';
 import { HomePage } from '../../home/home';
 import { ConnectionProvider } from '../../../providers/connection/connection';
+import * as moment from "moment";
+import * as firebase from 'firebase';
 import * as _ from 'underscore';
 
 @IonicPage()
@@ -51,6 +53,19 @@ export class DailyShedulePage {
     }).catch((error) => {
       refresher.complete();
     })
+  }
+
+  dueTopicsSeen() {
+    let date = moment().format('YYYY/MM/DD');
+    let ref = firebase.database().ref('DailyScheduler/' + this.connectionProvider.user.LoginUserID
+      + '/' + date);
+    ref.on('value', (status) => {
+      if (status.val() === null) {
+        // update to firebase
+        ref.set(true);
+        this.navCtrl.setRoot(HomePage);
+      }
+    });
   }
 
 }

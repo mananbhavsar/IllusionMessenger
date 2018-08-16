@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, Events, ActionSheetController, NavController, NavParams } from 'ionic-angular';
-import { ModalController } from 'ionic-angular/components/modal/modal-controller';
+import { IonicPage,ModalController, Events, ActionSheetController, NavController, NavParams } from 'ionic-angular';
 import { CreateUserPage } from '../create-user';
 import { ConnectionProvider } from '../../../providers/connection/connection';
 
@@ -120,7 +119,7 @@ export class UsersPage {
     modal.present();
   }
 
-  updateUser(user) {
+  updateUser(user) {  
     let modal = this.modal.create(CreateUserPage, user);
     modal.onDidDismiss((data) => {
       if (data) {

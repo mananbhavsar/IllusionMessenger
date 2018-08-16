@@ -29,6 +29,9 @@ import { LogoutPage } from '../logout/logout';
 import { DateProvider } from './../../providers/date/date';
 import { ChatOptionsPage } from "./chat-options/chat-options";
 import { SavedMediaPage } from "./chat-options/saved-media/saved-media";
+import { Contacts } from '@ionic-native/contacts';
+import { Clipboard } from '@ionic-native/clipboard';
+
 
 
 @IonicPage()
@@ -39,9 +42,13 @@ import { SavedMediaPage } from "./chat-options/saved-media/saved-media";
 export class ChatPage {
   @ViewChild(Content) content: Content;
   @ViewChild('messageInput') messageInput: any;
+  @ViewChild('itemSelected') itemSelected: any;
   global: any = Global;
   platformResumeReference = null;
   platformPauseReference = null;
+  arrowKey: any;
+  replytoImg: any = null;
+  replytoText: any = null;
 
   data: any = {};
 
@@ -51,6 +58,8 @@ export class ChatPage {
   groupCode: string = null;
   group_name: string = 'loading';
   subSubTitle: string;
+  users: any = [];
+  hideWhenReply: boolean = false;
 
   title: string = 'loading';
   isIOS: boolean = false;
@@ -61,6 +70,10 @@ export class ChatPage {
   basePath: string = '';
   path: string = '';
   topicClosePath: string = '';
+  showUsers: boolean = false;
+  messageKey: any = null;
+  replyTo: boolean = false;
+  attachRepliedMessage: any = {};
 
   messagesRef: firebase.database.Reference;
   newMessagesRef: firebase.database.Query;
@@ -124,6 +137,7 @@ export class ChatPage {
   aboutToRecord: boolean = false;
   recordingInProgress: boolean = false;
   recordTime: number = 0;
+
   dataDirectory = null;
   recordMediaFile: MediaObject = null;
   reminders: any;
@@ -136,6 +150,7 @@ export class ChatPage {
   keyboardOpen: boolean = false;
   hasInternet: boolean = true;
   lastReadingTime: number = 0;
+  selectedMessageElement: any;
   offlineMessageText: string = 'The message cannot be downloaded as there is\'nt any internet connection';
 
   myLanguage: string = null;
@@ -149,6 +164,7 @@ export class ChatPage {
   audio_tranlate: string = 'Audio';
   video_translate: string = 'Video';
   cancel_translate: string = 'Cancel';
+  contact_translate: string = 'Contact';
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -165,13 +181,16 @@ export class ChatPage {
     private vibration: Vibration,
     private keyboard: Keyboard,
     private _network: Network,
+    public _elementRef: ElementRef,
     private _firebaseTransaction: FirebaseTransactionProvider,
     private videoCapturePlus: VideoCapturePlus,
     private videoEditor: VideoEditor,
     private elementRef: ElementRef,
     private modal: ModalController,
     private common: CommonProvider,
+    private contacts: Contacts,
     public http: Http,
+    public clipboard: Clipboard,
     private translate: TranslateServiceProvider,
     private _notifications: NotificationsProvider,
     private _fileOps: FileOpsProvider,
@@ -234,6 +253,9 @@ export class ChatPage {
 
 
   setFirebaseRef() {
+
+
+
     //actual chat ref
     this.messagesRef = firebase.database().ref(this.basePath + 'Chat');
 
@@ -258,6 +280,8 @@ export class ChatPage {
       }
     });
   }
+
+
 
   connectFireBase() {
     this.setFirebaseRef();
@@ -284,7 +308,7 @@ export class ChatPage {
           this.scrollBottom('first time message load').then(status => {
             this.readyForPagination = true;
             this.saveOfflineData();
-          }).catch(error => {             
+          }).catch(error => {
           });
         }, 100);
       });
@@ -307,6 +331,9 @@ export class ChatPage {
         this.setOfflineTopicList(this.data);
       }
     });
+
+    //replyedMessage
+
   }
 
   listenToFirebaseEvents(ignoredStart) {
@@ -346,8 +373,8 @@ export class ChatPage {
           setTimeout(() => {
             setTimeout(() => {
               this.scrollBottom('new message').catch(error => {
-                
-               });
+
+              });
             });
           }, 250);
         } else {
@@ -386,8 +413,8 @@ export class ChatPage {
       if (this.typingRefLoaded) {
         setTimeout(() => {
           this.scrollBottom('typing ref init').catch(error => {
-            
-           });
+
+          });
         }, 100);
       }
       this.typingRefLoaded = true;
@@ -499,13 +526,13 @@ export class ChatPage {
     this.platformResumeReference = this.platform.resume.subscribe(() => {
       this.resumed();
     }, error => {
-      
+
     });
 
     this.platformPauseReference = this.platform.pause.subscribe(() => {
       this.doLeaving(false);
     }, error => {
-      
+
     });
 
     //notification subs
@@ -586,10 +613,12 @@ export class ChatPage {
     //checking if user logged in
     if (!_.isEmpty(this.connection.user)) {
       this.initUser();
+
       //get Chat info before we load
       this.initData().then(status => {
         this.listenToEvents();
       }).catch(error => {
+
         this.navCtrl.pop();
       });
     } else {
@@ -640,13 +669,18 @@ export class ChatPage {
           this.headerButtons = [{ icon: 'ios-information-circle-outline', name: 'ios-information-circle-outline' }, { icon: 'ios-more', name: 'more-option' }];
           this.topicCode = this.data.TopicCode;
           this.groupCode = this.data.GroupCode;
+          this.data.User.forEach(user => {
+            if (user.UserID !== this.connection.user.LoginUserID) {
+              this.users.push(user);
+            }
+          });
 
           this.setPath();
           this.setOfflineTopicList(this.data);
           if (response.FireBaseTransaction) {
             this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => {
-              
-             });
+
+            });
           }
           this.setTitle();
           this.setUsers().then((chatUsersList) => {
@@ -654,7 +688,7 @@ export class ChatPage {
             resolve(true);
           }).catch(error => {
             this.navCtrl.setRoot(HomePage);
-            this.events.publish('toast:create', error);    
+            this.events.publish('toast:create', error);
             reject(false);
           })
 
@@ -691,6 +725,7 @@ export class ChatPage {
 
     this.basePath = 'Communications/' + this.pathIdentifier + '/';
 
+
     //Chat close event
     this.topicClosePath = 'CloseTopics/' + this.pathIdentifier + '/' + this.userID;
 
@@ -702,6 +737,7 @@ export class ChatPage {
    * sets title for Chat
    */
   setTitle() {
+
     this.title = null;
     setTimeout(() => {
       this.title = this.data.Topic;
@@ -877,6 +913,13 @@ export class ChatPage {
           }
         },
         {
+          text: this.contact_translate,
+          icon: 'ios-contacts-outline',
+          handler: () => {
+            this.attachContact();
+          }
+        },
+        {
           text: this.cancel_translate,
           role: 'cancel',
           handler: () => {
@@ -888,6 +931,17 @@ export class ChatPage {
 
     actionSheet.present();
   }
+
+  attachContact() {
+    this.contacts.pickContact().then((data: any) => {
+      this.contacts = data._objectInstance;
+      this.sendToFirebase('', 'Contact', null, this.topicID, this.topicCode, null, null, this.contacts);
+    }).then((error: any) => {
+      console.error('Error opening contact.', error)
+    });
+  }
+
+
 
   sendTextMessage(event) {
     if (this.keyboardOpen) {
@@ -904,24 +958,53 @@ export class ChatPage {
       return false;
     }
     if (this.message) {
+
       let textMessage = this.message.trim().replace(/(?:\r\n|\r|\n)/g, '<br/>');
       //clear text
       this.message = '';
 
-      this.sendToFirebase(textMessage).then(data => {
-        setTimeout(() => {
-          this.messageInput.nativeElement.focus();
+      if (this.replyTo) {
+        this.replyTo = false;
+        this.sendToFirebase(textMessage, 'Text', null, this.topicID, this.topicCode, null, this.topicID).then((data) => {
+          if (data) {
+            this.headerButtons.splice(0, 3);
+            this.messageKey = null;
+            this.hideWhenReply = false;
+          }
         });
-      }).catch(error => {
+      } else if (!this.replyTo) {
+        this.replyTo = false;
+        this.sendToFirebase(textMessage).then(data => {
+          setTimeout(() => {
+            this.messageInput.nativeElement.focus();
+          });
+        }).catch(error => {
+          this.message = '';
+        });
+      } else {
         this.message = '';
-      });
-    } else {
-      this.message = '';
+      }
     }
   }
 
-  sendToFirebase(message: string = '', type: string = 'Text', url: any = false) {
+  sendToFirebase(message: string = '', type: string = 'Text', url: any = false,
+    topicID: any = 0, topicCode: string = '', isForwarded: string = null, isReplied: string = null,
+    contact: any = {}) {
     return new Promise((resolve, reject) => {
+      if (topicID === 0) {
+        topicID = this.topicID;
+      }
+      if (topicCode === '') {
+        topicCode = this.topicCode;
+      }
+
+      //find tagged users
+      let taggedUsersID: any = [];
+      this.users.forEach((user, key) => {
+        if (this.message.indexOf(user.User) > -1) {
+          taggedUsersID.push(user.LoginUserID);
+        }
+      });
       let readObject = {};
       readObject[this.userID] = firebase.database.ServerValue.TIMESTAMP;
 
@@ -938,10 +1021,17 @@ export class ChatPage {
           Status: 0,
           URL: url,
           Read: readObject,
-          TopicCode: this.topicCode,
+          TopicCode: topicCode,
+          TaggedUsers: taggedUsersID,
+          TopicID: topicID,
+          IsForward: isForwarded,
+          IsReply: isReplied,
+          ReplyMessageKey: this.messageKey,
+          Contact: contact
         };
 
-        this.messagesRef.push(values).then((messageFromFirebase) => {
+        //add message to firebase
+        firebase.database().ref('Communications/' + this.groupCode + '/' + topicCode + '/' + 'Chat').push(values).then((messageFromFirebase) => {
           let data = {
             Message: message,
             MessageType: type,
@@ -949,6 +1039,14 @@ export class ChatPage {
             key: messageFromFirebase.key,
             Translation: translatedMessages,
             MessageLanguage: this.myLanguage,
+            TaggedUsers: taggedUsersID,
+            TopicID: topicID,
+            TopicCode: topicCode,
+            IsForward: isForwarded,
+            IsReply: isReplied,
+            ReplyMessageKey: this.messageKey,
+            Contact: contact
+
           };
 
           //send to Server
@@ -979,11 +1077,206 @@ export class ChatPage {
   }
 
   onBlur(event) {
-    if (this.keyboardOpen) {
-      event.target.focus();
-    } else {
+    if (this.platform.is('core')) {
 
+    } else if (this.keyboardOpen) {
+      event.target.focus();
     }
+  }
+
+  getElementMessageKey(element) {
+    if (this.common.hasClass(element, 'message-wrapper')) {
+      return element.id.replace('message-', '');
+    }
+    return this.getElementMessageKey(element.parentElement);
+  }
+
+  getChildElement(element, className) {
+    switch (className) {
+      case '.text':
+        return element.target.parentElement.querySelector('.text');
+      case '.audio':
+        return element.target.parentElement.querySelector('.audio');
+      case '.video':
+        return element.target.parentElement.querySelector('.video');
+      case '.picture':
+        return element.target.parentElement.querySelector('.picture');
+    }
+  }
+
+
+  getOptions(element, message) {
+    this.messageKey = this.getElementMessageKey(element.target);
+    if (this.getChildElement(element, '.text')) {
+      this.selectedMessageElement = this.getChildElement(element, '.text');
+    }
+    if (this.getChildElement(element, '.video')) {
+      this.selectedMessageElement = this.getChildElement(element, '.video');
+    }
+    if (this.getChildElement(element, '.picture')) {
+      this.selectedMessageElement = this.getChildElement(element, '.picture');
+    }
+    if (this.getChildElement(element, '.audio')) {
+      this.selectedMessageElement = this.getChildElement(element, '.audio');
+    }
+    this.headerButtons = [];
+    if (this.common.hasClass(this.selectedMessageElement, 'text')) {
+      this.headerButtons.push(
+        {
+          icon: 'ios-undo',
+          name: 'ios-undo',
+          value: this.selectedMessageElement
+        },
+        {
+          icon: 'ios-copy',
+          name: 'ios-copy',
+          value: this.selectedMessageElement
+        },
+        {
+          icon: 'ios-redo',
+          name: 'ios-redo',
+        },
+        {
+          icon: 'ios-information-circle-outline',
+          name: 'ios-information-circle-outline',
+          value: message
+        },
+        {
+          icon: 'ios-more',
+          name: 'more-option'
+        });
+    } else if (this.common.hasClass(this.selectedMessageElement, 'video') ||
+      this.common.hasClass(this.selectedMessageElement, 'audio') ||
+      this.common.hasClass(this.selectedMessageElement, 'picture')) {
+      this.headerButtons.push(
+        {
+          icon: 'ios-redo',
+          name: 'ios-redo',
+        },
+        {
+          icon: 'ios-information-circle-outline',
+          name: 'ios-information-circle-outline',
+          value: message
+        },
+        {
+          icon: 'ios-more',
+          name: 'more-option'
+        });
+    } else {
+      this.headerButtons.push(
+        {
+          icon: 'ios-information-circle-outline',
+          name: 'ios-information-circle-outline',
+          value: message
+        },
+        {
+          icon: 'ios-more',
+          name: 'more-option'
+        });
+    }
+    if(this.common.hasClass(this.selectedMessageElement, 'contact')){
+      return false;
+    }
+  }
+
+  deselectOptions(event) {
+    event.preventDefault();
+    this.messageKey = null;
+    this.selectedMessageElement = null;
+    this.hideWhenReply = false;
+    if (this.headerButtons.length > 2) {
+      this.headerButtons.splice(0, 3);
+    }
+  }
+  checkMessageType(type) {
+    //identify message type
+    switch (type) {
+      case 'text':
+        return this.selectedMessageElement.innerHTML;
+      case 'picture':
+      case 'video':
+      case 'audio':
+        return this.selectedMessageElement.parentElement.getAttribute('data-url');
+    }
+  }
+
+  forwardMessage() {
+    if (this.selectedMessageElement) {
+      let message = '';
+      let messageType = 'Text';
+      let url = null;
+      if (this.common.hasClass(this.selectedMessageElement, 'text')) {
+        message = this.checkMessageType('text');
+      }
+      if (this.common.hasClass(this.selectedMessageElement, 'picture')) {
+        url = this.checkMessageType('picture');
+        messageType = 'Image';
+      }
+      if (this.common.hasClass(this.selectedMessageElement, 'video')) {
+        url = this.checkMessageType('video');
+        messageType = 'Video';
+      }
+      if (this.common.hasClass(this.selectedMessageElement, 'audio')) {
+        url = this.checkMessageType('audio');
+        messageType = 'Audio';
+      }
+
+      let modal = this.modal.create('ForwardMessagePage', { topicID: this.topicID, groupID: this.groupID });
+      modal.onDidDismiss(data => {
+        if (data) {
+          //loop
+          data.forEach((topic) => {
+            this.sendToFirebase(message, messageType, url, topic.TopicID, topic.TopicCode, topic.TopicID).then((data) => {
+              if (data) {
+                this.headerButtons.splice(0, 3);
+              }
+            });
+          });
+        }
+      });
+      modal.present();
+    }
+  }
+
+  getElementToReply(element) {
+    this.replyTo = true;
+    if (this.common.hasClass(element, 'text')) {
+      this.replytoText = this.checkMessageType('text');
+    } else if(this.common.hasClass(element, 'picture')){
+      this.replytoImg = 'assets/img/camera.png';
+    } else if(this.common.hasClass(element, 'audio')){
+      this.replytoImg = 'assets/img/audio.png';
+    } else if(this.common.hasClass(element, 'audio')){
+      this.replytoImg = 'assets/img/video.png';
+    }
+    this.hideWhenReply = true;
+  }
+
+  closeReply(event) {
+    this.hideWhenReply = false;
+    this.replyTo = null;
+    this.messageKey = null;
+    this.headerButtons.splice(0, 3);
+  }
+
+  copyText(element) {
+    this.headerButtons.splice(0, 3);
+    this.events.publish('toast:create', 'Message copied');
+    if (this.isBrowser) {
+      this.copyToClipboard(element);
+    } else {
+      this.clipboard.copy(element.innerHTML);
+    }
+  }
+
+  copyToClipboard(element) {
+    let input = document.createElement('input');
+    document.body.appendChild(input);
+    input.value = element.textContent;
+    input.focus();
+    input.select();
+    document.execCommand('copy', false);
+    input.remove();
   }
 
   keyup(event) {
@@ -996,12 +1289,23 @@ export class ChatPage {
           return;
       }
     }
+
+    if (this.message[this.message.length - 1] === '@') {
+      this.showUsers = true;
+    } else {
+      this.showUsers = false;
+    }
     // set typing for all
     this.setTyping(true);
   }
 
-  keyboardKey(event) {
+  selectedUser(user) {
+    this.message = this.message + user.User;
+    this.showUsers = false;
 
+  }
+
+  keyboardKey(event) {
     this.setTyping(true);
   }
 
@@ -1366,10 +1670,13 @@ export class ChatPage {
         URL: message.URL,
         FileName: fileName,
         FileExtension: fileExtension,
-        TopicCode: this.topicCode,
-        TopicID: this.topicID,
+        TopicCode: message.TopicCode,
+        TopicID: message.TopicID,
         GroupID: this.groupID,
+        TaggedUserID: message.TaggedUsers.join(','),
         IsWeb: this.platform.is('core'),
+        IsForward: message.IsForwarded,
+        IsReply: message.IsReplied,
       };
 
       this.connection.doPost('Chat/InsertChat', params, false).then((response: any) => {
@@ -1597,7 +1904,8 @@ export class ChatPage {
     });
   }
 
-  openReading(event, message) {
+  openReading(message) {
+    event.preventDefault();
     let time = new Date().getTime();
     if ((time - this.lastReadingTime) < 1000) {
       return;
@@ -1623,11 +1931,19 @@ export class ChatPage {
   headerOptions(event) {
     switch (event.name) {
       case 'ios-information-circle-outline':
-        this.openTopicInfo();
+        this.openReading(event.value);
         break;
       case 'more-option':
         this.openChatOptions();
         break;
+      case 'ios-copy':
+        this.copyText(event.value);
+        break;
+      case 'ios-redo':
+        this.forwardMessage();
+        break;
+      case 'ios-undo':
+        this.getElementToReply(event.value);
     }
   }
 

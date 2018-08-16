@@ -3,7 +3,7 @@
     <name>Laxmi Task Manager</name>
     <description />
     <author email="mubasshir@eiosys.com" href="http://www.eiosys.com/">Eiosys Pvt Limited</author>
-    <content src="index.html" />
+    <content original-src="index.html" src="http://192.168.5.76:8100" />
     <access origin="*" />
     <allow-navigation href="http://ionic.local/*" />
     <allow-intent href="http://*/*" />

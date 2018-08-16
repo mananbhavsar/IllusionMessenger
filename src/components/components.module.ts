@@ -19,6 +19,7 @@ import { ReachUsComponent } from './reach-us/reach-us';
 import { RefreshComponent } from './refresh/refresh';
 import { TitleComponent } from './title/title';
 import { TopicComponent } from './topic/topic';
+import { RatingComponent } from './rating/rating';
 
 
 @NgModule({
@@ -37,7 +38,8 @@ import { TopicComponent } from './topic/topic';
         TitleComponent,
         ModalToolbarComponent,
         DashboardComponent,
-        AttachmentComponent
+        AttachmentComponent,
+        RatingComponent
     ],
     imports: [
         MomentModule,
@@ -57,6 +59,7 @@ import { TopicComponent } from './topic/topic';
         IonicPageModule.forChild(TitleComponent),
         IonicPageModule.forChild(ModalToolbarComponent),
         IonicPageModule.forChild(AttachmentComponent),
+        IonicPageModule.forChild(RatingComponent),
         PipesModule,
     ],
     exports: [
@@ -75,6 +78,7 @@ import { TopicComponent } from './topic/topic';
         TitleComponent,
         ModalToolbarComponent,
         DashboardComponent,
+        RatingComponent,
         AttachmentComponent
     ]
 })

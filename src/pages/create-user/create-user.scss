@@ -7,4 +7,24 @@ page-create-user {
         font-style: italic;
         color: color($colors, pickup);
     }
+    form {
+        ion-list {
+            ion-scroll {
+                &.scrollable-buttons {
+                    min-height: 55px;
+                    height: auto;
+                    .scroll-content {
+                        padding: 0px !important;
+                        .scroll-zoom-wrapper {
+                            white-space: nowrap;
+                            button {
+                                width: fit-content;
+                                display: inline-block;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

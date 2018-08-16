@@ -43,6 +43,7 @@ export class CloseTopicPage {
     this.group_id = this.navParams.data.group_id;
     this.group_name = this.navParams.data.group_name;
     this.group_code = this.navParams.data.group_code;
+    
   }
 
   ionViewDidEnter() {
@@ -84,7 +85,6 @@ export class CloseTopicPage {
         }
         this.connection.doPost('Chat/GetClosedTopicDetail', params, false).then((response: any) => {
           let data = response.ClosedTopicList;
-
           if (data.length > 0) {
             data.forEach(list => {
               this.topics.push(list);

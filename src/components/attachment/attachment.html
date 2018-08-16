@@ -44,6 +44,11 @@
 <div class="attachment-container" *ngIf="attachments">
   <div class="attachment-thumb" *ngFor="let attachment of attachments;let i = index;">
     <ion-icon name="ios-trash" (click)="removeAttachment(i)" color="danger" *ngIf="editable"></ion-icon>
-    <img [src]="attachment.VirtualPath" width="90" height="90" (click)="openAttachment(attachment.VirtualPath)" />
+    <img *ngIf="attachment.fileExtension === 'pdf'" src="assets/img/pdf.png" (click)="openImage(url.VirtualPath)"  width="90" height="90" >
+    <img *ngIf="attachment.fileExtension === 'png' || attachment.fileExtension === 'jpeg' || attachment.fileExtension === 'jpg'" [src]="attachment.VirtualPath" width="90" height="90" (click)="openAttachment(attachment.VirtualPath)" />
+    <img *ngIf="attachment.fileExtension === 'doc' || attachment.fileExtension === 'docx'" src="assets/img/doc_icon.png" (click)="openImage(url.VirtualPath)"  width="90" height="90" >
+    <img *ngIf="attachment.fileExtension === 'xls' || attachment.fileExtension === 'xlsx'" src="assets/img/xls.jpg" (click)="openImage(url.VirtualPath)"  width="90" height="90" >
+    <img *ngIf="attachment.fileExtension === 'ppt' || attachment.fileExtension === 'pptx'" src="assets/img/ppt.png" (click)="openImage(url.VirtualPath)"  width="90" height="90" > 
+    <img *ngIf="attachment.fileExtension === 'txt'" src="assets/img/txt.png" (click)="openImage(url.VirtualPath)"  width="90" height="90">
   </div>
 </div>

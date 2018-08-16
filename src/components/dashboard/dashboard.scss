@@ -42,6 +42,12 @@ dashboard {
                     &.Day_4Plus {
                         background-color: #00C1DC;
                     }
+                    &.Past_Day{
+                        background-color: #F08080;
+                    }
+                    &.Today{
+                        background-color: #cda1f7;
+                    }
                 }
                 .value {
                     background: #f9f9f9;

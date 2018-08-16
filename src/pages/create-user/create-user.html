@@ -44,7 +44,7 @@
       <ion-item>
         <ion-label stacked>Enter Password</ion-label>
         <ion-input required placeholder="Enter Password" [type]="type" formControlName="Password"></ion-input>
-        <button clear ion-button *ngIf="!showPassword"  item-end>
+        <button clear ion-button *ngIf="!showPassword" item-end>
           <ion-icon (click)="passwordShow()" name="md-eye-off"></ion-icon>
         </button>
         <button clear *ngIf="showPassword" ion-button item-end>
@@ -56,8 +56,28 @@
         <span *ngIf="createUserForm.controls.Password.errors.minlength">Password should be minimum 8 characters</span>
         <span *ngIf="createUserForm.controls.Password.errors.maxlength">Password should be maximum 15 characters</span>
       </div>
+      <ion-item no-lines>
+        <ion-label>
+          Available Tags
+        </ion-label>
+        <button (click)="searchTag()" item-end ion-button outline small only-icon>
+          <ion-icon name="search"></ion-icon>
+        </button>
+      </ion-item>
+      <ion-searchbar [showCancelButton]="shouldShowCancel" *ngIf="searchInputBtn" (ionInput)="getItems($event)"
+        (ionCancel)="onCancel($event)">
+      </ion-searchbar>
+      <ion-scroll scrollX="true" direction="x" class="scrollable-buttons">
+        <button type="button" small ion-button icon-right *ngFor="let tag of tags;let i=index;" (click)="tagClicked(tag)" [ngClass]="getTagColor(tag.TagID)">
+          {{tag.Tag}}
+          <ion-icon name="md-checkmark" *ngIf="in_array(tagsSelected,tag.TagID)"></ion-icon>
+        </button>
+      </ion-scroll>
       <button (click)="createUser()" ion-button full *ngIf="userBtn === 'Create User'" [disabled]="!createUserForm.valid">{{userBtn}}</button>
       <button (click)="updateUser()" ion-button full *ngIf="userBtn === 'Update'" [disabled]="!createUserForm.valid">{{userBtn}}</button>
     </ion-list>
   </form>
+  <ion-infinite-scroll *ngIf="page !== -1" (ionInfinite)="paginate($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 </ion-content>

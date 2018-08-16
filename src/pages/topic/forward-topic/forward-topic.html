@@ -1,0 +1,34 @@
+<ion-header>
+  <modal-toolbar [title]="title" [buttons]="[{name : 'search', icon : 'search' }]" (buttonClicked)="headerOptions($event)" (dismiss)="dismiss($event)"></modal-toolbar>
+</ion-header>
+<ion-content>
+  <ion-searchbar [showCancelButton]="true" *ngIf="searchInputBtn" (ionInput)="getItems($event)" (ionClear)="onClear($event)"
+    (ionCancel)="onCancel($event)">
+  </ion-searchbar>
+  <empty *ngIf="groups.length === 0 else data_template"></empty>
+  <ng-template #data_template>
+    <ion-list>
+      <ion-item (click)="selectGroup(group)" *ngFor="let group of groups">
+        <ion-label>
+          {{group.Group}}
+        </ion-label>
+        <ion-checkbox (ionChange)="selectGroup(group)" *ngIf="in_array(SelectedGroup,group.GroupID)" [checked]="in_array(SelectedGroup,group.GroupID)"
+          item-end color="primary"></ion-checkbox>
+      </ion-item>
+    </ion-list>
+    <ion-infinite-scroll *ngIf="page !== -1" (ionInfinite)="paginate($event)">
+      <ion-infinite-scroll-content></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </ng-template>
+
+  <!-- <ion-item-divider text-center [hidden]="page > 0">
+      Nothing more to show
+    </ion-item-divider> -->
+</ion-content>
+<ion-footer *ngIf="SelectedGroup.length > 0" class="hide-on-keyboard-open">
+  <ion-fab right bottom>
+    <button ion-fab outline (click)="forward()">
+      <ion-icon name="send"></ion-icon>
+    </button>
+  </ion-fab>
+</ion-footer>

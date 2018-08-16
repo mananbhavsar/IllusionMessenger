@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Platform, ModalController, Events, normalizeURL } from 'ionic-angular';
-
-import { Global } from '../../app/global';
+import { Platform, Events } from 'ionic-angular';
 
 import { File } from '@ionic-native/file';
 
@@ -29,6 +27,13 @@ export class CommonProvider {
       .map(k => esc(k) + '=' + esc(params[k]))
       .join('&');
   }
+
+  hasClass(element, cls) {
+    if (element && cls) {
+      return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1;
+    }
+  }
+
 
   joinAnd(array: Array<string>): string {
     let joined = '';

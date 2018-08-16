@@ -36,7 +36,8 @@ export class CreateGroupPage {
     this.createGroupForm = this.formBuilder.group({
       Group: ['', [Validators.required, Validators.maxLength(30), Validators.pattern('[A-Za-z ]*')]],
       GroupCode: ['', [Validators.required, Validators.maxLength(10)]],
-      search: []
+      search: [],
+    
     });
     if (!_.isEmpty(this.navParams.data.Group)) {
       this.groupBtn = 'Update';

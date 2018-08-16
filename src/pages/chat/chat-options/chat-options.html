@@ -97,6 +97,16 @@
 			</ion-item>
 		</ion-list>
 	</div>
+	<div margin-left *ngIf="data.StatusID !== 0 && (data.Comment || data.Rating)">
+		<ion-item-divider color="light"></ion-item-divider>
+		<div text-wrap *ngIf="data.Comment">
+			<div>Comment :</div>
+			{{data.Comment}}
+		</div>
+		<div *ngIf="data.Rating">
+			<rating [readOnly]="true" [value]="data.Rating"></rating>
+		</div>
+	</div>
 	<div margin-left class="background-grey" *ngIf="data.StatusID !== 0">
 		<ion-item-divider color="light"></ion-item-divider>
 		<p color="pickup">

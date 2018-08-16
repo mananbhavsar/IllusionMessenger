@@ -11,6 +11,10 @@ export class DashboardComponent {
   @Input() dueDays: any = null;
 
   days = {
+    Today : {
+      label : 'Today',
+      value : 0
+    },
     Day_1: {
       label: '1 Day',
       value: 1
@@ -24,6 +28,10 @@ export class DashboardComponent {
     }, Day_4Plus: {
       label: '4+ Day',
       value: 4
+    },
+    Past_Day : {
+      label : 'Past Due Days',
+      value : -1
     }
   };
 

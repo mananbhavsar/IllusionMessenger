@@ -9,7 +9,6 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { Storage } from '@ionic/storage';
 import * as firebase from 'firebase';
 import { AlertController, Events, LoadingController, MenuController, ModalController, Nav, Platform, ToastController } from 'ionic-angular';
-import * as moment from "moment";
 import * as _ from 'underscore';
 import { AccountPage } from '../pages/account/account';
 import { ChatPage } from '../pages/chat/chat';
@@ -23,11 +22,13 @@ import { WelcomePage } from '../pages/welcome/welcome';
 import { TranslateServiceProvider } from '../providers/translate-service/translate-service';
 import { UserProvider } from '../providers/user/user';
 import { GroupPage } from './../pages/group/group';
+import * as moment from "moment";
 import { TagPage } from '../pages/create-tag/tag/tag';
 import { UsersPage } from '../pages/create-user/users/users';
 import { ManageGroupPage } from '../pages/manage-group/manage-group';
 import { Global } from './global';
 import { ConnectionProvider } from '../providers/connection/connection';
+import { DailyShedulePage } from '../pages/topic/daily-shedule/daily-shedule';
 
 export const firebaseConfig = {
     apiKey: "AIzaSyAFDZ9UPTMiDTjT4qAG0d9uVeOdhL-2PBw",
@@ -74,6 +75,9 @@ export class MyApp {
     ];
     loggedInPages: PageInterface[] = [
         { title: 'Home', translate_key: 'HomeScreen._Home_', name: 'HomePage', component: HomePage, icon: 'home' },
+        { title: 'Manage Group', translate_key: 'HomeScreen._ManageGroup_', name: 'ManageGroupPage', component: ManageGroupPage, icon: 'people' },
+        { title: 'Tag', translate_key: 'HomeScreen._Tag_', name: 'TagPage', component: TagPage, icon: 'tab' },
+        { title: 'Users', translate_key: 'HomeScreen._users_', name: 'UsersPage', component: UsersPage, icon: 'person' }
     ];
     accountPages: PageInterface[] = [
         { title: 'Account', translate_key: 'Common._Account_', name: 'AccountPage', component: AccountPage, icon: 'user' },
@@ -194,13 +198,19 @@ export class MyApp {
         return;
     }
 
+
     /**
      * checking post login if user is Authorized to access this page
      * @param page 
      */
     isAuthorized(page: PageInterface) {
         if (this.user && this.user._user) {
-            return true;
+            //creation rights
+            if (['ManageGroupPage', 'TagPage', 'UsersPage'].indexOf(page.name) > -1) {
+                return [5, 15, 16].indexOf(this.user._user.LoginUserID) > -1;
+            } else {
+                return true;
+            }
         }
         return false;
     }
@@ -267,6 +277,10 @@ export class MyApp {
             }
         });
 
+        this.events.subscribe('page:setroot', (data) => {
+
+            this.nav.setRoot(data.page, data.params);
+        });
 
         this.events.subscribe('alert:basic', (title, subTitle, buttons) => {
             try {
@@ -608,15 +622,7 @@ export class MyApp {
         });
     }
 
-    isVisible() {
-        this.user.hasLoggedIn().then((user) => {
-            if (user.LoginUserID === 15 || user.LoginUserID === 16 || user.LoginUserID === 5) {
-                this.loggedInPages.push({ title: 'Manage Group', translate_key: 'HomeScreen._ManageGroup_', name: 'ManageGroupPage', component: ManageGroupPage, icon: 'people' },
-                    { title: 'Tag', translate_key: 'HomeScreen._Tag_', name: 'TagPage', component: TagPage, icon: 'tab' },
-                    { title: 'Users', translate_key: 'HomeScreen._users_', name: 'UsersPage', component: UsersPage, icon: 'person' });
-            }
-        });
-    }
+
 
     listenToLoginEvents() {
         this.events.subscribe('user:login', (user) => {
@@ -628,7 +634,6 @@ export class MyApp {
             this.translate.use(user.MyLanguage);
 
             this.nav.setRoot(HomePage);
-            this.isVisible();
             setTimeout(() => {
                 let full_name = user ? user.LoginUser : '';
                 this.events.publish('toast:create', this.welcome_translate + ' ' + full_name);
@@ -649,7 +654,6 @@ export class MyApp {
             });
             this._badge.clear();
         });
-
 
         this.events.subscribe('user:unautharized', () => {
             this.events.publish('user:logout', 'You are unauthorized user');
@@ -673,9 +677,7 @@ export class MyApp {
                 ref.on('value', (status) => {
                     if (status.val() === null) {
                         // show popup
-                        this.nav.setRoot('DailyShedulePage');
-                        // update to firebase
-                        ref.set(true);
+                        // this.nav.setRoot(DailyShedulePage);
                     }
                 });
             }

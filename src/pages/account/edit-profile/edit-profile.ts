@@ -10,7 +10,6 @@ import { Network } from '@ionic-native/network';
 import { Storage } from '@ionic/storage';
 
 import { Global } from '../../../app/global';
-import { storage } from 'firebase';
 
 @IonicPage()
 @Component({

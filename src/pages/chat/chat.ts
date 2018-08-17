@@ -1227,6 +1227,8 @@ export class ChatPage {
       }
       let modal = this.modal.create('ForwardMessagePage', { topicID: this.topicID, groupID: this.groupID });
       modal.onDidDismiss(data => {
+        this.events.publish('loading:create');
+        this.events.publish('toast:create','Message forwarded successfully');
         if (data) {
           //loop
           data.forEach((topic) => {
@@ -1236,6 +1238,8 @@ export class ChatPage {
                   let selectedElement = document.getElementById('message-' + this.messageKey);
                   selectedElement.classList.remove("selected");
                   this.messageKey = null;
+                  this.events.publish('loading:close');
+
                 }
                 this.removeHeaderButtons();
               }

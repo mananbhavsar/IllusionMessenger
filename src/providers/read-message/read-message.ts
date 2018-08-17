@@ -30,7 +30,7 @@ export class ReadMessageProvider {
         TopicCode: this.topicCode.toString(),
       }).then((response: any) => {
         if (response) {
-          this.events.publish('read:message',response.Data);
+          this.events.publish('read:message',response);
           if (response.FireBaseTransaction) {
             this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { })
           }

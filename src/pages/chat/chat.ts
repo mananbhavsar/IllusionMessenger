@@ -666,7 +666,7 @@ export class ChatPage {
           this.data.GroupID = this.groupID;
           this.group_name = this.data.Group;
           this.subSubTitle = 'Created By ' + this.data.CreatedBy + ' on ' + this._date.format(this._date.get(this.data.CreationDate_UTC));
-          this.headerButtons = [{ icon: 'ios-information-circle-outline', name: 'ios-information-circle-outline' }, { icon: 'ios-more', name: 'more-option' }];
+          this.headerButtons = [{ icon: 'ios-more', name: 'more-option' }];
           this.topicCode = this.data.TopicCode;
           this.groupCode = this.data.GroupCode;
           this.data.User.forEach(user => {
@@ -937,7 +937,6 @@ export class ChatPage {
       this.contacts = data._objectInstance;
       this.sendToFirebase('', 'Contact', null, this.topicID, this.topicCode, null, null, this.contacts);
     }).then((error: any) => {
-      console.error('Error opening contact.', error)
     });
   }
 
@@ -967,7 +966,7 @@ export class ChatPage {
         this.replyTo = false;
         this.sendToFirebase(textMessage, 'Text', null, this.topicID, this.topicCode, null, this.topicID).then((data) => {
           if (data) {
-            this.headerButtons.splice(0, 3);
+            this.headerButtons.splice(0, 4);
             this.messageKey = null;
             this.hideWhenReply = false;
           }
@@ -1106,89 +1105,95 @@ export class ChatPage {
 
 
   getOptions(element, message) {
-    this.messageKey = this.getElementMessageKey(element.target);
-    if (this.getChildElement(element, '.text')) {
-      this.selectedMessageElement = this.getChildElement(element, '.text');
-    }
-    if (this.getChildElement(element, '.video')) {
-      this.selectedMessageElement = this.getChildElement(element, '.video');
-    }
-    if (this.getChildElement(element, '.picture')) {
-      this.selectedMessageElement = this.getChildElement(element, '.picture');
-    }
-    if (this.getChildElement(element, '.audio')) {
-      this.selectedMessageElement = this.getChildElement(element, '.audio');
-    }
-    this.headerButtons = [];
-    if (this.common.hasClass(this.selectedMessageElement, 'text')) {
-      this.headerButtons.push(
-        {
-          icon: 'ios-undo',
-          name: 'ios-undo',
-          value: this.selectedMessageElement
-        },
-        {
-          icon: 'ios-copy',
-          name: 'ios-copy',
-          value: this.selectedMessageElement
-        },
-        {
-          icon: 'ios-redo',
-          name: 'ios-redo',
-        },
-        {
-          icon: 'ios-information-circle-outline',
-          name: 'ios-information-circle-outline',
-          value: message
-        },
-        {
-          icon: 'ios-more',
-          name: 'more-option'
-        });
-    } else if (this.common.hasClass(this.selectedMessageElement, 'video') ||
-      this.common.hasClass(this.selectedMessageElement, 'audio') ||
-      this.common.hasClass(this.selectedMessageElement, 'picture')) {
-      this.headerButtons.push(
-        {
-          icon: 'ios-redo',
-          name: 'ios-redo',
-        },
-        {
-          icon: 'ios-information-circle-outline',
-          name: 'ios-information-circle-outline',
-          value: message
-        },
-        {
-          icon: 'ios-more',
-          name: 'more-option'
-        });
+    if (this.data.StatusID === 2) {
+      return;
     } else {
-      this.headerButtons.push(
-        {
-          icon: 'ios-information-circle-outline',
-          name: 'ios-information-circle-outline',
-          value: message
-        },
-        {
-          icon: 'ios-more',
-          name: 'more-option'
-        });
-    }
-    if(this.common.hasClass(this.selectedMessageElement, 'contact')){
-      return false;
+      this.messageKey = this.getElementMessageKey(element.target);
+      if (this.messageKey) {
+        let selectedElement = document.getElementById('message-' + this.messageKey);
+        selectedElement.classList.toggle("selected");
+      }
+      if (this.getChildElement(element, '.text')) {
+        this.selectedMessageElement = this.getChildElement(element, '.text');
+      }
+      if (this.getChildElement(element, '.video')) {
+        this.selectedMessageElement = this.getChildElement(element, '.video');
+      }
+      if (this.getChildElement(element, '.picture')) {
+        this.selectedMessageElement = this.getChildElement(element, '.picture');
+      }
+      if (this.getChildElement(element, '.audio')) {
+        this.selectedMessageElement = this.getChildElement(element, '.audio');
+      }
+      this.headerButtons = [];
+      if (this.common.hasClass(this.selectedMessageElement, 'text')) {
+        this.headerButtons.push(
+          {
+            icon: 'ios-undo',
+            name: 'ios-undo',
+            value: this.selectedMessageElement
+          },
+          {
+            icon: 'ios-copy',
+            name: 'ios-copy',
+            value: this.selectedMessageElement
+          },
+          {
+            icon: 'ios-redo',
+            name: 'ios-redo',
+          },
+          {
+            icon: 'ios-information-circle-outline',
+            name: 'ios-information-circle-outline',
+            value: message
+          },
+          {
+            icon: 'ios-more',
+            name: 'more-option'
+          });
+      } else if (this.common.hasClass(this.selectedMessageElement, 'video') ||
+        this.common.hasClass(this.selectedMessageElement, 'audio') ||
+        this.common.hasClass(this.selectedMessageElement, 'picture')) {
+        this.headerButtons.push(
+          {
+            icon: 'ios-redo',
+            name: 'ios-redo',
+          },
+          {
+            icon: 'ios-information-circle-outline',
+            name: 'ios-information-circle-outline',
+            value: message
+          },
+          {
+            icon: 'ios-more',
+            name: 'more-option'
+          });
+      } else {
+        this.headerButtons.push(
+          {
+            icon: 'ios-more',
+            name: 'more-option'
+          });
+      }
+      if (this.common.hasClass(this.selectedMessageElement, 'contact')) {
+        return false;
+      }
     }
   }
 
   deselectOptions(event) {
     event.preventDefault();
+    if (this.messageKey) {
+      let selectedElement = document.getElementById('message-' + this.messageKey);
+      selectedElement.classList.remove("selected");
+    }
     this.messageKey = null;
     this.selectedMessageElement = null;
     this.hideWhenReply = false;
-    if (this.headerButtons.length > 2) {
-      this.headerButtons.splice(0, 3);
-    }
+    this.removeHeaderButtons();
   }
   checkMessageType(type) {
+
     //identify message type
     switch (type) {
       case 'text':
@@ -1196,7 +1201,7 @@ export class ChatPage {
       case 'picture':
       case 'video':
       case 'audio':
-        return this.selectedMessageElement.parentElement.getAttribute('data-url');
+        return this.selectedMessageElement.getAttribute('data-url');
     }
   }
 
@@ -1220,7 +1225,6 @@ export class ChatPage {
         url = this.checkMessageType('audio');
         messageType = 'Audio';
       }
-
       let modal = this.modal.create('ForwardMessagePage', { topicID: this.topicID, groupID: this.groupID });
       modal.onDidDismiss(data => {
         if (data) {
@@ -1228,7 +1232,12 @@ export class ChatPage {
           data.forEach((topic) => {
             this.sendToFirebase(message, messageType, url, topic.TopicID, topic.TopicCode, topic.TopicID).then((data) => {
               if (data) {
-                this.headerButtons.splice(0, 3);
+                if (this.messageKey) {
+                  let selectedElement = document.getElementById('message-' + this.messageKey);
+                  selectedElement.classList.remove("selected");
+                  this.messageKey = null;
+                }
+                this.removeHeaderButtons();
               }
             });
           });
@@ -1238,34 +1247,49 @@ export class ChatPage {
     }
   }
 
-  getElementToReply(element) {
-    this.replyTo = true;
-    if (this.common.hasClass(element, 'text')) {
-      this.replytoText = this.checkMessageType('text');
-    } else if(this.common.hasClass(element, 'picture')){
-      this.replytoImg = 'assets/img/camera.png';
-    } else if(this.common.hasClass(element, 'audio')){
-      this.replytoImg = 'assets/img/audio.png';
-    } else if(this.common.hasClass(element, 'audio')){
-      this.replytoImg = 'assets/img/video.png';
+  removeHeaderButtons() {
+    if (this.headerButtons.length === 3) {
+      this.headerButtons.splice(0, 2);
     }
-    this.hideWhenReply = true;
+    if (this.headerButtons.length > 3) {
+      this.headerButtons.splice(0, 4);
+    }
+  }
+
+  getElementToReply(element) {
+    if (element) {
+      this.removeHeaderButtons();
+      let selectedElement = document.getElementById('message-' + this.messageKey);
+      selectedElement.classList.remove("selected");
+      this.replyTo = true;
+      if (this.common.hasClass(element, 'text')) {
+        this.replytoText = this.checkMessageType('text');
+      }
+      this.hideWhenReply = true;
+    }
   }
 
   closeReply(event) {
+    let selectedElement = document.getElementById('message-' + this.messageKey);
+    selectedElement.classList.remove("selected");
     this.hideWhenReply = false;
     this.replyTo = null;
     this.messageKey = null;
-    this.headerButtons.splice(0, 3);
   }
 
   copyText(element) {
-    this.headerButtons.splice(0, 3);
-    this.events.publish('toast:create', 'Message copied');
-    if (this.isBrowser) {
-      this.copyToClipboard(element);
-    } else {
-      this.clipboard.copy(element.innerHTML);
+    if (element) {
+      let selectedElement = document.getElementById('message-' + this.messageKey);
+      selectedElement.classList.remove("selected");
+      this.headerButtons.splice(0, 4);
+      this.messageKey = null;
+      this.selectedMessageElement = null;
+      this.events.publish('toast:create', 'Message copied');
+      if (this.isBrowser) {
+        this.copyToClipboard(element);
+      } else {
+        this.clipboard.copy(element.innerHTML);
+      }
     }
   }
 
@@ -1923,6 +1947,9 @@ export class ChatPage {
     let chatReadModal = this.modal.create(ChatReadModalPage, params);
 
     chatReadModal.onDidDismiss(data => {
+      this.removeHeaderButtons();
+      let selectedElement = document.getElementById('message-' + this.messageKey);
+      selectedElement.classList.remove("selected");
       this.setTitle();
     });
     chatReadModal.present();

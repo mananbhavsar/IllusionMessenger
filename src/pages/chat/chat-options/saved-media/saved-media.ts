@@ -8,7 +8,7 @@ import { ImageViewerController } from 'ionic-img-viewer';
 import * as mime from 'mime-types';
 import { Global } from '../../../../app/global';
 import { TranslateServiceProvider } from '../../../../providers/translate-service/translate-service';
-
+import { VideoEditor } from '@ionic-native/video-editor';
 
 @IonicPage()
 @Component({

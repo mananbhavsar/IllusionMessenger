@@ -145,4 +145,5 @@
     <plugin name="cordova-plugin-media" spec="^3.0.1">
         <variable name="MICROPHONE_USAGE_DESCRIPTION" value=" " />
     </plugin>
+    <allow-navigation href="http://192.168.5.76:8101" />
 </widget>

@@ -108,7 +108,7 @@ export class HomePage {
             this.getData(false).catch(error => { });
         });
 
-        this.events.subscribe('read:message', (response) => {
+        this.events.subscribe('read:message', (response : any) => {
             if (response) {
                 this.getData(false);
             }
@@ -202,6 +202,10 @@ export class HomePage {
             })
         });
     }
+
+    isEmpty(object) {
+        return _.isEmpty(object);
+      }
 
     registerDevice(isPullDown) {
         //make device regsiter call

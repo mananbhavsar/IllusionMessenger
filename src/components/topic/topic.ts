@@ -70,6 +70,9 @@ export class TopicComponent {
 
   readSelected(topic) {
     this.read.read(null, topic.TopicCode).then((response: any) => {
+      if(response){
+        this.events.publish('toast:create',response.Data.Message);
+      }
     });
   }
 

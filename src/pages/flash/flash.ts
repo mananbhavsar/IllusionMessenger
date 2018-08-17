@@ -1,5 +1,5 @@
 import { Component, ElementRef } from '@angular/core';
-import { IonicPage, NavController, Platform, ViewController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController,Events, Platform, ViewController, NavParams } from 'ionic-angular';
 import { ConnectionProvider } from '../../providers/connection/connection';
 import { ImageViewerController } from 'ionic-img-viewer';
 import { FlashNewsProvider } from '../../providers/flash-news/flash-news';
@@ -14,6 +14,7 @@ export class FlashPage {
   title: string;
   element: any;
   groupId: number;
+  isPage : Boolean;
   attachments: any = [];
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
@@ -22,10 +23,15 @@ export class FlashPage {
     public platform: Platform,
     public _imageViewerController: ImageViewerController,
     public _flashNews: FlashNewsProvider,
+    public events : Events,
     public _elementRef: ElementRef) {
+
     this.news = this.navParams.data.news;
     this.groupId = this.navParams.data.id;
+    this.isPage = this.navParams.data.isPage;
     this.title = this.news.CreatedBy;
+
+
     this.initData();
   }
 
@@ -39,8 +45,11 @@ export class FlashPage {
   }
 
   flashNewsSeen() {
+    if(this.isPage){
     this._flashNews.markRead(this.news.FlashID);
-    this.viewCntl.dismiss();
+    }else{
+      this.viewCntl.dismiss();
+    }
   }
 
   openImage(file) {

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Contact, ContactField, ContactName, Contacts } from '@ionic-native/contacts';
-import { IonicPage, NavController, NavParams, Platform, ViewController } from 'ionic-angular';
+import { IonicPage, Events, NavController, NavParams, Platform, ViewController } from 'ionic-angular';
 
 @IonicPage()
 @Component({
@@ -8,7 +8,7 @@ import { IonicPage, NavController, NavParams, Platform, ViewController } from 'i
   templateUrl: 'contact-detail.html',
 })
 export class ContactDetailPage {
-  title: string = 'View Contact';
+  title: string = 'loading';
   contactData: any;
   isBrowser: boolean = false;
   constructor(public navCtrl: NavController,
@@ -16,9 +16,11 @@ export class ContactDetailPage {
     public navParams: NavParams,
     public platform: Platform,
     public viewCtrl: ViewController,
+    public events: Events
   ) {
     this.contactData = this.navParams.data.Contact;
     this.isBrowser = this.platform.is('core');
+    this.setTitle();
   }
 
   ionViewWillEnter() {
@@ -54,18 +56,27 @@ export class ContactDetailPage {
       });
       contact.emails = emails;
     }
-    console.log(contact);
     //save
     contact.save().then(contact => {
-      console.log(contact);
-      // this.viewCtrl.dismiss(contact);
+      this.viewCtrl.dismiss(contact);
+      this.events.publish('toast:create', 'Contact Saved Successfully');
     }).catch(error => {
-      console.log(error);
     });
   }
 
   dismiss(event) {
     this.viewCtrl.dismiss();
+  }
+
+  setTitle() {
+    this.title = null;
+    setTimeout(() => {
+     this.title = 'View Contact';
+    });
+  }
+
+  getTitle() {
+    return this.title;
   }
 
 }

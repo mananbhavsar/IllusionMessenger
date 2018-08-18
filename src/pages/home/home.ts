@@ -101,7 +101,7 @@ export class HomePage {
         private _firebaseTransaction: FirebaseTransactionProvider,
         public actionSheetController: ActionSheetController,
     ) {
-        this.global = Global;
+        this.global = Global;        
 
         //listening to Resume & Pause events
         this.events.subscribe('platform:onResumed', () => {
@@ -178,7 +178,7 @@ export class HomePage {
             }, false).then((response: any) => {
                 this.dataFetched = true;
                 //groups
-                this.data = response;
+                this.data = response;                
                 if (!_.isEmpty(this.data)) {
                     //flash
                     if (response.FlashNews) {

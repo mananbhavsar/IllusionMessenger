@@ -25,8 +25,8 @@
     "@ionic-native/badge": "^4.2.0",
     "@ionic-native/call-number": "^4.2.0",
     "@ionic-native/camera": "^4.2.0",
-    "@ionic-native/clipboard": "^4.11.0",
-    "@ionic-native/contacts": "^4.11.0",
+    "@ionic-native/clipboard": "^4.12.0",
+    "@ionic-native/contacts": "^4.12.0",
     "@ionic-native/core": "^4.2.0",
     "@ionic-native/device": "^4.2.0",
     "@ionic-native/diagnostic": "^4.2.0",
@@ -57,21 +57,18 @@
     "@ionic/storage": "2.0.1",
     "angular2-moment": "^1.9.0",
     "angular2-uuid": "^1.1.1",
-    "cli-update": "^3.2.5",
     "cordova-android": "^6.4.0",
     "cordova-browser": "~4.1.0",
-    "cordova-ios": "4.5.5",
+    "cordova-ios": "4.5.4",
     "cordova-plugin-camera": "^2.4.1",
     "cordova-plugin-compat": "^1.2.0",
     "cordova-plugin-console": "1.0.5",
-    "cordova-plugin-contacts": "^3.0.1",
     "cordova-plugin-device": "1.1.4",
     "cordova-plugin-file": "^4.3.3",
     "cordova-plugin-file-transfer": "^1.7.1",
     "cordova-plugin-filepath": "^1.4.2",
     "cordova-plugin-googlemaps": "^1.4.5",
     "cordova-plugin-ionic-webview": "^2.0.2",
-    "cordova-plugin-media": "^3.0.1",
     "cordova-plugin-splashscreen": "~4.0.1",
     "cordova-plugin-statusbar": "2.2.2",
     "cordova-plugin-whitelist": "1.3.1",
@@ -87,13 +84,12 @@
     "ngx-order-pipe": "^2.0.1",
     "rxjs": "^6.2.2",
     "rxjs-compat": "^6.2.2",
-    "sw-toolbox": "3.6.0",
+    "sw-toolbox": "3.4.0",
     "underscore": "^1.9.1",
     "zone.js": "0.8.11"
   },
   "devDependencies": {
-    "@ionic/app-scripts": "^2.1.3",
-    "@ionic/cli-plugin-ionic-angular": "1.4.1",
+    "@ionic/app-scripts": "^3.1.11",
     "typescript": "2.3.4"
   },
   "cordovaPlugins": [
@@ -106,7 +102,8 @@
   ],
   "config": {
     "ionic_copy": "./config/copy.config.js",
-    "ionic_sass": "./config/sass.config.js"
+    "ionic_sass": "./config/sass.config.js",
+    "ionic_watch": "./watch.config.js"
   },
   "cordovaPlatforms": [],
   "cordova": {
@@ -139,15 +136,12 @@
         "PHOTO_LIBRARY_USAGE_DESCRIPTION": "To save files in Library"
       },
       "onesignal-cordova-plugin": {},
-      "cordova-plugin-file-opener2": {},
-      "cordova-plugin-media": {
-        "MICROPHONE_USAGE_DESCRIPTION": " "
-      },
-      "cordova-plugin-contacts": {}
+      "cordova-plugin-file-opener2": {}
     },
     "platforms": [
       "browser",
-      "android"
+      "android",
+      "ios"
     ]
   }
 }

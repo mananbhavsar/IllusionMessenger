@@ -91,9 +91,12 @@ export class FlashNewsComponent {
     });
   }
 
-  openFlashNews(event,flashNews, GroupID) {
+  openFlashNews(event, flashNews, GroupID) {
     event.preventDefault();
-    this.modalCntl.create(FlashPage, { news: flashNews, id: GroupID }).present();
+    this.modalCntl.create(FlashPage, {
+      news: flashNews, id: GroupID,
+      isPage: false
+    }).present();
   }
 
 }

@@ -2,16 +2,13 @@ import { Component, ElementRef } from '@angular/core';
 import { File } from '@ionic-native/file';
 import { PhotoLibrary } from '@ionic-native/photo-library';
 import { StreamingMedia } from '@ionic-native/streaming-media';
-import { VideoEditor } from '@ionic-native/video-editor';
 import { UUID } from 'angular2-uuid';
 import { ActionSheetController, Events, IonicPage, NavController, NavParams, normalizeURL, ViewController } from 'ionic-angular';
 import { ImageViewerController } from 'ionic-img-viewer';
 import * as mime from 'mime-types';
 import { Global } from '../../../../app/global';
 import { TranslateServiceProvider } from '../../../../providers/translate-service/translate-service';
-
-
-
+import { VideoEditor } from '@ionic-native/video-editor';
 
 @IonicPage()
 @Component({

@@ -101,14 +101,14 @@ export class HomePage {
         private _firebaseTransaction: FirebaseTransactionProvider,
         public actionSheetController: ActionSheetController,
     ) {
-        this.global = Global;
+        this.global = Global;        
 
         //listening to Resume & Pause events
         this.events.subscribe('platform:onResumed', () => {
             this.getData(false).catch(error => { });
         });
 
-        this.events.subscribe('read:message', (response) => {
+        this.events.subscribe('read:message', (response : any) => {
             if (response) {
                 this.getData(false);
             }
@@ -178,7 +178,7 @@ export class HomePage {
             }, false).then((response: any) => {
                 this.dataFetched = true;
                 //groups
-                this.data = response;
+                this.data = response;                
                 if (!_.isEmpty(this.data)) {
                     //flash
                     if (response.FlashNews) {
@@ -202,6 +202,10 @@ export class HomePage {
             })
         });
     }
+
+    isEmpty(object) {
+        return _.isEmpty(object);
+      }
 
     registerDevice(isPullDown) {
         //make device regsiter call
@@ -459,12 +463,21 @@ export class HomePage {
         } else {
             if (this.searchInputBtn) {
                 this.searchInputBtn = false;
-                this.data = [];
-                this.query = null;
-                this.initializeItems();
             } else if (this.searchInputBtn === false) {
                 this.searchInputBtn = true;
             }
+            this.data = [];
+            this.query = null;
+            this.initializeItems();
+        }
+    }
+
+    dashboardTabSearchHide(){
+        if (this.selectedTab === 'stats' && this.searchInputBtn) {
+            this.events.publish('toast:create', 'Search not available here');
+            this.data = [];
+            this.query = null;
+            this.initializeItems();
         }
     }
 

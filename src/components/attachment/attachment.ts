@@ -109,7 +109,8 @@ export class AttachmentComponent {
       }
     });
 
-    this._fileOps.captureAndUpload(type, identifier).then(url => {
+    this._fileOps.captureAndUpload(type, identifier).then(url => {  
+     console.log(url); 
       this.captured.emit({
         VirtualPath: url
       });

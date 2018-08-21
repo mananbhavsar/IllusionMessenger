@@ -57,11 +57,18 @@ export class GroupPage {
           Query: this.query,
           OrderBy: this.sort_by,
           Order: this.sort_order,
-        }, false,).then((response: any) => {
+        }, false).then((response: any) => {
+          //flash
+          if (response.FlashNews) {
+            response.FlashNews.forEach((news, key) => {
+              console.log(news);
+              this.flashNewsProvider.openUnreadFlashNews(news);
+            });
+          }
           this.group = response;
           if (this.group) {
-            this.group.FlashNews.forEach((news, key) => {
-              this.flashNewsProvider.openUnreadFlashNews(news);
+            response.ActiveTopicList.forEach(list => {
+              this.group.push(list);
             });
             this.setForBadge();
             this.page++;
@@ -71,6 +78,8 @@ export class GroupPage {
             resolve(false);
           }
         }).catch(error => {
+          this.page = -1;
+          resolve(false);
         });
       }
     });

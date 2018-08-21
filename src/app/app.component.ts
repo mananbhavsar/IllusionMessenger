@@ -272,14 +272,13 @@ export class MyApp {
                 try {
                     this.loading.dismiss();
                 } catch (e) {
-                    console.error(e);
                 }
             }
         });
 
         this.events.subscribe('page:setroot', (data) => {
-
-            this.nav.setRoot(data.page, data.params);
+                this.events.publish('loading:close');
+                this.nav.setRoot(data.page, data.params);
         });
 
         this.events.subscribe('alert:basic', (title, subTitle, buttons) => {

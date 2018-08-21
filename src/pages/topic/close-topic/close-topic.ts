@@ -43,7 +43,7 @@ export class CloseTopicPage {
     this.group_id = this.navParams.data.group_id;
     this.group_name = this.navParams.data.group_name;
     this.group_code = this.navParams.data.group_code;
-    
+
   }
 
   ionViewDidEnter() {
@@ -59,11 +59,12 @@ export class CloseTopicPage {
   getData(event) {
     this.initializeItems();
     let val = event.target.value;
+    if (val) {
+      this.query = val.trim();
+      this.getDetails().catch(error => {
 
-    this.query = val.trim();
-    this.getDetails().catch(error => {
-
-    });
+      });
+    }
   }
 
   getDetails() {

@@ -266,7 +266,8 @@ export class ChatOptionsPage {
                   Rating: data.Rate
                 }).then((response: any) => {
                   this.data.StatusID = 2;
-
+                  this.data.Comment = data.Comment;
+                  this.data.Rating = data.Rating;
                   if (this.data.StatusID = 2) {
                     this.closeButton = true;
                     this.data.CloseDatime_UTC = this._date.toUTCISOString(new Date(), false);

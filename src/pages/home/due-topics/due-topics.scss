@@ -1,3 +1,9 @@
 page-due-topics {
-
+    ion-content {
+        &.extraTop {
+            .scroll-content {
+                margin-top: 136px !important;
+            }
+        }
+    }
 }

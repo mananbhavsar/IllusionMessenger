@@ -24,7 +24,7 @@ export class FlashNewsProvider {
   openUnreadFlashNews(FlashNews) {
     this.flashID = FlashNews.FlashID;
     //check if this flash has opened
-    firebase.database().ref('FlashNews/' + this.flashID + '/' + this.user._user.LoginUserID).once('value', (status) => {
+    firebase.database().ref('FlashNews/' + this.flashID + '/' + this.user._user.LoginUserID).on('value', (status) => {
       if (status.val() === null) {
         if (!(this.flashID in this.flashNews)) {
           this.flashNews[this.flashID] = FlashNews;
@@ -33,7 +33,7 @@ export class FlashNewsProvider {
     });
   }
 
-  checkAndOpen() {
+  checkAndOpen() {    
     if (!_.isEmpty(this.flashNews) && this.currentlyopened === 0) {
       this.wastheredataLastTime = true;
       let flash: any = this.flashNews[this.flashID];
@@ -41,7 +41,7 @@ export class FlashNewsProvider {
       // show popup
       this.events.publish('page:setroot', {
         page: 'FlashPage',
-        params: { news: flash, id: flash.FlashID }
+        params: { news: flash, id: flash.FlashID, isPage: true },
       });
     }
     else {
@@ -49,16 +49,18 @@ export class FlashNewsProvider {
         this.wastheredataLastTime = false;
         this.events.publish('page:setroot', {
           page: 'HomePage',
-          params: null
+          params: null,
         });
       }
     }
   }
 
   markRead(flashID) {
-    firebase.database().ref('FlashNews/' + flashID + '/' + this.user._user.LoginUserID).set(true);
-    delete this.flashNews[flashID];
-    this.currentlyopened = 0;
-    this.checkAndOpen();
+    firebase.database().ref('FlashNews/' + flashID + '/' + this.user._user.LoginUserID).set(true).then(() => {
+      this.events.publish('loading:create');
+      this.checkAndOpen();
+      delete this.flashNews[flashID];
+      this.currentlyopened = 0;
+    });
   }
 }

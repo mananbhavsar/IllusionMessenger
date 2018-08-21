@@ -2,7 +2,7 @@
   <header [title]="getTitle()" [hideTitle]="headerButtons.length > 2" [subTitle]="userTypingString" [buttons]="headerButtons"
     (buttonClicked)="headerOptions($event)"></header>
   <ion-toolbar class="group-header">
-    <ion-title>Group {{group_name}} {{this.subSubTitle}}</ion-title>
+    <ion-title>{{group_name}} {{this.subSubTitle}}</ion-title>
   </ion-toolbar>
   <!-- <ion-toolbar class="sub-header" *ngIf="data && data.StatusID !== 0">
     <ion-title>{{getSubTitle()}}</ion-title>
@@ -18,7 +18,7 @@
       <ion-infinite-scroll-content></ion-infinite-scroll-content>
     </ion-infinite-scroll>
     <ng-container *ngFor="let message of messages;trackBy:getTrackByField | orderBy:'CreateAt'">
-      <chat-bubble (press)="getOptions($event,message)" [id]="'message-'+message.key" class="message-wrapper" [message]="message"
+      <chat-bubble (tap)="deselectOptions($event)" (press)="getOptions($event,message)" [id]="'message-'+message.key" class="message-wrapper" [message]="message"
         [userID]="userID" [topicID]="topicID" [topicCode]="topicCode" [groupID]="groupID"
         [groupCode]="groupCode" [users]="chatUsers" [myLanguage]="myLanguage" [responsibleUserID]="responsibleUserID">
       </chat-bubble>
@@ -117,9 +117,9 @@
 
 <div class="reply-to" *ngIf="replyTo">
   <ion-row>
-    <ion-col *ngIf="replytoImg">
+    <!-- <ion-col *ngIf="replytoImg">
       <img class="reply-img" [src]="replytoImg" alt="">
-    </ion-col>
+    </ion-col> -->
     <ion-col *ngIf="replytoText" col-11>
       {{replytoText}}
     </ion-col>

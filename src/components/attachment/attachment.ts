@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { UUID } from 'angular2-uuid';
 import { Events, Platform } from 'ionic-angular';
-import { FileOpsProvider } from '../../providers/file-ops/file-ops';
 import { ConnectionProvider } from '../../providers/connection/connection';
+import { FileOpsProvider } from '../../providers/file-ops/file-ops';
 
 @Component({
   selector: 'attachment',
@@ -61,7 +61,7 @@ export class AttachmentComponent {
             break;
           default:
             dataURL = reader.result.replace(/^data:image\/\w+;base64,/, "");
-        }        
+        }
         context.uploadFileFromBrowser(fileName, fileExtension, dataURL)
           .then((data: any) => {
             context.captured.emit({
@@ -109,8 +109,12 @@ export class AttachmentComponent {
       }
     });
 
-    this._fileOps.captureAndUpload(type, identifier).then(url => {  
-     console.log(url); 
+    let params = {
+      UserID: this.connection.user.LoginUserID,
+      GroupCode: 'Flash',
+    };
+
+    this._fileOps.captureAndUpload(type, identifier, params).then(url => {
       this.captured.emit({
         VirtualPath: url
       });

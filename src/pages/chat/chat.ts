@@ -1,6 +1,8 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { Http } from '@angular/http';
 import { Camera, CameraOptions } from '@ionic-native/camera';
+import { Clipboard } from '@ionic-native/clipboard';
+import { Contacts } from '@ionic-native/contacts';
 import { File } from '@ionic-native/file';
 import { FileTransfer, FileTransferObject, FileUploadOptions } from '@ionic-native/file-transfer';
 import { Keyboard } from '@ionic-native/keyboard';
@@ -29,8 +31,6 @@ import { LogoutPage } from '../logout/logout';
 import { DateProvider } from './../../providers/date/date';
 import { ChatOptionsPage } from "./chat-options/chat-options";
 import { SavedMediaPage } from "./chat-options/saved-media/saved-media";
-import { Contacts } from '@ionic-native/contacts';
-import { Clipboard } from '@ionic-native/clipboard';
 
 
 
@@ -1582,7 +1582,7 @@ export class ChatPage {
 
         const fileTransfer: FileTransferObject = this.transfer.create();
         let options = this.setFileOptions(file);
-
+        console.log(options);
         fileTransfer.upload(file, this.connection.URL + 'Chat/InsertChat_Attachement', options)
           .then((data) => {
             this.progressPercent = 0;

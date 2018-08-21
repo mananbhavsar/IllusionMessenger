@@ -78,7 +78,7 @@ export class AddFlashPage {
   }
 
 
-  captured(event) {    
+  captured(event) {
     this.attachments.push(event);
     console.log(event);
     console.log(this.attachments);

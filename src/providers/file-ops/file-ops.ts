@@ -1,20 +1,20 @@
 import { Injectable } from '@angular/core';
-import { Platform, Events, normalizeURL } from 'ionic-angular';
-import * as mime from 'mime-types';
-import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer';
-import { File } from '@ionic-native/file';
-import { StreamingMedia } from '@ionic-native/streaming-media';
-
-import { Network } from '@ionic-native/network';
 import { AndroidPermissions } from '@ionic-native/android-permissions';
-
-import { FileOpener } from '@ionic-native/file-opener';
-
-import { Global } from '../../app/global';
 import { Camera, CameraOptions } from '@ionic-native/camera';
-import { FilePath } from '@ionic-native/file-path';
+import { File } from '@ionic-native/file';
 import { FileChooser } from '@ionic-native/file-chooser';
+import { FileOpener } from '@ionic-native/file-opener';
+import { FilePath } from '@ionic-native/file-path';
+import { FileTransfer, FileTransferObject, FileUploadOptions } from '@ionic-native/file-transfer';
+import { Network } from '@ionic-native/network';
+import { StreamingMedia } from '@ionic-native/streaming-media';
+import { Events, normalizeURL, Platform } from 'ionic-angular';
+import * as mime from 'mime-types';
+import { Global } from '../../app/global';
 import { CommonProvider } from '../common/common';
+
+
+
 
 @Injectable()
 export class FileOpsProvider {
@@ -73,8 +73,6 @@ export class FileOpsProvider {
 
   setDataDirecory() {
     this.getDataDirectory().then((path: any) => {
-      console.log(path);
-      
       this.directory = path;
     }).catch(error => {
     });
@@ -101,19 +99,17 @@ export class FileOpsProvider {
               this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE).then(permission => {
                 if (permission.hasPermission) {
                   this.getDataDirectory().then(path => {
-                    console.log(path);
                     resolve(path);
                   }).catch(error => {
                     reject(error);
                   });
                 }
               }, error => {
-                reject('Permission reject to write files');
+                reject('Permission rejected to write files');
               });
             }
           }, error => {
-          console.log(error);
-          
+            reject('Permission rejected to write files');
           });
 
         } else { //iOS
@@ -233,8 +229,6 @@ export class FileOpsProvider {
           this.camera.getPicture(optons).then(url => {
             resolve(url);
           }).catch(error => {
-            console.log(error);
-            
             reject(error);
           });
           break;
@@ -261,12 +255,14 @@ export class FileOpsProvider {
   }
 
 
-  uploadFile(file, identifier) {
+  uploadFile(file, identifier, params: any = {}) {
     return new Promise((resolve, reject) => {
-      let fileName = this.getFileName(file);    
+      let fileName = this.getFileName(file);
       const fileTransfer: FileTransferObject = this.transfer.create();
-      let options = this.setFileOptions(file);
+      let options = this.setFileOptions(file, params);
+
       fileTransfer.upload(file, Global.SERVER_URL + 'Chat/CreateFlashNews_Attachement', options).then(data => {
+
         if (data.response.indexOf('http') === -1) {
           reject(data);
         } else if (data.response.indexOf('>') > -1) {
@@ -276,9 +272,9 @@ export class FileOpsProvider {
         }
       }, (err) => {
         this.progressPercent = 0;
-        // reject(err);
+        reject(err);
       }).catch(error => {
-        // reject(error);
+        reject(error);
       });
 
       fileTransfer.onProgress(event => {
@@ -292,7 +288,7 @@ export class FileOpsProvider {
     });
   }
 
-  setFileOptions(file): FileUploadOptions {
+  setFileOptions(file, params: any = {}): FileUploadOptions {
     //removing ? if any
     if (file.indexOf('?') === -1) {
       file += '?';
@@ -300,6 +296,13 @@ export class FileOpsProvider {
     file = file.substring(0, file.lastIndexOf('?'));
     let fileName = this.getFileName(file);
     let fileExtension = file.substring(file.lastIndexOf('.') + 1);
+
+    //set params
+    params = Object.assign(params, {
+      FileName: fileName,
+      FileExtension: fileExtension
+    });
+    //set options
     let options: FileUploadOptions = {
       fileKey: 'file',
       fileName: fileName,
@@ -309,7 +312,7 @@ export class FileOpsProvider {
       //   // 'Content-Type': 'application/json',
       //   // Connection: "close",
       // }),
-      params: {}
+      params: params
     }
     return options;
   }
@@ -345,19 +348,19 @@ export class FileOpsProvider {
     });
   }
 
-  captureAndUpload(type, identifier: string = null) {
+  captureAndUpload(type, identifier: string = null, params: any = {}) {
     return new Promise((resolve, reject) => {
-      this.capture(type).then(uri => {      
-        this.uploadFile(uri, identifier).then(uploadedURL => {          
-        let url = 'https://documents.illusiondentallab.com/Chat/2018/August/HR/T_873/08202018130008_1534750206266.JPG';
+      this.capture(type).then(uri => {
+        this.uploadFile(uri, identifier, params).then(uploadedURL => {
+          let url = uploadedURL;
           resolve(url);
         }).catch(error => {
-          // this.events.publish('toast:error', error);
+          this.events.publish('toast:error', error);
           reject(error);
         });
       }).catch(error => {
-        console.log(error);
-        
+        this.events.publish('toast:error', error);
+        reject(error);
       });
     });
   }

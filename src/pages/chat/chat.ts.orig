@@ -1581,7 +1581,7 @@ export class ChatPage {
 
           const fileTransfer: FileTransferObject = this.transfer.create();
           let options = this.setFileOptions(file);
-        console.log(options);
+
           fileTransfer.upload(file, this.connection.URL + 'Chat/InsertChat_Attachement', options)
             .then((data) => {
               this.progressPercent = 0;
@@ -1619,6 +1619,7 @@ export class ChatPage {
       let fileName = file.substring(file.lastIndexOf('/') + 1);
       let fileExtension = file.substring(file.lastIndexOf('.') + 1);
 
+<<<<<<< HEAD
       let params = {
         UserID: this.user.UserID,
         TopicID: this.topicID,
@@ -1628,6 +1629,29 @@ export class ChatPage {
         FileName: fileName,
         FileExtension: fileExtension,
       };
+=======
+  uploadFile(file) {
+    return new Promise((resolve, reject) => {
+      if (file) {
+        this.progressPercent = 0;
+
+        const fileTransfer: FileTransferObject = this.transfer.create();
+        let options = this.setFileOptions(file);
+        console.log(options);
+        fileTransfer.upload(file, this.connection.URL + 'Chat/InsertChat_Attachement', options)
+          .then((data) => {
+            this.progressPercent = 0;
+            //getting URL from XML
+            if (data.response.indexOf('http') === -1) {
+              reject(data);
+            } else if (data.response.indexOf('>') > -1) {
+              resolve(data.response.substring(data.response.indexOf('>') + 1, data.response.lastIndexOf('<')));
+            } else {
+              resolve(JSON.parse(data.response));
+            }
+          }, (err) => {
+            console.log(err);
+>>>>>>> f407ec50d7b7d84a7dac2b68a9eb56e21871c244
 
       let options: FileUploadOptions = {
         fileKey: 'file',

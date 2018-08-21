@@ -28,10 +28,11 @@ export class ContactDetailPage {
   }
 
   saveContact() {
+    console.log(this.contactData.displayName);
+    
     //create instance
     let contact: Contact = this.contacts.create();
     contact.displayName = this.contactData.displayName;
-    contact.nickname = this.contactData.displayName;
     //name
     contact.name = new ContactName(
       this.contactData.formatted,
@@ -61,6 +62,8 @@ export class ContactDetailPage {
       this.viewCtrl.dismiss(contact);
       this.events.publish('toast:create', 'Contact Saved Successfully');
     }).catch(error => {
+      console.log(error);
+      
     });
   }
 

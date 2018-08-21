@@ -1108,680 +1108,679 @@ export class ChatPage {
     if (this.data.StatusID === 2) {
       return;
     } else {
-      if (!this.messageKey) {
+      if (this.messageKey) {
+        return;
+      } else {
         this.messageKey = this.getElementMessageKey(element.target);
         let selectedElement = document.getElementById('message-' + this.messageKey);
         selectedElement.classList.toggle("selected");
-      } else {
-        return;
-      }
-      if (this.getChildElement(element, '.text')) {
-        this.selectedMessageElement = this.getChildElement(element, '.text');
-      }
-      if (this.getChildElement(element, '.video')) {
-        this.selectedMessageElement = this.getChildElement(element, '.video');
-      }
-      if (this.getChildElement(element, '.picture')) {
-        this.selectedMessageElement = this.getChildElement(element, '.picture');
-      }
-      if (this.getChildElement(element, '.audio')) {
-        this.selectedMessageElement = this.getChildElement(element, '.audio');
-      }
-      this.headerButtons = [];
-      if (this.common.hasClass(this.selectedMessageElement, 'text')) {
-        this.headerButtons.push(
-          {
-            icon: 'ios-undo',
-            name: 'ios-undo',
-            value: this.selectedMessageElement
-          },
-          {
-            icon: 'ios-copy',
-            name: 'ios-copy',
-            value: this.selectedMessageElement
-          },
-          {
-            icon: 'ios-redo',
-            name: 'ios-redo',
-          },
-          {
-            icon: 'ios-information-circle-outline',
-            name: 'ios-information-circle-outline',
-            value: message
-          },
-          {
-            icon: 'ios-more',
-            name: 'more-option'
-          });
-      } else if (this.common.hasClass(this.selectedMessageElement, 'video') ||
-        this.common.hasClass(this.selectedMessageElement, 'audio') ||
-        this.common.hasClass(this.selectedMessageElement, 'picture')) {
-        this.headerButtons.push(
-          {
-            icon: 'ios-redo',
-            name: 'ios-redo',
-          },
-          {
-            icon: 'ios-information-circle-outline',
-            name: 'ios-information-circle-outline',
-            value: message
-          },
-          {
-            icon: 'ios-more',
-            name: 'more-option'
-          });
-      } else {
-        this.headerButtons.push(
-          {
-            icon: 'ios-more',
-            name: 'more-option'
-          });
-      }
-      if (this.common.hasClass(this.selectedMessageElement, 'contact')) {
-        return false;
-      }
-    }
-  }
-
-  deselectOptions(event) {
-    event.preventDefault();
-    if (this.messageKey) {
-      let selectedElement = document.getElementById('message-' + this.messageKey);
-      selectedElement.classList.remove("selected");
-    }
-    this.messageKey = null;
-    this.selectedMessageElement = null;
-    this.hideWhenReply = false;
-    this.removeHeaderButtons();
-  }
-  checkMessageType(type) {
-
-    //identify message type
-    switch (type) {
-      case 'text':
-        return this.selectedMessageElement.innerHTML;
-      case 'picture':
-      case 'video':
-      case 'audio':
-        return this.selectedMessageElement.getAttribute('data-url');
-    }
-  }
-
-  forwardMessage() {
-    if (this.selectedMessageElement) {
-      let message = '';
-      let messageType = 'Text';
-      let url = null;
-      if (this.common.hasClass(this.selectedMessageElement, 'text')) {
-        message = this.checkMessageType('text');
-      }
-      if (this.common.hasClass(this.selectedMessageElement, 'picture')) {
-        url = this.checkMessageType('picture');
-        messageType = 'Image';
-      }
-      if (this.common.hasClass(this.selectedMessageElement, 'video')) {
-        url = this.checkMessageType('video');
-        messageType = 'Video';
-      }
-      if (this.common.hasClass(this.selectedMessageElement, 'audio')) {
-        url = this.checkMessageType('audio');
-        messageType = 'Audio';
-      }
-      let modal = this.modal.create('ForwardMessagePage', { topicID: this.topicID, groupID: this.groupID });
-      modal.onDidDismiss(data => {
-        if (data) {
-          //loop
-          data.forEach((topic) => {
-            this.sendToFirebase(message, messageType, url, topic.TopicID, topic.TopicCode, topic.TopicID).then((data) => {
-              if (data) {
-                if (this.messageKey) {
-                  let selectedElement = document.getElementById('message-' + this.messageKey);
-                  selectedElement.classList.remove("selected");
-                  this.messageKey = null;
-                  this.events.publish('loading:close');
-                  this.events.publish('toast:create', 'Message forwarded successfully');
-                }
-                this.removeHeaderButtons();
-              }
-            });
-          });
+        if (this.getChildElement(element, '.text')) {
+          this.selectedMessageElement = this.getChildElement(element, '.text');
         }
-      });
-      modal.present();
-    }
-  }
-
-  removeHeaderButtons() {
-    if (this.headerButtons.length === 3) {
-      this.headerButtons.splice(0, 2);
-    }
-    if (this.headerButtons.length > 3) {
-      this.headerButtons.splice(0, 4);
-    }
-  }
-
-  getElementToReply(element) {
-    if (element) {
-      this.removeHeaderButtons();
-      let selectedElement = document.getElementById('message-' + this.messageKey);
-      selectedElement.classList.remove("selected");
-      this.replyTo = true;
-      if (this.common.hasClass(element, 'text')) {
-        this.replytoText = this.checkMessageType('text');
+        if (this.getChildElement(element, '.video')) {
+          this.selectedMessageElement = this.getChildElement(element, '.video');
+        }
+        if (this.getChildElement(element, '.picture')) {
+          this.selectedMessageElement = this.getChildElement(element, '.picture');
+        }
+        if (this.getChildElement(element, '.audio')) {
+          this.selectedMessageElement = this.getChildElement(element, '.audio');
+        }
+        this.headerButtons = [];
+        if (this.common.hasClass(this.selectedMessageElement, 'text')) {
+          this.headerButtons.push(
+            {
+              icon: 'ios-undo',
+              name: 'ios-undo',
+              value: this.selectedMessageElement
+            },
+            {
+              icon: 'ios-copy',
+              name: 'ios-copy',
+              value: this.selectedMessageElement
+            },
+            {
+              icon: 'ios-redo',
+              name: 'ios-redo',
+            },
+            {
+              icon: 'ios-information-circle-outline',
+              name: 'ios-information-circle-outline',
+              value: message
+            },
+            {
+              icon: 'ios-more',
+              name: 'more-option'
+            });
+        } else if (this.common.hasClass(this.selectedMessageElement, 'video') ||
+          this.common.hasClass(this.selectedMessageElement, 'audio') ||
+          this.common.hasClass(this.selectedMessageElement, 'picture')) {
+          this.headerButtons.push(
+            {
+              icon: 'ios-redo',
+              name: 'ios-redo',
+            },
+            {
+              icon: 'ios-information-circle-outline',
+              name: 'ios-information-circle-outline',
+              value: message
+            },
+            {
+              icon: 'ios-more',
+              name: 'more-option'
+            });
+        } else {
+          this.headerButtons.push(
+            {
+              icon: 'ios-more',
+              name: 'more-option'
+            });
+        }
+        if (this.common.hasClass(this.selectedMessageElement, 'contact')) {
+          return false;
+        }
       }
-      this.hideWhenReply = true;
     }
-  }
+    }
 
-  closeReply(event) {
-    let selectedElement = document.getElementById('message-' + this.messageKey);
-    selectedElement.classList.remove("selected");
-    this.hideWhenReply = false;
-    this.replyTo = null;
-    this.messageKey = null;
-  }
-
-  copyText(element) {
-    if (element) {
-      let selectedElement = document.getElementById('message-' + this.messageKey);
-      selectedElement.classList.remove("selected");
-      this.headerButtons.splice(0, 4);
+    deselectOptions(event) {
+      event.preventDefault();
+      if (this.messageKey) {
+        let selectedElement = document.getElementById('message-' + this.messageKey);
+        selectedElement.classList.remove("selected");
+      }
       this.messageKey = null;
       this.selectedMessageElement = null;
-      this.events.publish('toast:create', 'Message copied');
+      this.hideWhenReply = false;
+      this.removeHeaderButtons();
+    }
+    checkMessageType(type) {
+
+      //identify message type
+      switch (type) {
+        case 'text':
+          return this.selectedMessageElement.innerHTML;
+        case 'picture':
+        case 'video':
+        case 'audio':
+          return this.selectedMessageElement.getAttribute('data-url');
+      }
+    }
+
+    forwardMessage() {
+      if (this.selectedMessageElement) {
+        let message = '';
+        let messageType = 'Text';
+        let url = null;
+        if (this.common.hasClass(this.selectedMessageElement, 'text')) {
+          message = this.checkMessageType('text');
+        }
+        if (this.common.hasClass(this.selectedMessageElement, 'picture')) {
+          url = this.checkMessageType('picture');
+          messageType = 'Image';
+        }
+        if (this.common.hasClass(this.selectedMessageElement, 'video')) {
+          url = this.checkMessageType('video');
+          messageType = 'Video';
+        }
+        if (this.common.hasClass(this.selectedMessageElement, 'audio')) {
+          url = this.checkMessageType('audio');
+          messageType = 'Audio';
+        }
+        let modal = this.modal.create('ForwardMessagePage', { topicID: this.topicID, groupID: this.groupID });
+        modal.onDidDismiss(data => {
+          if (data) {
+            //loop
+            data.forEach((topic) => {
+              this.sendToFirebase(message, messageType, url, topic.TopicID, topic.TopicCode, topic.TopicID).then((data) => {
+                if (data) {
+                  if (this.messageKey) {
+                    let selectedElement = document.getElementById('message-' + this.messageKey);
+                    selectedElement.classList.remove("selected");
+                    this.messageKey = null;
+                    this.events.publish('loading:close');
+                    this.events.publish('toast:create', 'Message forwarded successfully');
+                  }
+                  this.removeHeaderButtons();
+                }
+              });
+            });
+          }
+        });
+        modal.present();
+      }
+    }
+
+    removeHeaderButtons() {
+      if (this.headerButtons.length === 3) {
+        this.headerButtons.splice(0, 2);
+      }
+      if (this.headerButtons.length > 3) {
+        this.headerButtons.splice(0, 4);
+      }
+    }
+
+    getElementToReply(element) {
+      if (element) {
+        this.removeHeaderButtons();
+        let selectedElement = document.getElementById('message-' + this.messageKey);
+        selectedElement.classList.remove("selected");
+        this.replyTo = true;
+        if (this.common.hasClass(element, 'text')) {
+          this.replytoText = this.checkMessageType('text');
+        }
+        this.hideWhenReply = true;
+      }
+    }
+
+    closeReply(event) {
+      let selectedElement = document.getElementById('message-' + this.messageKey);
+      selectedElement.classList.remove("selected");
+      this.hideWhenReply = false;
+      this.replyTo = null;
+      this.messageKey = null;
+    }
+
+    copyText(element) {
+      if (element) {
+        let selectedElement = document.getElementById('message-' + this.messageKey);
+        selectedElement.classList.remove("selected");
+        this.headerButtons.splice(0, 4);
+        this.messageKey = null;
+        this.selectedMessageElement = null;
+        this.events.publish('toast:create', 'Message copied');
+        if (this.isBrowser) {
+          this.copyToClipboard(element);
+        } else {
+          this.clipboard.copy(element.innerHTML);
+        }
+      }
+    }
+
+    copyToClipboard(element) {
+      let input = document.createElement('input');
+      document.body.appendChild(input);
+      input.value = element.textContent;
+      input.focus();
+      input.select();
+      document.execCommand('copy', false);
+      input.remove();
+    }
+
+    keyup(event) {
+      //on browser if entered pressed, send text message
       if (this.isBrowser) {
-        this.copyToClipboard(element);
+        let key = event.keyCode || event.which || 0;
+        switch (key) {
+          case 13://enter
+            this.sendTextMessage(null);
+            return;
+        }
+      }
+
+      if (this.message[this.message.length - 1] === '@') {
+        this.showUsers = true;
       } else {
-        this.clipboard.copy(element.innerHTML);
+        this.showUsers = false;
       }
-    }
-  }
-
-  copyToClipboard(element) {
-    let input = document.createElement('input');
-    document.body.appendChild(input);
-    input.value = element.textContent;
-    input.focus();
-    input.select();
-    document.execCommand('copy', false);
-    input.remove();
-  }
-
-  keyup(event) {
-    //on browser if entered pressed, send text message
-    if (this.isBrowser) {
-      let key = event.keyCode || event.which || 0;
-      switch (key) {
-        case 13://enter
-          this.sendTextMessage(null);
-          return;
-      }
+      // set typing for all
+      this.setTyping(true);
     }
 
-    if (this.message[this.message.length - 1] === '@') {
-      this.showUsers = true;
-    } else {
+    selectedUser(user) {
+      this.message = this.message + user.User;
       this.showUsers = false;
+
     }
-    // set typing for all
-    this.setTyping(true);
-  }
 
-  selectedUser(user) {
-    this.message = this.message + user.User;
-    this.showUsers = false;
-
-  }
-
-  keyboardKey(event) {
-    this.setTyping(true);
-  }
-
-
-  onFocus(event) {
-    this.keyboardOpen = true;
-    this.setTyping(true);
-  }
-
-  closeKeyboard(event) {
-    if (this.keyboardOpen) {
-      this.keyboardOpen = false;
-      this.setTyping(false);
-      this.keyboard.close();
+    keyboardKey(event) {
+      this.setTyping(true);
     }
-  }
 
-  setTyping(flag: boolean = true) {
-    return new Promise((resolve, reject) => {
-      if (this.typingRef) { //null check
-        //setting value
-        let currentTypingTime = moment().utc().valueOf();
-        if (flag) {
-          if ((currentTypingTime - this.lastTypingTime) > 2500) { //only for true 
-            this.lastTypingTime = currentTypingTime;
-            this.typingRef.child(this.userID).set(firebase.database.ServerValue.TIMESTAMP).then(value => {
+
+    onFocus(event) {
+      this.keyboardOpen = true;
+      this.setTyping(true);
+    }
+
+    closeKeyboard(event) {
+      if (this.keyboardOpen) {
+        this.keyboardOpen = false;
+        this.setTyping(false);
+        this.keyboard.close();
+      }
+    }
+
+    setTyping(flag: boolean = true) {
+      return new Promise((resolve, reject) => {
+        if (this.typingRef) { //null check
+          //setting value
+          let currentTypingTime = moment().utc().valueOf();
+          if (flag) {
+            if ((currentTypingTime - this.lastTypingTime) > 2500) { //only for true 
+              this.lastTypingTime = currentTypingTime;
+              this.typingRef.child(this.userID).set(firebase.database.ServerValue.TIMESTAMP).then(value => {
+                resolve();
+              });
+            } else { //time diff not sufficient
+              resolve();
+            }
+          } else {//for flase
+            resolve();
+          }
+        } else {
+          // reject('no ref');
+        }
+      });
+    }
+
+    setChatting(flag: boolean = true) {
+      return new Promise((resolve, reject) => {
+        if (this.chattingRef) { //null check
+          if (flag) {
+            this.chattingRef.child(this.userID).set(firebase.database.ServerValue.TIMESTAMP).then(value => {
               resolve();
             });
-          } else { //time diff not sufficient
-            resolve();
+          } else {
+            resolve(true);
           }
-        } else {//for flase
-          resolve();
-        }
-      } else {
-        // reject('no ref');
-      }
-    });
-  }
-
-  setChatting(flag: boolean = true) {
-    return new Promise((resolve, reject) => {
-      if (this.chattingRef) { //null check
-        if (flag) {
-          this.chattingRef.child(this.userID).set(firebase.database.ServerValue.TIMESTAMP).then(value => {
-            resolve();
-          });
         } else {
-          resolve(true);
+          // reject('No ref');
         }
-      } else {
-        // reject('No ref');
-      }
-    });
-  }
+      });
+    }
 
-  scrollBottom(caller) {
-    return new Promise((resolve, reject) => {
-      if (Global.getActiveComponentName(this.navCtrl.getActive()) !== 'ChatPage') {
-        reject(false);
-        return;
-      }
-      if (this.scrollingBottom) {
-        reject(false);
-        return;
-      }
-      this.scrollingBottom = true;
-      if (typeof this.content !== 'undefined') {
-        let animate = 300;
-        this.contentResize();
-        if (this.content && typeof this.content.scrollToBottom === 'function' && this.content._scroll) {
-          const wait = this.content.isScrolling ? 150 : null;
-          setTimeout(() => {
-            try {
-              this.content.scrollToBottom(animate).then(value => {
-                this.scrollingBottom = false;
-                resolve(value);
-              }).catch(error => {
+    scrollBottom(caller) {
+      return new Promise((resolve, reject) => {
+        if (Global.getActiveComponentName(this.navCtrl.getActive()) !== 'ChatPage') {
+          reject(false);
+          return;
+        }
+        if (this.scrollingBottom) {
+          reject(false);
+          return;
+        }
+        this.scrollingBottom = true;
+        if (typeof this.content !== 'undefined') {
+          let animate = 300;
+          this.contentResize();
+          if (this.content && typeof this.content.scrollToBottom === 'function' && this.content._scroll) {
+            const wait = this.content.isScrolling ? 150 : null;
+            setTimeout(() => {
+              try {
+                this.content.scrollToBottom(animate).then(value => {
+                  this.scrollingBottom = false;
+                  resolve(value);
+                }).catch(error => {
+                  this.scrollingBottom = false;
+                  reject(error);
+                });
+              } catch (error) {
                 this.scrollingBottom = false;
                 reject(error);
-              });
-            } catch (error) {
-              this.scrollingBottom = false;
-              reject(error);
-            }
-          });
+              }
+            });
+          }
+        } else {
+          this.scrollingBottom = false;
+          reject('no content');
         }
-      } else {
-        this.scrollingBottom = false;
-        reject('no content');
+      });
+    }
+
+    contentResize() {
+      if (typeof this.content !== 'undefined' && typeof this.content.resize === 'function') {
+        this.content.resize();
       }
-    });
-  }
-
-  contentResize() {
-    if (typeof this.content !== 'undefined' && typeof this.content.resize === 'function') {
-      this.content.resize();
-    }
-  }
-
-  captureImage(type: string = 'camera') {
-    let options = this.cameraOptions;
-    if (type === 'gallery') {
-      options = this.galleryOptions;
     }
 
-    this.camera.getPicture(options).then(url => {
-      let mimeType = mime.lookup(url);
+    captureImage(type: string = 'camera') {
+      let options = this.cameraOptions;
+      if (type === 'gallery') {
+        options = this.galleryOptions;
+      }
 
-      //checking if video of image
-      if (mimeType.indexOf('image') > -1) {//image
-        url = normalizeURL(url);
-        this.uploadFile(url).then((data: string) => {
-          if (data.indexOf('https') !== -1) {
+      this.camera.getPicture(options).then(url => {
+        let mimeType = mime.lookup(url);
+
+        //checking if video of image
+        if (mimeType.indexOf('image') > -1) {//image
+          url = normalizeURL(url);
+          this.uploadFile(url).then((data: string) => {
+            if (data.indexOf('https') !== -1) {
+              //sending to Firebase
+              this.sendToFirebase('', 'Image', data);
+            }
+          }).catch(error => {
+            this.events.publish('toast:error', error);
+          });
+        } else if (mimeType.indexOf('video') > -1) {
+          this.uploadVideo(url);
+        }
+      }).catch(error => {
+        this.events.publish('toast:error', error);
+      });
+    }
+
+    captureAudio(duration: number = null) {
+      if (duration) {
+        this.vibration.vibrate(this.vibrateDuration);
+      }
+      //show recording mode
+      this.aboutToRecord = true;
+      this.recordingInProgress = false;
+      this.recordTime = 0;
+    }
+
+    closeRecording() {
+      this.aboutToRecord = false;
+      this.recordingInProgress = false;
+      this.recordTime = 0;
+    }
+
+    startRecording() {
+      this.file.createFile(this.dataDirectory, this.recordFileName, true).then(fileEntry => {
+        this.recordMediaFile = this._media.create(this.dataDirectory.replace(/^file:\/\//, '') + this.recordFileName);
+
+        this.vibration.vibrate(this.vibrateDuration);
+
+        this.recordMediaFile.startRecord();
+        this.recordingInProgress = true;
+        //interval 
+        this.recordInterval = setInterval(() => {
+          this.recordTime++;
+        }, 1000);
+      }).catch(error => {
+      });
+    }
+
+    stopRecording() {
+      this.vibration.vibrate(this.vibrateDuration);
+
+      //stop from Media
+      this.recordMediaFile.stopRecord();
+      this.recordMediaFile.release();
+
+      //make a copy
+      let totalTime = this.recordTime;
+
+      //clear Interval
+      if (this.recordInterval) {
+        clearInterval(this.recordInterval);
+        this.recordInterval = null;
+      }
+
+      //clear all
+      this.closeRecording();
+
+      //process
+      let file = (this.dataDirectory + this.recordFileName);
+      this.file.checkFile(this.dataDirectory, this.recordFileName).then(status => {
+        if (status) {
+          this.uploadFile(file).then(data => {
+            //deleting file
+            this.file.removeFile(this.dataDirectory, this.recordFileName);
+
             //sending to Firebase
-            this.sendToFirebase('', 'Image', data);
-          }
-        }).catch(error => {
-          this.events.publish('toast:error', error);
-        });
-      } else if (mimeType.indexOf('video') > -1) {
-        this.uploadVideo(url);
+            this.sendToFirebase('', 'Audio', data);
+          }).catch(error => {
+            //deleting file
+            this.file.removeFile(this.dataDirectory, this.recordFileName).catch(error => {
+            });
+            this.events.publish('toast:error', error);
+          });
+        }
+      }).catch(error => {
+      });
+    }
+
+    getRecordTime() {
+      let minutes = Math.floor(this.recordTime / 60);
+      let seconds = '' + (this.recordTime - minutes * 60);
+      if (seconds.length === 1) {
+        seconds = '0' + seconds;
       }
-    }).catch(error => {
-      this.events.publish('toast:error', error);
-    });
-  }
+      return minutes + ':' + seconds;
 
-  captureAudio(duration: number = null) {
-    if (duration) {
-      this.vibration.vibrate(this.vibrateDuration);
-    }
-    //show recording mode
-    this.aboutToRecord = true;
-    this.recordingInProgress = false;
-    this.recordTime = 0;
-  }
-
-  closeRecording() {
-    this.aboutToRecord = false;
-    this.recordingInProgress = false;
-    this.recordTime = 0;
-  }
-
-  startRecording() {
-
-    this.file.createFile(this.dataDirectory, this.recordFileName, true).then(fileEntry => {
-      this.recordMediaFile = this._media.create(this.dataDirectory.replace(/^file:\/\//, '') + this.recordFileName);
-
-      this.vibration.vibrate(this.vibrateDuration);
-
-      this.recordMediaFile.startRecord();
-      this.recordingInProgress = true;
-      //interval 
-      this.recordInterval = setInterval(() => {
-        this.recordTime++;
-      }, 1000);
-    }).catch(error => {
-    });
-  }
-
-  stopRecording() {
-    this.vibration.vibrate(this.vibrateDuration);
-
-    //stop from Media
-    this.recordMediaFile.stopRecord();
-    this.recordMediaFile.release();
-
-    //make a copy
-    let totalTime = this.recordTime;
-
-    //clear Interval
-    if (this.recordInterval) {
-      clearInterval(this.recordInterval);
-      this.recordInterval = null;
     }
 
-    //clear all
-    this.closeRecording();
+    captureVideo(duration) {
+      const options: VideoCapturePlusOptions = {
+        limit: 1,
+        highquality: false,
+        duration: duration,
+      }
 
-    //process
-    let file = (this.dataDirectory + this.recordFileName);
-    this.file.checkFile(this.dataDirectory, this.recordFileName).then(status => {
-      if (status) {
-        this.uploadFile(file).then(data => {
-          //deleting file
-          this.file.removeFile(this.dataDirectory, this.recordFileName);
+      this.videoCapturePlus.captureVideo(options).then((mediafile: MediaFile[]) => {
+        if (mediafile.length > 0) {
+          let url = mediafile[0].fullPath;
+          this.uploadVideo(url);
+        }
+      }, error => {
+        this.events.publish('toast:error', error.message);
+      }).catch(error => {
+      });
+    }
 
+    uploadVideo(url) {
+      url = normalizeURL(url);
+      this.uploadFile(url).then((data: string) => {
+        if (data.indexOf('https') !== -1) {
           //sending to Firebase
-          this.sendToFirebase('', 'Audio', data);
-        }).catch(error => {
-          //deleting file
-          this.file.removeFile(this.dataDirectory, this.recordFileName).catch(error => {
-          });
-          this.events.publish('toast:error', error);
-        });
-      }
-    }).catch(error => {
-    });
-  }
-
-  getRecordTime() {
-    let minutes = Math.floor(this.recordTime / 60);
-    let seconds = '' + (this.recordTime - minutes * 60);
-    if (seconds.length === 1) {
-      seconds = '0' + seconds;
-    }
-    return minutes + ':' + seconds;
-
-  }
-
-  captureVideo(duration) {
-    const options: VideoCapturePlusOptions = {
-      limit: 1,
-      highquality: false,
-      duration: duration,
+          this.sendToFirebase('', 'Video', data);
+        }
+      }).catch(error => {
+        this.events.publish('toast:error', error);
+      });
     }
 
-    this.videoCapturePlus.captureVideo(options).then((mediafile: MediaFile[]) => {
-      if (mediafile.length > 0) {
-        let url = mediafile[0].fullPath;
-        this.uploadVideo(url);
-      }
-    }, error => {
-      this.events.publish('toast:error', error.message);
-    }).catch(error => {
-    });
-  }
+    uploadFile(file) {
+      return new Promise((resolve, reject) => {
+        if (file) {
+          this.progressPercent = 0;
 
-  uploadVideo(url) {
-    url = normalizeURL(url);
-    this.uploadFile(url).then((data: string) => {
-      if (data.indexOf('https') !== -1) {
-        //sending to Firebase
-        this.sendToFirebase('', 'Video', data);
-      }
-    }).catch(error => {
-      this.events.publish('toast:error', error);
-    });
-  }
+          const fileTransfer: FileTransferObject = this.transfer.create();
+          let options = this.setFileOptions(file);
 
-  uploadFile(file) {
-    return new Promise((resolve, reject) => {
-      if (file) {
-        this.progressPercent = 0;
+          fileTransfer.upload(file, this.connection.URL + 'Chat/InsertChat_Attachement', options)
+            .then((data) => {
+              this.progressPercent = 0;
+              //getting URL from XML
+              if (data.response.indexOf('http') === -1) {
+                reject(data);
+              } else if (data.response.indexOf('>') > -1) {
+                resolve(data.response.substring(data.response.indexOf('>') + 1, data.response.lastIndexOf('<')));
+              } else {
+                resolve(JSON.parse(data.response));
+              }
+            }, (err) => {
+              console.log(err);
 
-        const fileTransfer: FileTransferObject = this.transfer.create();
-        let options = this.setFileOptions(file);
-
-        fileTransfer.upload(file, this.connection.URL + 'Chat/InsertChat_Attachement', options)
-          .then((data) => {
-            this.progressPercent = 0;
-            //getting URL from XML
-            if (data.response.indexOf('http') === -1) {
-              reject(data);
-            } else if (data.response.indexOf('>') > -1) {
-              resolve(data.response.substring(data.response.indexOf('>') + 1, data.response.lastIndexOf('<')));
-            } else {
-              resolve(JSON.parse(data.response));
+              this.progressPercent = 0;
+              reject(err);
+            });
+          fileTransfer.onProgress((progress) => {
+            if (progress.lengthComputable) {
+              this.progressPercent = parseFloat((progress.loaded * 100 / progress.total).toFixed(2));
             }
-          }, (err) => {
-            console.log(err);
-
-            this.progressPercent = 0;
-            reject(err);
           });
-        fileTransfer.onProgress((progress) => {
-          if (progress.lengthComputable) {
-            this.progressPercent = parseFloat((progress.loaded * 100 / progress.total).toFixed(2));
-          }
-        });
-      } else {
-        reject('Empty File');
-      }
-    });
-  }
-
-  setFileOptions(file): FileUploadOptions {
-    //removing ? if any
-    if (file.indexOf('?') === -1) {
-      file += '?';
-    }
-    file = file.substring(0, file.lastIndexOf('?'));
-    let fileName = file.substring(file.lastIndexOf('/') + 1);
-    let fileExtension = file.substring(file.lastIndexOf('.') + 1);
-
-    let params = {
-      UserID: this.user.UserID,
-      TopicID: this.topicID,
-      GroupID: this.groupID,
-      TopicCode: this.topicCode,
-      GroupCode: this.groupCode,
-      FileName: fileName,
-      FileExtension: fileExtension,
-    };
-
-    let options: FileUploadOptions = {
-      fileKey: 'file',
-      fileName: fileName,
-      mimeType: mime.lookup(fileExtension),
-      chunkedMode: false,
-      // headers: new Headers({
-      //   // 'Content-Type': 'application/json',
-      //   // Connection: "close",
-      //   FileName: fileName,
-      //   FileExtension: fileExtension,
-      // }),
-      params: params,
+        } else {
+          reject('Empty File');
+        }
+      });
     }
 
-    return options;
-  }
-
-
-  sendPushNotification(message, users: Array<object>) {
-    users.forEach((user: any) => {
-
-      let contents = user.Message;
-
-      //checking if Image then adding image notification
-      if (message.MessageType === 'Image') {
-        contents.en = '📷 ' + contents.en;
-        if (contents.fr) {
-          contents.fr = '📷 ' + contents.fr;
-        }
-      } else if (message.MessageType === 'Video') {
-        contents.en = '📹 ' + contents.en;
-        if (contents.fr) {
-          contents.fr = '📹 ' + contents.fr;
-        }
-      } else if (message.MessageType === 'Audio') {
-        contents.en = '🎤 ' + contents.en;
-        if (contents.fr) {
-          contents.fr = '🎤 ' + contents.fr;
-        }
+    setFileOptions(file): FileUploadOptions {
+      //removing ? if any
+      if (file.indexOf('?') === -1) {
+        file += '?';
       }
-
-      this._notifications.send(user.DeviceID, user.title, contents, user.Badge, 'ChatPage', this.topicCode, message.URL).catch(error => { });
-    });
-  }
-
-  sendMessageToServer(message) {
-    return new Promise((resolve, reject) => {
-      // get live chat users
-      let userChattingNow = this.userChatting;
-      let nowTime = moment().utc().valueOf();
-
-      var activeUserList = this.getLiveChatUsers(userChattingNow, nowTime);
-
-      let fileName = null;
-      let fileExtension = null;
-      //if image or audio, sending its file name & extension
-      if (message.URL) {
-        fileExtension = message.URL.substring(message.URL.lastIndexOf('.') + 1);
-        fileName = message.URL.substring(message.URL.lastIndexOf('/') + 1).replace('.' + fileExtension, '');
-      }
+      file = file.substring(0, file.lastIndexOf('?'));
+      let fileName = file.substring(file.lastIndexOf('/') + 1);
+      let fileExtension = file.substring(file.lastIndexOf('.') + 1);
 
       let params = {
-        LiveUsersOnChat: activeUserList,
-        ChattingUsers: this.common.build_query(userChattingNow),
-        TimeOnPhone: nowTime,
-        Message: message.Message ? message.Message : '',
-        MessageType: message.MessageType,
-        URL: message.URL,
+        UserID: this.user.UserID,
+        TopicID: this.topicID,
+        GroupID: this.groupID,
+        TopicCode: this.topicCode,
+        GroupCode: this.groupCode,
         FileName: fileName,
         FileExtension: fileExtension,
-        TopicCode: message.TopicCode,
-        TopicID: message.TopicID,
-        GroupID: this.groupID,
-        TaggedUserID: message.TaggedUsers.join(','),
-        IsWeb: this.platform.is('core'),
-        IsForward: message.IsForwarded,
-        IsReply: message.IsReplied,
       };
 
-      this.connection.doPost('Chat/InsertChat', params, false).then((response: any) => {
-        //send Push
-        if (Global.Push.OneSignal) {
-          this.sendPushNotification(message, response.OneSignalTransaction);
+      let options: FileUploadOptions = {
+        fileKey: 'file',
+        fileName: fileName,
+        mimeType: mime.lookup(fileExtension),
+        chunkedMode: false,
+        // headers: new Headers({
+        //   // 'Content-Type': 'application/json',
+        //   // Connection: "close",
+        //   FileName: fileName,
+        //   FileExtension: fileExtension,
+        // }),
+        params: params,
+      }
+
+      return options;
+    }
+
+
+    sendPushNotification(message, users: Array<object>) {
+      users.forEach((user: any) => {
+
+        let contents = user.Message;
+
+        //checking if Image then adding image notification
+        if (message.MessageType === 'Image') {
+          contents.en = '📷 ' + contents.en;
+          if (contents.fr) {
+            contents.fr = '📷 ' + contents.fr;
+          }
+        } else if (message.MessageType === 'Video') {
+          contents.en = '📹 ' + contents.en;
+          if (contents.fr) {
+            contents.fr = '📹 ' + contents.fr;
+          }
+        } else if (message.MessageType === 'Audio') {
+          contents.en = '🎤 ' + contents.en;
+          if (contents.fr) {
+            contents.fr = '🎤 ' + contents.fr;
+          }
         }
-        //managing firebase count
-        if (response.FireBaseTransaction) {
-          this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { })
-        }
-        resolve(response);
-      }).catch(error => {
-        reject(error);
+
+        this._notifications.send(user.DeviceID, user.title, contents, user.Badge, 'ChatPage', this.topicCode, message.URL).catch(error => { });
       });
-    });
-  }
+    }
+
+  sendMessageToServer(message) {
+        return new Promise((resolve, reject) => {
+          // get live chat users
+          let userChattingNow = this.userChatting;
+          let nowTime = moment().utc().valueOf();
+
+          var activeUserList = this.getLiveChatUsers(userChattingNow, nowTime);
+
+          let fileName = null;
+          let fileExtension = null;
+          //if image or audio, sending its file name & extension
+          if (message.URL) {
+            fileExtension = message.URL.substring(message.URL.lastIndexOf('.') + 1);
+            fileName = message.URL.substring(message.URL.lastIndexOf('/') + 1).replace('.' + fileExtension, '');
+          }
+
+          let params = {
+            LiveUsersOnChat: activeUserList,
+            ChattingUsers: this.common.build_query(userChattingNow),
+            TimeOnPhone: nowTime,
+            Message: message.Message ? message.Message : '',
+            MessageType: message.MessageType,
+            URL: message.URL,
+            FileName: fileName,
+            FileExtension: fileExtension,
+            TopicCode: message.TopicCode,
+            TopicID: message.TopicID,
+            GroupID: this.groupID,
+            TaggedUserID: message.TaggedUsers.join(','),
+            IsWeb: this.platform.is('core'),
+            IsForward: message.IsForwarded,
+            IsReply: message.IsReplied,
+          };
+
+          this.connection.doPost('Chat/InsertChat', params, false).then((response: any) => {
+            //send Push
+            if (Global.Push.OneSignal) {
+              this.sendPushNotification(message, response.OneSignalTransaction);
+            }
+            //managing firebase count
+            if (response.FireBaseTransaction) {
+              this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { })
+            }
+            resolve(response);
+          }).catch(error => {
+            reject(error);
+          });
+        });
+      }
 
   openFile(file) {
 
-  }
+      }
 
   doLeaving(messageNull) {
-    if (this.chattingInterval) {
-      clearInterval(this.chattingInterval);
-      this.chattingInterval = null;
-    }
+        if(this.chattingInterval) {
+          clearInterval(this.chattingInterval);
+          this.chattingInterval = null;
+        }
     this.setChatting(false).then(response => {
-      this.chattingRef.off('value');
-      this.newMessagesRef.off('child_added');
-    }).catch(error => {
+          this.chattingRef.off('value');
+          this.newMessagesRef.off('child_added');
+        }).catch(error => {
 
-    });
-    this.setTyping(false).then(response => {
-      this.typingRef.off('value');
-    }).catch(error => {
+        });
+        this.setTyping(false).then(response => {
+          this.typingRef.off('value');
+        }).catch(error => {
 
-    });
-    //no more status change read
-    if (this.messagesRef) {
-      this.messagesRef.orderByChild('Read').off('child_changed');
-      this.messagesRef.orderByChild('Status').off('child_changed');
-    }
+        });
+        //no more status change read
+        if(this.messagesRef) {
+          this.messagesRef.orderByChild('Read').off('child_changed');
+          this.messagesRef.orderByChild('Status').off('child_changed');
+        }
 
-    if (messageNull) {
+    if(messageNull) {
 
-      this.messages = [];
-      this.messagesKeys = [];
-      this.offlineMessages = [];
-      this.events.unsubscribe('notification:chat');
-      this.events.unsubscribe('network:online');
-      this.events.unsubscribe('network:offline');
-      if (this.platformPauseReference) {
-        this.platformPauseReference.unsubscribe();
-        this.platformPauseReference = null;
-      }
-      if (this.platformResumeReference) {
-        this.platformResumeReference.unsubscribe();
-        this.platformResumeReference = null;
-      }
+          this.messages = [];
+          this.messagesKeys = [];
+          this.offlineMessages = [];
+          this.events.unsubscribe('notification:chat');
+          this.events.unsubscribe('network:online');
+          this.events.unsubscribe('network:offline');
+          if (this.platformPauseReference) {
+            this.platformPauseReference.unsubscribe();
+            this.platformPauseReference = null;
+          }
+          if (this.platformResumeReference) {
+            this.platformResumeReference.unsubscribe();
+            this.platformResumeReference = null;
+          }
 
-      if (this.topicClosePath) {
-        firebase.database().ref(this.topicClosePath).off('value');
-      }
-    }
+          if (this.topicClosePath) {
+            firebase.database().ref(this.topicClosePath).off('value');
+          }
+        }
 
     this.events.unsubscribe('user:ready');
-    this.keyboard.disableScroll(false);
-  }
+        this.keyboard.disableScroll(false);
+      }
 
   getLiveChatUsers(userChattingNow, nowTime) {
-    var activeUserList = '';
-    let currentChattingUsers = [];
+        var activeUserList = '';
+        let currentChattingUsers = [];
 
-    if (!_.isEmpty(userChattingNow)) {
+        if(!_.isEmpty(userChattingNow)) {
       for (let userID in userChattingNow) {
         let value = userChattingNow[userID];
         //checking if boolean, older version

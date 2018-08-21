@@ -57,14 +57,14 @@ export class CloseTopicPage {
   }
 
   getData(event) {
-    this.initializeItems();
-    let val = event.target.value;
-    if (val) {
-      this.query = val.trim();
-      this.getDetails().catch(error => {
-
-      });
-    }
+      if (this.showSearch) {
+        this.showSearch = false;
+        this.topics = [];
+        this.query = null;
+        this.initializeItems();
+      } else if (this.showSearch === false) {
+        this.showSearch = true;
+      }
   }
 
   getDetails() {
@@ -104,19 +104,21 @@ export class CloseTopicPage {
     });
   }
 
+
   initializeItems() {
     this.page = 0;
-    this.topics = [];
+    this.getDetails().catch(error => {
+    });
   }
 
-  onCancel() {
+  onCancel(event) {
+    this.query = null;
     this.initializeItems();
   }
 
-  onClear() {
+  onClear(event) {
+    this.query = null;
     this.initializeItems();
-    this.query = '';
-    this.getDetails();
   }
 
   refresh(refresher) {

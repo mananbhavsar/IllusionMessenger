@@ -37,7 +37,7 @@
         <ion-searchbar [showCancelButton]="true" *ngIf="searchInputBtn && selectedTab !== 'stats'" (ionInput)="getItems($event)"
             (ionClear)="onClear($event)" (ionCancel)="onCancel($event)">
         </ion-searchbar>
-        <ion-segment [(ngModel)]="selectedTab" color="theme" padding mode="ios">
+        <ion-segment [(ngModel)]="selectedTab" (ionChange)="dashboardTabSearchHide()" color="theme" padding mode="ios">
             <ion-segment-button [value]="tab.icon" *ngFor="let tab of tabs">
                 <ion-icon [name]="tab.icon"></ion-icon>
                 <span *ngIf="tab.icon !== 'stats'">

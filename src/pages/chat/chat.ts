@@ -1108,10 +1108,12 @@ export class ChatPage {
     if (this.data.StatusID === 2) {
       return;
     } else {
-      this.messageKey = this.getElementMessageKey(element.target);
-      if (this.messageKey) {
+      if (!this.messageKey) {
+        this.messageKey = this.getElementMessageKey(element.target);
         let selectedElement = document.getElementById('message-' + this.messageKey);
         selectedElement.classList.toggle("selected");
+      } else {
+        return;
       }
       if (this.getChildElement(element, '.text')) {
         this.selectedMessageElement = this.getChildElement(element, '.text');
@@ -1237,7 +1239,7 @@ export class ChatPage {
                   selectedElement.classList.remove("selected");
                   this.messageKey = null;
                   this.events.publish('loading:close');
-                  this.events.publish('toast:create','Message forwarded successfully');
+                  this.events.publish('toast:create', 'Message forwarded successfully');
                 }
                 this.removeHeaderButtons();
               }
@@ -1593,6 +1595,8 @@ export class ChatPage {
               resolve(JSON.parse(data.response));
             }
           }, (err) => {
+            console.log(err);
+
             this.progressPercent = 0;
             reject(err);
           });

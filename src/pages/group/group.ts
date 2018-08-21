@@ -58,13 +58,17 @@ export class GroupPage {
           OrderBy: this.sort_by,
           Order: this.sort_order,
         }, false).then((response: any) => {
-          this.group = response;
-          if (!_.isEmpty(this.group)) {
-            response.TopicList.forEach(list => {
-              this.group.push(list);
-            }); 
-            this.group.FlashNews.forEach((news, key) => {
+          //flash
+          if (response.FlashNews) {
+            response.FlashNews.forEach((news, key) => {
+              console.log(news);
               this.flashNewsProvider.openUnreadFlashNews(news);
+            });
+          }
+          this.group = response;
+          if (this.group) {
+            response.ActiveTopicList.forEach(list => {
+              this.group.push(list);
             });
             this.setForBadge();
             this.page++;

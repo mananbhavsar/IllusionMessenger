@@ -73,6 +73,8 @@ export class FileOpsProvider {
 
   setDataDirecory() {
     this.getDataDirectory().then((path: any) => {
+      console.log(path);
+      
       this.directory = path;
     }).catch(error => {
     });
@@ -99,6 +101,7 @@ export class FileOpsProvider {
               this.androidPermissions.requestPermission(this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE).then(permission => {
                 if (permission.hasPermission) {
                   this.getDataDirectory().then(path => {
+                    console.log(path);
                     resolve(path);
                   }).catch(error => {
                     reject(error);
@@ -109,7 +112,8 @@ export class FileOpsProvider {
               });
             }
           }, error => {
-
+          console.log(error);
+          
           });
 
         } else { //iOS
@@ -218,31 +222,6 @@ export class FileOpsProvider {
     });
   }
 
-  createDirectoryIfNotExist(path, directoryName) {
-    this.file.checkDir(path, directoryName).then(status => {
-    }).catch(error => {
-      if (error.code === 1) {
-        this.file.createDir(path, directoryName, false).catch(error => { });
-      }
-    });
-  }
-
-  captureAndUpload(type, identifier: string = null) {
-    return new Promise((resolve, reject) => {
-      this.capture(type).then(uri => {
-        this.uploadFile(uri, {
-          date: identifier || new Date().getTime(),
-        }, identifier).then(uploadedURL => {
-          resolve(uploadedURL);
-        }).catch(error => {
-          this.events.publish('toast:error', error);
-          reject(error)
-        });
-      }).catch(error => {
-
-      });
-    });
-  }
 
   capture(type) {
     return new Promise((resolve, reject) => {
@@ -254,6 +233,8 @@ export class FileOpsProvider {
           this.camera.getPicture(optons).then(url => {
             resolve(url);
           }).catch(error => {
+            console.log(error);
+            
             reject(error);
           });
           break;
@@ -280,11 +261,12 @@ export class FileOpsProvider {
   }
 
 
-  uploadFile(file, params, identifier) {
+  uploadFile(file, identifier) {
     return new Promise((resolve, reject) => {
       let fileName = this.getFileName(file);    
       const fileTransfer: FileTransferObject = this.transfer.create();
-      fileTransfer.upload(file, Global.SERVER_URL + 'Chat/CreateFlashNews_Attachement', this.setFileOptions(file, params)).then(data => {
+      let options = this.setFileOptions(file);
+      fileTransfer.upload(file, Global.SERVER_URL + 'Chat/CreateFlashNews_Attachement', options).then(data => {
         if (data.response.indexOf('http') === -1) {
           reject(data);
         } else if (data.response.indexOf('>') > -1) {
@@ -294,9 +276,9 @@ export class FileOpsProvider {
         }
       }, (err) => {
         this.progressPercent = 0;
-        reject(err);
+        // reject(err);
       }).catch(error => {
-        reject(error);
+        // reject(error);
       });
 
       fileTransfer.onProgress(event => {
@@ -310,14 +292,14 @@ export class FileOpsProvider {
     });
   }
 
-  setFileOptions(file, params = {}): FileUploadOptions {
+  setFileOptions(file): FileUploadOptions {
     //removing ? if any
     if (file.indexOf('?') === -1) {
       file += '?';
     }
     file = file.substring(0, file.lastIndexOf('?'));
     let fileName = this.getFileName(file);
-    let fileExtension = this.getFileExtension(file);
+    let fileExtension = file.substring(file.lastIndexOf('.') + 1);
     let options: FileUploadOptions = {
       fileKey: 'file',
       fileName: fileName,
@@ -327,7 +309,7 @@ export class FileOpsProvider {
       //   // 'Content-Type': 'application/json',
       //   // Connection: "close",
       // }),
-      params: params
+      params: {}
     }
     return options;
   }
@@ -351,6 +333,33 @@ export class FileOpsProvider {
     if (file) {
       return file.substring(file.lastIndexOf('.') + 1).toLowerCase();
     }
+  }
+
+
+  createDirectoryIfNotExist(path, directoryName) {
+    this.file.checkDir(path, directoryName).then(status => {
+    }).catch(error => {
+      if (error.code === 1) {
+        this.file.createDir(path, directoryName, false).catch(error => { });
+      }
+    });
+  }
+
+  captureAndUpload(type, identifier: string = null) {
+    return new Promise((resolve, reject) => {
+      this.capture(type).then(uri => {      
+        this.uploadFile(uri, identifier).then(uploadedURL => {          
+        let url = 'https://documents.illusiondentallab.com/Chat/2018/August/HR/T_873/08202018130008_1534750206266.JPG';
+          resolve(url);
+        }).catch(error => {
+          // this.events.publish('toast:error', error);
+          reject(error);
+        });
+      }).catch(error => {
+        console.log(error);
+        
+      });
+    });
   }
 
   openRemoteFile(file, directory = null, identifier) {

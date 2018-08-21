@@ -33,7 +33,7 @@ export class FlashNewsProvider {
     });
   }
 
-  checkAndOpen() {
+  checkAndOpen() {    
     if (!_.isEmpty(this.flashNews) && this.currentlyopened === 0) {
       this.wastheredataLastTime = true;
       let flash: any = this.flashNews[this.flashID];

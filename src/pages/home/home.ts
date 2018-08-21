@@ -463,12 +463,21 @@ export class HomePage {
         } else {
             if (this.searchInputBtn) {
                 this.searchInputBtn = false;
-                this.data = [];
-                this.query = null;
-                this.initializeItems();
             } else if (this.searchInputBtn === false) {
                 this.searchInputBtn = true;
             }
+            this.data = [];
+            this.query = null;
+            this.initializeItems();
+        }
+    }
+
+    dashboardTabSearchHide(){
+        if (this.selectedTab === 'stats' && this.searchInputBtn) {
+            this.events.publish('toast:create', 'Search not available here');
+            this.data = [];
+            this.query = null;
+            this.initializeItems();
         }
     }
 

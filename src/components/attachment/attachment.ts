@@ -114,9 +114,14 @@ export class AttachmentComponent {
       GroupCode: 'Flash',
     };
 
+
     this._fileOps.captureAndUpload(type, identifier, params).then(url => {
+      let fileExtension = this._fileOps.getFileExtension(url).toLowerCase();
+      let fileName = this._fileOps.getFileNameWithoutExtension(url).toLowerCase();
       this.captured.emit({
-        VirtualPath: url
+        VirtualPath: url,
+        FileName: fileName,
+        FileExtension: fileExtension
       });
     }).catch(error => {
       this.removeProgress(identifier);
@@ -138,8 +143,12 @@ export class AttachmentComponent {
     if (this.platform.is('core')) {
       window.open(file, '_blank');
     } else {
-      let identifier = UUID.UUID();
-      this._fileOps.openRemoteFile(file, null, identifier).catch(error => {
+      this._fileOps.getDataDirectory().then(path => {
+        let identifier = UUID.UUID();
+        let flashPath = path + 'Flash' + '/';
+        this._fileOps.openRemoteFile(file, flashPath, identifier).then(status => {
+        }).catch(error => {
+        });
       });
     }
   }

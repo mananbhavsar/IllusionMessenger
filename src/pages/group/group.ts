@@ -61,7 +61,6 @@ export class GroupPage {
           //flash
           if (response.FlashNews) {
             response.FlashNews.forEach((news, key) => {
-              console.log(news);
               this.flashNewsProvider.openUnreadFlashNews(news);
             });
           }

@@ -1,8 +1,10 @@
 import { Component, ElementRef } from '@angular/core';
-import { IonicPage, NavController,Events, Platform, ViewController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, Events, Platform, ViewController, NavParams } from 'ionic-angular';
 import { ConnectionProvider } from '../../providers/connection/connection';
 import { ImageViewerController } from 'ionic-img-viewer';
+import { UUID } from 'angular2-uuid';
 import { FlashNewsProvider } from '../../providers/flash-news/flash-news';
+import { FileOpsProvider } from '../../providers/file-ops/file-ops';
 
 @IonicPage()
 @Component({
@@ -14,8 +16,9 @@ export class FlashPage {
   title: string;
   element: any;
   groupId: number;
-  isPage : Boolean;
+  isPage: Boolean;
   attachments: any = [];
+  isBrowser: boolean;
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public viewCntl: ViewController,
@@ -23,14 +26,15 @@ export class FlashPage {
     public platform: Platform,
     public _imageViewerController: ImageViewerController,
     public _flashNews: FlashNewsProvider,
-    public events : Events,
-    public _elementRef: ElementRef) {
+    public events: Events,
+    public _elementRef: ElementRef,
+    public _fileOps : FileOpsProvider) {
 
     this.news = this.navParams.data.news;
     this.groupId = this.navParams.data.id;
     this.isPage = this.navParams.data.isPage;
     this.title = this.news.CreatedBy;
-
+    this.isBrowser = this.platform.is('core');
 
     this.initData();
   }
@@ -45,20 +49,24 @@ export class FlashPage {
   }
 
   flashNewsSeen() {
-    if(this.isPage){
-    this._flashNews.markRead(this.news.FlashID);
-    }else{
+    if (this.isPage) {
+      this._flashNews.markRead(this.news.FlashID);
+    } else {
       this.viewCntl.dismiss();
     }
   }
 
-  openImage(file) {
+  captured(file) {
     if (this.platform.is('core')) {
       window.open(file, '_blank');
     } else {
-      this.element = this._elementRef.nativeElement.querySelector('#url');
-      let image = this._imageViewerController.create(this.element);
-      image.present();
+      this._fileOps.getDataDirectory().then(path => {
+        let identifier = UUID.UUID();
+        let flashPath = path + 'Flash' + '/';
+        this._fileOps.openRemoteFile(file, flashPath, identifier).then(status => {
+        }).catch(error => {
+        });
+      });
     }
   }
 

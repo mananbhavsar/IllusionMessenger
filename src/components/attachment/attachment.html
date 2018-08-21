@@ -30,7 +30,7 @@
     </button>
   </ion-col>
 </ion-row>
-<ion-row *ngIf="isBrowser">
+<ion-row *ngIf="editable && isBrowser">
   <button ion-button icon-start class="upload">
     <!-- file format   -->
     <input type="file" accept=".xlsx,.xls,.doc,.docx,.ppt,.pptx,.txt,.pdf,image/*" class="upload" (change)="uplaodFile($event)">
@@ -44,11 +44,17 @@
 <div class="attachment-container" *ngIf="attachments">
   <div class="attachment-thumb" *ngFor="let attachment of attachments;let i = index;">
     <ion-icon name="ios-trash" (click)="removeAttachment(i)" color="danger" *ngIf="editable"></ion-icon>
-    <img *ngIf="attachment.fileExtension === 'pdf'" src="assets/img/pdf.png" (click)="openImage(url.VirtualPath)"  width="90" height="90" >
-    <img *ngIf="attachment.fileExtension === 'png' || attachment.fileExtension === 'jpeg' || attachment.fileExtension === 'jpg'" [src]="attachment.VirtualPath" width="90" height="90" (click)="openAttachment(attachment.VirtualPath)" />
-    <img *ngIf="attachment.fileExtension === 'doc' || attachment.fileExtension === 'docx'" src="assets/img/doc_icon.png" (click)="openImage(url.VirtualPath)"  width="90" height="90" >
-    <img *ngIf="attachment.fileExtension === 'xls' || attachment.fileExtension === 'xlsx'" src="assets/img/xls.jpg" (click)="openImage(url.VirtualPath)"  width="90" height="90" >
-    <img *ngIf="attachment.fileExtension === 'ppt' || attachment.fileExtension === 'pptx'" src="assets/img/ppt.png" (click)="openImage(url.VirtualPath)"  width="90" height="90" > 
-    <img *ngIf="attachment.fileExtension === 'txt'" src="assets/img/txt.png" (click)="openImage(url.VirtualPath)"  width="90" height="90">
+      <img *ngIf="attachment.FileExtension === 'pdf'" src="assets/img/pdf.png" (click)="openAttachment(attachment.VirtualPath)" width="90"
+        height="90">
+      <img *ngIf="attachment.FileExtension === 'png' || attachment.FileExtension === 'jpeg' || attachment.FileExtension === 'jpg'"
+        [src]="attachment.VirtualPath" width="90" height="90" (click)="openAttachment(attachment.VirtualPath)" />
+      <img *ngIf="attachment.FileExtension === 'doc' || attachment.FileExtension === 'docx'" src="assets/img/doc_icon.png" (click)="openAttachment(url.VirtualPath)"
+        width="90" height="90">
+      <img *ngIf="attachment.FileExtension === 'xls' || attachment.FileExtension === 'xlsx'" src="assets/img/xls.jpg" (click)="openAttachment(url.VirtualPath)"
+        width="90" height="90">
+      <img *ngIf="attachment.FileExtension === 'ppt' || attachment.FileExtension === 'pptx'" src="assets/img/ppt.png" (click)="openAttachment(url.VirtualPath)"
+        width="90" height="90">
+      <img *ngIf="attachment.FileExtension === 'txt'" src="assets/img/txt.png" (click)="openImage(url.VirtualPath)" width="90"
+        height="90">
   </div>
 </div>

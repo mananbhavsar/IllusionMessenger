@@ -1581,7 +1581,6 @@ export class ChatPage {
 
           const fileTransfer: FileTransferObject = this.transfer.create();
           let options = this.setFileOptions(file);
-        console.log(options);
           fileTransfer.upload(file, this.connection.URL + 'Chat/InsertChat_Attachement', options)
             .then((data) => {
               this.progressPercent = 0;
@@ -1594,8 +1593,6 @@ export class ChatPage {
                 resolve(JSON.parse(data.response));
               }
             }, (err) => {
-              console.log(err);
-
               this.progressPercent = 0;
               reject(err);
             });

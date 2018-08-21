@@ -56,23 +56,13 @@ export class CloseTopicPage {
     this.initializeItems();
   }
 
-  getData(event) {
-      if (this.showSearch) {
-        this.showSearch = false;
-        this.topics = [];
-        this.query = null;
-        this.initializeItems();
-      } else if (this.showSearch === false) {
-        this.showSearch = true;
-      }
-  }
-
   getDetails() {
     return new Promise((resolve, reject) => {
       if (this.page === -1) {
         reject(false);
       } else {
-        let params = {
+        this.connection.doPost('Chat/GetClosedTopicDetail',
+        {
           GroupID: this.group_id,
           StatusID: 1,
           DisablePaging: true,
@@ -80,11 +70,8 @@ export class CloseTopicPage {
           RowsPerPage: 20,
           OrderBy: this.sort_by,
           Order: this.sort_order,
-        };
-        if (this.query) {
-          params['Query'] = this.query;
-        }
-        this.connection.doPost('Chat/GetClosedTopicDetail', params, false).then((response: any) => {
+          Query : this.query
+        }, false).then((response: any) => {
           let data = response.ClosedTopicList;
           if (data.length > 0) {
             data.forEach(list => {
@@ -102,6 +89,24 @@ export class CloseTopicPage {
         });
       }
     });
+  }
+
+  getItems(event) {
+    // set val to the value of the ev target
+    let val = event.target.value;
+    if (val && val.trim() != '') {
+      // if the value is an empty string don't filter the items
+      this.query = val;
+      this.page = 0;
+      this.topics = [];
+      this.getDetails().catch(error => {
+      });
+
+    } else {
+      this.topics = [];
+      this.query = null;
+      this.initializeItems();
+    }
   }
 
 
@@ -159,7 +164,14 @@ export class CloseTopicPage {
   }
 
   toggleSearch() {
-    this.showSearch = !this.showSearch;
+    if (this.showSearch) {
+      this.showSearch = false;
+      this.topics = [];
+      this.query = null;
+      this.initializeItems();
+    } else if (this.showSearch === false) {
+      this.showSearch = true;
+    }
   }
 
   isExpired(date) {

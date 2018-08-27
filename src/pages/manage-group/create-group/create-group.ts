@@ -24,6 +24,7 @@ export class CreateGroupPage {
   page: number = 0;
   query: string;
   GroupID: number;
+  actionButton : any = [];
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public formBuilder: FormBuilder,
@@ -41,12 +42,15 @@ export class CreateGroupPage {
     });
     if (!_.isEmpty(this.navParams.data.Group)) {
       this.groupBtn = 'Update';
+      this.actionButton.push({name : 'Update',icon : 'add'});
       this.GroupID = this.navParams.data.GroupID;
       this.createGroupForm.setValue({
         Group: this.navParams.data.Group,
         GroupCode: this.navParams.data.GroupCode,
         search: ''
       });
+    } else {
+      this.actionButton.push({name : 'Add', icon : 'add'});
     }
     this.getUserDetails();
     this.getUserOfGroup();
@@ -187,6 +191,7 @@ export class CreateGroupPage {
     if (event.checked) {
       if (!this.in_array(this.userDetail, user.UserID)) {
         this.userDetail.push(user);
+        user.IsAdmin = false;
       }
     } else {
       if (this.in_array(this.userDetail, user.UserID)) {
@@ -219,6 +224,10 @@ export class CreateGroupPage {
 
   createGroup() {
     return new Promise((resolve, reject) => {
+      if(!this.createGroupForm.valid){
+        this.events.publish('toast:create','Fill valid fields in form');
+      return;
+      }
       this.connection.doPost('Chat/CreateGroup', {
         Group: this.createGroupForm.get('Group').value,
         GroupCode: this.createGroupForm.get('GroupCode').value,
@@ -239,6 +248,10 @@ export class CreateGroupPage {
   }
 
   updateGroup() {
+    if(!this.createGroupForm.valid){
+      this.events.publish('toast:create','Fill valid fields in form');
+    return;
+    }
     return new Promise((resolve, reject) => {
       this.connection.doPost('Chat/UpdateGroup', {
         GroupID: this.GroupID,
@@ -256,7 +269,16 @@ export class CreateGroupPage {
     });
   }
 
-
+  takeAction(event){
+    switch(event.name){
+      case 'Add' :
+      this.createGroup();
+      break;
+      case 'Update' :
+      this.updateGroup();
+      break;
+    }
+  }
 
   dismiss(event) {
     this.viewCntl.dismiss(event);

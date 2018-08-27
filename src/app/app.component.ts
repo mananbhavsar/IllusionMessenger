@@ -207,7 +207,7 @@ export class MyApp {
         if (this.user && this.user._user) {
             //creation rights
             if (['ManageGroupPage', 'TagPage', 'UsersPage'].indexOf(page.name) > -1) {
-                return [5, 15, 16].indexOf(this.user._user.LoginUserID) > -1;
+                return [5, 15, 16, 266].indexOf(this.user._user.LoginUserID) > -1;
             } else {
                 return true;
             }

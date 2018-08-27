@@ -17,6 +17,11 @@ page-create-group {
                         color: color($colors, communication);
                     }
                 }
+                ion-label{
+                    &.select-user{
+                        color: color($colors,primary);
+                    }
+                }
             }
         }
     }

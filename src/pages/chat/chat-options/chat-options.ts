@@ -181,7 +181,9 @@ export class ChatOptionsPage {
     }
   }
 
-  callParticipant(number) {
+  callParticipant(event,number) {
+    event.preventDefault();
+    event.stopPropagation();
     if (number) {
       if (this.platform.is('mobileweb') || this.platform.is('core')) {
         number = "tel:" + number;
@@ -267,7 +269,7 @@ export class ChatOptionsPage {
                 }).then((response: any) => {
                   this.data.StatusID = 2;
                   this.data.Comment = data.Comment;
-                  this.data.Rating = data.Rating;
+                  this.data.Rating = data.Rate;
                   if (this.data.StatusID = 2) {
                     this.closeButton = true;
                     this.data.CloseDatime_UTC = this._date.toUTCISOString(new Date(), false);

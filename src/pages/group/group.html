@@ -35,8 +35,10 @@
         </ion-item-divider>
 
         <p *ngIf="group.ActiveTopicList.length === 0" text-center>No Topics Found</p>
-        <topic [group_id]="group_id" type="ActiveTopicList" [topic]="topic" *ngFor="let topic of group.ActiveTopicList;let i = index;"
+        <ng-container *ngIf="group.ActiveTopicList">
+          <topic [group_id]="group_id" type="ActiveTopicList" [topic]="topic" *ngFor="let topic of group.ActiveTopicList;let i = index;"
           (clicked)="topicCliked($event)"></topic>
+        </ng-container>
         <ion-item color="light" text-center (click)="viewAllClosedTopics($event)">
           <h2>
             View All Archived&nbsp;&nbsp;

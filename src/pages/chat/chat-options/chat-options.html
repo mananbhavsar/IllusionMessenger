@@ -41,7 +41,7 @@
 				<button ion-button item-end small outline color="casestatus" *ngIf="participant && participant.IsAdmin">Admin</button>
 			</ion-item>
 			<ion-item-options *ngIf="participant.ContactNo !== '0'" side="right">
-				<button ion-button icon-only color="communication" (click)="callParticipant(participant.ContactNo)">
+				<button ion-button icon-only color="communication" (click)="callParticipant($event,participant.ContactNo)">
 					<ion-icon name="call"></ion-icon>
 				</button>
 			</ion-item-options>

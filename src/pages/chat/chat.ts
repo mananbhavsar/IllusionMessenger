@@ -67,6 +67,7 @@ export class ChatPage {
   keyboardHeight: number = 0;
 
   pathIdentifier: string = '';
+  
   basePath: string = '';
   path: string = '';
   topicClosePath: string = '';
@@ -1105,6 +1106,8 @@ export class ChatPage {
 
 
   getOptions(element, message) {
+    console.log(element);
+    
     if (this.data.StatusID === 2) {
       return;
     } else {
@@ -1125,6 +1128,11 @@ export class ChatPage {
         }
         if (this.getChildElement(element, '.audio')) {
           this.selectedMessageElement = this.getChildElement(element, '.audio');
+        }
+        console.log(this.selectedMessageElement);
+        if(!this.selectedMessageElement){
+        selectedElement.classList.remove("selected");
+        this.messageKey = null;
         }
         this.headerButtons = [];
         if (this.common.hasClass(this.selectedMessageElement, 'text')) {
@@ -1152,7 +1160,8 @@ export class ChatPage {
               icon: 'ios-more',
               name: 'more-option'
             });
-        } else if (this.common.hasClass(this.selectedMessageElement, 'video') ||
+        } else
+         if (this.common.hasClass(this.selectedMessageElement, 'video') ||
           this.common.hasClass(this.selectedMessageElement, 'audio') ||
           this.common.hasClass(this.selectedMessageElement, 'picture')) {
           this.headerButtons.push(

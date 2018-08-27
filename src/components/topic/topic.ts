@@ -47,7 +47,8 @@ export class TopicComponent {
     }
   }
 
-  openTopic() {
+  openTopic(event) {
+    event.preventDefault();    
     this.zone.run(() => {
       this.clicked.emit({
         topic: this.topic,

@@ -7,21 +7,20 @@
   <form [formGroup]="createUserForm">
     <ion-list>
       <ion-item>
+            <ion-label stacked>Enter user Code</ion-label>
+            <ion-input required placeholder="Enter user Code" type="text" formControlName="UserCode" maxLength="10"></ion-input>
+      </ion-item>
+          <div class="error-message-block" *ngIf="createUserForm.controls.UserCode.errors && (createUserForm.controls.UserCode.dirty || createUserForm.controls.UserCode.touched)">
+            <span *ngIf="createUserForm.controls.UserCode.errors.required">Enter user Code</span>
+            <span *ngIf="createUserForm.controls.UserCode.errors.maxlength">Max 10 Characters</span>
+          </div>
+      <ion-item>
         <ion-label stacked>Enter User Name</ion-label>
         <ion-input required placeholder="Enter User Name" type="text" formControlName="User" maxLength="30"></ion-input>
       </ion-item>
       <div class="error-message-block" *ngIf="createUserForm.controls.User.errors && (createUserForm.controls.User.dirty || createUserForm.controls.User.touched)">
         <span *ngIf="createUserForm.controls.User.errors.required">Name is required</span>
         <span *ngIf="createUserForm.controls.User.errors.pattern">Name should be characters only</span>
-      </div>
-      <ion-item>
-        <ion-label stacked>Enter user Code</ion-label>
-        <ion-input required placeholder="Enter user Code" type="text" formControlName="UserCode" maxLength="10"></ion-input>
-      </ion-item>
-      <div class="error-message-block" *ngIf="createUserForm.controls.UserCode.errors && (createUserForm.controls.UserCode.dirty || createUserForm.controls.UserCode.touched)">
-        <span *ngIf="createUserForm.controls.UserCode.errors.required">Enter user Code</span>
-        <span *ngIf="createUserForm.controls.UserCode.errors.maxlength">Max 10 Characters</span>
-
       </div>
       <ion-item>
         <ion-label stacked>Enter Email Id</ion-label>
@@ -56,8 +55,27 @@
         <span *ngIf="createUserForm.controls.Password.errors.minlength">Password should be minimum 8 characters</span>
         <span *ngIf="createUserForm.controls.Password.errors.maxlength">Password should be maximum 15 characters</span>
       </div>
+      <ion-item *ngIf="userBtn === 'Update'" (click)="userStatus()">
+        <ion-label>{{status}}</ion-label>
+        <button clear [ngClass]="{'active' : !IsDeactivate, 'deactive' : IsDeactivate}" ion-button item-end>
+            <ion-icon name="md-radio-button-on"></ion-icon>
+          </button>
+      </ion-item>
+      <div *ngIf="tagsSelected.length > 0">
+        <ion-item no-lines>
+          <ion-label class="selected-tag">
+            Selected Tags
+          </ion-label>
+        </ion-item>
+        <ion-scroll scrollX="true" direction="x" class="scrollable-buttons">
+          <button type="button" small ion-button icon-right *ngFor="let tag of tagsSelected;let i=index;" [ngClass]="getTagColor(tag.TagID)">
+            {{tag.Tag}}
+            <ion-icon name="md-checkmark" *ngIf="in_array(tagsSelected,tag.TagID)"></ion-icon>
+          </button>
+        </ion-scroll>
+      </div>
       <ion-item no-lines>
-        <ion-label>
+        <ion-label class="select-tag">
           Available Tags
         </ion-label>
         <button (click)="searchTag()" item-end ion-button outline small only-icon>

@@ -55,15 +55,15 @@ export class HelpPage {
     }
   }
 
-  openVideo1() {
-    let options: StreamingVideoOptions = {
-      successCallback: () => { console.log('Video played') },
-      errorCallback: (e) => { console.log('Error streaming') },
-      shouldAutoClose: true,
-      controls: true
-    };
+  // openVideo1() {
+  //   let options: StreamingVideoOptions = {
+  //     successCallback: () => { console.log('Video played') },
+  //     errorCallback: (e) => { console.log('Error streaming') },
+  //     shouldAutoClose: true,
+  //     controls: true
+  //   };
 
-    this.streamingMedia.playVideo(this.url, options);
-  }
+  //   this.streamingMedia.playVideo(this.url, options);
+  // }
 
 }

@@ -21,6 +21,9 @@ page-create-group {
                     &.select-user{
                         color: color($colors,primary);
                     }
+                    &.selected-user{
+                        color: #339c0a;
+                    }
                 }
             }
         }

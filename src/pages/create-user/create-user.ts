@@ -23,6 +23,9 @@ export class CreateUserPage {
   userTagsMap: any = {};
   tagsSelected: any = [];
   tagList: any = [];
+  status : any = 'Activated';
+  IsDeactivate : boolean = false;
+  readonly:boolean = false;
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public formBuilder: FormBuilder,
@@ -42,15 +45,19 @@ export class CreateUserPage {
     if (!_.isEmpty(this.navParams.data.User)) {
       this.userBtn = 'Update';
       this.type = 'password';
-      this.UserID = this.navParams.data.UserID,
-      this.tagsSelected = this.navParams.data.TagList;
+      this.UserID = this.navParams.data.UserID;      
+      if(this.navParams.data.IsDeactivate === 'true'){
+       this.status = 'Deactivated';
+       this.IsDeactivate = true;
+      }
       this.createUserForm.setValue({
         User: this.navParams.data.User,
         UserCode: this.navParams.data.UserCode,
         EmailID: this.navParams.data.EmailID || '',
         PhoneNo: this.navParams.data.PhoneNo || '',
-        Password: this.navParams.data.Password || ''
+        Password: this.navParams.data.Password || '',
       });
+      this.readonly = true;
     }
   }
 
@@ -64,6 +71,15 @@ export class CreateUserPage {
     }
   }
 
+  userStatus(){
+    if(this.IsDeactivate){
+      this.IsDeactivate = false;
+      this.status = 'Activated';
+    } else if(!this.IsDeactivate){
+      this.IsDeactivate = true;
+      this.status = 'Deactivated';
+    }
+  }
 
   in_array(array, tagID) {
     if (array && tagID) {
@@ -197,7 +213,8 @@ export class CreateUserPage {
         Password: this.createUserForm.get('Password').value,
         EmailID: this.createUserForm.get('EmailID').value,
         PhoneNo: this.createUserForm.get('PhoneNo').value,
-        TagID: this.tagsSelected.map(id => id.TagID)
+        TagID: this.tagsSelected.map(id => id.TagID),
+        IsDeactivate : this.IsDeactivate
       }).then((response: any) => {
         resolve(true);
         this.createUserForm.reset();

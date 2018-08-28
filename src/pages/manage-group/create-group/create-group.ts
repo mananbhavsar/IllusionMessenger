@@ -225,7 +225,7 @@ export class CreateGroupPage {
   createGroup() {
     return new Promise((resolve, reject) => {
       if(!this.createGroupForm.valid){
-        this.events.publish('toast:create','Fill valid fields in form');
+        this.events.publish('toast:error','Fill valid fields in form');
       return;
       }
       this.connection.doPost('Chat/CreateGroup', {
@@ -248,11 +248,11 @@ export class CreateGroupPage {
   }
 
   updateGroup() {
-    if(!this.createGroupForm.valid){
-      this.events.publish('toast:create','Fill valid fields in form');
-    return;
-    }
     return new Promise((resolve, reject) => {
+      if(!this.createGroupForm.valid){
+        this.events.publish('toast:error','Fill valid fields in form');
+        return;
+      }
       this.connection.doPost('Chat/UpdateGroup', {
         GroupID: this.GroupID,
         Group: this.createGroupForm.get('Group').value,

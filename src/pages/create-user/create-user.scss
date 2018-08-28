@@ -25,6 +25,24 @@ page-create-user {
                     }
                 }
             }
+            ion-item{
+                ion-label{
+                    &.select-tag{
+                        color: color($colors,primary);
+                    }
+                    &.selected-tag{
+                        color: #339c0a;
+                    }
+                }
+                button{
+                        &.active{
+                            color: green;
+                        }
+                        &.deactive{
+                        color: red;
+                        }
+                    }
+                }
         }
     }
 }

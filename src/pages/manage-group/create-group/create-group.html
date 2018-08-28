@@ -6,6 +6,13 @@
 <ion-content padding>
 	<form [formGroup]="createGroupForm">
 		<ion-list>
+		   	<ion-item>
+				<ion-label stacked>Enter Group Code</ion-label>
+				<ion-input required placeholder="Enter Group Code" type="text" formControlName="GroupCode" maxLength="10"></ion-input>
+			</ion-item>
+				<div class="error-message-block" *ngIf="createGroupForm.controls.GroupCode.errors && (createGroupForm.controls.GroupCode.dirty || createGroupForm.controls.GroupCode.touched)">
+					<span *ngIf="createGroupForm.controls.GroupCode.errors.required">Group Code is required</span>
+				</div>
 			<ion-item>
 				<ion-label stacked>Enter Group Name</ion-label>
 				<ion-textarea required placeholder="Enter Group Name" type="text" formControlName="Group" maxLength="30"></ion-textarea>
@@ -15,16 +22,9 @@
 				<span *ngIf="createGroupForm.controls.Group.errors.maxlength">Max 30 Characters</span>
 				<span *ngIf="createGroupForm.controls.Group.errors.pattern">Name should be characters only</span>
 			</div>
-			<ion-item>
-				<ion-label stacked>Enter Group Code</ion-label>
-				<ion-input required placeholder="Enter Group Code" type="text" formControlName="GroupCode" maxLength="10"></ion-input>
-			</ion-item>
-			<div class="error-message-block" *ngIf="createGroupForm.controls.GroupCode.errors && (createGroupForm.controls.GroupCode.dirty || createGroupForm.controls.GroupCode.touched)">
-				<span *ngIf="createGroupForm.controls.GroupCode.errors.required">Group Code is required</span>
-			</div>
 			<div *ngIf="userDetail.length > 0">
 				<ion-item no-lines>
-					<ion-label>
+					<ion-label class="selected-user">
 						Selected Users
 					</ion-label>
 				</ion-item>

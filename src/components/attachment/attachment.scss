@@ -34,7 +34,8 @@ attachment {
         }
     }
     .attachment-container {
-        display : inline-block;
+            display: grid;
+            justify-content: center;
         .attachment-thumb {
             position: relative;
             width: 102px;

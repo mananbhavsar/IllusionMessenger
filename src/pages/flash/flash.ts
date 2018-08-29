@@ -35,7 +35,11 @@ export class FlashPage {
     this.isPage = this.navParams.data.isPage;
     this.title = this.news.CreatedBy;
     this.isBrowser = this.platform.is('core');
+    console.log(this.news,this.groupId);
+    this.initData();
+  }
 
+  ionViewWillEnter(){
     this.initData();
   }
 
@@ -43,7 +47,7 @@ export class FlashPage {
     this.connection.doPost('Chat/GetFlashNews_Attachement', {
       GroupID: this.groupId,
       FlashID: this.news.FlashID
-    }).then((response: any) => {
+    },false).then((response: any) => {
       this.attachments = response.FlashNews_AttachementList;
     }).catch((error) => { });
   }

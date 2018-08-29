@@ -43,7 +43,7 @@ export class TopicComponent {
       topicRef.on('value', snapshot => {
         this.badgeCount = snapshot.val();
       });
-
+      console.log(this.badgeCount);   
     }
   }
 

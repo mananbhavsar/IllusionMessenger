@@ -40,7 +40,7 @@
         <span *ngIf="createUserForm.controls.PhoneNo.errors.minlength">Minimum Length is 10 digit</span>
         <span *ngIf="createUserForm.controls.PhoneNo.errors.maxlength">Maximum Length is 10 digit</span>
       </div>
-      <ion-item>
+      <ion-item [hidden]="readonly">
         <ion-label stacked>Enter Password</ion-label>
         <ion-input required placeholder="Enter Password" [type]="type" formControlName="Password"></ion-input>
         <button clear ion-button *ngIf="!showPassword" item-end>

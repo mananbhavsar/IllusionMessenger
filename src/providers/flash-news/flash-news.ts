@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as firebase from 'firebase';
-import { Events, Nav } from 'ionic-angular';
+import { Events } from 'ionic-angular';
 import * as _ from 'underscore';
 import { UserProvider } from '../user/user';
 
@@ -11,9 +11,10 @@ export class FlashNewsProvider {
   currentlyopened: number = 0;
   flashID: number;
   wastheredataLastTime: boolean = false;
+  groupID : number;
   constructor(
     private events: Events,
-    private user: UserProvider
+    private user: UserProvider,
   ) {
     //this will check on regular interval if any pending
     setInterval(() => {
@@ -21,7 +22,9 @@ export class FlashNewsProvider {
     }, 30000);
   }
 
-  openUnreadFlashNews(FlashNews) {
+  openUnreadFlashNews(FlashNews,groupID : number = null) {
+    console.log(groupID);
+    this.groupID = groupID;
     this.flashID = FlashNews.FlashID;
     //check if this flash has opened
     firebase.database().ref('FlashNews/' + this.flashID + '/' + this.user._user.LoginUserID).on('value', (status) => {
@@ -41,7 +44,7 @@ export class FlashNewsProvider {
       // show popup
       this.events.publish('page:setroot', {
         page: 'FlashPage',
-        params: { news: flash, id: flash.FlashID, isPage: true },
+        params: { news: flash, id: this.groupID, isPage: true },
       });
     }
     else {

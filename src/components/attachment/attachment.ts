@@ -64,10 +64,11 @@ export class AttachmentComponent {
         }
         context.uploadFileFromBrowser(fileName, fileExtension, dataURL)
           .then((data: any) => {
+            console.log(data.Data);
             context.captured.emit({
               VirtualPath: data.Data,
               FileName: fileName,
-              fileExtension: fileExtension
+              FileExtension: fileExtension
             });
             if (data.Data.indexOf('https') === 0) {
               // context.sendToFirebase('', 'Image', data.Data);

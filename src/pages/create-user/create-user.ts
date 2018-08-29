@@ -26,6 +26,7 @@ export class CreateUserPage {
   status : any = 'Activated';
   IsDeactivate : boolean = false;
   readonly:boolean = false;
+  usersTagList : any = [];
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public formBuilder: FormBuilder,
@@ -45,7 +46,8 @@ export class CreateUserPage {
     if (!_.isEmpty(this.navParams.data.User)) {
       this.userBtn = 'Update';
       this.type = 'password';
-      this.UserID = this.navParams.data.UserID;      
+      this.UserID = this.navParams.data.UserID;   
+      this.usersTagList = this.navParams.data.TagList;
       if(this.navParams.data.IsDeactivate === 'true'){
        this.status = 'Deactivated';
        this.IsDeactivate = true;
@@ -57,6 +59,9 @@ export class CreateUserPage {
         PhoneNo: this.navParams.data.PhoneNo || '',
         Password: this.navParams.data.Password || '',
       });
+      for(let i = 0; i < this.usersTagList.length; i++){
+        this.tagsSelected.push(this.usersTagList[i]);
+      }      
       this.readonly = true;
     }
   }

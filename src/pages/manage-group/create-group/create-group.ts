@@ -24,7 +24,6 @@ export class CreateGroupPage {
   page: number = 0;
   query: string;
   GroupID: number;
-  actionButton : any = [];
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public formBuilder: FormBuilder,
@@ -42,15 +41,12 @@ export class CreateGroupPage {
     });
     if (!_.isEmpty(this.navParams.data.Group)) {
       this.groupBtn = 'Update';
-      this.actionButton.push({name : 'Update',icon : 'add'});
       this.GroupID = this.navParams.data.GroupID;
       this.createGroupForm.setValue({
         Group: this.navParams.data.Group,
         GroupCode: this.navParams.data.GroupCode,
         search: ''
       });
-    } else {
-      this.actionButton.push({name : 'Add', icon : 'add'});
     }
     this.getUserDetails();
     this.getUserOfGroup();
@@ -60,7 +56,7 @@ export class CreateGroupPage {
     return new Promise((resolve, reject) => {
       this.connection.doPost('Chat/GetGroupDetail_User', {
         GroupID: this.GroupID
-      }, false).then((response: any) => {
+      }).then((response: any) => {
         this.groupUsers = response.GroupList_User;
         this.groupUsers.forEach(user => {
           this.selected_user[user.UserID] = user.IsAdmin;

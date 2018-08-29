@@ -1,5 +1,5 @@
 <ion-header no-border>
-	<modal-toolbar [title]="title" [buttons]="actionButton" (buttonClicked)="takeAction($event)" (dismiss)="dismiss($event)"></modal-toolbar>
+	<modal-toolbar [title]="title" (dismiss)="dismiss($event)"></modal-toolbar>
 </ion-header>
 
 
@@ -51,11 +51,13 @@
 			<ion-item-divider text-center [hidden]="page > 0">
 				Nothing more to show
 			  </ion-item-divider>
-			<!-- <button (click)="createGroup()" *ngIf="groupBtn === 'Create Group'" ion-button full [disabled]="!createGroupForm.valid">{{groupBtn}}</button>			 -->
-			<!-- <button (click)="updateGroup()" *ngIf="groupBtn === 'Update'" ion-button full [disabled]="!createGroupForm.valid">{{groupBtn}}</button> -->
 		</ion-list>
 	</form>
 	<ion-infinite-scroll *ngIf="page !== -1" (ionInfinite)="paginate($event)">
 		<ion-infinite-scroll-content></ion-infinite-scroll-content>
 	  </ion-infinite-scroll>
 </ion-content>
+<ion-footer class="hide-on-keyboard-open">
+	 <button (click)="createGroup()" *ngIf="groupBtn === 'Create Group'" ion-button full [disabled]="!createGroupForm.valid">{{groupBtn}}</button>
+		<button (click)="updateGroup()" *ngIf="groupBtn === 'Update'" ion-button full [disabled]="!createGroupForm.valid">{{groupBtn}}</button>
+</ion-footer>

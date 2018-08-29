@@ -23,7 +23,8 @@ export class FlashNewsComponent {
     private navCntl: NavController,
     public modalCntl: ModalController
   ) {
-  
+    console.log(this.GroupID);
+    
   }
 
   ngAfterViewInit() {

@@ -102,7 +102,6 @@ export class HomePage {
         public actionSheetController: ActionSheetController,
     ) {
         this.global = Global;        
-
         //listening to Resume & Pause events
         this.events.subscribe('platform:onResumed', () => {
             this.getData(false).catch(error => { });
@@ -298,6 +297,7 @@ export class HomePage {
                     ref.off('value');
                     ref.on('value', (snapshot) => {
                         let total = snapshot.val();
+                        console.log(total);
                         if (total) {
                             this.badges[group.GroupCode] = total;
                         } else {
@@ -354,9 +354,8 @@ export class HomePage {
 
     readAll() {
         return new Promise((resolve, reject) => {
-            this.connection.doPost('Chat/ReadAll', {
-                ReadAll: true
-            }).then((response: any) => {
+            this.read.read(null,null,true).then((response: any) => {
+                console.log(response);
                 if (response) {
                     this.getData(false);
                     this.selectedTopic = [];

@@ -611,6 +611,7 @@ export class MyApp {
         this.user.getUser().then(user => {
             firebase.database().ref('Badge/' + user.id + '/Total').on('value', snapshot => {
                 let total: any = snapshot.val();
+                console.log(total);
                 this.events.publish('badge:set', total);
                 if (total) {
                     this._badge.set(total);

@@ -1719,6 +1719,7 @@ export class ChatPage {
             if (Global.Push.OneSignal) {
               this.sendPushNotification(message, response.OneSignalTransaction);
             }
+            console.log(response.FireBaseTransaction);
             //managing firebase count
             if (response.FireBaseTransaction) {
               this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { })

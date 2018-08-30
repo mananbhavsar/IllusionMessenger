@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "illusion-messenger"
+    "default": "illusion-messenger",
+    "illusion-dental": "illusion-dental-5d48c"
   }
 }

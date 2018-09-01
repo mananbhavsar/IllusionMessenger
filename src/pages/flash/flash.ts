@@ -35,7 +35,6 @@ export class FlashPage {
     this.isPage = this.navParams.data.isPage;
     this.title = this.news.CreatedBy;
     this.isBrowser = this.platform.is('core');
-    console.log(this.news,this.groupId);
     this.initData();
   }
 

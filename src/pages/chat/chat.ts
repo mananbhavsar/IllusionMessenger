@@ -1106,8 +1106,6 @@ export class ChatPage {
 
 
   getOptions(element, message) {
-    console.log(element);
-    
     if (this.data.StatusID === 2) {
       return;
     } else {
@@ -1129,7 +1127,6 @@ export class ChatPage {
         if (this.getChildElement(element, '.audio')) {
           this.selectedMessageElement = this.getChildElement(element, '.audio');
         }
-        console.log(this.selectedMessageElement);
         if(!this.selectedMessageElement){
         selectedElement.classList.remove("selected");
         this.messageKey = null;
@@ -1719,7 +1716,6 @@ export class ChatPage {
             if (Global.Push.OneSignal) {
               this.sendPushNotification(message, response.OneSignalTransaction);
             }
-            console.log(response.FireBaseTransaction);
             //managing firebase count
             if (response.FireBaseTransaction) {
               this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { })

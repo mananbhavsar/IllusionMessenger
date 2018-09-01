@@ -82,8 +82,6 @@ export class FileOpsProvider {
     return new Promise((resolve, reject) => {
       if (this.isCordova) {
         if (this.isAndroid) {
-          console.log('android');
-          
           //check if has permission
           this.androidPermissions.checkPermission(this.androidPermissions.PERMISSION.WRITE_EXTERNAL_STORAGE).then(permission => {
             if (permission.hasPermission) {
@@ -118,8 +116,6 @@ export class FileOpsProvider {
           resolve(this.file.dataDirectory);
         }
       } else {
-        console.log('file');
-        
         resolve(this.file.dataDirectory);
       }
     });
@@ -132,13 +128,10 @@ export class FileOpsProvider {
       if (directory === null) {
         directory = this.directory;
       }
-    console.log(directory);
       //checking if file downloaded
       this.file.checkFile(directory, fileName).then(status => {
-        console.log(status);
         resolve(status);
       }).catch(error => {
-        console.log(error);
         reject(error);
       });
     });
@@ -174,7 +167,6 @@ export class FileOpsProvider {
       if (doNative) {
         file = this.getNativeURL(file, directory);
       }
-      console.log(file);  
       this.fileOpener.open(decodeURIComponent(file), mime.lookup(file)).then(status => {
         resolve(status);
       }).catch(error => {
@@ -380,18 +372,12 @@ export class FileOpsProvider {
         directory = this.directory;
       }
       this.isFileDownloaded(file, directory).then(status => {
-        console.log(status); 
         this.openFile(file, directory, identifier).then(status => {
-         console.log(status);
-         
           resolve(status);
         }).catch(error => {
-          console.log(error);
-          
           reject(error);
         });
       }).catch(error => {
-        console.log(error);
         this.downloadFile(file, directory, identifier).then(status => {
           this.openFile(file, directory, identifier).then(status => {
             resolve(status);

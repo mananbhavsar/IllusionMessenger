@@ -22,21 +22,16 @@ export class WelcomePage {
         public events: Events,
     ) {
         this.sendToHomeFlag = this.navParams.data === true;
-        console.log('welcome');
-        
     }
 
     ionViewDidLoad() {
         //checking if logged already
         this.user.hasLoggedIn().then((user) => {
-            console.log(user);
             if (user) {
                 if(this.sendToHomeFlag){
                     this.navCtrl.setRoot(HomePage);
                 }
             } else {
-                console.log("not");
-                
                 //checking if Tutorial required
                 if (Global.tutorial) {
                     //if tutorial seen then sending to Login

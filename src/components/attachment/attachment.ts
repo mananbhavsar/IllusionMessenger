@@ -64,7 +64,6 @@ export class AttachmentComponent {
         }
         context.uploadFileFromBrowser(fileName, fileExtension, dataURL)
           .then((data: any) => {
-            console.log(data.Data);
             context.captured.emit({
               VirtualPath: data.Data,
               FileName: fileName,

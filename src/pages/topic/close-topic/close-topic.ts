@@ -185,7 +185,6 @@ export class CloseTopicPage {
       if (snapshot && !_.isEmpty(snapshot)) {
         this.badges = snapshot;
       }
-      console.log(this.badges);   
     });
   }
 

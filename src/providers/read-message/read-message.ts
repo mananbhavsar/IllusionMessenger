@@ -10,7 +10,6 @@ export class ReadMessageProvider {
   topicCode: any = [];
   
   messagePath : firebase.database.Reference;
-  messageKeyRef : string;
   message : any = {};
   userID : number;
   users :any = [];
@@ -60,29 +59,26 @@ export class ReadMessageProvider {
     firebase.database().ref(basePath).orderByKey().limitToLast(unreadData.Count).once('value', (snapshot) => {
     let messages : any;
     messages = snapshot.val();
-    console.log(messages);
     for(let key in messages){
-      this.messageKeyRef = basePath + key;
-      this.doReading(messages[key],unreadData);
+      let messageKeyRef = basePath + key;
+      this.doReading(messageKeyRef, messages[key],unreadData);
     }
   });
   }
 
-  doReading(messages,unreadData) {
+  doReading(messageKeyRef,messages,unreadData) {
       //adding myself to read list
-      if (messages.Read && unreadData.UserID in messages.Read) {//already read by me
+      if (messages.Read && this.connection.user.LoginUserID in messages.Read) {//already read by me
         if (messages.Status !== 2) { // & not 2 already
-          this.updateStatus(messages,unreadData);
+          this.updateStatus(messageKeyRef,messages,unreadData);
         }
-      console.log(unreadData.UserID);
       } else {
         //now making it read by me
-        firebase.database().ref(this.messageKeyRef + '/Read/' + unreadData.UserID).set(firebase.database.ServerValue.TIMESTAMP).then(result => {
+        firebase.database().ref(messageKeyRef + '/Read/' + this.connection.user.LoginUserID).set(firebase.database.ServerValue.TIMESTAMP).then(result => {
           if (this.message.Status !== 2) { // & not 2 already
-            this.updateStatus(messages,unreadData);
+            this.updateStatus(messageKeyRef,messages,unreadData);
           }
         });
-      console.log(unreadData.UserID);
   }
   }
 
@@ -92,7 +88,7 @@ export class ReadMessageProvider {
    * 1: if 
    * 2: if read by all
    */
-  updateStatus(messages,unreadData) {
+  updateStatus(messageKeyRef,messages,unreadData) {
     /**
      * if sent by 
      * 1. Dentist
@@ -112,10 +108,8 @@ export class ReadMessageProvider {
       } else {
         status = 1;
       }
-      console.log(status);
       if (status > 0) {
-        console.log(status);
-        firebase.database().ref(this.messageKeyRef + '/Status').set(status);
+        firebase.database().ref(messageKeyRef + '/Status').set(status);
       }
     }
   }

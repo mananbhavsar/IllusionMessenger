@@ -72,7 +72,7 @@ export class TopicComponent {
     this.read.read(null, topic.TopicCode).then((response: any) => {
       if(response){
         this.events.publish('loading:close');
-        this.events.publish('read:message');
+        this.events.publish('read:message',response);
       }
     });
   }

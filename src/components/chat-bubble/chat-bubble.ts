@@ -387,7 +387,6 @@ export class ChatBubbleComponent {
   reduceCount(path) {
     let ref = firebase.database().ref('Badge/' + this.userID + '/' + path);
     ref.transaction(function (count) {
-      console.log(count);
       count = count || 0;
       if (count === 0) {
         return count;

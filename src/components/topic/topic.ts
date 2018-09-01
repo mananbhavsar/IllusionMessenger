@@ -37,15 +37,12 @@ export class TopicComponent {
   ngOnChanges() {
     if (this.topic) {
       let topicRef = firebase.database().ref('Badge/' + this.connection.user.id + '/Groups/' + this.topic.GroupCode + '/Topics/' + this.topic.TopicCode);
-     console.log('Badge/' + this.connection.user.id + '/Groups/' + this.topic.GroupCode + '/Topics/' + this.topic.TopicCode);
-     
       if (this.badgeCount) {
         topicRef.off('value');
       }
       topicRef.on('value', snapshot => {
         this.badgeCount = snapshot.val();
       });
-      console.log(this.badgeCount);   
     }
   }
 
@@ -74,7 +71,8 @@ export class TopicComponent {
   readSelected(topic) {
     this.read.read(null, topic.TopicCode).then((response: any) => {
       if(response){
-        this.events.publish('toast:create',response.Data.Message);
+        this.events.publish('loading:close');
+        this.events.publish('read:message');
       }
     });
   }

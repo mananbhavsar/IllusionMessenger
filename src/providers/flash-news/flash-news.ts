@@ -23,7 +23,6 @@ export class FlashNewsProvider {
   }
 
   openUnreadFlashNews(FlashNews,groupID : number = null) {
-    console.log(groupID);
     this.groupID = groupID;
     this.flashID = FlashNews.FlashID;
     //check if this flash has opened

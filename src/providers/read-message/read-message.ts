@@ -10,7 +10,6 @@ export class ReadMessageProvider {
   topicCode: any = [];
   
   messagePath : firebase.database.Reference;
-  messageKeyRef : string;
   message : any = {};
   userID : number;
   users :any = [];
@@ -22,6 +21,7 @@ export class ReadMessageProvider {
     public events : Events
 
   ) {
+
   }
 
   read(selectedGroup: any, selectedTopic: any,readAll : boolean = false) {
@@ -55,28 +55,28 @@ export class ReadMessageProvider {
 
   }
 
-  getMessageDetail(message,basePath){
-    firebase.database().ref(basePath).orderByKey().limitToLast(message.Count).on('value', (snapshot) => {
+  getMessageDetail(unreadData,basePath){
+    firebase.database().ref(basePath).orderByKey().limitToLast(unreadData.Count).once('value', (snapshot) => {
     let messages : any;
     messages = snapshot.val();
     for(let key in messages){
-      this.messageKeyRef = basePath + key;
-      this.doReading(messages[key],message);
+      let messageKeyRef = basePath + key;
+      this.doReading(messageKeyRef, messages[key],unreadData);
     }
   });
   }
 
-  doReading(messages,message) {
+  doReading(messageKeyRef,messages,unreadData) {
       //adding myself to read list
-      if (messages.Read && message.UserID in messages.Read) {//already read by me
+      if (messages.Read && this.connection.user.LoginUserID in messages.Read) {//already read by me
         if (messages.Status !== 2) { // & not 2 already
-          this.updateStatus(messages,message);
+          this.updateStatus(messageKeyRef,messages,unreadData);
         }
       } else {
         //now making it read by me
-        firebase.database().ref(this.messageKeyRef + '/Read/' + message.UserID).set(firebase.database.ServerValue.TIMESTAMP).then(result => {
+        firebase.database().ref(messageKeyRef + '/Read/' + this.connection.user.LoginUserID).set(firebase.database.ServerValue.TIMESTAMP).then(result => {
           if (this.message.Status !== 2) { // & not 2 already
-            this.updateStatus(messages,message);
+            this.updateStatus(messageKeyRef,messages,unreadData);
           }
         });
   }
@@ -88,7 +88,7 @@ export class ReadMessageProvider {
    * 1: if 
    * 2: if read by all
    */
-  updateStatus(messages,message) {
+  updateStatus(messageKeyRef,messages,unreadData) {
     /**
      * if sent by 
      * 1. Dentist
@@ -100,16 +100,16 @@ export class ReadMessageProvider {
     if (!('UserID' in messages)) {
       messages['UserID'] = 0;
     }
-    if (messages.UserID !== message.UserID) { //avoid same user type also
+    if (messages.UserID !== unreadData.UserID) { //avoid same user type also
       let status = -1;
       //checking if read by all
-      if (_.size(messages.Read) === message.UserCount) {
+      if (_.size(messages.Read) === unreadData.UserCount) {
         status = 2;
       } else {
         status = 1;
       }
       if (status > 0) {
-        firebase.database().ref(this.messageKeyRef + '/Status').set(status);
+        firebase.database().ref(messageKeyRef + '/Status').set(status);
       }
     }
   }

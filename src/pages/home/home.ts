@@ -297,7 +297,6 @@ export class HomePage {
                     ref.off('value');
                     ref.on('value', (snapshot) => {
                         let total = snapshot.val();
-                        console.log(total);
                         if (total) {
                             this.badges[group.GroupCode] = total;
                         } else {
@@ -355,7 +354,6 @@ export class HomePage {
     readAll() {
         return new Promise((resolve, reject) => {
             this.read.read(null,null,true).then((response: any) => {
-                console.log(response);
                 if (response) {
                     this.getData(false);
                     this.selectedTopic = [];

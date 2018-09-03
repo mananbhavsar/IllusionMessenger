@@ -1,7 +1,7 @@
-import { DateProvider } from './../../providers/date/date';
-import { Slides, NavController, ModalController } from 'ionic-angular';
 import { Component, Input, SimpleChanges, ViewChild } from '@angular/core';
+import { ModalController, NavController, Slides } from 'ionic-angular';
 import { FlashPage } from '../../pages/flash/flash';
+import { DateProvider } from './../../providers/date/date';
 
 @Component({
   selector: 'flash-news',

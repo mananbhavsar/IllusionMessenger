@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AndroidPermissions } from '@ionic-native/android-permissions';
 import { Camera, CameraOptions } from '@ionic-native/camera';
-import { File } from '@ionic-native/file';
+import { File, FileEntry } from '@ionic-native/file';
 import { FileChooser } from '@ionic-native/file-chooser';
 import { FileOpener } from '@ionic-native/file-opener';
 import { FilePath } from '@ionic-native/file-path';
@@ -196,7 +196,7 @@ export class FileOpsProvider {
         directory = this.directory;
       }
       let fileName = this.getFileName(file);
-
+      let url = encodeURI(file);
       const fileTransfer: FileTransferObject = this.transfer.create();
       fileTransfer.download(file, directory + fileName).then((entry) => {
         resolve(entry);
@@ -298,7 +298,7 @@ export class FileOpsProvider {
 
     //set params
     params = Object.assign(params, {
-      VirtualPath : file,
+      VirtualPath: file,
       FileName: fileName,
       FileExtension: fileExtension
     });
@@ -315,6 +315,15 @@ export class FileOpsProvider {
       params: params
     }
     return options;
+  }
+
+  getFileDir(file) {
+    if (file.indexOf('?') === -1) {
+      file += '?';
+    }
+    file = file.substring(0, file.lastIndexOf('?'));
+
+    return file.substring(0, file.lastIndexOf('/'));
   }
 
   getFileName(file) {
@@ -391,6 +400,26 @@ export class FileOpsProvider {
     });
   }
 
+  copyFile(file, directory) {
+    return new Promise((resolve, reject) => {
+      let fileName = this.getFileName(file);
+      let fileDir = this.getFileDir(file);
 
+      //resolve to local
+      (<any>window).resolveLocalFileSystemURL(file, (fileEntry: FileEntry) => {
+        //new dir to system URI
+        (<any>window).resolveLocalFileSystemURL(directory, (dirEntry) => {
+          //copy
+          fileEntry.copyTo(dirEntry, fileName, (copiedEntry) => {
+            resolve(copiedEntry.nativeURL);
+          }, (error) => {
+            reject(error);
+          });
+        });
+      }, (error) => {
+        reject(error);
+      });
+    });
+  }
 
 }

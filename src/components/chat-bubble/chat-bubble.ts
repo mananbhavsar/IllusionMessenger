@@ -4,15 +4,15 @@ import { FileTransfer } from '@ionic-native/file-transfer';
 import { Network } from '@ionic-native/network';
 import { StreamingMedia } from '@ionic-native/streaming-media';
 import * as firebase from 'firebase';
-import { Events, NavController, ModalController, Platform } from 'ionic-angular';
+import { Events, ModalController, NavController, Platform } from 'ionic-angular';
 import { ImageViewerController } from 'ionic-img-viewer';
 import * as moment from 'moment';
 import 'moment/locale/en-gb';
 import * as _ from 'underscore';
 import { Global } from '../../app/global';
+import { ContactDetailPage } from '../../pages/chat/contact-detail/contact-detail';
 import { CommonProvider } from "../../providers/common/common";
 import { FileOpsProvider } from "../../providers/file-ops/file-ops";
-import { ContactDetailPage } from '../../pages/chat/contact-detail/contact-detail';
 import { TranslateServiceProvider } from '../../providers/translate-service/translate-service';
 
 
@@ -209,6 +209,7 @@ export class ChatBubbleComponent {
       }
 
     }).catch(error => {
+      console.log(error);
     });
   }
 
@@ -260,11 +261,13 @@ export class ChatBubbleComponent {
         this.message.nativeURL = this.message.URL;
         resolve(true);
       } else if (this.isCordova) {
+        console.log(file);
         this.fileOps.isFileDownloaded(file, this.downloadDirectory).then(status => {
           resolve(status);
         }).catch(error => {
           this.message.downloading = true;
           this.fileOps.downloadFile(file, this.downloadDirectory).then((entry: any) => {
+            console.log(entry);
             this.message.nativeURL = this.fileOps.getNativeURL(file, this.downloadDirectory);
             this.message.downloading = false;
             this.message.downloaded = true;
@@ -274,6 +277,7 @@ export class ChatBubbleComponent {
               resolve(entry);
             });
           }).catch(error => {
+            console.log(error);
             this.message.downloading = false;
             this.message.downloaded = false;
             this.message['error'] = error;

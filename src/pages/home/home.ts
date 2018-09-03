@@ -6,6 +6,8 @@ import { ActionSheetController, Events, IonicPage, ModalController, NavControlle
 import * as _ from 'underscore';
 import { Global } from '../../app/global';
 import { ConnectionProvider } from '../../providers/connection/connection';
+import { FlashNewsProvider } from '../../providers/flash-news/flash-news';
+import { ReadMessageProvider } from '../../providers/read-message/read-message';
 import { TranslateServiceProvider } from '../../providers/translate-service/translate-service';
 import { UserProvider } from '../../providers/user/user';
 import { CreateTagPage } from '../create-tag/create-tag';
@@ -16,8 +18,6 @@ import { FirebaseTransactionProvider } from './../../providers/firebase-transact
 import { NotificationsProvider } from './../../providers/notifications/notifications';
 import { AddFlashPage } from './../group/add-flash/add-flash';
 import { CreateTopicPage } from './../topic/create-topic/create-topic';
-import { FlashNewsProvider } from '../../providers/flash-news/flash-news';
-import { ReadMessageProvider } from '../../providers/read-message/read-message';
 
 @IonicPage()
 @Component({

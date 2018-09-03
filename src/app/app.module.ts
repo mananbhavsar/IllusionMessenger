@@ -165,7 +165,6 @@ import { ContactDetailPageModule } from '../pages/chat/contact-detail/contact-de
         UserProvider,
         FirebaseTransactionProvider,
         Network,
-        StatusBar,
         Keyboard,
         SplashScreen,
         Diagnostic,

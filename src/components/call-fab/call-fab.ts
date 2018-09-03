@@ -1,5 +1,4 @@
-import { Component,Output,EventEmitter, Input } from '@angular/core';
-import { Global } from '../../app/global';
+import { Component, EventEmitter, Output } from '@angular/core';
 @Component({
   selector: 'call-fab',
   templateUrl: 'call-fab.html'

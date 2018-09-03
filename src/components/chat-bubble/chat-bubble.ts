@@ -4,15 +4,15 @@ import { FileTransfer } from '@ionic-native/file-transfer';
 import { Network } from '@ionic-native/network';
 import { StreamingMedia } from '@ionic-native/streaming-media';
 import * as firebase from 'firebase';
-import { Events, NavController, ModalController, Platform } from 'ionic-angular';
+import { Events, ModalController, NavController, Platform } from 'ionic-angular';
 import { ImageViewerController } from 'ionic-img-viewer';
 import * as moment from 'moment';
 import 'moment/locale/en-gb';
 import * as _ from 'underscore';
 import { Global } from '../../app/global';
+import { ContactDetailPage } from '../../pages/chat/contact-detail/contact-detail';
 import { CommonProvider } from "../../providers/common/common";
 import { FileOpsProvider } from "../../providers/file-ops/file-ops";
-import { ContactDetailPage } from '../../pages/chat/contact-detail/contact-detail';
 import { TranslateServiceProvider } from '../../providers/translate-service/translate-service';
 
 
@@ -209,6 +209,7 @@ export class ChatBubbleComponent {
       }
 
     }).catch(error => {
+      
     });
   }
 

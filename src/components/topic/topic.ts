@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Input, NgZone, Output } from '@angular/core';
 import * as firebase from 'firebase';
-import { Events, NavController, ModalController } from 'ionic-angular';
+import { Events, ModalController, NavController } from 'ionic-angular';
 import * as moment from "moment";
+import { ForwardTopicPage } from '../../pages/topic/forward-topic/forward-topic';
 import { ConnectionProvider } from '../../providers/connection/connection';
 import { DateProvider } from '../../providers/date/date';
-import { ForwardTopicPage } from '../../pages/topic/forward-topic/forward-topic';
 import { ReadMessageProvider } from '../../providers/read-message/read-message';
 
 @Component({
@@ -29,14 +29,15 @@ export class TopicComponent {
     private _date: DateProvider,
     public events: Events,
     public read: ReadMessageProvider,
-    public modal : ModalController
+    public modal : ModalController,
   ) {
 
   }
 
   ngOnChanges() {
     if (this.topic) {
-      let topicRef = firebase.database().ref('Badge/' + this.connection.user.id + '/Groups/' + this.topic.GroupCode + '/Topics/' + this.topic.TopicCode);
+      let path = 'Badge/' + this.connection.user.id + '/Groups/' + this.topic.GroupCode + '/Topics/' + this.topic.TopicCode;
+      let topicRef = firebase.database().ref(path);
       if (this.badgeCount) {
         topicRef.off('value');
       }
@@ -70,10 +71,8 @@ export class TopicComponent {
 
   readSelected(topic) {
     this.read.read(null, topic.TopicCode).then((response: any) => {
-      if(response){
         this.events.publish('loading:close');
         this.events.publish('read:message',response);
-      }
     });
   }
 

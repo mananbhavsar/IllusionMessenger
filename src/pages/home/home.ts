@@ -101,13 +101,13 @@ export class HomePage {
         private _firebaseTransaction: FirebaseTransactionProvider,
         public actionSheetController: ActionSheetController,
     ) {
-        this.global = Global;        
+        this.global = Global;
         //listening to Resume & Pause events
         this.events.subscribe('platform:onResumed', () => {
             this.getData(false).catch(error => { });
         });
 
-        this.events.subscribe('read:message', (response : any) => {
+        this.events.subscribe('read:message', (response: any) => {
             if (response) {
                 this.getData(false);
             }
@@ -177,7 +177,7 @@ export class HomePage {
             }, false).then((response: any) => {
                 this.dataFetched = true;
                 //groups
-                this.data = response;                
+                this.data = response;
                 if (!_.isEmpty(this.data)) {
                     //flash
                     if (response.FlashNews) {
@@ -204,7 +204,7 @@ export class HomePage {
 
     isEmpty(object) {
         return _.isEmpty(object);
-      }
+    }
 
     registerDevice(isPullDown) {
         //make device regsiter call
@@ -352,21 +352,14 @@ export class HomePage {
 
 
     readAll() {
-        return new Promise((resolve, reject) => {
-            this.read.read(null,null,true).then((response: any) => {
-                if (response) {
-                    this.getData(false);
-                    this.selectedTopic = [];
-                    this.selectedGroup = [];
-                    this.readAllSelected = true;
-                    this.readOptions = false;
-                    if (response.FireBaseTransaction) {
-                        this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { })
-                    }
-                    resolve(response);
-                }
-            }).catch((error) => {
-            });
+        this.read.read(null, null, true).then((response: any) => {
+            this.selectedTopic = [];
+            this.selectedGroup = [];
+            this.readAllSelected = true;
+            this.readOptions = false;
+            this.getData(false);
+        }).catch((error) => {
+            console.log(error);
         });
     }
 
@@ -469,7 +462,7 @@ export class HomePage {
         }
     }
 
-    dashboardTabSearchHide(){
+    dashboardTabSearchHide() {
         if (this.selectedTab === 'stats' && this.searchInputBtn) {
             this.events.publish('toast:create', 'Search not available here');
             this.data = [];

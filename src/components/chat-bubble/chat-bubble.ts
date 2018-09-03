@@ -209,7 +209,7 @@ export class ChatBubbleComponent {
       }
 
     }).catch(error => {
-      console.log(error);
+      
     });
   }
 
@@ -261,13 +261,11 @@ export class ChatBubbleComponent {
         this.message.nativeURL = this.message.URL;
         resolve(true);
       } else if (this.isCordova) {
-        console.log(file);
         this.fileOps.isFileDownloaded(file, this.downloadDirectory).then(status => {
           resolve(status);
         }).catch(error => {
           this.message.downloading = true;
           this.fileOps.downloadFile(file, this.downloadDirectory).then((entry: any) => {
-            console.log(entry);
             this.message.nativeURL = this.fileOps.getNativeURL(file, this.downloadDirectory);
             this.message.downloading = false;
             this.message.downloaded = true;
@@ -277,7 +275,6 @@ export class ChatBubbleComponent {
               resolve(entry);
             });
           }).catch(error => {
-            console.log(error);
             this.message.downloading = false;
             this.message.downloaded = false;
             this.message['error'] = error;

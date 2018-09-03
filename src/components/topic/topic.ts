@@ -36,7 +36,8 @@ export class TopicComponent {
 
   ngOnChanges() {
     if (this.topic) {
-      let topicRef = firebase.database().ref('Badge/' + this.connection.user.id + '/Groups/' + this.topic.GroupCode + '/Topics/' + this.topic.TopicCode);
+      let path = 'Badge/' + this.connection.user.id + '/Groups/' + this.topic.GroupCode + '/Topics/' + this.topic.TopicCode;
+      let topicRef = firebase.database().ref(path);
       if (this.badgeCount) {
         topicRef.off('value');
       }

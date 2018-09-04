@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef,ViewChild } from '@angular/core';
 import { Http } from '@angular/http';
 import { Camera, CameraOptions } from '@ionic-native/camera';
 import { Clipboard } from '@ionic-native/clipboard';
@@ -30,8 +30,7 @@ import { LogoutPage } from '../logout/logout';
 import { DateProvider } from './../../providers/date/date';
 import { ChatOptionsPage } from "./chat-options/chat-options";
 import { SavedMediaPage } from "./chat-options/saved-media/saved-media";
-
-
+// import { WebView } from '@ionic-native/ionic-webview';
 
 @IonicPage()
 @Component({
@@ -165,6 +164,7 @@ export class ChatPage {
   video_translate: string = 'Video';
   cancel_translate: string = 'Cancel';
   contact_translate: string = 'Contact';
+  private window: any = window;
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -1448,9 +1448,10 @@ export class ChatPage {
       //checking if video of image
       if (mimeType.indexOf('image') > -1) {//image
         //write to topic code dir
-        this._fileOps.copyFile(url, this.dataDirectory + this.topicCode).then((newURL: any) => {
-          let normalizedURL = normalizeURL(newURL);
-          console.log(normalizedURL);
+        // this._fileOps.copyFile(url, this.dataDirectory + this.topicCode).then((newURL: any) => {
+          let normalizedURL = normalizeURL(url);
+          // let normalizedURL = this.window.Ionic.WebView.convertFileSrc(url);
+        console.log(normalizedURL);
           this.uploadFile(normalizedURL).then((data: string) => {
             if (data.indexOf('https') !== -1) {
               //sending to Firebase
@@ -1460,10 +1461,10 @@ export class ChatPage {
             console.log(error);
             this.events.publish('toast:error', error);
           });
-        }).catch(error => {
-          console.log(error);
-          this.events.publish('toast:error', error);
-        });
+        // }).catch(error => {
+        //   console.log(error);
+        //   this.events.publish('toast:error', error);
+        // });
       } else if (mimeType.indexOf('video') > -1) {
         this.uploadVideo(url);
       }
@@ -1628,7 +1629,7 @@ export class ChatPage {
     let fileExtension = file.substring(file.lastIndexOf('.') + 1);
 
     let params = {
-      UserID: this.user.UserID,
+      UserID: this.user.LoginUserID,
       TopicID: this.topicID,
       GroupID: this.groupID,
       TopicCode: this.topicCode,

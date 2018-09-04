@@ -174,6 +174,7 @@ export class ChatBubbleComponent {
   }
 
   openFile() {
+    console.log(this.message);
     if (this.network.type === 'none') {
       this.events.publish('toast:error', this.not_available_offline_translate);
       return;
@@ -186,6 +187,7 @@ export class ChatBubbleComponent {
       this.openContact();
     }
     let file: string = this.message.URL;
+    console.log(file);
     //if already downloading
     if (this.message.downloading) {
       return;

@@ -19,7 +19,7 @@
     <ng-container [ngSwitch]="message.MessageType">
       <div *ngSwitchCase="'Text'" class="text" [innerHTML]="getTextMessage()"></div>
       <div [attr.data-url]="message.URL" *ngSwitchCase="'Image'" class="picture" [ngClass]="message.downloaded ? 'done' : 'image-center-small'">
-        <img  [attr.data-url]="message.URL" *ngIf="message.downloaded"  class="picture" [id]="'message-image-'+message.key" [src]="message.nativeURL || message.URL" width="160" height="160" />
+        <img  [attr.data-url]="message.URL" *ngIf="message.downloaded"  class="picture" [id]="'message-image-'+message.key" [src]="message.URL || message.nativeURL" width="160" height="160" />
         <img *ngIf="message.downloaded === false" src="assets/img/camera.png" />
       </div>
       <div [attr.data-url]="message.URL" *ngSwitchCase="'Audio'" class="audio image-center-small" [ngClass]="{'done':message.downloaded}">

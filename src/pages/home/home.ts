@@ -269,7 +269,7 @@ export class HomePage {
             this.readOptions = false;
 
             refresher.complete();
-            // this.connectToFireBase();
+            this.connectToFireBase();
         }).catch(error => {
             refresher.complete();
         });

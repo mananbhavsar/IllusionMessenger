@@ -409,7 +409,7 @@ export class FileOpsProvider {
     return new Promise((resolve, reject) => {
       let fileName = this.getFileName(file);
       let fileDir = this.getFileDir(file);
-
+      
       //resolve to local
       (<any>window).resolveLocalFileSystemURL(file, (fileEntry: FileEntry) => {
         //new dir to system URI

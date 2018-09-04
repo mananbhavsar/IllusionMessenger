@@ -1,10 +1,10 @@
 import { Component, ElementRef, Input } from '@angular/core';
-import { File } from '@ionic-native/file';
+import { File, FileEntry } from '@ionic-native/file';
 import { FileTransfer } from '@ionic-native/file-transfer';
 import { Network } from '@ionic-native/network';
 import { StreamingMedia } from '@ionic-native/streaming-media';
 import * as firebase from 'firebase';
-import { Events, ModalController, NavController, Platform } from 'ionic-angular';
+import { Events, ModalController, NavController, normalizeURL, Platform } from 'ionic-angular';
 import { ImageViewerController } from 'ionic-img-viewer';
 import * as moment from 'moment';
 import 'moment/locale/en-gb';
@@ -174,7 +174,6 @@ export class ChatBubbleComponent {
   }
 
   openFile() {
-    console.log(this.message);
     if (this.network.type === 'none') {
       this.events.publish('toast:error', this.not_available_offline_translate);
       return;
@@ -187,7 +186,7 @@ export class ChatBubbleComponent {
       this.openContact();
     }
     let file: string = this.message.URL;
-    console.log(file);
+    
     //if already downloading
     if (this.message.downloading) {
       return;
@@ -211,7 +210,7 @@ export class ChatBubbleComponent {
       }
 
     }).catch(error => {
-      
+
     });
   }
 
@@ -268,7 +267,8 @@ export class ChatBubbleComponent {
         }).catch(error => {
           this.message.downloading = true;
           this.fileOps.downloadFile(file, this.downloadDirectory).then((entry: any) => {
-            this.message.nativeURL = this.fileOps.getNativeURL(file, this.downloadDirectory);
+            console.log(entry);
+            this.message.nativeURL = this.fileOps.getNativeURL(file, this.downloadDirectory).replace(/^file:\/\//, '');;
             this.message.downloading = false;
             this.message.downloaded = true;
 
@@ -296,7 +296,8 @@ export class ChatBubbleComponent {
           if (status) {
             this.message['downloaded'] = true;
             this.message['downloading'] = false;
-            this.message.nativeURL = this.fileOps.getNativeURL(file, this.downloadDirectory);
+            console.log(status, file);
+            this.message.nativeURL = this.fileOps.getNativeURL(file, this.downloadDirectory).replace(/^file:\/\//, '');
 
             this.subscribeToFileDelete(file);
           }
@@ -324,9 +325,10 @@ export class ChatBubbleComponent {
     let file = this.message.URL;
     if (this.isCordova) {
       this.message.downloading = true;
-      this.fileOps.downloadFile(file, this.downloadDirectory).then((entry: any) => {
+      this.fileOps.downloadFile(file, this.downloadDirectory).then((entry: FileEntry) => {
         this.message.downloaded = true;
-        this.message.nativeURL = this.fileOps.getNativeURL(entry.nativeURL, this.downloadDirectory);
+        console.log(entry, entry.toInternalURL, entry.nativeURL);
+        this.message.nativeURL = normalizeURL(entry.nativeURL);// this.fileOps.getNativeURL(entry.nativeURL, this.downloadDirectory);
 
         this.message.downloading = false;
         this.subscribeToFileDelete(file);

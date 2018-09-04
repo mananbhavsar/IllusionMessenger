@@ -359,7 +359,6 @@ export class HomePage {
             this.readOptions = false;
             this.getData(false);
         }).catch((error) => {
-            console.log(error);
         });
     }
 

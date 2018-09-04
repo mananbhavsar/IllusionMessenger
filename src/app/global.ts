@@ -3,7 +3,7 @@ export var Global = {
     album: 'Laxmi Task Manager',
     tutorial: false,
     color: {
-        primary: 'D5232F',
+        primary: 'E8343A',
         secondary: '32db64',
         danger: 'f53d3d',
         light: 'f4f4f4',

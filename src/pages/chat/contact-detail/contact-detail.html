@@ -4,10 +4,10 @@
 
 
 <ion-content padding>
-  <ion-list *ngIf="contactData.displayName">
+  <ion-list *ngIf="contactData.name">
     <ion-item>
       <ion-label>
-        {{contactData.displayName}}
+        {{contactData.name.formatted}}
       </ion-label>
       <button *ngIf="!isBrowser" (click)="saveContact()" item-end ion-button>Save</button>
     </ion-item>

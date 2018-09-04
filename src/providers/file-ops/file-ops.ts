@@ -362,8 +362,10 @@ export class FileOpsProvider {
       this.capture(type).then(uri => {
         this.uploadFile(uri, identifier, params).then(uploadedURL => {
           let url = uploadedURL;
+          console.log(url);     
           resolve(url);
         }).catch(error => {
+          console.log(error);     
           this.events.publish('toast:error', error);
           reject(error);
         });
@@ -381,9 +383,11 @@ export class FileOpsProvider {
         directory = this.directory;
       }
       this.isFileDownloaded(file, directory).then(status => {
-        this.openFile(file, directory, identifier).then(status => {
+        console.log(status);
+          this.openFile(file, directory, identifier).then(status => {
           resolve(status);
         }).catch(error => {
+          console.log(error);     
           reject(error);
         });
       }).catch(error => {
@@ -394,6 +398,7 @@ export class FileOpsProvider {
             reject(error);
           });
         }).catch(error => {
+          console.log(error);     
           reject(error);
         });
       });

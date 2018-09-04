@@ -1441,31 +1441,34 @@ export class ChatPage {
     if (type === 'gallery') {
       options = this.galleryOptions;
     }
-
+    console.log(options);
     this.camera.getPicture(options).then(url => {
       let mimeType = mime.lookup(url);
-
+      console.log(url);
       //checking if video of image
       if (mimeType.indexOf('image') > -1) {//image
         //write to topic code dir
         this._fileOps.copyFile(url, this.dataDirectory + this.topicCode).then((newURL: any) => {
           let normalizedURL = normalizeURL(newURL);
-          
+          console.log(normalizedURL);
           this.uploadFile(normalizedURL).then((data: string) => {
             if (data.indexOf('https') !== -1) {
               //sending to Firebase
               this.sendToFirebase('', 'Image', data);
             }
           }).catch(error => {
+            console.log(error);
             this.events.publish('toast:error', error);
           });
         }).catch(error => {
+          console.log(error);
           this.events.publish('toast:error', error);
         });
       } else if (mimeType.indexOf('video') > -1) {
         this.uploadVideo(url);
       }
     }).catch(error => {
+      console.log(error);
       this.events.publish('toast:error', error);
     });
   }
@@ -1585,8 +1588,10 @@ export class ChatPage {
         this.progressPercent = 0;
         const fileTransfer: FileTransferObject = this.transfer.create();
         let options = this.setFileOptions(file);
+        console.log(options);
         fileTransfer.upload(file, this.connection.URL + 'Chat/InsertChat_Attachement', options)
           .then((data) => {
+            console.log(data);
             this.progressPercent = 0;
             //getting URL from XML
             if (data.response.indexOf('http') === -1) {
@@ -1597,6 +1602,7 @@ export class ChatPage {
               resolve(JSON.parse(data.response));
             }
           }, (err) => {
+            console.log(err);
             this.progressPercent = 0;
             reject(err);
           });
@@ -1606,6 +1612,7 @@ export class ChatPage {
           }
         });
       } else {
+        console.log('empty file');
         reject('Empty File');
       }
     });

@@ -1,5 +1,13 @@
 page-group {
 	ion-content {
+<<<<<<< HEAD
+=======
+		&.extraTop {
+            .scroll-content {
+                margin-top: 136px !important;
+            }
+        }
+>>>>>>> master
 		ion-grid {
 			ion-item-divider {
 				ion-label {
@@ -9,6 +17,7 @@ page-group {
 					}
 				}
 			}
+<<<<<<< HEAD
 			ion-item {
 				ion-label {
 					&.label-md {
@@ -34,6 +43,8 @@ page-group {
 					}
 				}
 			}
+=======
+>>>>>>> master
 		}
 	}
 }

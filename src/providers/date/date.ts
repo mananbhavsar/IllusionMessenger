@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
+<<<<<<< HEAD
 
 import * as _ from 'underscore';
+=======
+>>>>>>> master
 import * as moment from 'moment';
 
 
@@ -18,7 +21,11 @@ export class DateProvider {
       if (!moment.isMoment(date)) {
         date = moment(date);
       }
+<<<<<<< HEAD
       return date.format('Do MMM, hh:mm A');
+=======
+      return date.locale('en').format('DD MMM, hh:mm A');
+>>>>>>> master
     }
     return date;
   }

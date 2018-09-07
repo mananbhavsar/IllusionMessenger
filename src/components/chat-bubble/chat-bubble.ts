@@ -1,25 +1,32 @@
-import { Component, Input, Output, EventEmitter, ElementRef } from '@angular/core';
-import { Platform, NavController, Events, normalizeURL } from 'ionic-angular';
-import * as firebase from 'firebase';
-import { AngularFireDatabase } from 'angularfire2/database';
-import * as _ from 'underscore';
-import * as mime from 'mime-types';
-import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer';
-import { File } from '@ionic-native/file';
-import { StreamingMedia, StreamingVideoOptions } from '@ionic-native/streaming-media';
+import { Component, ElementRef, Input } from '@angular/core';
+import { File, FileEntry } from '@ionic-native/file';
+import { FileTransfer } from '@ionic-native/file-transfer';
 import { Network } from '@ionic-native/network';
-
-import { CommonProvider } from "../../providers/common/common";
-import { TranslateService } from "@ngx-translate/core";
-import { FileOpsProvider } from "../../providers/file-ops/file-ops";
-
+import { StreamingMedia } from '@ionic-native/streaming-media';
+import * as firebase from 'firebase';
+import { Events, ModalController, NavController, normalizeURL, Platform } from 'ionic-angular';
+import { ImageViewerController } from 'ionic-img-viewer';
 import * as moment from 'moment';
+import 'moment/locale/en-gb';
+import * as _ from 'underscore';
+import { Global } from '../../app/global';
+import { ContactDetailPage } from '../../pages/chat/contact-detail/contact-detail';
+import { CommonProvider } from "../../providers/common/common";
+import { FileOpsProvider } from "../../providers/file-ops/file-ops";
+import { TranslateServiceProvider } from '../../providers/translate-service/translate-service';
 
+
+
+<<<<<<< HEAD
 import 'moment/locale/fr';
 import 'moment/locale/en-gb';
 import { Global } from '../../app/global';
 import { retry } from 'rxjs/operator/retry';
 import { ImageViewerController } from 'ionic-img-viewer';
+=======
+
+
+>>>>>>> master
 
 
 
@@ -40,12 +47,17 @@ export class ChatBubbleComponent {
   @Input() users: any = {};
   @Input() myLanguage: string = 'en';
   @Input() responsibleUserID: number = 0;
+<<<<<<< HEAD
 
+=======
+  @Input() replyMessage: string;
+>>>>>>> master
   global: any = Global;
 
   pathIdentifier: string = null;
   basePath: string = '';
   messagePath: string = '';
+  attachRepliedMessage: any;
   statusRef = null;
   dataDirectory: string = null;
   downloadDirectory: string = null;
@@ -55,7 +67,6 @@ export class ChatBubbleComponent {
 
   not_available_offline_translate: string = 'Not available in Offline';
   constructor(
-    public angularFireDB: AngularFireDatabase,
     private file: File,
     private transfer: FileTransfer,
     private platform: Platform,
@@ -66,9 +77,13 @@ export class ChatBubbleComponent {
     private _elementRef: ElementRef,
     private common: CommonProvider,
     private network: Network,
-    private translate: TranslateService,
+    private translate: TranslateServiceProvider,
     private fileOps: FileOpsProvider,
+<<<<<<< HEAD
     
+=======
+    private modal: ModalController
+>>>>>>> master
   ) {
     this.global = Global;
     this.isCordova = this.platform.is('cordova');
@@ -81,6 +96,8 @@ export class ChatBubbleComponent {
     this.events.subscribe('platform:onPause', (event) => {
 
     });
+
+
 
   }
 
@@ -108,7 +125,12 @@ export class ChatBubbleComponent {
 
         this.processFile();
       }).catch(error => {
-        console.log(error);
+      });
+
+      firebase.database().ref(this.basePath + 'Chat' + '/' + this.message.ReplyMessageKey).once("value", (snapshot) => {
+        if (snapshot.val()) {
+          this.attachRepliedMessage = snapshot.val();
+        }
       });
 
       // this.processBadgeCount();
@@ -130,7 +152,7 @@ export class ChatBubbleComponent {
         }
       } else {
         //now making it read by me
-        this.angularFireDB.object(this.messagePath + '/Read/' + this.userID).set(firebase.database.ServerValue.TIMESTAMP).then(result => {
+        firebase.database().ref(this.messagePath + '/Read/' + this.userID).set(firebase.database.ServerValue.TIMESTAMP).then(result => {
           if (this.message.Status !== 2) { // & not 2 already
             this.updateStatus();
           }
@@ -166,7 +188,7 @@ export class ChatBubbleComponent {
         status = 1;
       }
       if (status > 0) {
-        this.angularFireDB.object(this.messagePath + '/Status').set(status);
+        firebase.database().ref(this.messagePath + '/Status').set(status);
       }
     }
   }
@@ -176,11 +198,24 @@ export class ChatBubbleComponent {
       this.events.publish('toast:error', this.not_available_offline_translate);
       return;
     }
+<<<<<<< HEAD
     let file: string = this.message.URL;
+=======
+    if (this.message.MessageType === 'Text') {
+      return;
+    }
+    if (this.message.MessageType === 'Contact') {
+      this.message.downloading = true;
+      this.openContact();
+    }
+    let file: string = this.message.URL;
+    
+>>>>>>> master
     //if already downloading
     if (this.message.downloading) {
       return;
     }
+<<<<<<< HEAD
       let wasDownloaded = this.message.downloaded;
       this.check(file).then(entry => {
         if (wasDownloaded) {
@@ -202,6 +237,34 @@ export class ChatBubbleComponent {
       }).catch(error => {
         console.log(error);
       });
+=======
+    let wasDownloaded = this.message.downloaded;
+    this.check(file).then(entry => {
+      if (wasDownloaded) {
+        switch (this.message.MessageType) {
+          case 'Image':
+            this.openImage();
+            break;
+
+          case 'Audio':
+            this.openAudio();
+            break;
+
+          case 'Video':
+            this.openVideo();
+            break;
+        }
+      }
+
+    }).catch(error => {
+
+    });
+  }
+
+  openContact() {
+    let modalCtrl = this.modal.create(ContactDetailPage, this.message);
+    modalCtrl.present();
+>>>>>>> master
   }
 
   openImage() {
@@ -216,8 +279,13 @@ export class ChatBubbleComponent {
       window.open(this.message.URL, '_blank');
     } else if (this.isCordova) {
       let options = {
+<<<<<<< HEAD
         successCallback: () => { console.log('Audio played') },
         errorCallback: (e) => { console.log('Error streaming') },
+=======
+        successCallback: () => { },
+        errorCallback: (e) => { },
+>>>>>>> master
         shouldAutoClose: true,
         bgImage: 'https://s3-ap-southeast-1.amazonaws.com/eiosys/images/equilizer.gif',
       };
@@ -230,9 +298,14 @@ export class ChatBubbleComponent {
       window.open(this.message.URL, '_blank');
     } else if (this.isCordova) {
       let options = {
+<<<<<<< HEAD
         successCallback: () => { console.log('Video played') },
         errorCallback: (e) => {
           console.log(e);
+=======
+        successCallback: () => { },
+        errorCallback: (e) => {
+>>>>>>> master
           return false;
         },
         shouldAutoClose: true,
@@ -253,13 +326,20 @@ export class ChatBubbleComponent {
         }).catch(error => {
           this.message.downloading = true;
           this.fileOps.downloadFile(file, this.downloadDirectory).then((entry: any) => {
+<<<<<<< HEAD
             this.message.nativeURL = this.fileOps.getNativeURL(file, this.downloadDirectory);
+=======
+            this.message.nativeURL = this.fileOps.getNativeURL(file, this.downloadDirectory).replace(/^file:\/\//, '');;
+>>>>>>> master
             this.message.downloading = false;
             this.message.downloaded = true;
 
             this.subscribeToFileDelete(file);
             setTimeout(() => {
+<<<<<<< HEAD
               console.log(entry);
+=======
+>>>>>>> master
               resolve(entry);
             });
           }).catch(error => {
@@ -267,7 +347,10 @@ export class ChatBubbleComponent {
             this.message.downloaded = false;
             this.message['error'] = error;
             this.events.publish('toast:error', error);
+<<<<<<< HEAD
             reject(error);
+=======
+>>>>>>> master
           })
         });
       }
@@ -279,12 +362,11 @@ export class ChatBubbleComponent {
     if (this.message.URL) {
       if (this.isCordova && !this.isBrowser) {
         let file = this.message.URL;
-
         this.fileOps.isFileDownloaded(file, this.downloadDirectory).then(status => {
           if (status) {
             this.message['downloaded'] = true;
             this.message['downloading'] = false;
-            this.message.nativeURL = this.fileOps.getNativeURL(file, this.downloadDirectory);
+            this.message.nativeURL = this.fileOps.getNativeURL(file, this.downloadDirectory).replace(/^file:\/\//, '');
 
             this.subscribeToFileDelete(file);
           }
@@ -297,9 +379,12 @@ export class ChatBubbleComponent {
             this.message['downloading'] = false;
           }
         });
-
       } else {
+<<<<<<< HEAD
         this.message['downloaded'] = false;
+=======
+        this.message['downloaded'] = true;
+>>>>>>> master
         this.message.nativeURL = this.message.URL;
       }
     } else {
@@ -313,9 +398,9 @@ export class ChatBubbleComponent {
     let file = this.message.URL;
     if (this.isCordova) {
       this.message.downloading = true;
-      this.fileOps.downloadFile(file, this.downloadDirectory).then((entry: any) => {
+      this.fileOps.downloadFile(file, this.downloadDirectory).then((entry: FileEntry) => {
         this.message.downloaded = true;
-        this.message.nativeURL = this.fileOps.getNativeURL(entry.nativeURL, this.downloadDirectory);
+        this.message.nativeURL = normalizeURL(entry.nativeURL);// this.fileOps.getNativeURL(entry.nativeURL, this.downloadDirectory);
 
         this.message.downloading = false;
         this.subscribeToFileDelete(file);
@@ -366,7 +451,7 @@ export class ChatBubbleComponent {
       if (this.userID in this.message.BadgeCount && this.message.BadgeCount[this.userID]) {//in list && not yet made false
         //making it false first
         this.message.BadgeCount[this.userID] = false;
-        this.angularFireDB.object(this.messagePath + '/BadgeCount/' + this.userID).set(false);
+        firebase.database().ref(this.messagePath + '/BadgeCount/' + this.userID).set(false);
 
         //not reducing badge count from communication & total
         this.reduceCount('CommunicationCount');
@@ -394,7 +479,6 @@ export class ChatBubbleComponent {
   }
 
   onTrackFinished(track: any) {
-    console.log('Track finished', track);
     //re-adding this track
     // this.message.audioTrack = {
     //   src: null,
@@ -406,8 +490,6 @@ export class ChatBubbleComponent {
 
   onHold(event) {
     //showing popover for read, translate
-    console.log('on hold');
-
   }
 
   subscribeToFileDelete(file) {
@@ -436,4 +518,5 @@ export class ChatBubbleComponent {
     }
     return this.message.Translation[this.myLanguage];
   }
+
 }

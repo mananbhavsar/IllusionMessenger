@@ -12,7 +12,11 @@
 		</ion-buttons>
 	</ion-navbar>
 	<ion-toolbar ion-text color="primary" *ngIf="showSearch">
+<<<<<<< HEAD
 		<ion-searchbar placeholder="Enter Name" (ionInput)="getData($event)" (ionCancel)="onCancel($event)" (ionClear)="onClear($event)"></ion-searchbar>
+=======
+		<ion-searchbar placeholder="Enter Name" (ionInput)="getItems($event)" (ionCancel)="onCancel($event)" (ionClear)="onClear($event)"></ion-searchbar>
+>>>>>>> master
 	</ion-toolbar>
 </ion-header>
 
@@ -22,7 +26,11 @@
 		</ion-refresher-content>
 	</ion-refresher>
 	<ion-grid *ngIf="topics" no-padding>
+<<<<<<< HEAD
 		<p *ngIf="topics.length === 0;else topicsFound" text-center>No data Found</p>
+=======
+		<empty *ngIf="topics.length === 0;else topicsFound"></empty>
+>>>>>>> master
 		<ng-template #topicsFound>
 			<ion-item-divider color="light">
 				Closed Topics

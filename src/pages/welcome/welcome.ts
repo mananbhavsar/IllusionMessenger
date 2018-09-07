@@ -49,7 +49,7 @@ export class WelcomePage {
                 }
             }
 
-        });
+        }).catch((error) => { console.log(error)});
     }
 
 }

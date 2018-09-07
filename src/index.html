@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
+<<<<<<< HEAD
     <head>
         <meta charset="UTF-8">
         <title>Laxmi Task Manager</title>
@@ -19,18 +20,42 @@
         <!-- un-comment this code to enable service worker
         <script>
           if ('serviceWorker' in navigator) {
+=======
+
+<head>
+    <meta charset="UTF-8">
+    <title>Laxmi Task Manager</title>
+    <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+    <!-- <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async></script> -->
+    <link rel="icon" type="image/x-icon" href="assets/img/logo.png">
+    <link rel="manifest" href="manifest.json">
+    <!-- <script src="/OneSignalSDKUpdaterWorker.js"></script> -->
+    <!-- <script src="/OneSignalSDKWorker.js"></script> -->
+    <meta name="theme-color" content="#E8343A">
+
+    <!-- cordova.js required for cordova apps -->
+    <script src="cordova.js"></script>
+
+    <script>
+        // var OneSignal = window.OneSignal || [];
+
+        if ('serviceWorker' in navigator) {
+>>>>>>> master
             navigator.serviceWorker.register('service-worker.js')
-              .then(() => console.log('service worker installed'))
-              .catch(err => console.error('Error', err));
-          }
-        </script>-->
+                .then(() => console.log('service worker installed'))
+                .catch(err => console.error('Error', err));
+        }
+    </script>
 
-        <link href="build/main.css" rel="stylesheet">
+    <link href="build/main.css" rel="stylesheet">
 
-    </head>
-    <body>
+</head>
 
-        <!-- Ionic's root component and where the app will load -->
+<body>
+
+    <!-- Ionic's root component and where the app will load -->
     <ion-app></ion-app>
 
     <!-- The polyfills js is generated during the build process -->
@@ -44,4 +69,5 @@
     <script src="build/main.js"></script>
 
 </body>
+
 </html>

@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
-
 import * as firebase from 'firebase';
+import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
 import * as moment from 'moment';
+
 
 @IonicPage()
 @Component({
@@ -40,7 +40,6 @@ export class ChatReadModalPage {
 
   ionViewDidLoad() {
     this.messageReadRef.on('child_changed', (snapshot) => {
-      console.log(snapshot.val());
     });
     this.makeList();
   }

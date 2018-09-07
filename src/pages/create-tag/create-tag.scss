@@ -1,0 +1,10 @@
+page-create-tag {
+    ion-textarea {
+        width: 100%;
+        height: 60px;
+    }
+    .italic-small-grey {
+        font-style: italic;
+        color: color($colors, pickup);
+    }
+}

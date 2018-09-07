@@ -1,5 +1,6 @@
 import { Storage } from '@ionic/storage';
 import { Injectable } from '@angular/core';
+<<<<<<< HEAD
 import { Platform, Events, normalizeURL } from 'ionic-angular';
 
 import * as _ from 'underscore';
@@ -12,17 +13,38 @@ import { StreamingMedia, StreamingVideoOptions } from '@ionic-native/streaming-m
 import { Network } from '@ionic-native/network';
 import { AndroidPermissions } from '@ionic-native/android-permissions';
 
+=======
+import { AndroidPermissions } from '@ionic-native/android-permissions';
+import { Camera, CameraOptions } from '@ionic-native/camera';
+import { File, FileEntry } from '@ionic-native/file';
+import { FileChooser } from '@ionic-native/file-chooser';
+>>>>>>> master
 import { FileOpener } from '@ionic-native/file-opener';
-
+import { FilePath } from '@ionic-native/file-path';
+import { FileTransfer, FileTransferObject, FileUploadOptions } from '@ionic-native/file-transfer';
+import { Network } from '@ionic-native/network';
+import { StreamingMedia } from '@ionic-native/streaming-media';
+import { Events, normalizeURL, Platform } from 'ionic-angular';
+import * as mime from 'mime-types';
 import { Global } from '../../app/global';
+import { CommonProvider } from '../common/common';
+
+
+
 
 @Injectable()
 export class FileOpsProvider {
   isIOS: boolean = false;
   isAndroid: boolean = false;
+  directory: string = null;
+  progressPercent: number = 0;
   isCordova: boolean = false;
+<<<<<<< HEAD
   progressPercent: number = 0;
 
+=======
+  //camera
+>>>>>>> master
   private cameraOptions: CameraOptions = {
     quality: 80,
     destinationType: this.camera.DestinationType.FILE_URI,
@@ -43,6 +65,16 @@ export class FileOpsProvider {
     mediaType: this.camera.MediaType.PICTURE
   }
 
+<<<<<<< HEAD
+=======
+
+  private allowedMimes = [
+    'application/pdf', 'image/png', 'image/jpeg',
+    // 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    // 'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+    'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  ];
+>>>>>>> master
 
   constructor(
     private network: Network,
@@ -53,11 +85,25 @@ export class FileOpsProvider {
     private events: Events,
     public camera : Camera,
     private fileOpener: FileOpener,
+<<<<<<< HEAD
+=======
+    private fileChooser: FileChooser,
+    private camera: Camera,
+    private filePath: FilePath,
+    private common: CommonProvider,
+>>>>>>> master
     private androidPermissions: AndroidPermissions,
   ) {
     this.isIOS = this.platform.is('ios');
     this.isAndroid = this.platform.is('android');
     this.isCordova = this.platform.is('cordova');
+  }
+
+  setDataDirecory() {
+    this.getDataDirectory().then((path: any) => {
+      this.directory = path;
+    }).catch(error => {
+    });
   }
 
   getDataDirectory() {
@@ -87,6 +133,7 @@ export class FileOpsProvider {
                   });
                 }
               }, error => {
+<<<<<<< HEAD
                 console.log(error);
                 reject('Permission reject to write files');
               });
@@ -94,6 +141,13 @@ export class FileOpsProvider {
           }, error => {
             console.log(error);
 
+=======
+                reject('Permission rejected to write files');
+              });
+            }
+          }, error => {
+            reject('Permission rejected to write files');
+>>>>>>> master
           });
 
         } else { //iOS
@@ -105,10 +159,13 @@ export class FileOpsProvider {
     });
   }
 
-  isFileDownloaded(file, directory) {
+  isFileDownloaded(file, directory = null) {
     return new Promise((resolve, reject) => {
 
       let fileName = this.getFileName(file);
+      if (directory === null) {
+        directory = this.directory;
+      }
       //checking if file downloaded
       this.file.checkFile(directory, fileName).then(status => {
         resolve(status);
@@ -124,8 +181,11 @@ export class FileOpsProvider {
    * @param file remote file path
    * @param directory directory to check in
    */
-  getFile(file, directory) {
+  getFile(file, directory = null, identifier) {
     return new Promise((resolve, reject) => {
+      if (directory === null) {
+        directory = this.directory;
+      }
       this.isFileDownloaded(file, directory).then(status => {
         resolve(status);
       }).catch(error => {
@@ -140,12 +200,23 @@ export class FileOpsProvider {
     });
   }
 
-  openFile(file, directory) {
-    let nativeURL = this.getNativeURL(file, directory);
-    return this.fileOpener.open(nativeURL, mime.lookup(file));
+  openFile(file, directory, doNative: boolean = true) {
+    return new Promise((resolve, reject) => {
+      if (doNative) {
+        file = this.getNativeURL(file, directory);
+      }
+      this.fileOpener.open(decodeURIComponent(file), mime.lookup(file)).then(status => {
+        resolve(status);
+      }).catch(error => {
+        reject(error);
+      });
+    });
   };
 
-  getNativeURL(file, directory) {
+  getNativeURL(file, directory = null) {
+    if (directory === null) {
+      directory = this.directory;
+    }
     if (file) {
       //checking if still http
       if (file.indexOf('https') === 0) {
@@ -157,37 +228,87 @@ export class FileOpsProvider {
     return file;
   }
 
-  downloadFile(file, directory) {
+  downloadFile(file, directory, identifier = null) {
     return new Promise((resolve, reject) => {
+      if (directory === null) {
+        directory = this.directory;
+      }
       let fileName = this.getFileName(file);
-
+      let url = encodeURI(file);
       const fileTransfer: FileTransferObject = this.transfer.create();
       fileTransfer.download(file, directory + fileName).then((entry) => {
         resolve(entry);
       }, (error) => {
         reject(error);
       }).catch(error => {
-        console.log(error);
         reject(error);
+      });
+      //onProgress
+      fileTransfer.onProgress(event => {
+        if (event.lengthComputable) {
+          this.events.publish('download:progress:' + identifier, {
+            progress: parseInt('' + (event.loaded / event.total) * 100),
+            identifier: identifier
+          });
+        }
       });
     });
   }
 
-  createDirectoryIfNotExist(path, directoryName) {
-    this.file.checkDir(path, directoryName).then(status => {
-    }).catch(error => {
-      if (error.code === 1) {
-        this.file.createDir(path, directoryName, false).catch(error => { });
+
+  capture(type) {
+    return new Promise((resolve, reject) => {
+      switch (type) {
+        case 'camera':
+        case 'image':
+        case 'gallery':
+          let optons = type === 'camera' ? this.cameraOptions : this.galleryOptions;
+          this.camera.getPicture(optons).then(url => {
+            resolve(url);
+          }).catch(error => {
+            reject(error);
+          });
+          break;
+
+        case 'file':
+          this.fileChooser.open().then(uri => {
+            this.filePath.resolveNativePath(uri).then(file => {
+              //check if this mime type is allowed
+              let fileMime = mime.lookup(file);
+              if (this.allowedMimes.indexOf(fileMime) > -1) {
+                resolve(file);
+              } else {
+                reject('We only allow ' + this.common.joinAnd(['PDF', 'Image', 'Excel']));
+              }
+            }).catch(error => {
+              reject(error);
+            });
+          }).catch(error => {
+            reject(error);
+          });
+          break;
       }
     });
   }
 
+<<<<<<< HEAD
   uploadFile(file, params, identifier) {
     return new Promise((resolve, reject) => {
       let fileName = this.getFileName(file);
       const fileTransfer: FileTransferObject = this.transfer.create();
 
       fileTransfer.upload(file, Global.SERVER_URL + 'Communication/InsertChat_Attachement', this.setFileOptions(file, params)).then(data => {
+=======
+
+  uploadFile(file, identifier, params: any = {}) {
+    return new Promise((resolve, reject) => {
+      let fileName = this.getFileName(file);
+      const fileTransfer: FileTransferObject = this.transfer.create();
+      let options = this.setFileOptions(file, params);
+
+      fileTransfer.upload(file, Global.SERVER_URL + 'Chat/CreateFlashNews_Attachement', options).then(data => {
+
+>>>>>>> master
         if (data.response.indexOf('http') === -1) {
           reject(data);
         } else if (data.response.indexOf('>') > -1) {
@@ -213,9 +334,13 @@ export class FileOpsProvider {
     });
   }
 
+<<<<<<< HEAD
 
   
   setFileOptions(file, params = {}): FileUploadOptions {
+=======
+  setFileOptions(file, params: any = {}): FileUploadOptions {
+>>>>>>> master
     //removing ? if any
     if (file.indexOf('?') === -1) {
       file += '?';
@@ -224,6 +349,16 @@ export class FileOpsProvider {
     let fileName = this.getFileName(file);
     let fileExtension = this.getFileExtension(file);
 
+<<<<<<< HEAD
+=======
+    //set params
+    params = Object.assign(params, {
+      VirtualPath: file,
+      FileName: fileName,
+      FileExtension: fileExtension
+    });
+    //set options
+>>>>>>> master
     let options: FileUploadOptions = {
       fileKey: 'file',
       fileName: fileName,
@@ -238,6 +373,7 @@ export class FileOpsProvider {
     return options;
   }
 
+<<<<<<< HEAD
 
 
   
@@ -272,6 +408,15 @@ export class FileOpsProvider {
           break;
       }
     });
+=======
+  getFileDir(file) {
+    if (file.indexOf('?') === -1) {
+      file += '?';
+    }
+    file = file.substring(0, file.lastIndexOf('?'));
+
+    return file.substring(0, file.lastIndexOf('/'));
+>>>>>>> master
   }
 
   getFileName(file) {
@@ -285,14 +430,100 @@ export class FileOpsProvider {
 
   getFileNameWithoutExtension(file) {
     if (file) {
+<<<<<<< HEAD
       return file.substring(0, file.lastIndexOf('.'));
+=======
+      return file.substring(0, file.lastIndexOf('.')).toLowerCase();
+>>>>>>> master
     }
   }
 
   getFileExtension(file) {
     if (file) {
+<<<<<<< HEAD
       return file.substring(file.lastIndexOf('.') + 1);
     }
   }
 
+=======
+      return file.substring(file.lastIndexOf('.') + 1).toLowerCase();
+    }
+  }
+
+
+  createDirectoryIfNotExist(path, directoryName) {
+    this.file.checkDir(path, directoryName).then(status => {
+    }).catch(error => {
+      if (error.code === 1) {
+        this.file.createDir(path, directoryName, false).catch(error => { });
+      }
+    });
+  }
+
+  captureAndUpload(type, identifier: string = null, params: any = {}) {
+    return new Promise((resolve, reject) => {
+      this.capture(type).then(uri => {
+        this.uploadFile(uri, identifier, params).then(uploadedURL => {
+          let url = uploadedURL;
+          resolve(url);
+        }).catch(error => {
+          this.events.publish('toast:error', error);
+          reject(error);
+        });
+      }).catch(error => {
+        this.events.publish('toast:error', error);
+        reject(error);
+      });
+    });
+  }
+
+  openRemoteFile(file, directory = null, identifier) {
+    return new Promise((resolve, reject) => {
+      //check if directory null
+      if (directory === null) {
+        directory = this.directory;
+      }
+      this.isFileDownloaded(file, directory).then(status => {
+          this.openFile(file, directory, identifier).then(status => {
+          resolve(status);
+        }).catch(error => {
+          reject(error);
+        });
+      }).catch(error => {
+        this.downloadFile(file, directory, identifier).then(status => {
+          this.openFile(file, directory, identifier).then(status => {
+            resolve(status);
+          }).catch(error => {
+            reject(error);
+          });
+        }).catch(error => {
+          reject(error);
+        });
+      });
+    });
+  }
+
+  copyFile(file, directory) {
+    return new Promise((resolve, reject) => {
+      let fileName = this.getFileName(file);
+      let fileDir = this.getFileDir(file);
+      
+      //resolve to local
+      (<any>window).resolveLocalFileSystemURL(file, (fileEntry: FileEntry) => {
+        //new dir to system URI
+        (<any>window).resolveLocalFileSystemURL(directory, (dirEntry) => {
+          //copy
+          fileEntry.copyTo(dirEntry, fileName, (copiedEntry) => {
+            resolve(copiedEntry.nativeURL);
+          }, (error) => {
+            reject(error);
+          });
+        });
+      }, (error) => {
+        reject(error);
+      });
+    });
+  }
+
+>>>>>>> master
 }

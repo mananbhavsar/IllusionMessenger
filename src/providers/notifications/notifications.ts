@@ -76,6 +76,7 @@ export class NotificationsProvider {
       }
       if (this._platform.is('cordova')) {
         this._oneSignal.postNotification(notificationObj).then(response => {
+<<<<<<< HEAD
           console.log(response);
           resolve(response);
         }).catch(error => {
@@ -84,6 +85,13 @@ export class NotificationsProvider {
         });
       } else {
         console.log(notificationObj);
+=======
+          resolve(response);
+        }).catch(error => {
+          reject(error);
+        });
+      } else {
+>>>>>>> master
         resolve('sent');
       }
     });

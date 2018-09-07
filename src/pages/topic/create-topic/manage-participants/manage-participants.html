@@ -2,6 +2,7 @@
 	<ion-navbar color="danger">
 		<ion-searchbar placeholder="Search" (ionInput)="getData($event)" (ionCancel)="onCancel($event)" (ionClear)="onClear($event)"></ion-searchbar>
 		<ion-buttons end>
+<<<<<<< HEAD
 			<button color="light" ion-button outline *ngIf="selectedParticipantIDs.length === 0" (click)="dismiss(null)">Close</button>
 			<button color="light" ion-button outline *ngIf="selectedParticipantIDs.length" (click)="create()">Create</button>
 		</ion-buttons>
@@ -9,6 +10,11 @@
 	<!-- <ion-toolbar class="group-header">
 		<ion-title>{{group_name}}</ion-title>
 	</ion-toolbar> -->
+=======
+			<button color="light" ion-button outline (click)="dismiss(null)">Close</button>
+		</ion-buttons>
+	</ion-navbar>
+>>>>>>> master
 </ion-header>
 
 <ion-content>
@@ -20,18 +26,37 @@
 		</button>
 	</ion-scroll>
 	<div class="header-divider">Select Participants</div>
+<<<<<<< HEAD
 	<ion-list *ngIf="participants.length">
 		<ion-item [ngClass]="getGlowClass(user.selectedAt)" *ngFor="let user of participants | orderBy:'selectedAt':true;let i = index;trackBy:getTrackBy"
 		 (click)="setParticipants(user.User[0].UserID)" [hidden]="isHidden(user.User[0].UserID)">
+=======
+	<ion-list *ngIf="_participants.length">
+		<ion-item [ngClass]="getGlowClass(user.selectedAt)" *ngFor="let user of _participants | orderBy:'selectedAt':true;let i = index;trackBy:getTrackBy"
+		 (click)="_setParticipants(user.User[0].UserID)" [hidden]="isHidden(user.User[0].UserID)">
+>>>>>>> master
 			<h2>{{user.User[0].User}}</h2>
 			<p>{{getTags(user.Tag)}}</p>
 			<ion-icon item-end name="ios-checkmark-circle-outline" *ngIf="!inSelectedParticipants(user.User[0].UserID);else selectedParticipant"></ion-icon>
 			<ng-template #selectedParticipant>
 				<button [hidden]="is_from_chat" item-end ion-button clear icon-only (click)="toggleAssign(user.User[0].UserID, $event)">
+<<<<<<< HEAD
 					<ion-icon color="pickup" [name]="assigned === user.User[0].UserID ? 'ios-star':'ios-star-outline'"></ion-icon>
+=======
+					<ion-icon color="pickup" [name]="_assigned === user.User[0].UserID ? 'ios-star':'ios-star-outline'"></ion-icon>
+>>>>>>> master
 				</button>
 				<ion-icon item-end name="ios-checkmark-circle" color="dashboard" item-end></ion-icon>
 			</ng-template>
 		</ion-item>
 	</ion-list>
+<<<<<<< HEAD
 </ion-content>
+=======
+</ion-content>
+<ion-footer>
+	<ion-toolbar>
+		<button color="secondary" block ion-button [disabled]="_selectedParticipantIDs.length === 0" (click)="create()">Add</button>
+	</ion-toolbar>
+</ion-footer>
+>>>>>>> master

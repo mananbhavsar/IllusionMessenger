@@ -1,17 +1,16 @@
-import { Network } from '@ionic-native/network';
 import { Component } from '@angular/core';
-import { IonicPage, NavController, Events, ViewController, ModalController } from 'ionic-angular';
-import { DomSanitizer } from '@angular/platform-browser';
-
+import { Network } from '@ionic-native/network';
+import { Events, IonicPage, ModalController, NavController, ViewController } from 'ionic-angular';
+import { Global } from '../../app/global';
 import { ConnectionProvider } from '../../providers/connection/connection';
+import { TranslateServiceProvider } from '../../providers/translate-service/translate-service';
 import { UserProvider } from '../../providers/user/user';
-
 import { ChangePasswordPage } from './change-password/change-password';
 import { EditProfilePage } from "./edit-profile/edit-profile";
 import { NotificationPreferencesPage } from "./notification-preferences/notification-preferences";
 
-import { Global } from '../../app/global';
-import { TranslateService } from '@ngx-translate/core';
+
+
 
 @IonicPage()
 @Component({
@@ -19,6 +18,7 @@ import { TranslateService } from '@ngx-translate/core';
     templateUrl: 'account.html'
 })
 export class AccountPage {
+    title: string = 'My Account';
     user: any = null;
     client: string = null;
     global: any = null;
@@ -33,7 +33,7 @@ export class AccountPage {
         public viewCtrl: ViewController,
         public events: Events,
         private network: Network,
-        private translate: TranslateService,
+        private translate: TranslateServiceProvider,
     ) {
         this.global = Global;
         this.user = this._user._user;
@@ -61,7 +61,7 @@ export class AccountPage {
     openEditProfile() {
         let editProfilePageModal = this.modalCtrl.create(EditProfilePage);
         editProfilePageModal.onDidDismiss(data => {
-
+            this.setTitle();
         });
         editProfilePageModal.present();
     }
@@ -69,7 +69,7 @@ export class AccountPage {
     openChangePassword() {
         let changePasswordPagePageModal = this.modalCtrl.create(ChangePasswordPage);
         changePasswordPagePageModal.onDidDismiss(data => {
-
+            this.setTitle();
         });
         changePasswordPagePageModal.present();
     }
@@ -77,9 +77,19 @@ export class AccountPage {
     openNotifications() {
         let notificationPreferencesPageModal = this.modalCtrl.create(NotificationPreferencesPage);
         notificationPreferencesPageModal.onDidDismiss(data => {
-
+            this.setTitle();
         });
         notificationPreferencesPageModal.present();
     }
 
+    setTitle() {
+        this.title = null;
+        setTimeout(() => {
+            this.title = 'My Account';
+        });
+    }
+
+    getTitle() {
+        return this.title;
+    }
 }

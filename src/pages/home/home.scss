@@ -1,4 +1,5 @@
 page-home {
+<<<<<<< HEAD
 
 .device-register {
     text-align: center;
@@ -41,11 +42,93 @@ ion-list {
                     &.overdue {
                         color: color($colors, danger);
                         font-style: italic;
+=======
+    .device-register {
+        text-align: center;
+        span {
+            color: white;
+            display: block;
+            &.gray {
+                background-color: gray;
+            }
+            &.secondary {
+                background-color: color($colors, secondary);
+            }
+            &.pickup {
+                background-color: color($colors, pickup);
+            }
+        }
+    }
+    ion-item-divider {
+        button:nth-child(1) {
+            &.button-md {
+                float: left;
+            }
+        }
+        button:nth-child(2) {
+            &.button-md {
+                float: right;
+            }
+        }
+    }
+    ion-segment {
+        ion-segment-button {}
+    }
+    ion-list {
+        ion-item-divider {
+            &.item-md {
+                padding: 0 5px;
+                ion-label {
+                    h2 {
+                        font-weight: 600;
+                        .total-rows-count {
+                            color: color($colors, 'payments');
+                        }
+                    }
+                    ion-badge {
+                        float: right;
+                        margin-right: 1em;
+                    }
+                }
+            }
+        }
+        ion-item {
+            ion-label {
+                &.label-md {
+                    margin: 0;
+                }
+                h2 {}
+                ion-row {
+                    ion-col {
+                        &.col {
+                            font-size: 11px;
+                            padding: 0;
+                        }
+                        &.activetopics {
+                            color: color($colors, secondary);
+                            font-style: italic;
+                        }
+                        &.responsibletopics {
+                            color: color($colors, pickup);
+                            font-style: italic;
+                        }
+                        &.overdue {
+                            color: color($colors, danger);
+                            font-style: italic;
+                        }
+>>>>>>> master
                     }
                 }
             }
         }
     }
+<<<<<<< HEAD
 }
 
+=======
+    ion-footer {
+        text-align: center;
+        background-color: white;
+    }
+>>>>>>> master
 }

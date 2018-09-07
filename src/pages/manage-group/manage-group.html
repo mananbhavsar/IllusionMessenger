@@ -1,0 +1,36 @@
+<ion-header>
+  <header [title]="title" [buttons]="[{name : 'search', icon : 'search'},{name : 'add', icon : 'add'}]" (buttonClicked)="headerBtnClicked($event)"></header>
+</ion-header>
+
+
+<ion-content padding>
+  <ion-refresher (ionRefresh)="refresh($event)" *ngIf="!searchInputBtn">
+    <ion-refresher-content pullingIcon="arrow-round-down" pullingText="Pull to refresh" refreshingSpinner="crescent" refreshingText="Refreshing...">
+    </ion-refresher-content>
+  </ion-refresher>
+  <ion-searchbar [showCancelButton]="shouldShowCancel" *ngIf="searchInputBtn" (ionInput)="getItems($event)"
+  (ionCancel)="onCancel($event)">
+</ion-searchbar>
+<empty *ngIf="groups.length === 0;else data_template"></empty>
+  <ng-template #data_template>
+    <ion-list>
+      <ion-item *ngFor="let group of groups; let i = index">
+        <ion-label>
+          {{group.Group}}
+        </ion-label>
+        <!-- <button (click)="actionSheetOpen(group,i)" item-end ion-button clear icon-only>
+          <ion-icon name="ios-trash-outline"></ion-icon>
+        </button> -->
+        <button (click)="updateGroup(group)" color="communication" clear icon-only item-end ion-button>
+          <ion-icon name="ios-create-outline"></ion-icon>
+        </button>
+      </ion-item>
+    </ion-list>
+    <ion-infinite-scroll *ngIf="page !== -1" (ionInfinite)="paginate($event)">
+      <ion-infinite-scroll-content></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </ng-template>
+  <ion-item-divider text-center [hidden]="page > 0">
+    Nothing more to show
+  </ion-item-divider>
+</ion-content>

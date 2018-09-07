@@ -1,5 +1,6 @@
 title {
     display: flex;
+<<<<<<< HEAD
     ion-row {
         padding: 0;
         margin: 0;
@@ -18,6 +19,40 @@ title {
             }
             small {
                 font-size: 11px;
+=======
+    ion-title {
+        width: 100%;
+        ion-row {
+            padding: 0;
+            margin: 0;
+            ion-col {
+                &.col {
+                    padding: 0;
+                    margin: 0;
+                    div {
+                        .totalBadgeCount {
+                            display: none;
+                        }
+                        ion-badge {
+                            float: right;
+                            font-size: 0.5em;
+                            padding: 3px 5px;
+                        }
+                    }
+                    div {
+                        &.subSubTitle {
+                            font-size: 10px;
+                            padding: 0;
+                            margin: 0;
+                        }
+                    }
+                    small {
+                        font-size: 11px;
+                        padding: 0;
+                        margin: 0;
+                    }
+                }
+>>>>>>> master
             }
         }
     }

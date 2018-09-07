@@ -1,0 +1,66 @@
+topic {
+    ion-row {
+        ion-item {
+            &.item-md {
+                &.item-block {
+                    padding-left: 0;
+                    .item-inner {
+                        padding-right: 0;
+                        border-bottom: 1px solid #dedede;
+                        ion-label {
+                            &.label-md {
+                                margin: 3px 3px 3px 0;
+                                h2 {
+                                    margin-top: 0;
+                                    span {
+                                        &.topic-name {
+                                            width: 85%;
+                                            display: inline-block;
+                                            text-overflow: ellipsis;
+                                            overflow: hidden;
+                                        }
+                                    }
+                                }
+                                p {
+                                    width: 100%;
+                                    ion-row {
+                                        ion-col {
+                                            padding: 0;
+                                            font-size: 11px;
+                                            &.pickup {
+                                                color: color($colors, pickup);
+                                            }
+                                            &.secondary {
+                                                color: color($colors, secondary);
+                                            }
+                                            &.danger {
+                                                color: color($colors, danger);
+                                            }
+                                            &.last-msg {
+                                                overflow: hidden;
+                                                white-space: nowrap;
+                                                text-overflow: ellipsis;
+                                                color: #303030;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        .last-message {
+                            font-size: 0.5em;
+                            color: #666;
+                            position: absolute;
+                            top: 0;
+                            right: 0;
+                        }
+                        .priority {
+                            font-size: 1.5em;
+                            margin: 11px 8px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,24 @@
+<ion-header>
+  <modal-toolbar [title]="title" (dismiss)="dismiss($event)"></modal-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <form [formGroup]="ratingForm">
+    <ion-list>
+      <ion-item>
+        <ion-label stacked>Enter Comment</ion-label>
+        <ion-input required placeholder="Enter Comment Here..." type="text" formControlName="Comment"></ion-input>
+      </ion-item>
+      <div class="error-message-block" *ngIf="ratingForm.controls.Comment.errors && (ratingForm.controls.Comment.dirty || ratingForm.controls.Comment.touched)">
+        <span *ngIf="ratingForm.controls.Comment.errors.required">Comment is required</span>
+      </div>
+      <div class="rating-title">
+        Rating
+      </div>
+      <div class="rating-star">
+        <rating [readOnly]="false" [value]="" (clicked)="starClicked($event)"></rating>
+      </div>
+      <button (click)="submitForm()" ion-button full [disabled]="!ratingForm.valid">Submit</button>
+    </ion-list>
+  </form>
+</ion-content>

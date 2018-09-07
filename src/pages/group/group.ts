@@ -9,6 +9,10 @@ import { ChatPage } from './../chat/chat';
 import { GroupOptionsPage } from './../group/group-options/group-options';
 import { CloseTopicPage } from './../topic/close-topic/close-topic';
 import { CreateTopicPage } from './../topic/create-topic/create-topic';
+<<<<<<< HEAD
+=======
+import { FlashNewsProvider } from '../../providers/flash-news/flash-news';
+>>>>>>> master
 
 
 @IonicPage()
@@ -21,10 +25,18 @@ export class GroupPage {
 
   group_id: number = 0;
   title: string = '';
+<<<<<<< HEAD
   group: any = {};
   badges: any = {};
   page: number = 0;
 
+=======
+  group: any = [];
+  badges: any = {};
+  page: number = 0;
+  query: string;
+  searchInputBtn: boolean = false;
+>>>>>>> master
 
   //sort option
   sort_by: string = 'CreationDate';
@@ -35,6 +47,7 @@ export class GroupPage {
     private connection: ConnectionProvider,
     private _date: DateProvider,
     private modalController: ModalController,
+<<<<<<< HEAD
     private actionSheetController: ActionSheetController,
   ) {
     this.title = this.navParams.data.Group;
@@ -47,10 +60,19 @@ export class GroupPage {
     }).catch(error => {
 
     });
+=======
+    public flashNewsProvider: FlashNewsProvider,
+    private actionSheetController: ActionSheetController,
+  ) {
+    this.group_id = this.navParams.data.GroupID;
+    this.setTitle();
+    this.getGroupDetails();
+>>>>>>> master
   }
 
   getGroupDetails() {
     return new Promise((resolve, reject) => {
+<<<<<<< HEAD
       this.connection.doPost('Chat/GetGroupDetail', {
         GroupID: this.group_id,
         PageNumber: this.page,
@@ -66,6 +88,42 @@ export class GroupPage {
       }).catch(error => {
         reject(error);
       });
+=======
+      if (this.page === -1) {
+        reject();
+      } else {
+        this.connection.doPost('Chat/GetGroupDetail', {
+          GroupID: this.group_id,
+          PageNumber: this.page,
+          RowsPerPage: 20,
+          Query: this.query,
+          OrderBy: this.sort_by,
+          Order: this.sort_order,
+        }, false).then((response: any) => {
+          //flash
+          if (response.FlashNews) {
+            response.FlashNews.forEach((news, key) => {
+              this.flashNewsProvider.openUnreadFlashNews(news,this.group_id);
+            });
+          }
+          this.group = response;
+          if (this.group) {
+            response.ActiveTopicList.forEach(list => {
+              this.group.push(list);
+            });
+            this.setForBadge();
+            this.page++;
+            resolve(true);
+          } else {
+            this.page = -1;
+            resolve(false);
+          }
+        }).catch(error => {
+          this.page = -1;
+          resolve(false);
+        });
+      }
+>>>>>>> master
     });
   }
 
@@ -94,6 +152,21 @@ export class GroupPage {
     })
   }
 
+<<<<<<< HEAD
+=======
+  paginate(paginator) {
+    this.getGroupDetails().then(status => {
+      if (status) {
+        paginator.complete();
+      } else {
+        paginator.enable(false);
+      }
+    }).catch(error => {
+      paginator.enable(false);
+    });
+  }
+
+>>>>>>> master
   isExpired(date) {
     if (moment(date).isValid() && Math.abs(moment().diff(moment(date), 'years')) < 20) {
       return (new Date().getTime() - this._date.fromServerFormat(date).toDate().getTime()) > 0;
@@ -118,11 +191,18 @@ export class GroupPage {
     return _.isEmpty(object);
   }
 
+<<<<<<< HEAD
   openTopic(topic, index, type) {
     if (topic) {
       if (topic.Count) {
         topic.Count = 0;
         console.log(this.group, type);
+=======
+  openGeneralTopic(topic, index, type) {
+    if (topic) {
+      if (topic.Count) {
+        topic.Count = 0;
+>>>>>>> master
         this.group[type].Count = 0;
       }
       this.navCtrl.push(ChatPage, {
@@ -132,6 +212,20 @@ export class GroupPage {
     }
   }
 
+<<<<<<< HEAD
+=======
+  topicCliked(event) {
+    if (event && event.topic) {
+      if (event.topic.Count) {
+        event.topic.Count = 0;
+        //make count zero
+        this.group[event.type].Count = 0;
+      }
+
+    }
+  }
+
+>>>>>>> master
   viewAllClosedTopics() {
     let closeTopicModal = this.modalController.create(CloseTopicPage, {
       group_id: this.group_id,
@@ -139,6 +233,10 @@ export class GroupPage {
       group_code: this.group['GroupDetail'][0].GroupCode,
     });
     closeTopicModal.onDidDismiss(data => {
+<<<<<<< HEAD
+=======
+      this.setTitle();
+>>>>>>> master
       //refresh page
       this.page = 0;//to keep consistency
       this.getGroupDetails().catch(erroe => {
@@ -156,16 +254,77 @@ export class GroupPage {
 
       case 'create-topic':
         this.navCtrl.push(CreateTopicPage, this.group_id);
+<<<<<<< HEAD
         break
     }
   }
 
+=======
+        break;
+
+      case 'search':
+        this.searchData();
+
+    }
+  }
+
+  searchData() {
+    if (this.searchInputBtn) {
+      this.searchInputBtn = false;
+      this.group = [];
+      this.query = null;
+      this.initializeItems();
+    } else if (this.searchInputBtn === false) {
+      this.searchInputBtn = true;
+    }
+  }
+
+  initializeItems() {
+    this.page = 0;
+    this.getGroupDetails().catch(error => {
+    });
+  }
+
+  onCancel(event) {
+    this.query = null;
+    this.initializeItems();
+  }
+
+  onClear(event) {
+    this.query = null;
+    this.initializeItems();
+  }
+
+
+  getItems(event) {
+    // set val to the value of the ev target
+    let val = event.target.value;
+    if (val && val.trim() != '') {
+      // if the value is an empty string don't filter the items
+      this.query = val;
+      this.page = 0;
+      this.getGroupDetails().catch(error => {
+      });
+
+    } else {
+      this.query = null;
+      this.initializeItems();
+    }
+  }
+
+
+
+>>>>>>> master
   openGroupOptions(event) {
     let groupOptionsModal = this.modalController.create(GroupOptionsPage, {
       group_id: this.group_id,
       group_name: this.title,
     });
     groupOptionsModal.onDidDismiss(data => {
+<<<<<<< HEAD
+=======
+      this.setTitle();
+>>>>>>> master
       if (data) {
         this.group = [];
         this.page = 0;
@@ -227,4 +386,18 @@ export class GroupPage {
     this.page = 0;
     this.getGroupDetails();
   }
+<<<<<<< HEAD
+=======
+
+  setTitle() {
+    this.title = null;
+    setTimeout(() => {
+      this.title = this.navParams.data.Group;
+    });
+  }
+
+  getTitle() {
+    return this.title;
+  }
+>>>>>>> master
 }

@@ -1,12 +1,5 @@
 <ion-header>
-  <ion-toolbar ion-text color="primary">
-    <ion-title>Notification Preference</ion-title>
-    <ion-buttons end>
-      <button color="light" ion-button outline (click)="dismiss(null)">
-        {{'Common._Close' | translate}}
-      </button>
-    </ion-buttons>
-  </ion-toolbar>
+  <modal-toolbar [title]="'Common._NotificationPreference_' | translate" (dismiss)="dismiss($event)"></modal-toolbar>
 </ion-header>
 <ion-content padding="">
   <ion-list *ngIf="data">

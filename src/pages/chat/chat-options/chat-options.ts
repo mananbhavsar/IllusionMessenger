@@ -1,6 +1,12 @@
 import { Component, ViewChild } from '@angular/core';
+<<<<<<< HEAD
 import { Storage } from '@ionic/storage';
 import { ActionSheetController, DateTime, Events, IonicPage, ModalController, NavController, NavParams, ViewController } from 'ionic-angular';
+=======
+import { CallNumber } from '@ionic-native/call-number';
+import { Storage } from '@ionic/storage';
+import { ActionSheetController, DateTime, Events, IonicPage, ModalController, NavController, NavParams, Platform, ViewController } from 'ionic-angular';
+>>>>>>> master
 import * as moment from 'moment';
 import * as _ from 'underscore';
 import { ConnectionProvider } from '../../../providers/connection/connection';
@@ -10,6 +16,10 @@ import { UserProvider } from '../../../providers/user/user';
 import { ManageParticipantsPage } from '../../topic/create-topic/manage-participants/manage-participants';
 import { DateProvider } from './../../../providers/date/date';
 import { SavedMediaPage } from "./saved-media/saved-media";
+<<<<<<< HEAD
+=======
+import { RatingPage } from '../rating/rating';
+>>>>>>> master
 
 
 
@@ -25,7 +35,15 @@ export class ChatOptionsPage {
   @ViewChild('dueDate') dueDate: DateTime;
   dueDateOpened: boolean = false;
 
+<<<<<<< HEAD
   data: any = {}
+=======
+  @ViewChild('reminder') reminder: DateTime;
+  reminderOpened: boolean = false;
+
+  data: any = {};
+  reminders: any = [];
+>>>>>>> master
   title: string = '';
   topicCode: string = null;
   topicID: string = null;
@@ -40,6 +58,12 @@ export class ChatOptionsPage {
   amIAdmin: boolean = false;
   amIResponsible: boolean = false;
   responsibleUserID: string = null;
+<<<<<<< HEAD
+=======
+  isBrowser: boolean = false;
+  groupMemberCount: number = 0;
+  value:number;
+>>>>>>> master
 
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
@@ -48,22 +72,47 @@ export class ChatOptionsPage {
     public connection: ConnectionProvider,
     public user: UserProvider,
     public events: Events,
+<<<<<<< HEAD
+=======
+    public platform: Platform,
+>>>>>>> master
     private _firebaseTransaction: FirebaseTransactionProvider,
     private _notifications: NotificationsProvider,
     public storage: Storage,
     private viewController: ViewController,
     private _date: DateProvider,
+<<<<<<< HEAD
   ) {
     this.data = this.navParams.data.data;
     this.title = this.navParams.data.data.Topic + '\'s options';
+=======
+    private callNumber: CallNumber
+  ) {
+    this.data = this.navParams.data.data;
+    this.groupMemberCount = this.data.User.length;
+
+    this.reminders = this.navParams.data.reminders || [];
+
+>>>>>>> master
     this.topicID = this.navParams.data.data.TopicID;
     this.groupID = this.navParams.data.data.GroupID;
     this.statusID = this.navParams.data.data.StatusID;
     this.topicCode = this.navParams.data.folder;
+<<<<<<< HEAD
 
     this.path = this.navParams.data.path;
     this.group_name = this.navParams.data.group_name;
 
+=======
+    this.path = this.navParams.data.path;
+    this.group_name = this.navParams.data.group_name;
+    this.isBrowser = this.platform.is('core');
+    this.value = this.navParams.data.data.Rating;
+
+
+
+    this.setTitle();
+>>>>>>> master
     this.processParticipants();
   }
 
@@ -105,11 +154,85 @@ export class ChatOptionsPage {
 
     let savedMediaModal = this.modal.create(SavedMediaPage, params);
     savedMediaModal.onDidDismiss(data => {
+<<<<<<< HEAD
 
+=======
+      this.setTitle();
+>>>>>>> master
     });
     savedMediaModal.present();
   }
 
+<<<<<<< HEAD
+=======
+  closureRequest() {
+    if (this.amIResponsible) {
+      let actionSheet = this.actionSheetCtrl.create({
+        title: 'Do You Want to request for closure? (Request only if task is completed)',
+        buttons: [
+          {
+            text: 'Send Request now!',
+            role: 'destructive',
+            handler: () => {
+              this.connection.doPost('Chat/RequestForClosure', {
+                TopicID: this.data.TopicID,
+                GroupID: this.data.GroupID,
+                IsWeb: this.platform.is('core')
+              }).then((response: any) => {
+                if (response) {
+                  if (response.FireBaseTransaction) {
+                    this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { });
+                  }
+                  this.data.IsRequestedClosure = 'true';
+                }
+              }).catch((error) => {
+
+              });
+            }
+          }, {
+            text: 'Cancel',
+            role: 'cancel',
+          }]
+      });
+      actionSheet.present();
+    }
+  }
+
+
+  cancelClosureRequest() {
+    if (this.amIAdmin) {
+      this.connection.doPost('Chat/CancelClosureRequest', {
+        TopicID: this.data.TopicID,
+        GroupID: this.data.GroupID,
+        IsWeb: this.platform.is('core')
+      }).then((response: any) => {
+        if (response) {
+          if (response.FireBaseTransaction) {
+            this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { });
+          }
+          this.data.IsRequestedClosure = 'false';
+        }
+      }).catch((error) => {
+
+      });
+    }
+  }
+
+  callParticipant(event,number) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (number) {
+      if (this.platform.is('mobileweb') || this.platform.is('core')) {
+        number = "tel:" + number;
+        window.location.href = number;
+      } else if (this.platform.is('cordova')) {
+        this.callNumber.callNumber(number, true);
+      }
+    }
+    return false;
+  }
+
+>>>>>>> master
   rescheduleTopic() {
     this.dueDate.mode = 'ios';
     this.dueDate.setValue(this._date.fromServerFormat(this.data.DueDate_UTC).format());
@@ -171,6 +294,7 @@ export class ChatOptionsPage {
           text: 'Close it now!',
           role: 'destructive',
           handler: () => {
+<<<<<<< HEAD
             this.connection.doPost('Chat/UpdateTopicStatus', {
               GroupID: this.groupID,
               TopicID: this.topicID,
@@ -198,6 +322,45 @@ export class ChatOptionsPage {
               }
             }).catch(error => {
             });
+=======
+            let modal = this.modal.create(RatingPage, {
+            });
+            modal.onDidDismiss(data => {
+              if (data) {
+                this.connection.doPost('Chat/UpdateTopicStatus', {
+                  GroupID: this.groupID,
+                  TopicID: this.topicID,
+                  StatusID: 2,
+                  Comment: data.Comment,
+                  Rating: data.Rate
+                }).then((response: any) => {
+                  this.data.StatusID = 2;
+                  this.data.Comment = data.Comment;
+                  this.data.Rating = data.Rate;
+                  if (this.data.StatusID = 2) {
+                    this.closeButton = true;
+                    this.data.CloseDatime_UTC = this._date.toUTCISOString(new Date(), false);
+                  }
+                  if (response.Data.Message) {
+                    this.events.publish('toast:create', response.Data.Message);
+                  }
+                  //firebase 
+                  if (response.FireBaseTransaction) {
+                    this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { });
+                  }
+                  //send notification
+                  if (response.OneSignalTransaction) {
+                    this._notifications.sends(response.OneSignalTransaction, 'ChatPage', {
+                      topicID: this.topicID,
+                      groupID: this.groupID,
+                    });
+                  }
+                }).catch(error => {
+                });
+              }
+            });
+            modal.present();
+>>>>>>> master
           }
         }, {
           text: 'Cancel',
@@ -207,6 +370,89 @@ export class ChatOptionsPage {
     actionSheet.present();
   }
 
+<<<<<<< HEAD
+=======
+  openReminder(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    this.reminder.mode = 'ios';
+    this.reminder.setValue(moment().format());
+    this.reminder.open();
+
+    this.reminderOpened = true;
+    this.reminder.ionCancel.subscribe(cancel => {
+      this.reminderOpened = false;
+    });
+  }
+
+  setReminder(remider) {
+    if (!this.reminderOpened) {
+      return;
+    }
+    let changedDate = new Date();
+    changedDate.setFullYear(remider.year);
+    changedDate.setMonth(remider.month - 1);
+    changedDate.setDate(remider.day);
+    changedDate.setHours(remider.hour);
+    changedDate.setMinutes(remider.minute);
+    changedDate.setSeconds(remider.second);
+
+    let changedMoment = moment(changedDate);
+
+    let SelectedDateTime = moment(this._date.get(changedMoment), 'Do MMM, hh:mm A');
+    let now = moment();
+
+    let utcString = this._date.toUTCISOString(SelectedDateTime);
+
+    if (changedMoment.isValid()) {
+      if (SelectedDateTime.isAfter(now)) {
+        this.connection.doPost('Chat/SetRemoveSelfReminder', {
+          GroupID: this.data.GroupID,
+          TopicID: this.data.TopicID,
+          SchedulerDateTime: utcString,
+          Message: this.data.Topic
+        }, false).then((response: any) => {
+          if (response) {
+            this.data.IsReminderSet = 'true';
+            this.reminderOpened = false;
+            this.reminders.push({
+              GroupID: this.data.GroupID,
+              TopicID: this.data.TopicID,
+              SchedulerDateTime: utcString,
+              Message: this.data.Topic
+            });
+            this.events.publish('toast:create', response.Data.Message);
+          }
+        }).catch((error) => {
+          this.reminderOpened = false;
+          this.events.publish('toast:error', error);
+        });
+      } else {
+        this.reminderOpened = false;
+        this.events.publish('toast:error', 'Reminder time should be more than now');
+      }
+    } else {
+      this.reminderOpened = false;
+      this.events.publish('toast:error', 'Invalid date');
+    }
+  }
+
+  removeRemider(event, id, index) {
+    this.connection.doPost('Chat/SetRemoveSelfReminder', {
+      TopicID: this.data.TopicID,
+      GroupID: this.data.GroupID,
+      SelfReminderID: id,
+      SchedulerDateTime: this._date.toUTCISOString(new Date(), false, false),
+    }).then((Response: any) => {
+      this.events.publish('toast:create', Response.Data.Message);
+      this.reminders.splice(index, 1);
+    }).catch((error) => {
+      this.events.publish('toast:error', error);
+    });
+  }
+
+>>>>>>> master
   dismiss(data) {
     this.viewController.dismiss(data);
   }
@@ -215,6 +461,7 @@ export class ChatOptionsPage {
     //only if I'm admin
     if (this.amIAdmin && this.statusID === 1) {
       let buttons = [];
+<<<<<<< HEAD
       if (participant.UserID !== this.connection.user.LoginUserID) {//can't remove/add self
         //making user reposnsible
         if (!participant.IsResponsible) {
@@ -270,6 +517,68 @@ export class ChatOptionsPage {
           buttons: buttons
         });
         userOptionActionSheet.present();
+=======
+      if (participant.IsResponsible) {
+        return false;
+      } else {
+        if (participant.UserID !== this.connection.user.LoginUserID) {//can't remove/add self
+          //making user reposnsible
+          if (!participant.IsResponsible) {
+            buttons.push({
+              text: 'Mark Responsible',
+              handler: () => {
+                this.markResponsible(participant, index);
+              }
+            });
+          }
+          //make, remove admin
+          if (participant.IsAdmin) {
+            //if not by created
+            if (participant.UserID !== this.data.CreatedByID)
+              buttons.push({
+                role: 'destructive',
+                text: 'Remove as Admin',
+                handler: () => {
+                  this.removeAsAdmin(participant, index);
+                }
+              });
+          } else {
+            buttons.push({
+              text: 'Make Admin',
+              handler: () => {
+                this.makeAsAdmin(participant, index);
+              }
+            });
+          }
+          //remove from user 
+          if (!participant.IsResponsible && participant.UserID !== this.data.CreatedByID) {//if not responsible or created by
+            buttons.push({
+              role: 'destructive',
+              text: 'Remove from Topic',
+              handler: () => {
+                this.removeFromTopic(participant, index);
+              }
+            });
+          }
+        }
+
+        if (buttons.length) { //at least on button other than cancel
+          //cancel button
+          buttons.push({
+            role: 'cancel',
+            text: 'Cancel',
+            handler: () => {
+
+            }
+          });
+          let userOptionActionSheet = this.actionSheetCtrl.create({
+            title: 'Take Action',
+            buttons: buttons
+          });
+
+          userOptionActionSheet.present();
+        }
+>>>>>>> master
       }
     }
   }
@@ -441,6 +750,10 @@ export class ChatOptionsPage {
         });
 
         modal.onDidDismiss(data => {
+<<<<<<< HEAD
+=======
+          this.setTitle();
+>>>>>>> master
           if (data) {
             //saving new users
             this.connection.doPost('Chat/Add_Participant', {
@@ -493,4 +806,22 @@ export class ChatOptionsPage {
   getTagColor(id) {
     return 'tag-' + (id % 10);
   }
+<<<<<<< HEAD
+=======
+
+  setTitle() {
+    this.title = null;
+    setTimeout(() => {
+      this.title = this.navParams.data.data.Topic + '\'s options';
+    });
+  }
+
+  getTitle() {
+    return this.title;
+  }
+
+  trackByUserID(index, user) {
+    return user.UserID;
+  }
+>>>>>>> master
 }

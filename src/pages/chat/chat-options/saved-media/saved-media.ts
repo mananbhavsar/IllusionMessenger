@@ -1,4 +1,5 @@
 import { Component, ElementRef } from '@angular/core';
+<<<<<<< HEAD
 import { IonicPage, Events, ActionSheetController, NavController, NavParams, normalizeURL, ViewController } from 'ionic-angular';
 
 import { File } from '@ionic-native/file';
@@ -14,6 +15,18 @@ import { UUID } from 'angular2-uuid';
 import { TranslateService } from "@ngx-translate/core";
 
 import { ImageViewerController } from 'ionic-img-viewer';
+=======
+import { File } from '@ionic-native/file';
+import { PhotoLibrary } from '@ionic-native/photo-library';
+import { StreamingMedia } from '@ionic-native/streaming-media';
+import { UUID } from 'angular2-uuid';
+import { ActionSheetController, Events, IonicPage, NavController, NavParams, normalizeURL, ViewController } from 'ionic-angular';
+import { ImageViewerController } from 'ionic-img-viewer';
+import * as mime from 'mime-types';
+import { Global } from '../../../../app/global';
+import { TranslateServiceProvider } from '../../../../providers/translate-service/translate-service';
+import { VideoEditor } from '@ionic-native/video-editor';
+>>>>>>> master
 
 @IonicPage()
 @Component({
@@ -50,14 +63,21 @@ export class SavedMediaPage {
     private streamingMedia: StreamingMedia,
     private _elementRef: ElementRef,
     private _imageViewerController: ImageViewerController,
+<<<<<<< HEAD
     private translate: TranslateService,
+=======
+    private translate: TranslateServiceProvider,
+>>>>>>> master
   ) {
     this.path = this.navParams.data.path;
     this.folder = this.navParams.data.folder;
     this.topic_group_name = this.navParams.data.topic_group_name;
 
+<<<<<<< HEAD
     console.log(this.path, this.folder);
 
+=======
+>>>>>>> master
     this.selectedTab = 'image';
   }
 
@@ -165,8 +185,13 @@ export class SavedMediaPage {
 
   openAudio(file) {
     let options = {
+<<<<<<< HEAD
       successCallback: () => { console.log('Audio played') },
       errorCallback: (e) => { console.log('Error streaming') },
+=======
+      successCallback: () => { },
+      errorCallback: (e) => { },
+>>>>>>> master
       shouldAutoClose: true,
       bgImage: 'https://s3-ap-southeast-1.amazonaws.com/eiosys/images/equilizer.gif',
     };
@@ -175,8 +200,13 @@ export class SavedMediaPage {
 
   openVideo(file) {
     let options = {
+<<<<<<< HEAD
       successCallback: () => { console.log('Video played') },
       errorCallback: (e) => { console.log('Error streaming') },
+=======
+      successCallback: () => { },
+      errorCallback: (e) => { },
+>>>>>>> master
       shouldAutoClose: true,
     };
     this.streamingMedia.playVideo(file.nativeURL, options);
@@ -263,7 +293,10 @@ export class SavedMediaPage {
           this._photoLibrary.saveImage(file.nativeURL, Global.album).then(status => {
             this._events.publish('toast:create', this.saved_translate);
           }).catch(error => {
+<<<<<<< HEAD
             console.log(error);
+=======
+>>>>>>> master
             if (error === 'Retrieved asset is nil') {
               this._events.publish('toast:create', this.saved_translate);
             } else {
@@ -277,7 +310,10 @@ export class SavedMediaPage {
           this._photoLibrary.saveVideo(file.nativeURL, Global.album).then(status => {
             this._events.publish('toast:create', this.saved_translate);
           }).catch(error => {
+<<<<<<< HEAD
             console.log(error);
+=======
+>>>>>>> master
             if (error === 'Retrieved asset is nil') {
               this._events.publish('toast:create', this.saved_translate);
             } else {
@@ -287,7 +323,10 @@ export class SavedMediaPage {
           break;
       }
     }).catch(error => {
+<<<<<<< HEAD
       console.log(error);
+=======
+>>>>>>> master
       this._events.publish('toast:error', this.permission_not_granted_translate);
     });
   }

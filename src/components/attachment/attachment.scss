@@ -11,14 +11,40 @@ attachment {
                         flex-flow: column;
                         ion-icon {
                             font-size: 2.5em;
+<<<<<<< HEAD
                             padding: 0;
+=======
+>>>>>>> master
                         }
                     }
                 }
             }
         }
+<<<<<<< HEAD
     }
     .attachment-container {
+=======
+        button.upload {
+            width: 157px;
+            height: 57px;
+            background: color($colors, primary);
+            overflow: hidden;
+            margin: 20px;
+            position: relative;
+        }
+        button.upload input {
+            position: absolute;
+            display: block !important;
+            width: 157px !important;
+            height: 57px !important;
+            opacity: 0 !important;
+            overflow: hidden !important;
+        }
+    }
+    .attachment-container {
+            display: grid;
+            justify-content: center;
+>>>>>>> master
         .attachment-thumb {
             position: relative;
             width: 102px;

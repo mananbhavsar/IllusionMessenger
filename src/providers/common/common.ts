@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Platform, ModalController, Events, normalizeURL } from 'ionic-angular';
-
-import { Global } from '../../app/global';
+import { Platform, Events } from 'ionic-angular';
 
 import { File } from '@ionic-native/file';
 
@@ -29,5 +27,31 @@ export class CommonProvider {
       .map(k => esc(k) + '=' + esc(params[k]))
       .join('&');
   }
+<<<<<<< HEAD
+=======
+
+  hasClass(element, cls) {
+    if (element && cls) {
+      return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1;
+    }
+  }
+
+
+  joinAnd(array: Array<string>): string {
+    let joined = '';
+    if (array.length === 1) {
+      joined = array[0];
+    } else if (array.length === 2) {
+      //joins all with "and" but no commas
+      //example: "bob and sam"
+      joined = array.join(' and ');
+    } else if (array.length > 2) {
+      //joins all with commas, but last one gets ", and" (oxford comma!)
+      //example: "bob, joe, and sam"
+      joined = array.slice(0, -1).join(', ') + ', and ' + array.slice(-1);
+    }
+    return joined;
+  }
+>>>>>>> master
 
 }

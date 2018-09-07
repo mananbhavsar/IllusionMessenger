@@ -1,3 +1,15 @@
 call-fab {
-
+    ion-fab {
+        ion-fab-list {
+            button {
+                &.fab-md-in-list {
+                    color: white;
+                    background-color: red;
+                }
+            }
+        }
+        ion-fab[bottom] {
+            bottom: 50px;
+        }
+    }
 }

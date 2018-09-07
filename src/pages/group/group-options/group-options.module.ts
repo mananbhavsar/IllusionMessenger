@@ -1,5 +1,9 @@
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
+<<<<<<< HEAD
+=======
+import { ComponentsModule } from '../../../components/components.module';
+>>>>>>> master
 import { GroupOptionsPage } from './group-options';
 
 @NgModule({
@@ -8,6 +12,10 @@ import { GroupOptionsPage } from './group-options';
   ],
   imports: [
     IonicPageModule.forChild(GroupOptionsPage),
+<<<<<<< HEAD
+=======
+    ComponentsModule,
+>>>>>>> master
   ],
 })
 export class GroupOptionsPageModule {}

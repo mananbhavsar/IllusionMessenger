@@ -16,6 +16,7 @@
     "HomeScreen": {
         "_Home_": "Home",
         "_Dashboard_": "Dashboard",
+        "_ManageGroup_" : "Manage Group",
         "_DashboardSummary_": "Your dashboard summary",
         "_PickUp_": "Pickup",
         "_EasyPickup_": "Easy pickup request",
@@ -24,7 +25,9 @@
         "_Communication_": "Communication",
         "_ViewCommunication_": "View your communications",
         "_Invoice_": "Invoice",
-        "_Payments_": "Payments"
+        "_Payments_": "Payments",
+        "_Tag_" : "Tags",
+        "_users_" : "Users"
     },
     "DashboardDetail": {
         "_Payment_": "Payment",
@@ -73,9 +76,9 @@
         "_Status_": "Status",
         "_ProgressDetail_": "Progress Detail",
         "_ImpressionDate_": "Impression Date",
-        "_DueDate_":"Due Date",
+        "_DueDate_": "Due Date",
         "_ClickToCommunicate_": "Click to Communicate",
-        "_OpenRx_":"Open Rx",
+        "_OpenRx_": "Open Rx",
         "Dispatch": {
             "_Patient": "Patient",
             "_DispatchDate": "Dispatch Date",
@@ -171,6 +174,10 @@
         "_NothingToShow_": "Nothing to show more",
         "_Welcome_": "Welcome",
         "_ErrorOccurred_": "Error occurred! Try again",
-        "_CheckInternetConnection_": "Please check your network connection"
+        "_CheckInternetConnection_": "Please check your network connection",
+        "_ChangePassword_": "Change Password",
+        "_EditProfile_": "Edit Profile",
+        "_NotificationPreference_": "Notification Preference",
+        "_ContactUs_": "Contact Us"
     }
 }

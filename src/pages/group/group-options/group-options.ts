@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { FirebaseTransactionProvider } from './../../../providers/firebase-transaction/firebase-transaction';
 import { NotificationsProvider } from './../../../providers/notifications/notifications';
 import { CreateTopicPage } from './../../topic/create-topic/create-topic';
@@ -5,6 +6,15 @@ import { ConnectionProvider } from './../../../providers/connection/connection';
 import { Component, group } from '@angular/core';
 import { IonicPage, NavController, NavParams, ModalController, ViewController, Events } from 'ionic-angular';
 import { AddFlashPage } from '../add-flash/add-flash';
+=======
+import { Component } from '@angular/core';
+import { Events, IonicPage, ModalController, NavController, NavParams, ViewController } from 'ionic-angular';
+import { AddFlashPage } from '../add-flash/add-flash';
+import { ConnectionProvider } from './../../../providers/connection/connection';
+import { FirebaseTransactionProvider } from './../../../providers/firebase-transaction/firebase-transaction';
+import { NotificationsProvider } from './../../../providers/notifications/notifications';
+import { CreateTopicPage } from './../../topic/create-topic/create-topic';
+>>>>>>> master
 
 @IonicPage()
 @Component({
@@ -43,7 +53,10 @@ export class GroupOptionsPage {
         GroupID: this.group_id
       }).then((response: any) => {
         this.userlist = response;
+<<<<<<< HEAD
         console.log(this.userlist);
+=======
+>>>>>>> master
         resolve(true);
       }).catch(error => {
         reject(error);
@@ -57,6 +70,10 @@ export class GroupOptionsPage {
       group_name: this.group_name,
     });
     createTopicModal.onDidDismiss(data => {
+<<<<<<< HEAD
+=======
+      this.setTitle();
+>>>>>>> master
       if (data) {
         this.dismiss({
           page: 'ChatPage',
@@ -73,6 +90,10 @@ export class GroupOptionsPage {
       group_name: this.group_name,
     });
     flashModal.onDidDismiss(data => {
+<<<<<<< HEAD
+=======
+      this.setTitle();
+>>>>>>> master
       if (data) {
         this.events.publish('toast:create', data.Data.Message);
         this.notifications.sends(data.OneSignalTransaction);
@@ -99,4 +120,19 @@ export class GroupOptionsPage {
   dismiss(data) {
     this.viewController.dismiss(data);
   }
+<<<<<<< HEAD
+=======
+
+  setTitle() {
+    this.title = null;
+    setTimeout(() => {
+      this.title = 'Group Options';
+    });
+  }
+
+
+  getTitle() {
+    return this.title;
+  }
+>>>>>>> master
 }

@@ -1,18 +1,29 @@
+<<<<<<< HEAD
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { NavController, Events } from 'ionic-angular';
 
+=======
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+>>>>>>> master
 import { StatusBar } from '@ionic-native/status-bar';
-
+import { Events, NavController } from 'ionic-angular';
 import { Global } from "../../app/global";
+
+
 @Component({
     selector: 'header',
     templateUrl: 'header.html'
 })
 export class HeaderComponent {
+<<<<<<< HEAD
+=======
+    @Input() title: string = null;
+>>>>>>> master
     @Input() subTitle: string = null;
     @Input() buttons: any = null;
     @Output() buttonClicked = new EventEmitter();
-    _title: string;
+    @Input() hideTitle: boolean = false;
+
     cartCounter: number = null;
     prevPageColor: string = null;
     colorHex = Global.color;
@@ -37,17 +48,9 @@ export class HeaderComponent {
     ionViewDidEnter() {
     }
 
-    @Input()
-    set title(title: string) {
-        this._title = title;
-    }
-
-    get title() {
-        return this._title;
-    }
-
     openSearch() {
     }
+
 
     getColor(name: string = null) {
         if (true || name === null) {
@@ -82,5 +85,9 @@ export class HeaderComponent {
     sendButtonClicked(button, event) {
         button.event = event;
         this.buttonClicked.emit(button);
+    }
+
+    getTitle() {
+        return this.title;
     }
 }

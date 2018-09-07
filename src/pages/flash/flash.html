@@ -1,0 +1,29 @@
+<ion-header no-border>
+  <modal-toolbar [title]="title" [close]="true"></modal-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-card>
+    <ion-card-header>
+      <h3 text-wrap>{{news.Flash}}</h3>
+    </ion-card-header>
+    <ion-card-content>
+			<attachment [isBrowser]="isBrowser" [editable]="false" [attachments]="attachments" (captured)="captured($event)"></attachment>
+      <p>
+        <ion-row>
+          <ion-col text-left>
+            <ion-icon name="ios-person"></ion-icon>
+            {{news.CreatedBy}}
+          </ion-col>
+          <ion-col text-right>
+            <ion-icon name="ios-clock"></ion-icon>
+            {{news.StartDate_UTC | time}}
+          </ion-col>
+        </ion-row>
+      </p>
+    </ion-card-content>
+  </ion-card>
+  <div class="btn-ok">
+      <button full ion-button (click)="flashNewsSeen()">Ok</button>
+    </div>
+</ion-content>

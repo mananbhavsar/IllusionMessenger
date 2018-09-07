@@ -1,0 +1,17 @@
+<ion-header no-border>
+  <modal-toolbar [title]="title" (close)="true"></modal-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-refresher (ionRefresh)="refresh($event)">
+    <ion-refresher-content pullingIcon="arrow-round-down" pullingText="Pull to refresh" refreshingSpinner="crescent" refreshingText="Refreshing...">
+    </ion-refresher-content>
+  </ion-refresher>
+  <empty *ngIf="!topics"></empty>
+  <ng-container *ngIf="topics">
+    <topic [group_id]="topic.GroupID" type="ActiveTopicList" [topic]="topic" *ngFor="let topic of topics;"></topic>
+    <div class="btn-ok">
+      <button ion-button full (click)="dueTopicsSeen()">Ok</button>
+    </div>
+  </ng-container>
+</ion-content>

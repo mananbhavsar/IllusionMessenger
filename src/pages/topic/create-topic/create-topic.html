@@ -1,4 +1,5 @@
 <ion-header>
+<<<<<<< HEAD
   <ion-toolbar ion-text color="primary">
     <ion-title>
       <div>{{title}}</div>
@@ -10,6 +11,9 @@
       </button>
     </ion-buttons>
   </ion-toolbar>
+=======
+  <modal-toolbar [title]="getTitle()" [subTitle]="getSubTitle()" (dismiss)="dismiss($event)"></modal-toolbar>
+>>>>>>> master
 </ion-header>
 <ion-content padding>
   <ion-grid>
@@ -22,9 +26,19 @@
         </ion-item>
         <ion-item>
           <ion-label floating>Topic Name</ion-label>
+<<<<<<< HEAD
           <ion-input formControlName="name" type="text" placeholder="Topic Name"></ion-input>
         </ion-item>
         <div class="error-message-block" *ngIf="createForm.controls.name.errors && (createForm.controls.name.dirty || createForm.controls.name.touched)">
+=======
+          <ion-input formControlName="name" type="text" maxLength="60" placeholder="Topic Name"></ion-input>
+        </ion-item>
+        <div text-right class="italic-small-grey">
+            ({{createForm.get('name').value.length}}/60)
+          </div>
+        <div class="error-message-block" *ngIf="createForm.controls.name.errors && (createForm.controls.name.dirty || createForm.controls.name.touched)">
+            <span *ngIf="createForm.controls.name.errors.maxlength">max 60 character only</span>        
+>>>>>>> master
           <span *ngIf="createForm.controls.name.errors.required">Name is required</span>
         </div>
         <ion-item>
@@ -37,13 +51,21 @@
         </div>
         <ng-container *ngIf="createForm.get('private').value;else publicAssignTo">
           <ion-item no-lines>
+<<<<<<< HEAD
             <button ion-button block (click)="addParticipants()">Create</button>
+=======
+            <button ion-button block (click)="addParticipants()">Add Participants</button>
+>>>>>>> master
           </ion-item>
           <div>
             <ion-list *ngIf="selectedParticipantIDs.length">
               <ion-list-header>
                 Selected Participants
               </ion-list-header>
+<<<<<<< HEAD
+=======
+              <ion-note color="communication">{{participantsCount}} participants</ion-note>              
+>>>>>>> master
               <ion-item *ngFor="let userID of selectedParticipantIDs" [hidden]="isMe(userID)">
                 {{participantsName[userID]}}
                 <ion-icon item-end color="pickup" *ngIf="this.createForm.get('assigned').value === userID" name="ios-star"></ion-icon>

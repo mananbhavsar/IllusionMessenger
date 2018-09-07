@@ -1,8 +1,8 @@
 {
-  "name": "Illusion Dental",
-  "app_id": "",
-  "type": "ionic-angular",
+  "name": "IllusionMessenger",
   "integrations": {
     "cordova": {}
-  }
+  },
+  "type": "ionic-angular",
+  "app_id": ""
 }

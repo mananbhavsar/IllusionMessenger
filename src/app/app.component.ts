@@ -1,4 +1,4 @@
-import { Component, ViewChild, enableProdMode } from '@angular/core';
+import { Component, enableProdMode, ViewChild } from '@angular/core';
 import { Badge } from '@ionic-native/badge';
 import { Diagnostic } from '@ionic-native/diagnostic';
 import { Globalization } from '@ionic-native/globalization';
@@ -8,22 +8,36 @@ import { OneSignal } from '@ionic-native/onesignal';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 import { Storage } from '@ionic/storage';
-import { TranslateService } from '@ngx-translate/core';
-import { AngularFireDatabase } from 'angularfire2/database';
+import * as firebase from 'firebase';
 import { AlertController, Events, LoadingController, MenuController, ModalController, Nav, Platform, ToastController } from 'ionic-angular';
+import * as moment from "moment";
+import * as _ from 'underscore';
 import { AccountPage } from '../pages/account/account';
 import { ChatPage } from '../pages/chat/chat';
+import { TagPage } from '../pages/create-tag/tag/tag';
+import { UsersPage } from '../pages/create-user/users/users';
 import { ForgotPasswordPage } from '../pages/forgot-password/forgot-password';
 import { HelpPage } from '../pages/help/help';
 import { HomePage } from '../pages/home/home';
 import { LoginPage } from '../pages/login/login';
 import { LogoutPage } from '../pages/logout/logout';
+import { ManageGroupPage } from '../pages/manage-group/manage-group';
 import { TutorialPage } from '../pages/tutorial/tutorial';
 import { WelcomePage } from '../pages/welcome/welcome';
+import { ConnectionProvider } from '../providers/connection/connection';
+import { TranslateServiceProvider } from '../providers/translate-service/translate-service';
 import { UserProvider } from '../providers/user/user';
 import { GroupPage } from './../pages/group/group';
 import { Global } from './global';
-import { NativeRingtones } from '@ionic-native/native-ringtones';
+
+export const firebaseConfig = {
+    apiKey: "AIzaSyAFDZ9UPTMiDTjT4qAG0d9uVeOdhL-2PBw",
+    authDomain: "illusion-messenger.firebaseapp.com",
+    databaseURL: "https://illusion-messenger.firebaseio.com",
+    projectId: "illusion-messenger",
+    storageBucket: "",
+    messagingSenderId: "4208850060"
+}
 
 enableProdMode();
 
@@ -34,7 +48,6 @@ export interface PageInterface {
     component: any;
     icon: string;
     logsOut?: boolean;
-    index?: number;
     tabName?: string;
     tabComponent?: any;
 }
@@ -62,6 +75,9 @@ export class MyApp {
     ];
     loggedInPages: PageInterface[] = [
         { title: 'Home', translate_key: 'HomeScreen._Home_', name: 'HomePage', component: HomePage, icon: 'home' },
+        { title: 'Manage Group', translate_key: 'HomeScreen._ManageGroup_', name: 'ManageGroupPage', component: ManageGroupPage, icon: 'people' },
+        { title: 'Tag', translate_key: 'HomeScreen._Tag_', name: 'TagPage', component: TagPage, icon: 'tab' },
+        { title: 'Users', translate_key: 'HomeScreen._users_', name: 'UsersPage', component: UsersPage, icon: 'person' }
     ];
     accountPages: PageInterface[] = [
         { title: 'Account', translate_key: 'Common._Account_', name: 'AccountPage', component: AccountPage, icon: 'user' },
@@ -89,6 +105,7 @@ export class MyApp {
         private ringtones: NativeRingtones,
         private _statusBar: StatusBar,
         public storage: Storage,
+        private connection: ConnectionProvider,
         public splashScreen: SplashScreen,
         public user: UserProvider,
         public loadingCtrl: LoadingController,
@@ -96,12 +113,10 @@ export class MyApp {
         public modalCtrl: ModalController,
         private toast: ToastController,
         private _network: Network,
-        private _diagnostic: Diagnostic,
         private _keyboard: Keyboard,
         private _badge: Badge,
-        private angularFireDatabase: AngularFireDatabase,
         private _oneSignal: OneSignal,
-        private translate: TranslateService,
+        private translate: TranslateServiceProvider,
         private globalization: Globalization,
     ) {
         this.translate.setDefaultLang('en');
@@ -120,6 +135,7 @@ export class MyApp {
                 this.initPreLoginPlugins();
             }, 500);
         });
+        firebase.initializeApp(firebaseConfig);
     }
 
     enableMenu(loggedIn: boolean) {
@@ -134,41 +150,26 @@ export class MyApp {
         }
         let params = {};
 
-        // the nav component was found using @ViewChild(Nav)
-        // setRoot on the nav to remove previous pages and only have this page
-        // we wouldn't want the back button to show in this scenario
-        if (page.index) {
-            params = { tabIndex: page.index };
-        }
 
-        // If we are already on tabs just change the selected tab
-        // don't setRoot again, this maintains the history stack of the
-        // tabs even if changing them from the menu
-        if (this.nav.getActiveChildNavs().length && page.index != undefined) {
-            this.nav.getActiveChildNavs()[0].select(page.index);
+        //checking if logging out and need to ask for confirmation
+        if (page.name === 'LogoutPage') {
+            let logoutConfirmation = this.alertCtrl.create({
+                title: this.alert_translate,
+                message: this.logout_message_translate,
+                buttons: [{
+                    text: this.cancel_translate,
+                    role: 'cancel'
+                }, {
+                    text: this.ok_translate,
+                    handler: () => {
+                        this.nav.push(page.name, params);
+                    }
+                }]
+            });
+            logoutConfirmation.present();
         } else {
-            //checking if logging out and need to ask for confirmation
-            if (page.name === 'LogoutPage') {
-                let logoutConfirmation = this.alertCtrl.create({
-                    title: this.alert_translate,
-                    message: this.logout_message_translate,
-                    buttons: [{
-                        text: this.cancel_translate,
-                        role: 'cancel'
-                    }, {
-                        text: this.ok_translate,
-                        handler: () => {
-                            this.nav.push(page.name, params);
-                        }
-                    }]
-                });
-                logoutConfirmation.present();
-            } else if (page.name === 'HomePage') {
-                this.nav.setRoot(page.name, params);
-            } else {
-                // Set the root of the nav with params if it's a tab index
-                this.nav.push(page.name, params);
-            }
+            // Set the root of the nav with params if it's a tab index
+            this.nav.push(page.name, params);
         }
 
         if (page.logsOut === true) {
@@ -182,7 +183,7 @@ export class MyApp {
     }
 
     isActive(page: PageInterface) {
-        let childNav = this.nav.getActiveChildNavs()[0];
+        let childNav = this.nav.getActiveChildNav()[0];
 
         // Tabs are a special case because they have their own navigation
         if (childNav) {
@@ -198,13 +199,19 @@ export class MyApp {
         return;
     }
 
+
     /**
      * checking post login if user is Authorized to access this page
      * @param page 
      */
     isAuthorized(page: PageInterface) {
         if (this.user && this.user._user) {
-            return true;
+            //creation rights
+            if (['ManageGroupPage', 'TagPage', 'UsersPage'].indexOf(page.name) > -1) {
+                return [5, 15, 16].indexOf(this.user._user.LoginUserID) > -1;
+            } else {
+                return true;
+            }
         }
         return false;
     }
@@ -266,11 +273,14 @@ export class MyApp {
                 try {
                     this.loading.dismiss();
                 } catch (e) {
-                    console.error(e);
                 }
             }
         });
 
+        this.events.subscribe('page:setroot', (data) => {
+                this.events.publish('loading:close');
+                this.nav.setRoot(data.page, data.params);
+        });
 
         this.events.subscribe('alert:basic', (title, subTitle, buttons) => {
             try {
@@ -391,6 +401,7 @@ export class MyApp {
         });
 
         //OneSignal
+        this.initOneSignal();
 
         //working on OS Version
         this.doVersionCheck();
@@ -407,7 +418,6 @@ export class MyApp {
         }
         //init OneSignal
         if (Global.Push.OneSignal) {
-            this.initOneSignal();
             this.processOneSignalId();
         }
 
@@ -438,7 +448,6 @@ export class MyApp {
     doGlobalization() {
         if (this.platform.is('cordova')) {
             this.globalization.getPreferredLanguage().then(language => {
-                console.log(language);
             });
         } else {
 
@@ -470,8 +479,6 @@ export class MyApp {
 
     processNotification(notification, directOpenPage) {
         let payload = 'payload' in notification ? notification.payload : notification.notification.payload;
-        this.ringtones.playRingtone('../assets/ringtones/notification-ringtone.mp3').then(
-            res => { console.log(res);}).catch((error) => { console.log("ringtone error", error) });
         //showing notification  alert if not chatting else giving control to Caht module to handle it
         let currentPage = Global.getActiveComponentName(this.nav.getActive());
         if (currentPage === 'ChatPage') {
@@ -507,14 +514,18 @@ export class MyApp {
     initOneSignal() {
         if (this.platform.is('core')) {
             let OneSignal = window['OneSignal'] || [];
-            OneSignal.push(["init", {
-                appId: '88b19d42-ea0e-4fa7-b35a-cf754a5ce4aa',
-                autoRegister: true,
-                allowLocalhostAsSecureOrigin: true,
-                notifyButton: {
-                    enable: false
-                },
-            }]);
+            //check if OneSignal not yet initialized
+
+            if (!OneSignal.isActive) {
+                OneSignal.push(["init", {
+                    appId: Global.OneSignal.key,
+                    autoRegister: true,
+                    allowLocalhostAsSecureOrigin: true,
+                    notifyButton: {
+                        enable: false
+                    },
+                }]);
+            }
             let that = this;
             OneSignal.push(function () {
                 OneSignal.isPushNotificationsEnabled(function (isEnabled) {
@@ -536,16 +547,16 @@ export class MyApp {
                                 OneSignal.getUserId(function (userId: string) {
                                     that.events.publish('pushid:created', userId);
                                     that.user.registerPushID(userId).catch(error => { });
-                                    that.user.getUser().then(user => {
-                                        if (user) {
-                                            OneSignal.sendTags({
-                                                user_id: user.id,
-                                                name: user.LoginUser
-                                            });
-                                        }
-                                    });
                                 });
                             }
+                        });
+                    }
+                });
+                that.user.getUser().then(user => {
+                    if (user) {
+                        OneSignal.sendTags({
+                            user_id: user.id,
+                            name: user.LoginUser
                         });
                     }
                 });
@@ -568,7 +579,20 @@ export class MyApp {
     }
 
     processOneSignalId() {
-        if (this.platform.is('cordova')) {
+        let OneSignal = window['OneSignal'] || [];
+        let that = this;
+        if (this.platform.is('core')) {
+            that.user.getUser().then(user => {
+                if (user) {
+                    if (typeof OneSignal.sendTags === "function") {
+                        OneSignal.sendTags({
+                            user_id: user.id,
+                            name: user.LoginUser
+                        });
+                    }
+                }
+            });
+        } else if (this.platform.is('cordova')) {
             this._oneSignal.getIds().then((id) => {
                 //registering user
                 this._oneSignal.setSubscription(true);
@@ -587,11 +611,9 @@ export class MyApp {
 
     initBadge() {
         this.user.getUser().then(user => {
-            this.angularFireDatabase.object('Badge/' + user.id + '/Total').snapshotChanges().subscribe(snapshot => {
-                let total: any = snapshot.payload.val();
-                console.log('total:' + total);
+            firebase.database().ref('Badge/' + user.id + '/Total').on('value', snapshot => {
+                let total: any = snapshot.val();
                 this.events.publish('badge:set', total);
-
                 if (total) {
                     this._badge.set(total);
                     if (this.platform.is('core')) {
@@ -604,6 +626,8 @@ export class MyApp {
         });
     }
 
+
+
     listenToLoginEvents() {
         this.events.subscribe('user:login', (user) => {
             this.loggedIn = true;
@@ -615,7 +639,6 @@ export class MyApp {
         }
             this.translate.use(user.MyLanguage);
             this.nav.setRoot(HomePage);
-
             setTimeout(() => {
                 let full_name = user ? user.LoginUser : '';
                 this.events.publish('toast:create', this.welcome_translate + ' ' + full_name);
@@ -637,7 +660,6 @@ export class MyApp {
             this._badge.clear();
         });
 
-
         this.events.subscribe('user:unautharized', () => {
             this.events.publish('user:logout', 'You are unauthorized user');
             if (Global.Push.OneSignal) {
@@ -649,6 +671,20 @@ export class MyApp {
         this.user.hasLoggedIn().then((user) => {
             if (user) {
                 this.events.publish('user:login', user);
+            }
+        });
+
+        this.events.subscribe('user:ready', (user) => {
+            if (!_.isEmpty(user)) {
+                let date = moment().format('YYYY/MM/DD');
+                let ref = firebase.database().ref('DailyScheduler/' + user.LoginUserID
+                    + '/' + date);
+                ref.on('value', (status) => {
+                    if (status.val() === null) {
+                        // show popup
+                        // this.nav.setRoot(DailyShedulePage);
+                    }
+                });
             }
         });
     }

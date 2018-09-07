@@ -31,6 +31,12 @@ page-chat-options {
                         font-size: 1rem;
                         padding: 1em;
                     }
+<<<<<<< HEAD
+=======
+                    ion-datetime {
+                        display: none;
+                    }
+>>>>>>> master
                 }
             }
             ion-item-divider {
@@ -48,6 +54,12 @@ page-chat-options {
                 &.secondary {
                     color: color($colors, secondary);
                 }
+<<<<<<< HEAD
+=======
+                &.gray {
+                    color : rgb(133, 124, 124);
+                }
+>>>>>>> master
                 ion-badge {
                     margin-right: 2px;
                     font-style: italic;

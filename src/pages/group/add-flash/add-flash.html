@@ -1,22 +1,12 @@
 <ion-header>
-	<ion-toolbar ion-text color="primary">
-		<ion-title>
-			<div>Add Flash News</div>
-			<small>{{group_name}}</small>
-		</ion-title>
-		<ion-buttons end>
-			<button color="light" ion-button outline (click)="dismiss(null)">
-				Close
-			</button>
-		</ion-buttons>
-	</ion-toolbar>
+	<modal-toolbar [title]="'Add Flash'" [subTitle]="group_name" (dismiss)="dismiss($event)"></modal-toolbar>
 </ion-header>
 <ion-content padding>
-	<form [formGroup]="addFlashForm" (ngSubmit)="addFlash()">
+	<form [formGroup]="addFlashForm">
 		<ion-list>
 			<ion-item>
 				<ion-label stacked>Enter Flash/News</ion-label>
-				<ion-textarea placeholder="Enter here" type="text" formControlName="flash_message" maxLength="160"></ion-textarea>
+				<ion-textarea required placeholder="Enter here" type="text" formControlName="flash_message" maxLength="160"></ion-textarea>
 			</ion-item>
 			<div text-right class="italic-small-grey">
 				({{addFlashForm.get('flash_message').value.length}}/160)
@@ -27,19 +17,14 @@
 			</div>
 			<ion-item>
 				<ion-label>End Date</ion-label>
-				<ion-datetime  displayFormat="DD MMM YYYY, h A" pickerFormat="DD MMM YYYY, HH" formControlName="end_date" max="2050" hourValues="09,10,11,12,13,14,15,16,17,18,19,20,21">
+				<ion-datetime displayFormat="DD MMM YYYY, h A" pickerFormat="DD MMM YYYY, HH" formControlName="end_date" max="2050" hourValues="09,10,11,12,13,14,15,16,17,18,19,20,21">
 				</ion-datetime>
 			</ion-item>
 			<div class="error-message-block" *ngIf="addFlashForm.controls.end_date.errors && (addFlashForm.controls.end_date.dirty || addFlashForm.controls.end_date.touched)">
 				<span *ngIf="addFlashForm.controls.end_date.errors?.InvalidDatetime">{{getErrorMessage()}}</span>
 			</div>
-			<ion-item *ngIf="isBrowser">
-				<label id="#bb"> Select Your File
-					<input type="file" id="File" accept="application/pdf, image/*" size="60" >
-					</label> 
-			</ion-item>
-				<attachment *ngIf="isCordova" [attachments]="attachments" (captured)="captured($event)" (removed)="removeAttachment($event)"></attachment>
-			<button ion-button full [disabled]="!addFlashForm.valid">Add Flash</button>
+			<attachment [isBrowser]="isBrowser" [editable]="true" [attachments]="attachments" (captured)="captured($event)" (removed)="removeAttachment($event)"></attachment>
+			<button (click)="addFlash()" ion-button full [disabled]="!addFlashForm.valid">Add Flash</button>
 		</ion-list>
 	</form>
 </ion-content>

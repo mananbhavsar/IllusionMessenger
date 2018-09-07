@@ -1,7 +1,14 @@
+<<<<<<< HEAD
 import { DateProvider } from './../../providers/date/date';
 import { Pipe, PipeTransform } from '@angular/core';
 
 import * as moment from 'moment';
+=======
+import { Pipe, PipeTransform } from '@angular/core';
+import * as moment from 'moment';
+import { DateProvider } from './../../providers/date/date';
+
+>>>>>>> master
 @Pipe({
   name: 'time',
 })
@@ -11,9 +18,43 @@ export class TimePipe implements PipeTransform {
   ) {
 
   }
+<<<<<<< HEAD
   transform(value: string, avoidExtra: boolean = false) {
     if (value && moment(value).isValid()) {
       return this._date.get(value);
+=======
+  transform(value: string, aging: boolean = false, timeAgo: boolean = false) {
+    if (value && moment(value).isValid()) {
+      let date = this._date.get(value);
+
+      //aging like whatsapp
+      if (aging) {
+        //convert to moment
+        if (!moment.isMoment(date)) {
+          date = moment(date, 'Do MMM, hh:mm A');
+        }
+        //check if today
+        if (date.isSame(moment(), 'd')) {
+          return date.locale('en').format('hh:mm A')
+        }
+        //check if yesterday
+        if (date.isSame(moment().subtract(1, 'days').startOf('day'), 'd')) {
+          return 'YESTERDAY';
+        }
+        return date.locale('en').format('Do MMM');
+      }
+
+      //time ago
+      if (timeAgo) {
+        //convert to moment
+        if (!moment.isMoment(date)) {
+          date = moment(date, 'Do MMM, hh:mm A');
+        }
+        return date.from(moment());
+
+      }
+      return date;
+>>>>>>> master
     }
     return value;
   }

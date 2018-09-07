@@ -1,10 +1,26 @@
+@function repeat($times, $character) {
+    $result: "";
+    @if $times==0 {
+        @return '';
+    }
+    @else {
+        @for $i from 1 through $times {
+            $result: $result + $character;
+        }
+        @return $result;
+    }
+}
+
 @font-face {
     font-family: 'Open Sans';
     src: url('../assets/fonts/Open Sans/OpenSans.ttf') format('truetype');
     font-weight: 300;
 }
 
+<<<<<<< HEAD
 @import "../../node_modules/ionic2-auto-complete-ng5/auto-complete";
+=======
+>>>>>>> master
 /*
 Platform Wide styles
 */
@@ -206,6 +222,7 @@ ion-item-divider {
     }
 }
 
+<<<<<<< HEAD
 @mixin repeat($character,
 $times) {
     $result: "";
@@ -221,7 +238,29 @@ $times) {
     @for $i from 0 through 10 {
         &.reschedule-count-#{$i}::after {
             @include repeat('*', $i);
+=======
+.reschedule-count {
+    @for $i from 0 through 10 {
+        &.reschedule-count-#{$i}::after {
+            content: repeat($i, '*');
+>>>>>>> master
         }
     }
 }
 
+<<<<<<< HEAD
+=======
+.badge-md {
+    border-radius: 10px;
+}
+
+button {
+    &.item-button {
+        &[button-mini] {
+            height: 1.8em;
+            font-size: 0.9rem;
+            padding: 0 0.9em;
+        }
+    }
+}
+>>>>>>> master

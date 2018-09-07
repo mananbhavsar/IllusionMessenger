@@ -1,6 +1,11 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { UUID } from 'angular2-uuid';
+<<<<<<< HEAD
 import { Events } from 'ionic-angular';
+=======
+import { Events, Platform } from 'ionic-angular';
+import { ConnectionProvider } from '../../providers/connection/connection';
+>>>>>>> master
 import { FileOpsProvider } from '../../providers/file-ops/file-ops';
 
 @Component({
@@ -12,20 +17,108 @@ export class AttachmentComponent {
   @Input() editable: boolean = false;
   @Output() captured = new EventEmitter();
   @Output() removed = new EventEmitter();
+<<<<<<< HEAD
   progresses: any = {};
   constructor(
     private fileOps: FileOpsProvider,
     private events: Events
+=======
+  @Input() isBrowser: boolean;
+  progresses: any = {};
+  constructor(
+    private _fileOps: FileOpsProvider,
+    private platform: Platform,
+    private events: Events,
+    private connection: ConnectionProvider
+>>>>>>> master
   ) {
 
   }
 
 
+<<<<<<< HEAD
+=======
+  uplaodFile(file) {
+    let input = file.target;
+    if (input.files[0]) {
+      let dataURL: string;
+      let fileName = this._fileOps.getFileNameWithoutExtension(input.files[0].name);
+      let fileExtension = this._fileOps.getFileExtension(input.files[0].name);
+      let reader = new FileReader();
+      let context = this;
+      reader.onload = function () {
+        switch (fileExtension) {
+          case 'pdf':
+            dataURL = reader.result.replace('data:application/pdf;base64,', "");
+            break;
+          case 'doc':
+            dataURL = reader.result.replace('data:application/msword;base64,', "");
+            break;
+          case 'docx':
+            dataURL = reader.result.replace('data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,', "");
+            break;
+          case 'ppt':
+            dataURL = reader.result.replace('data:application/vnd.ms-powerpoint;base64,', "");
+            break;
+          case 'pptx':
+            dataURL = reader.result.replace('data:application/vnd.openxmlformats-officedocument.presentationml.presentation;base64,', "");
+            break;
+          case 'xls':
+            dataURL = reader.result.replace('data:application/vnd.ms-excel;base64,', "");
+            break;
+          case 'xlsx':
+            dataURL = reader.result.replace('data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,', "");
+            break;
+          case 'txt':
+            dataURL = reader.result.replace('data:text/plain;base64,', "");
+            break;
+          default:
+            dataURL = reader.result.replace(/^data:image\/\w+;base64,/, "");
+        }
+        context.uploadFileFromBrowser(fileName, fileExtension, dataURL)
+          .then((data: any) => {
+            context.captured.emit({
+              VirtualPath: data.Data,
+              FileName: fileName,
+              FileExtension: fileExtension
+            });
+            if (data.Data.indexOf('https') === 0) {
+              // context.sendToFirebase('', 'Image', data.Data);
+            } else {
+              context.events.publish('alert:basic', data.Data);
+            }
+          }).catch((error) => {
+          });
+      }
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+  uploadFileFromBrowser(fileName, fileExtension, Base64String) {
+    return new Promise((resolve, reject) => {
+      this.connection.doPost('Chat/CreateFlashNews_Attachement_Base64', {
+        FileName: fileName,
+        FileExtension: fileExtension,
+        Base64String: Base64String
+      }).then((data: any) => {
+        resolve(data);
+      }).catch((error) => {
+        reject(false);
+      });
+    });
+  }
+
+>>>>>>> master
   capture(type) {
     let identifier = UUID.UUID();
     // start listening to upload identifier
     this.events.subscribe('upload:progress:' + identifier, progress => {
+<<<<<<< HEAD
       let count = progress.progress
+=======
+
+      let count = progress.progress;
+>>>>>>> master
       //remove if 100%
       if (count === 100) {
         //this.removeProgress(progress.identifier);
@@ -33,9 +126,26 @@ export class AttachmentComponent {
         this.progresses[identifier] = count;
       }
     });
+<<<<<<< HEAD
     this.fileOps.captureAndUpload(type, identifier).then(url => {
       this.captured.emit({
         url: url
+=======
+
+    let params = {
+      UserID: this.connection.user.LoginUserID,
+      GroupCode: 'Flash',
+    };
+
+
+    this._fileOps.captureAndUpload(type, identifier, params).then(url => {
+      let fileExtension = this._fileOps.getFileExtension(url).toLowerCase();
+      let fileName = this._fileOps.getFileNameWithoutExtension(url).toLowerCase();
+      this.captured.emit({
+        VirtualPath: url,
+        FileName: fileName,
+        FileExtension: fileExtension
+>>>>>>> master
       });
     }).catch(error => {
       this.removeProgress(identifier);
@@ -54,7 +164,21 @@ export class AttachmentComponent {
   }
 
   openAttachment(file) {
+<<<<<<< HEAD
     let identifier = UUID.UUID();
 
+=======
+    if (this.platform.is('core')) {
+      window.open(file, '_blank');
+    } else {
+      this._fileOps.getDataDirectory().then(path => {
+        let identifier = UUID.UUID();
+        let flashPath = path + 'Flash' + '/';
+        this._fileOps.openRemoteFile(file, flashPath, identifier).then(status => {
+        }).catch(error => {
+        });
+      });
+    }
+>>>>>>> master
   }
 }

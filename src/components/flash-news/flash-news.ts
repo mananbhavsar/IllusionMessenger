@@ -1,7 +1,14 @@
+<<<<<<< HEAD
 import { DateProvider } from './../../providers/date/date';
 import { Slides } from 'ionic-angular';
 import { Component, Input, SimpleChanges, ViewChild } from '@angular/core';
 
+=======
+import { Component, Input, SimpleChanges, ViewChild } from '@angular/core';
+import { ModalController, NavController, Slides } from 'ionic-angular';
+import { FlashPage } from '../../pages/flash/flash';
+import { DateProvider } from './../../providers/date/date';
+>>>>>>> master
 
 @Component({
   selector: 'flash-news',
@@ -10,6 +17,10 @@ import { Component, Input, SimpleChanges, ViewChild } from '@angular/core';
 export class FlashNewsComponent {
   @ViewChild('slides') slides: Slides;
   @Input() flashNews: Array<any> = [];
+<<<<<<< HEAD
+=======
+  @Input() GroupID: number;
+>>>>>>> master
 
   flashTimer = null;
   flashes: Array<any> = [];
@@ -19,8 +30,15 @@ export class FlashNewsComponent {
 
   constructor(
     private _date: DateProvider,
+<<<<<<< HEAD
   ) {
 
+=======
+    private navCntl: NavController,
+    public modalCntl: ModalController
+  ) {
+    
+>>>>>>> master
   }
 
   ngAfterViewInit() {
@@ -88,4 +106,15 @@ export class FlashNewsComponent {
     });
   }
 
+<<<<<<< HEAD
+=======
+  openFlashNews(event, flashNews, GroupID) {
+    event.preventDefault();
+    this.modalCntl.create(FlashPage, {
+      news: flashNews, id: GroupID,
+      isPage: false
+    }).present();
+  }
+
+>>>>>>> master
 }

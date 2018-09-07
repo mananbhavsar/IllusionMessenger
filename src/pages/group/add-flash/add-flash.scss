@@ -1,4 +1,5 @@
 page-add-flash {
+<<<<<<< HEAD
 	ion-content {
 		ion-textarea {
 			width: 100%;
@@ -21,4 +22,16 @@ page-add-flash {
 			display: none;
 		}
 	}
+=======
+    ion-content {
+        ion-textarea {
+            width: 100%;
+            height: 60px;
+        }
+        .italic-small-grey {
+            font-style: italic;
+            color: color($colors, pickup);
+        }
+    }
+>>>>>>> master
 }

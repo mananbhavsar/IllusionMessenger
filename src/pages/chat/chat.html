@@ -1,13 +1,22 @@
 <ion-header no-border (touchstart)="closeKeyboard($event)">
+<<<<<<< HEAD
   <header [title]="title" [subTitle]="userTypingString" [buttons]="headerButtons" (buttonClicked)="openChatOptions()"></header>
   <ion-toolbar class="group-header">
     <ion-title>Group : {{group_name}}, Created on : {{created_time}}</ion-title>
   </ion-toolbar>
   <!--   <ion-toolbar class="sub-header" *ngIf="data && data.StatusID !== 0">
+=======
+  <header [title]="getTitle()" [hideTitle]="headerButtons.length > 2" [subTitle]="userTypingString" [buttons]="headerButtons"
+    (buttonClicked)="headerOptions($event)"></header>
+  <ion-toolbar class="group-header">
+    <ion-title>{{group_name}} {{this.subSubTitle}}</ion-title>
+  </ion-toolbar>
+  <!-- <ion-toolbar class="sub-header" *ngIf="data && data.StatusID !== 0">
+>>>>>>> master
     <ion-title>{{getSubTitle()}}</ion-title>
   </ion-toolbar> -->
 </ion-header>
-<ion-content class="chat" delegate-handle="chatScroll" (touchstart)="closeKeyboard($event)">
+<ion-content class="chat has-bottom" delegate-handle="chatScroll" (touchstart)="closeKeyboard($event)">
   <div class="message-list">
     <div id="noMore" class="no-more" *ngIf="showNoMoreMessages">
       <span *ngIf="hasInternet || data.firstMessageKey === firstMessageKey">{{'Common._NothingToShow_' | translate}}</span>
@@ -17,10 +26,19 @@
       <ion-infinite-scroll-content></ion-infinite-scroll-content>
     </ion-infinite-scroll>
     <ng-container *ngFor="let message of messages;trackBy:getTrackByField | orderBy:'CreateAt'">
+<<<<<<< HEAD
       <chat-bubble [id]="'message-'+message.key" class="message-wrapper" [message]="message" [userID]="userID" [topicID]="topicID"
         [topicCode]="topicCode" [groupID]="groupID" [groupCode]="groupCode" [users]="chatUsers" [myLanguage]="myLanguage" [responsibleUserID]="responsibleUserID"
         (press)="openReading($event, message, false)"></chat-bubble>
     </ng-container>
+=======
+      <chat-bubble (tap)="deselectOptions($event)" (press)="getOptions($event,message)" [id]="'message-'+message.key" class="message-wrapper" [message]="message"
+        [userID]="userID" [topicID]="topicID" [topicCode]="topicCode" [groupID]="groupID"
+        [groupCode]="groupCode" [users]="chatUsers" [myLanguage]="myLanguage" [responsibleUserID]="responsibleUserID">
+      </chat-bubble>
+    </ng-container>
+    <!--   -->
+>>>>>>> master
   </div>
   <!-- <div class="typing-container">
     <div class="typing" *ngFor="let typingUserId of userTyping | keys" [hidden]="typingUserId == userID || !isWithinRange(userTyping[typingUserId])">
@@ -37,6 +55,7 @@
   </ng-container>
   <ng-template #chatOpened>
     <ng-container *ngIf="hasInternet && messagesLoaded && aboutToRecord === false">
+<<<<<<< HEAD
       <button *ngIf="!isBrowser" ion-button clear icon-only (click)="openUploadOptions()">
         <ion-icon name="ios-add-outline"></ion-icon>
       </button>
@@ -50,6 +69,22 @@
         <!-- fz-elastic -->
         <textarea autocomplete="on" autocorrect="on" fz-elastic rows="1" #messageInput [(ngModel)]="message"
           dir="auto" (keyup)="keyup($event)" (focus)="onFocus($event)" (blur)="onBlur($event)"></textarea>
+=======
+      <button *ngIf="!isBrowser && !hideWhenReply" ion-button clear icon-only (click)="openUploadOptions()">
+        <ion-icon name="ios-add-outline"></ion-icon>
+      </button>
+      <div *ngIf="isBrowser && !hideWhenReply" style="display: flex;">
+        <button ion-button clear icon-only>
+          <ion-icon name="images"></ion-icon>
+        </button>
+        <input type="file" name="file" id="file" class="inputfile" accept="image/*" (change)="handleImageFiles($event)" />
+      </div>
+
+      <label class="item-input-wrapper" [ngClass]="{'send': message.trim().length > 0}">
+        <!-- fz-elastic -->
+        <textarea autocomplete="on" autocorrect="on" fz-elastic rows="1" #messageInput [(ngModel)]="message" dir="auto" (keyup)="keyup($event)"
+          (keypress)="keyboardKey($event)" (focus)="onFocus($event)" (blur)="onBlur($event)"></textarea>
+>>>>>>> master
       </label>
 
       <span *ngIf="message.trim().length > 0">
@@ -57,6 +92,7 @@
           {{'ChatScreen._Send_' | translate}}
         </button>
       </span>
+<<<<<<< HEAD
       <span *ngIf="(!message || message.trim().length === 0 ) && !isBrowser">
         <button (click)="captureImage()" clear ion-button icon-only>
           <ion-icon name="ios-camera-outline"></ion-icon>
@@ -68,6 +104,22 @@
           <ion-icon name="ios-mic-outline"></ion-icon>
         </button>
       </span>
+=======
+      <span *ngIf="!isBrowser && !hideWhenReply">
+        <span *ngIf="!message || message.trim().length === 0">
+          <button (click)="captureImage()" clear ion-button icon-only>
+            <ion-icon name="ios-camera-outline"></ion-icon>
+          </button>
+          <button class="buttons-seperator" ion-button clear icon-only>
+            <ion-icon name="md-more"></ion-icon>
+          </button>
+          <button (click)="captureAudio()" ion-button clear icon-only>
+            <ion-icon name="ios-mic-outline"></ion-icon>
+          </button>
+        </span>
+      </span>
+
+>>>>>>> master
     </ng-container>
     <ng-container *ngIf="hasInternet && aboutToRecord === true">
       <ion-grid no-padding class="recording">
@@ -99,6 +151,28 @@
     </ng-container>
   </ng-template>
 </ion-footer>
+
+<div class="fixed-outside" *ngIf="showUsers">
+  <ion-list class="user-list">
+    <ion-item [ngClass]="{'active' : i == arrowKey}" (click)="selectedUser(user)" *ngFor="let user of users; let i = index">
+      {{user.User}}
+    </ion-item>
+  </ion-list>
+</div>
+
+<div class="reply-to" *ngIf="replyTo">
+  <ion-row>
+    <!-- <ion-col *ngIf="replytoImg">
+      <img class="reply-img" [src]="replytoImg" alt="">
+    </ion-col> -->
+    <ion-col *ngIf="replytoText" col-11>
+      {{replytoText}}
+    </ion-col>
+    <ion-col col-1 class="close-icon">
+      <ion-icon (click)="closeReply($event)" name="close"></ion-icon>
+    </ion-col>
+  </ion-row>
+</div>
 
 <div class="file-uploader-progress" *ngIf="progressPercent > 0">
   <div class="progress-outer">

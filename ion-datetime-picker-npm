@@ -1,0 +1,2 @@
+npm i --save  https://github.com/jbarbede/ion-datetime-picker.git#aot
+npm run-script build

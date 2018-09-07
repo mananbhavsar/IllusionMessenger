@@ -1,0 +1,31 @@
+page-create-group {
+    ion-textarea {
+        width: 100%;
+        height: 60px;
+    }
+    .italic-small-grey {
+        font-style: italic;
+        color: color($colors, pickup);
+    }
+    form {
+        ion-list {
+            ion-item {
+                button {
+                    &.outline-button {
+                        background-color: transparent;
+                        border: 1px solid color($colors, communication);
+                        color: color($colors, communication);
+                    }
+                }
+                ion-label{
+                    &.select-user{
+                        color: color($colors,primary);
+                    }
+                    &.selected-user{
+                        color: #339c0a;
+                    }
+                }
+            }
+        }
+    }
+}

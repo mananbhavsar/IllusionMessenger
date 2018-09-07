@@ -9,7 +9,13 @@ export class ModalToolbarComponent {
   @Input() subTitle: string = null;
   @Input() badgeCount: number = 0;
   @Input() color: string = 'primary';
+<<<<<<< HEAD
 
+=======
+  @Input() close:boolean = false;
+  @Input() buttons: any = null;
+  @Output() buttonClicked = new EventEmitter();
+>>>>>>> master
   @Output() dismiss = new EventEmitter();
   constructor() {
 
@@ -18,4 +24,12 @@ export class ModalToolbarComponent {
   sendDismiss(data) {
     this.dismiss.emit(data);
   }
+<<<<<<< HEAD
+=======
+
+  sendButtonClicked(button, event) {
+    button.event = event;
+    this.buttonClicked.emit(button);
+}
+>>>>>>> master
 }

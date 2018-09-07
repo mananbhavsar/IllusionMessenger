@@ -10,12 +10,21 @@ import { ConnectionProvider } from './../../../../providers/connection/connectio
   templateUrl: 'manage-participants.html',
 })
 export class ManageParticipantsPage {
+<<<<<<< HEAD
   participants: Array<any> = [];
   participantsCopy: Array<any> = [];
 
   selectedParticipantIDs: Array<number> = [];
 
   assigned: number = 0;
+=======
+  protected _participants: Array<any> = [];
+  protected _participantsCopy: Array<any> = [];
+
+  protected _selectedParticipantIDs: Array<number> = [];
+
+  protected _assigned: number = 0;
+>>>>>>> master
 
   tags: Array<any> = [];
   tagsIdMap: Array<string> = [];
@@ -37,6 +46,7 @@ export class ManageParticipantsPage {
   ) {
     this.group_name = this.navParams.data.group_name;
 
+<<<<<<< HEAD
     this.participants = this.navParams.data.participants;
     this.participantsCopy = this.navParams.data.participants;
 
@@ -44,6 +54,15 @@ export class ManageParticipantsPage {
     this.is_from_chat = this.navParams.data.is_from_chat;
 
     this.assigned = this.navParams.data.assigned;
+=======
+    this._participants = this.navParams.data.participants.slice();
+    this._participantsCopy = this.navParams.data.participants.slice();
+
+    this._selectedParticipantIDs = this.navParams.data.selectedParticipantIDs.slice();
+    this.is_from_chat = this.navParams.data.is_from_chat;
+
+    this._assigned = this.navParams.data.assigned;
+>>>>>>> master
     this.setTags();
 
     this.backButtonUnregister = this.platform.registerBackButtonAction(() => { });
@@ -54,17 +73,30 @@ export class ManageParticipantsPage {
   }
 
   setTags() {
+<<<<<<< HEAD
     this.participants.forEach((user, index) => {
+=======
+    this._participants.forEach((user, index) => {
+>>>>>>> master
       if (user.Tag.length) {
         user.Tag.forEach(tag => {
           //selectedAt 0
           if (!('selectedAt' in user)) {
+<<<<<<< HEAD
             this.participants[index].selectedAt = 0;
           }
 
           //if already selected
           if (this.selectedParticipantIDs.indexOf(user.User[0].UserID) > -1) {
             this.participants[index].selectedAt = new Date().getTime() + index;
+=======
+            this._participants[index].selectedAt = 0;
+          }
+
+          //if already selected
+          if (this._selectedParticipantIDs.indexOf(user.User[0].UserID) > -1) {
+            this._participants[index].selectedAt = new Date().getTime() + index;
+>>>>>>> master
           }
 
           if (this.tagsIdMap.indexOf(tag.TagID) === -1) {
@@ -101,7 +133,11 @@ export class ManageParticipantsPage {
 
   getUserByID(userID) {
     let found = null;
+<<<<<<< HEAD
     this.participants.some(user => {
+=======
+    this._participants.some(user => {
+>>>>>>> master
       if (user.User[0].UserID === userID) {
         found = user;
         return true;
@@ -113,7 +149,11 @@ export class ManageParticipantsPage {
 
   getIndexByID(userID) {
     let found = null;
+<<<<<<< HEAD
     this.participants.some((user, index) => {
+=======
+    this._participants.some((user, index) => {
+>>>>>>> master
       if (user.User[0].UserID === userID) {
         found = index;
         return true;
@@ -125,6 +165,7 @@ export class ManageParticipantsPage {
 
   participantSelected(user_id, index, selected) {
     if (selected) {
+<<<<<<< HEAD
       if (this.selectedParticipantIDs.indexOf(user_id) === -1) {
         this.selectedParticipantIDs.push(user_id);
       }
@@ -135,15 +176,35 @@ export class ManageParticipantsPage {
       //checking if current user was responsible
       if (this.assigned === user_id) {
         this.assigned = 0;
+=======
+      if (this._selectedParticipantIDs.indexOf(user_id) === -1) {
+        this._selectedParticipantIDs.push(user_id);
+      }
+      this._participants[this.getIndexByID(user_id)].selectedAt = new Date().getTime() + index;
+    } else {
+      //remove user
+      this._selectedParticipantIDs.splice(this._selectedParticipantIDs.indexOf(user_id), 1);
+      //checking if current user was responsible
+      if (this._assigned === user_id) {
+        this._assigned = 0;
+>>>>>>> master
       }
 
       //take it down
       index = this.getIndexByID(user_id);
+<<<<<<< HEAD
       this.participants[index].selectedAt = -3000;
       setTimeout(() => {
         index = this.getIndexByID(user_id);
         if (this.participants[index].selectedAt === -3000) {
           this.participants[index].selectedAt = 0;
+=======
+      this._participants[index].selectedAt = -3000;
+      setTimeout(() => {
+        index = this.getIndexByID(user_id);
+        if (this._participants[index].selectedAt === -3000) {
+          this._participants[index].selectedAt = 0;
+>>>>>>> master
         }
       }, 3000);
     }
@@ -159,11 +220,16 @@ export class ManageParticipantsPage {
     let val = event.target.value;
     if (val && val.trim() !== '') {
       let tempUser = [];
+<<<<<<< HEAD
       this.participants.forEach((user) => {
+=======
+      this._participants.forEach((user) => {
+>>>>>>> master
         if (user.User[0].User.toLowerCase().indexOf(val.toLowerCase()) > -1) {
           tempUser.push(user);
         }
       });
+<<<<<<< HEAD
       this.participants = tempUser;
     }
   }
@@ -189,6 +255,33 @@ export class ManageParticipantsPage {
         index = this.getIndexByID(user_id);
         if (this.participants[index].selectedAt === -3000) {
           this.participants[index].selectedAt = 0;
+=======
+      this._participants = tempUser;
+    }
+  }
+
+  _setParticipants(user_id) {
+    let index = this.getIndexByID(user_id);
+    let selected: boolean = true;
+    if (this._selectedParticipantIDs.indexOf(user_id) === -1) {
+      selected = true;
+
+      this._selectedParticipantIDs.push(user_id);
+
+      this._participants[index].selectedAt = new Date().getTime();
+    } else {
+      this._selectedParticipantIDs.splice(this._selectedParticipantIDs.indexOf(user_id), 1);
+      //checking if this user was assigned
+      if (this._assigned === user_id) {
+        this._assigned = 0;
+      }
+      //take it down
+      this._participants[index].selectedAt = -3000;
+      setTimeout(() => {
+        index = this.getIndexByID(user_id);
+        if (this._participants[index].selectedAt === -3000) {
+          this._participants[index].selectedAt = 0;
+>>>>>>> master
         }
       }, 3000);
 
@@ -208,7 +301,11 @@ export class ManageParticipantsPage {
         if (this.tagsSelected[tagID] === false && this.userTagsMap[tagID].indexOf(user_id) > -1) {//Tag not yet selected && has this user 
           //check if every other user selected
           if (this.userTagsMap[tagID].every(user_id_in_tag => {
+<<<<<<< HEAD
             return this.selectedParticipantIDs.indexOf(user_id_in_tag) > -1;
+=======
+            return this._selectedParticipantIDs.indexOf(user_id_in_tag) > -1;
+>>>>>>> master
           })) {
             this.tagsSelected[tagID] = selected;
           }
@@ -225,11 +322,19 @@ export class ManageParticipantsPage {
   }
 
   inSelectedParticipants(user_id) {
+<<<<<<< HEAD
     return this.selectedParticipantIDs && this.selectedParticipantIDs.indexOf(user_id) > -1;
   }
 
   initializeItems() {
     this.participants = this.participantsCopy;
+=======
+    return this._selectedParticipantIDs && this._selectedParticipantIDs.indexOf(user_id) > -1;
+  }
+
+  initializeItems() {
+    this._participants = this._participantsCopy;
+>>>>>>> master
   }
 
   toggleAssign(user_id, event) {
@@ -237,10 +342,17 @@ export class ManageParticipantsPage {
     event.stopPropagation();
 
     //checking if same user selected
+<<<<<<< HEAD
     if (this.assigned === user_id) {
       this.assigned = 0;
     } else {
       this.assigned = user_id;
+=======
+    if (this._assigned === user_id) {
+      this._assigned = 0;
+    } else {
+      this._assigned = user_id;
+>>>>>>> master
     }
   }
 
@@ -253,6 +365,7 @@ export class ManageParticipantsPage {
   }
 
   create() {
+<<<<<<< HEAD
     this.dismiss({
       selectedParticipantIDs: this.selectedParticipantIDs,
       assigned: this.assigned,
@@ -266,6 +379,22 @@ export class ManageParticipantsPage {
     } else if (!_.isEmpty(data)) {
       this.events.publish('alert:basic', 'No assignee selected!', 'Kindly select Responsible/Assignee');
     }
+=======
+    //checking if Responsible is selected
+    if (this._assigned || _.isEmpty(this._selectedParticipantIDs)) {
+      this.dismiss({
+        selectedParticipantIDs: this._selectedParticipantIDs,
+        assigned: this._assigned,
+      });
+    } else if (!_.isEmpty(this._selectedParticipantIDs)) {
+      this.events.publish('alert:basic', 'No assignee selected!', 'Kindly select Responsible/Assignee');
+    }
+
+  }
+
+  dismiss(data) {
+    this.viewCtrl.dismiss(data);
+>>>>>>> master
   }
 
   isHidden(user_id) {

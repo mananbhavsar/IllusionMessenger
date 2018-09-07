@@ -33,9 +33,9 @@ export class ContactDetailPage {
     contact.displayName = this.contactData.displayName;
     //name
     contact.name = new ContactName(
-      this.contactData.formatted,
-      this.contactData.familyName,
-      this.contactData.givenName,
+      this.contactData.name.formatted,
+      this.contactData.name.familyName,
+      this.contactData.name.givenName,
       this.contactData.displayName
     );
     //number

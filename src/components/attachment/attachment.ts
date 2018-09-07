@@ -1,11 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { UUID } from 'angular2-uuid';
-<<<<<<< HEAD
-import { Events } from 'ionic-angular';
-=======
 import { Events, Platform } from 'ionic-angular';
 import { ConnectionProvider } from '../../providers/connection/connection';
->>>>>>> master
 import { FileOpsProvider } from '../../providers/file-ops/file-ops';
 
 @Component({
@@ -17,12 +13,6 @@ export class AttachmentComponent {
   @Input() editable: boolean = false;
   @Output() captured = new EventEmitter();
   @Output() removed = new EventEmitter();
-<<<<<<< HEAD
-  progresses: any = {};
-  constructor(
-    private fileOps: FileOpsProvider,
-    private events: Events
-=======
   @Input() isBrowser: boolean;
   progresses: any = {};
   constructor(
@@ -30,14 +20,11 @@ export class AttachmentComponent {
     private platform: Platform,
     private events: Events,
     private connection: ConnectionProvider
->>>>>>> master
   ) {
 
   }
 
 
-<<<<<<< HEAD
-=======
   uplaodFile(file) {
     let input = file.target;
     if (input.files[0]) {
@@ -108,17 +95,12 @@ export class AttachmentComponent {
     });
   }
 
->>>>>>> master
   capture(type) {
     let identifier = UUID.UUID();
     // start listening to upload identifier
     this.events.subscribe('upload:progress:' + identifier, progress => {
-<<<<<<< HEAD
-      let count = progress.progress
-=======
 
       let count = progress.progress;
->>>>>>> master
       //remove if 100%
       if (count === 100) {
         //this.removeProgress(progress.identifier);
@@ -126,11 +108,6 @@ export class AttachmentComponent {
         this.progresses[identifier] = count;
       }
     });
-<<<<<<< HEAD
-    this.fileOps.captureAndUpload(type, identifier).then(url => {
-      this.captured.emit({
-        url: url
-=======
 
     let params = {
       UserID: this.connection.user.LoginUserID,
@@ -145,7 +122,6 @@ export class AttachmentComponent {
         VirtualPath: url,
         FileName: fileName,
         FileExtension: fileExtension
->>>>>>> master
       });
     }).catch(error => {
       this.removeProgress(identifier);
@@ -164,10 +140,6 @@ export class AttachmentComponent {
   }
 
   openAttachment(file) {
-<<<<<<< HEAD
-    let identifier = UUID.UUID();
-
-=======
     if (this.platform.is('core')) {
       window.open(file, '_blank');
     } else {
@@ -179,6 +151,5 @@ export class AttachmentComponent {
         });
       });
     }
->>>>>>> master
   }
 }

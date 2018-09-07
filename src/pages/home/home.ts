@@ -1,15 +1,8 @@
 import { Component } from '@angular/core';
 import { Network } from '@ionic-native/network';
 import { OneSignal } from '@ionic-native/onesignal';
-<<<<<<< HEAD
-import { Storage } from '@ionic/storage';
-import { TranslateService } from "@ngx-translate/core";
-import firebase from 'firebase';
-import { Events, IonicPage, ModalController, NavController, Platform } from 'ionic-angular';
-=======
 import * as firebase from 'firebase';
 import { ActionSheetController, Events, IonicPage, ModalController, NavController, Platform, reorderArray } from 'ionic-angular';
->>>>>>> master
 import * as _ from 'underscore';
 import { Global } from '../../app/global';
 import { ConnectionProvider } from '../../providers/connection/connection';
@@ -17,26 +10,14 @@ import { FlashNewsProvider } from '../../providers/flash-news/flash-news';
 import { ReadMessageProvider } from '../../providers/read-message/read-message';
 import { TranslateServiceProvider } from '../../providers/translate-service/translate-service';
 import { UserProvider } from '../../providers/user/user';
-<<<<<<< HEAD
-import { GroupPage } from '../group/group';
-import { DateProvider } from './../../providers/date/date';
-=======
 import { CreateTagPage } from '../create-tag/create-tag';
 import { CreateUserPage } from '../create-user/create-user';
 import { GroupPage } from '../group/group';
 import { CreateGroupPage } from '../manage-group/create-group/create-group';
->>>>>>> master
 import { FirebaseTransactionProvider } from './../../providers/firebase-transaction/firebase-transaction';
 import { NotificationsProvider } from './../../providers/notifications/notifications';
 import { AddFlashPage } from './../group/add-flash/add-flash';
 import { CreateTopicPage } from './../topic/create-topic/create-topic';
-<<<<<<< HEAD
-import { NativeRingtones } from '@ionic-native/native-ringtones';
-
-
-
-=======
->>>>>>> master
 
 @IonicPage()
 @Component({
@@ -46,15 +27,6 @@ import { NativeRingtones } from '@ionic-native/native-ringtones';
 export class HomePage {
     title: string = 'Home';
     global: any = {};
-<<<<<<< HEAD
-    groups: Array<any> | -1 = [];
-    badges: any = {};
-    searchBtnShow: boolean = true;
-
-    firebaseConnected: boolean = false;
-
-    flashNews: Array<any> = [];
-=======
     data: any = null;
     badges: any = {};
     query: any = null;
@@ -64,16 +36,12 @@ export class HomePage {
     flashNews: Array<any> = [];
     reorder: boolean = false;
     hideRefresher: boolean = true;
->>>>>>> master
     /**
      * 0 => not connected
      * 1 => connecting
      * 2 => connected
      */
     deviceRegsiter: number = 0;
-<<<<<<< HEAD
-    connectedTime: string = null;
-=======
     page: number = 0;
     connectedTime: string = null;
     sort_by: string = '';
@@ -116,25 +84,12 @@ export class HomePage {
     readOptions: boolean = false;
     selectedTopic: Array<any> = [];
     readAllSelected: boolean = true;
->>>>>>> master
     constructor(
         public navCtrl: NavController,
-        private ringtones: NativeRingtones,
         public connection: ConnectionProvider,
         public user: UserProvider,
         public read: ReadMessageProvider,
         public events: Events,
-<<<<<<< HEAD
-        private _storage: Storage,
-        private translate: TranslateService,
-        private _oneSignal: OneSignal,
-        private platform: Platform,
-        private _date: DateProvider,
-        private _network: Network,
-        private modalController: ModalController,
-        private notifications: NotificationsProvider,
-        private _firebaseTransaction: FirebaseTransactionProvider,
-=======
         private translate: TranslateServiceProvider,
         public flashNewsProvider: FlashNewsProvider,
         private _oneSignal: OneSignal,
@@ -145,20 +100,10 @@ export class HomePage {
         private notifications: NotificationsProvider,
         private _firebaseTransaction: FirebaseTransactionProvider,
         public actionSheetController: ActionSheetController,
->>>>>>> master
     ) {
         this.global = Global;
         //listening to Resume & Pause events
         this.events.subscribe('platform:onResumed', () => {
-<<<<<<< HEAD
-            this.getData().catch(error => { });
-        });
-
-        //online offline
-        if (this.platform.is('cordova')) {
-            this._network.onchange().subscribe(() => {
-                this.registerDevice();
-=======
             this.getData(false).catch(error => { });
         });
 
@@ -180,7 +125,6 @@ export class HomePage {
         if (this.platform.is('cordova')) {
             this._network.onchange().subscribe(() => {
                 this.registerDevice(false);
->>>>>>> master
             });
         }
     }
@@ -189,36 +133,17 @@ export class HomePage {
     ionViewDidEnter() {
         //checking if logged in
         if (!_.isEmpty(this.connection.user)) {
-<<<<<<< HEAD
-            this.initData().catch(error => { });            
-            if(this.platform.is('core')){
-                console.log(this.connection.push_id);
-            if(this.connection.push_id){
-                this.connectToServer(this.connection.push_id);
-            }
-=======
             this.initData(false).catch(error => { });
->>>>>>> master
         } else {
             //waiting for login
             this.events.subscribe('user:ready', (status) => {
                 if (status) {
-<<<<<<< HEAD
-                    this.initData().catch(error => { });
-=======
                     this.initData(false).catch(error => { });
->>>>>>> master
                 }
             });
         }
     }
-    }
 
-<<<<<<< HEAD
-    initData() {
-        return new Promise((resolve, reject) => {
-            this.getData().then(status => {
-=======
     ionViewDidLeave() {
         if (this.selectedGroup.length > 0) {
             this.selectedGroup = [];
@@ -228,130 +153,12 @@ export class HomePage {
     initData(isPullDown) {
         return new Promise((resolve, reject) => {
             this.getData(isPullDown).then(status => {
->>>>>>> master
                 if (this.firebaseConnected === false) {
                     this.connectToFireBase();
                     this.firebaseConnected = true;
                 }
                 resolve(true);
             }).catch(error => {
-<<<<<<< HEAD
-                reject(error);
-            });
-        });
-    }
-
-    getData() {
-        return new Promise((resolve, reject) => {
-            this.connection.doPost('Chat/Home', {
-            }, false).then((response: any) => {
-                //groups
-                console.log(response);
-                
-                this.groups = response.Groups;
-                
-                if (_.size(this.groups) === 0) {
-                    this.groups = -1;
-                }
-                //flash
-                this.flashNews = response.FlashNews;
-
-                this.registerDevice();
-                resolve(true);
-            }).catch(error => {
-                this.groups = -1;
-                this.flashNews = [];
-                reject(error);
-            })
-        });
-    }
-
-    registerDevice() {
-        //if internet        
-        //make device regsiter call
-        if (this.platform.is('core')) {
-            this.events.subscribe('pushid:created', (userId) => {
-                this.connectToServer(userId);
-            });
-        } else if (this.platform.is('cordova')) {
-            this.deviceRegsiter = 1;
-            this._oneSignal.getIds().then((id) => {
-                this.connectToServer(id.userId);
-            }).catch(error => {
-                this.deviceRegsiter = 0;
-            });
-        }
-    }
-
-    connectToServer(pushID) {
-        this.user.registerPushID(pushID).then((response: any) => {
-            console.log(response);
-            if (response.Data && response.Data.LastActivity) {
-                this.deviceRegsiter = 2; //connected
-                this.connectedTime = response.Data.LastActivity; //this will be utc
-            } else {
-                this.deviceRegsiter = 0;
-            }
-        }).catch(error => {
-            this.deviceRegsiter = 0;
-        });
-    }
-
-    refresh(refresher) {
-        this.getData().then(status => {
-            refresher.complete();
-            this.connectToFireBase();
-        }).catch(error => {
-            refresher.complete();
-        });
-    }
-
-    connectToFireBase() {
-        //user setting
-        this.user.getUser().then(user => {
-            if (this.groups !== -1) {
-                let groupsTemp: any = this.groups;
-                groupsTemp.forEach((group, index) => {
-                    let ref = firebase.database().ref('Badge/' + user.id + '/Groups/' + group.GroupCode + '/Total');
-                    ref.off('value');
-                    ref.on('value', (snapshot) => {
-                        let total = snapshot.val();
-                        if (total) {
-                            this.badges[group.GroupCode] = total;
-                        } else {
-                            this.badges[group.GroupCode] = 0;
-                        }
-                    });
-                });
-
-            }
-        });
-    }
-
-    searchItem() {
-        if (this.searchBtnShow) {
-            this.searchBtnShow = false;
-        }else if(!this.searchBtnShow) {
-            this.searchBtnShow = true;
-        }
-    }
-
-    getItems(ev) {
-        // Reset items back to all of the items
-
-        // set val to the value of the ev target
-        var val = ev.target.value;
-        console.log(val);
-
-        // if the value is an empty string don't filter the items
-        // if (val && val.trim() != '') {
-        //     if (this.groups) {
-        //         this.groups = this.groups.filter((item) => {
-        //             return (item.Group.toLowerCase().indexOf(val.toLowerCase()) > -1);
-        //         })
-        //     }
-        // }
-=======
             });
         });
     }
@@ -572,7 +379,6 @@ export class HomePage {
         if (this.selectedGroup.length === 0 && this.selectedTopic.length === 0) {
             this.readAllSelected = true;
         }
->>>>>>> master
     }
 
     useLang(lang) {
@@ -597,8 +403,6 @@ export class HomePage {
 
     headerButtonClicked(event) {
         switch (event.name) {
-<<<<<<< HEAD
-=======
             case 'sort':
                 this.openSortOptions();
                 break;
@@ -623,7 +427,6 @@ export class HomePage {
             case 'ios-people':
                 this.createGroup();
                 break;
->>>>>>> master
             case 'flash':
                 this.addFlash();
                 break;
@@ -631,8 +434,6 @@ export class HomePage {
         }
     }
 
-<<<<<<< HEAD
-=======
     createGroup() {
         this.navCtrl.push(CreateGroupPage);
     }
@@ -705,18 +506,14 @@ export class HomePage {
     }
 
 
->>>>>>> master
     addFlash() {
         let flashModal = this.modalController.create(AddFlashPage, {
             group_id: 0,
             group_name: null,
         });
         flashModal.onDidDismiss(data => {
-<<<<<<< HEAD
-=======
             this.setTitle();
 
->>>>>>> master
             if (data) {
                 this.events.publish('toast:create', data.Data.Message);
                 this.notifications.sends(data.OneSignalTransaction);
@@ -726,20 +523,12 @@ export class HomePage {
 
                 //refresh
                 setTimeout(() => {
-<<<<<<< HEAD
-                    this.getData();
-=======
                     this.getData(false);
->>>>>>> master
                 });
             }
         });
         flashModal.present();
     }
-<<<<<<< HEAD
-}
-
-=======
 
     isGroupSelected() {
         if (this.getSelectedTabName() === 'Groups') {
@@ -908,4 +697,3 @@ export class HomePage {
         return this.title;
     }
 }
->>>>>>> master

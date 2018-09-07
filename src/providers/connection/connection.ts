@@ -9,13 +9,6 @@ import { Events, Platform } from 'ionic-angular';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/timeout';
 import * as _ from 'underscore';
-<<<<<<< HEAD
-import * as firebase from 'firebase';
-
-import { TranslateService } from "@ngx-translate/core";
-
-=======
->>>>>>> master
 import { Global } from '../../app/global';
 import { TranslateServiceProvider } from '../translate-service/translate-service';
 
@@ -62,11 +55,7 @@ export class ConnectionProvider {
                     .then((uuid: any) => {
                         this.uuid = uuid;
                     })
-<<<<<<< HEAD
-                    .catch((error: any) => console.log(error));
-=======
                     .catch((error: any) => {});
->>>>>>> master
             }
             this.doTranslate();
 
@@ -168,27 +157,12 @@ export class ConnectionProvider {
         for (let key in params) {
             urlSearchParams.append(key, params[key]);
         }
-<<<<<<< HEAD
-        //browser specific info 
-=======
-
->>>>>>> master
         if (this.platform.is('core')) {
             urlSearchParams.append('Device', navigator.platform);
             urlSearchParams.append('Manufacturer', navigator.appCodeName);
             urlSearchParams.append('UniqueID','');
 
         } else if (this.platform.is('cordova')) {
-<<<<<<< HEAD
-            //device specific info
-            urlSearchParams.append('UniqueID', this.uuid);
-            urlSearchParams.append('Device', this.device.platform);
-            urlSearchParams.append('OSVersion', this.device.version);
-            urlSearchParams.append('Manufacturer', this.device.manufacturer);
-            urlSearchParams.append('AppVersion', Global.AppVersion);
-            //adding user info
-        }
-=======
         //device specific info
         urlSearchParams.append('UniqueID', this.uuid);
         urlSearchParams.append('Device', this.device.platform);
@@ -197,7 +171,6 @@ export class ConnectionProvider {
         urlSearchParams.append('AppVersion', Global.AppVersion);
         }
         //adding user info
->>>>>>> master
         if (this.user || !_.isEmpty(this.user)) {
             urlSearchParams = this.addUserInfo(urlSearchParams);
         }

@@ -1,26 +1,5 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-<<<<<<< HEAD
-    <head>
-        <meta charset="UTF-8">
-        <title>Laxmi Task Manager</title>
-        <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-        <meta name="format-detection" content="telephone=no">
-        <meta name="msapplication-tap-highlight" content="no">
-        <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async></script>
-        <link rel="icon" type="image/x-icon" href="assets/icon/logo.jpg">
-        <script src="/OneSignalSDKWorker.js"></script>
-        <script src="/OneSignalSDKUpdaterWorker.js"></script>        
-        <link rel="manifest" href="manifest.json">
-        <meta name="theme-color" content="#4e8ef7">
-
-        <!-- cordova.js required for cordova apps -->
-        <script src="cordova.js"></script>
-
-        <!-- un-comment this code to enable service worker
-        <script>
-          if ('serviceWorker' in navigator) {
-=======
 
 <head>
     <meta charset="UTF-8">
@@ -42,7 +21,6 @@
         // var OneSignal = window.OneSignal || [];
 
         if ('serviceWorker' in navigator) {
->>>>>>> master
             navigator.serviceWorker.register('service-worker.js')
                 .then(() => console.log('service worker installed'))
                 .catch(err => console.error('Error', err));

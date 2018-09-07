@@ -1,14 +1,8 @@
-<<<<<<< HEAD
-import { Component, ElementRef, ViewChild } from '@angular/core';
-import { Http } from '@angular/http';
-import { Camera, CameraOptions } from '@ionic-native/camera';
-=======
 import { Component, ElementRef,ViewChild } from '@angular/core';
 import { Http } from '@angular/http';
 import { Camera, CameraOptions } from '@ionic-native/camera';
 import { Clipboard } from '@ionic-native/clipboard';
 import { Contacts } from '@ionic-native/contacts';
->>>>>>> master
 import { File } from '@ionic-native/file';
 import { FileTransfer, FileTransferObject, FileUploadOptions } from '@ionic-native/file-transfer';
 import { Keyboard } from '@ionic-native/keyboard';
@@ -16,17 +10,9 @@ import { Media, MediaObject } from '@ionic-native/media';
 import { Network } from '@ionic-native/network';
 import { Vibration } from '@ionic-native/vibration';
 import { MediaFile, VideoCapturePlus, VideoCapturePlusOptions } from '@ionic-native/video-capture-plus';
-<<<<<<< HEAD
-import { VideoEditor } from '@ionic-native/video-editor';
-import { Storage } from '@ionic/storage';
-import { TranslateService } from "@ngx-translate/core";
-import * as firebase from 'firebase';
-import { ActionSheetController, Content, Events, IonicPage, ModalController, NavController, NavParams, Platform, ToastController, normalizeURL } from 'ionic-angular';
-=======
 import { Storage } from '@ionic/storage';
 import * as firebase from 'firebase';
 import { ActionSheetController, Content, Events, IonicPage, ModalController, NavController, NavParams, normalizeURL, Platform, ToastController } from 'ionic-angular';
->>>>>>> master
 import * as mime from 'mime-types';
 import * as moment from 'moment';
 import 'rxjs/add/operator/switchMap';
@@ -38,27 +24,12 @@ import { ConnectionProvider } from '../../providers/connection/connection';
 import { FileOpsProvider } from "../../providers/file-ops/file-ops";
 import { FirebaseTransactionProvider } from '../../providers/firebase-transaction/firebase-transaction';
 import { NotificationsProvider } from "../../providers/notifications/notifications";
-<<<<<<< HEAD
-=======
 import { TranslateServiceProvider } from '../../providers/translate-service/translate-service';
->>>>>>> master
 import { HomePage } from '../home/home';
 import { LogoutPage } from '../logout/logout';
 import { DateProvider } from './../../providers/date/date';
 import { ChatOptionsPage } from "./chat-options/chat-options";
 import { SavedMediaPage } from "./chat-options/saved-media/saved-media";
-<<<<<<< HEAD
-
-
-
-
-
-
-
-
-
-=======
->>>>>>> master
 
 @IonicPage()
 @Component({
@@ -72,12 +43,9 @@ export class ChatPage {
   global: any = Global;
   platformResumeReference = null;
   platformPauseReference = null;
-<<<<<<< HEAD
-=======
   arrowKey: any;
   replytoImg: any = null;
   replytoText: any = null;
->>>>>>> master
 
   data: any = {};
 
@@ -86,12 +54,9 @@ export class ChatPage {
   groupID: string = null;
   groupCode: string = null;
   group_name: string = 'loading';
-<<<<<<< HEAD
-=======
   subSubTitle: string;
   users: any = [];
   hideWhenReply: boolean = false;
->>>>>>> master
 
   title: string = 'loading';
   isIOS: boolean = false;
@@ -103,13 +68,10 @@ export class ChatPage {
   basePath: string = '';
   path: string = '';
   topicClosePath: string = '';
-<<<<<<< HEAD
-=======
   showUsers: boolean = false;
   messageKey: any = null;
   replyTo: boolean = false;
   attachRepliedMessage: any = {};
->>>>>>> master
 
   messagesRef: firebase.database.Reference;
   newMessagesRef: firebase.database.Query;
@@ -138,10 +100,6 @@ export class ChatPage {
 
   user: any = {};
   userID: string = null;
-<<<<<<< HEAD
-  created_time : any = null;
-=======
->>>>>>> master
   chatUsers: any = {};
 
   amIAdmin: boolean = false;
@@ -185,12 +143,8 @@ export class ChatPage {
   recordFileName: string = 'record.wav';
   recordInterval: any = null;
   vibrateDuration: number = 300;
-<<<<<<< HEAD
-  isBrowser : boolean;
-=======
   isBrowser: boolean;
 
->>>>>>> master
   keyboardOpen: boolean = false;
   hasInternet: boolean = true;
   lastReadingTime: number = 0;
@@ -279,8 +233,6 @@ export class ChatPage {
     this.events.subscribe('network:offline', () => {
       this.hasInternet = false;
     });
-<<<<<<< HEAD
-=======
 
     //if user switching tab
     if (this.isBrowser) {
@@ -293,7 +245,6 @@ export class ChatPage {
         this.resumed();
       };
     }
->>>>>>> master
   }
 
 
@@ -554,8 +505,6 @@ export class ChatPage {
     //setting current User
     this.user = this.connection.user;
     this.userID = this.user.LoginUserID;
-<<<<<<< HEAD
-=======
   }
 
   resumed() {
@@ -565,35 +514,20 @@ export class ChatPage {
     }
     //make all unread count of this topic to zero
     this.clearBadgeCountIfAny();
->>>>>>> master
   }
 
   listenToEvents() {
     //listening to platforms events
     //On app Resume & Pause
     this.platformResumeReference = this.platform.resume.subscribe(() => {
-<<<<<<< HEAD
-      this.setFirebaseRef();
-      if (this.messagesRef && this.newMessagesRef) {
-        this.listenToFirebaseEvents(true);
-      }
-      //make all unread count of this topic to zero
-      this.clearBadgeCountIfAny();
-    }, error => {
-=======
       this.resumed();
     }, error => {
 
->>>>>>> master
     });
 
     this.platformPauseReference = this.platform.pause.subscribe(() => {
       this.doLeaving(false);
     }, error => {
-<<<<<<< HEAD
-=======
-
->>>>>>> master
     });
 
     //notification subs
@@ -709,10 +643,7 @@ export class ChatPage {
   }
 
   ionViewWillLeave() {
-<<<<<<< HEAD
-=======
     this.keyboard.hideKeyboardAccessoryBar(false);
->>>>>>> master
     this.doLeaving(true);
     this.clearTypingStringInterval();
   }
@@ -725,21 +656,6 @@ export class ChatPage {
           GroupID: this.groupID,
         };
         this.connection.doPost('Chat/GetTopicDetail', params, false).then((response: any) => {
-<<<<<<< HEAD
-          this.data = response.Data;
-          this.created_time = this.data.CreationDate;
-          this.data.GroupID = this.groupID;
-          this.group_name = this.data.Group;
-
-          this.headerButtons = [{ icon: 'ios-more', name: 'more-option' }];
-
-          this.topicCode = this.data.TopicCode;
-          this.groupCode = this.data.GroupCode;
-          this.setPath();
-          this.setOfflineTopicList(this.data);
-          if (response.FireBaseTransaction) {
-            this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { });
-=======
           this.reminders = response.Reminders;
           this.data = response.Data;
           this.data.GroupID = this.groupID;
@@ -760,7 +676,6 @@ export class ChatPage {
             this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => {
 
             });
->>>>>>> master
           }
           this.setTitle();
           this.setUsers().then((chatUsersList) => {
@@ -805,10 +720,6 @@ export class ChatPage {
 
     this.basePath = 'Communications/' + this.pathIdentifier + '/';
 
-<<<<<<< HEAD
-=======
-
->>>>>>> master
     //Chat close event
     this.topicClosePath = 'CloseTopics/' + this.pathIdentifier + '/' + this.userID;
 
@@ -820,15 +731,11 @@ export class ChatPage {
    * sets title for Chat
    */
   setTitle() {
-<<<<<<< HEAD
-    this.title = this.data.Topic;
-=======
 
     this.title = null;
     setTimeout(() => {
       this.title = this.data.Topic;
     });
->>>>>>> master
   }
 
   getSubTitle() {
@@ -857,13 +764,10 @@ export class ChatPage {
       subTitle += ', ' + 'Closed: ' + this._date.format(closedDate);
     }
     return subTitle;
-<<<<<<< HEAD
-=======
   }
 
   getTitle() {
     return this.title;
->>>>>>> master
   }
 
   /**
@@ -874,11 +778,7 @@ export class ChatPage {
       if (this.data && this.data.User.length) {
         this.data.User.forEach((user, index) => {
           //for typing
-<<<<<<< HEAD
-          if(this.userTyping === null){
-=======
           if (this.userTyping === null) {
->>>>>>> master
             this.userTyping = {};
           }
           this.userTyping[user.UserID] = user.User;
@@ -932,10 +832,6 @@ export class ChatPage {
     }
   }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> master
   handleImageFiles(file) {
     let input = file.target;
     let dataURL: string;
@@ -959,11 +855,8 @@ export class ChatPage {
     reader.readAsDataURL(input.files[0]);
   }
 
-<<<<<<< HEAD
-=======
 
 
->>>>>>> master
   uploadFileFromBrowser(fileName, fileExtension, Base64String) {
     return new Promise((resolve, reject) => {
       this.connection.doPost('Chat/InsertChat_Attachement_Base64', {
@@ -978,10 +871,6 @@ export class ChatPage {
     });
   }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> master
   openUploadOptions() {
     const actionSheet = this.actionSheetCtrl.create({
       title: null,
@@ -1066,11 +955,6 @@ export class ChatPage {
       //clear text
       this.message = '';
 
-<<<<<<< HEAD
-      this.sendToFirebase(textMessage).then(data => {
-        this.message = '';
-      }).catch(error => {
-=======
       if (this.replyTo) {
         this.replyTo = false;
         this.sendToFirebase(textMessage, 'Text', null, this.topicID, this.topicCode, null, this.topicID).then((data) => {
@@ -1090,7 +974,6 @@ export class ChatPage {
           this.message = '';
         });
       } else {
->>>>>>> master
         this.message = '';
       }
     }
@@ -1130,9 +1013,6 @@ export class ChatPage {
           Status: 0,
           URL: url,
           Read: readObject,
-<<<<<<< HEAD
-          TopicCode: this.topicCode,
-=======
           TopicCode: topicCode,
           TaggedUsers: taggedUsersID,
           TopicID: topicID,
@@ -1140,7 +1020,6 @@ export class ChatPage {
           IsReply: isReplied,
           ReplyMessageKey: this.messageKey,
           Contact: contact
->>>>>>> master
         };
 
         //add message to firebase
@@ -1190,13 +1069,9 @@ export class ChatPage {
   }
 
   onBlur(event) {
-<<<<<<< HEAD
-    if (this.keyboardOpen) {
-=======
     if (this.platform.is('core')) {
 
     } else if (this.keyboardOpen) {
->>>>>>> master
       event.target.focus();
     }
   }
@@ -1699,11 +1574,7 @@ export class ChatPage {
         this.progressPercent = 0;
         const fileTransfer: FileTransferObject = this.transfer.create();
         let options = this.setFileOptions(file);
-<<<<<<< HEAD
-
-=======
         
->>>>>>> master
         fileTransfer.upload(file, this.connection.URL + 'Chat/InsertChat_Attachement', options)
           .then((data) => {
             
@@ -1741,11 +1612,7 @@ export class ChatPage {
     let fileExtension = file.substring(file.lastIndexOf('.') + 1);
 
     let params = {
-<<<<<<< HEAD
-      UserID: this.user.UserID,
-=======
       UserID: this.user.LoginUserID,
->>>>>>> master
       TopicID: this.topicID,
       GroupID: this.groupID,
       TopicCode: this.topicCode,
@@ -1800,46 +1667,6 @@ export class ChatPage {
   }
 
   sendMessageToServer(message) {
-<<<<<<< HEAD
-    // get live chat users
-    let userChattingNow = this.userChatting;
-    let nowTime = moment().utc().valueOf();
-
-    var activeUserList = this.getLiveChatUsers(userChattingNow, nowTime);
-
-    let fileName = null;
-    let fileExtension = null;
-    //if image or audio, sending its file name & extension
-    if (message.URL) {
-      fileExtension = message.URL.substring(message.URL.lastIndexOf('.') + 1);
-      fileName = message.URL.substring(message.URL.lastIndexOf('/') + 1).replace('.' + fileExtension, '');
-    }
-
-    let params = {
-      LiveUsersOnChat: activeUserList,
-      ChattingUsers: this.common.build_query(userChattingNow),
-      TimeOnPhone: nowTime,
-      Message: message.Message ? message.Message : '',
-      MessageType: message.MessageType,
-      URL: message.URL,
-      FileName: fileName,
-      FileExtension: fileExtension,
-      TopicCode: this.topicCode,
-      TopicID: this.topicID,
-      GroupID: this.groupID,
-    };
-
-    this.connection.doPost('Chat/InsertChat', params, false).then((response: any) => {
-      //send Push
-      if (Global.Push.OneSignal) {
-        this.sendPushNotification(message, response.OneSignalTransaction);
-      }
-      //managing firebase count
-      if (response.FireBaseTransaction) {
-        this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { })
-      }
-    }).catch(error => {
-=======
     return new Promise((resolve, reject) => {
       // get live chat users
       let userChattingNow = this.userChatting;
@@ -1854,7 +1681,6 @@ export class ChatPage {
         fileExtension = message.URL.substring(message.URL.lastIndexOf('.') + 1);
         fileName = message.URL.substring(message.URL.lastIndexOf('/') + 1).replace('.' + fileExtension, '');
       }
->>>>>>> master
 
       let params = {
         LiveUsersOnChat: activeUserList,
@@ -2126,11 +1952,6 @@ export class ChatPage {
     chatReadModal.present();
   }
 
-<<<<<<< HEAD
-  openChatOptions() {
-    let params = {
-      data: this.data,
-=======
   headerOptions(event) {
     switch (event.name) {
       case 'ios-information-circle-outline':
@@ -2158,17 +1979,13 @@ export class ChatPage {
     let params = {
       data: this.data,
       reminders: this.reminders,
->>>>>>> master
       path: this.dataDirectory,
       folder: this.topicCode,
       group_name: this.group_name,
     }
     let chatOptionModal = this.modal.create(ChatOptionsPage, params);
     chatOptionModal.onDidDismiss(data => {
-<<<<<<< HEAD
-=======
       this.setTitle();
->>>>>>> master
       if (!_.isEmpty(data)) {
         //need to re-init
         if (data.reInitData) {
@@ -2178,72 +1995,12 @@ export class ChatPage {
               this.openChatOptions();
             }
           }).catch(error => {
-<<<<<<< HEAD
-           });
-=======
           });
->>>>>>> master
         }
       }
     });
     chatOptionModal.present();
   }
-<<<<<<< HEAD
-
-  openSavedMedia(event) {
-    switch (event.name) {
-      case 'open-media':
-        let params = {
-          path: this.dataDirectory,
-          folder: this.topicCode,
-        };
-        let savedMediaModal = this.modal.create(SavedMediaPage, params);
-        savedMediaModal.onDidDismiss(data => {
-
-        });
-        savedMediaModal.present();
-        break;
-
-      case 'options':
-        let actionSheet = this.actionSheetCtrl.create({
-          title: 'Do You Want to Close ',
-          buttons: [
-            {
-              text: 'Close it now!',
-              role: 'destructive',
-              handler: () => {
-                this.connection.doPost('Chat/UpdateTopicStatus', {
-                  GroupID: this.groupID,
-                  TopicID: this.topicID,
-                  StatusID: 2
-                }).then((response: any) => {
-                  this.data.StatusID = 2;
-                  this.headerButtons.pop();
-
-                  if (response.Data.Message) {
-                    this.events.publish('toast:create', response.Data.Message);
-                  }
-                  //firebase 
-                  if (response.FireBaseTransaction) {
-                    this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { });
-                  }
-                  //send notification
-                  if (response.OneSignalTransaction) {
-                    this._notifications.sends(response.OneSignalTransaction, 'ChatPage', {
-                      topicID: this.topicID,
-                      groupID: this.groupID,
-                    });
-                  }
-                }).catch(error => {
-                });
-              }
-            }, {
-              text: 'Cancel',
-              role: 'cancel',
-            }]
-        });
-
-=======
 
   openSavedMedia(event) {
     switch (event.name) {
@@ -2298,7 +2055,6 @@ export class ChatPage {
             }]
         });
 
->>>>>>> master
         actionSheet.present();
         break;
     }

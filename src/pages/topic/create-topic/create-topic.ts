@@ -1,21 +1,3 @@
-<<<<<<< HEAD
-import { DateValidator } from './../../../validators/date-validator';
-import { DateProvider } from './../../../providers/date/date';
-import { NotificationsProvider } from './../../../providers/notifications/notifications';
-
-import { FirebaseTransactionProvider } from './../../../providers/firebase-transaction/firebase-transaction';
-import { UserAutoCompleteService } from './user-auto-complete';
-import { Global } from './../../../app/global';
-import { ConnectionProvider } from './../../../providers/connection/connection';
-import { Component, ViewChild } from '@angular/core';
-import { IonicPage, NavController, NavParams, Events, ModalController, ViewController, DateTime } from 'ionic-angular';
-import { Validators, FormBuilder, FormGroup, FormControl } from '@angular/forms';
-import * as _ from 'underscore';
-import { AutoCompleteComponent } from 'ionic2-auto-complete-ng5';
-import * as  moment from "moment";
-
-import { ManageParticipantsPage } from "./manage-participants/manage-participants";
-=======
 import { Component, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { DateTime, Events, IonicPage, ModalController, NavController, NavParams, Platform, ViewController } from 'ionic-angular';
@@ -32,7 +14,6 @@ import { ManageParticipantsPage } from "./manage-participants/manage-participant
 import { UserAutoCompleteService } from './user-auto-complete';
 
 
->>>>>>> master
 
 
 @IonicPage()
@@ -43,10 +24,6 @@ import { UserAutoCompleteService } from './user-auto-complete';
 export class CreateTopicPage {
   @ViewChild('dueDate') dueDate: DateTime;
   hourAddition: number = 3;
-<<<<<<< HEAD
-=======
-
->>>>>>> master
   title: string = 'Create Topic';
 
   group_id: number = 0;
@@ -62,10 +39,7 @@ export class CreateTopicPage {
 
   selectedParticipant: Array<string> = [];
   participantsName: any = {};
-<<<<<<< HEAD
-=======
   participantsCount : number = 0;
->>>>>>> master
   global: any = {};
 
   createForm: FormGroup;
@@ -82,10 +56,7 @@ export class CreateTopicPage {
     private notifications: NotificationsProvider,
     private _date: DateProvider,
     private viewController: ViewController,
-<<<<<<< HEAD
-=======
     private platform: Platform,
->>>>>>> master
   ) {
     this.group_id = this.navParams.data.group_id;
     this.group_name = this.navParams.data.group_name;
@@ -100,11 +71,7 @@ export class CreateTopicPage {
     this.createForm = this.formBuilder.group({
       private: [true],
       group_id: [''],
-<<<<<<< HEAD
-      name: ['', [Validators.required]],
-=======
       name: ['', [Validators.required, Validators.maxLength(60)]],
->>>>>>> master
       assigned: [0, [Validators.required]],
       participants: [''],
       due_date: new FormControl(moment().local().add(this.hourAddition, 'hours').format())
@@ -122,11 +89,7 @@ export class CreateTopicPage {
     this.dueDate.mode = 'ios';
   }
 
-<<<<<<< HEAD
-  subTitle() {
-=======
   getSubTitle() {
->>>>>>> master
     let subTitle = '';
 
     if (this.topic_name) {
@@ -159,10 +122,6 @@ export class CreateTopicPage {
         }
       }
     }).catch(error => {
-<<<<<<< HEAD
-      console.log(error);
-=======
->>>>>>> master
     })
   }
 
@@ -241,10 +200,7 @@ export class CreateTopicPage {
         UserList: _.uniq(userList).join(','),
         StatusID: 1,
         Responsibles: this.createForm.get('assigned').value,
-<<<<<<< HEAD
-=======
         IsWeb: this.platform.is('core'),
->>>>>>> master
       }, 'creating topic').then((response: any) => {
         if (('Status' in response) && response.Status === 0) {
           this.events.publish('toast:error', response.Message);
@@ -281,23 +237,14 @@ export class CreateTopicPage {
     });
 
     modal.onDidDismiss(data => {
-<<<<<<< HEAD
-      if (data) {
-=======
       this.setTitle();
       if (data) {
     this.participantsCount = data.selectedParticipantIDs.length;
->>>>>>> master
         this.selectedParticipantIDs = data.selectedParticipantIDs;
         this.createForm.patchValue({
           assigned: data.assigned
         });
         this.setSelectedParticipants();
-<<<<<<< HEAD
-        
-=======
-
->>>>>>> master
       }
     });
     modal.present();
@@ -314,8 +261,6 @@ export class CreateTopicPage {
   getErrorMessage() {
     return 'Due date should be more than ' + moment().add(this.hourAddition - 1, 'hours').format('h A');
   }
-<<<<<<< HEAD
-=======
 
   setTitle() {
     this.title = null;
@@ -327,5 +272,4 @@ export class CreateTopicPage {
   getTitle() {
     return this.title;
   }
->>>>>>> master
 }

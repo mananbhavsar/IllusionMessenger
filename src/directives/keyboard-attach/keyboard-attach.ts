@@ -1,11 +1,7 @@
 import { Directive, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
 import { Keyboard } from '@ionic-native/keyboard';
-<<<<<<< HEAD
-import { Subscription } from 'rxjs/Rx';
-=======
 import { Content, Platform } from 'ionic-angular';
 import { timer } from 'rxjs/observable/timer';
->>>>>>> master
 
 
 @Directive({
@@ -24,27 +20,6 @@ export class KeyboardAttachDirective implements OnInit, OnDestroy {
         private platform: Platform
     ) { }
 
-<<<<<<< HEAD
-  constructor(
-    private elementRef: ElementRef,
-    private platform: Platform,
-    private keyboard: Keyboard
-  ) {
-      if (this.platform.is('cordova') && this.platform.is('ios')) {
-      this.onShowSubscription = this.keyboard.onKeyboardShow().subscribe(e => this.onShow(e));
-      this.onHideSubscription = this.keyboard.onKeyboardHide().subscribe(() => this.onHide());      
-    }
-  
-  }
-
-  ngOnDestroy() {
-      if (this.onShowSubscription) {
-      this.onShowSubscription.unsubscribe();
-      
-    }
-    if (this.onHideSubscription) {
-      this.onHideSubscription.unsubscribe();
-=======
     ngOnInit() {
         if (this.platform.is('cordova') && this.platform.is('ios')) {
             this.onShowSubscription = this.keyboard.onKeyboardShow().subscribe(e => this.onShow(e));
@@ -56,7 +31,6 @@ export class KeyboardAttachDirective implements OnInit, OnDestroy {
         if (this.onShowSubscription) this.onShowSubscription.unsubscribe();
         if (this.onShowWindowSubscription) this.onShowWindowSubscription.unsubscribe();
         if (this.onHideSubscription) this.onHideSubscription.unsubscribe();
->>>>>>> master
     }
 
     private onShow(e) {

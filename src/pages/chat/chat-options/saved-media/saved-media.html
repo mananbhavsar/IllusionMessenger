@@ -1,9 +1,5 @@
 <ion-header no-border>
-<<<<<<< HEAD
-  <modal-toolbar [title]="'ChatScreen._SavedMedia_' | translate" (dismiss)="dismiss($event)"></modal-toolbar>
-=======
   <modal-toolbar [title]="'ChatScreen._SavedMedia_' | translate" [subTitle]="topic_group_name" (dismiss)="dismiss($event)"></modal-toolbar>
->>>>>>> master
   <ion-toolbar>
     <ion-segment padding mode="ios" [(ngModel)]="selectedTab" color="primary" (ionChange)="segmentChanged($event)">
       <ion-segment-button value="image">

@@ -3,22 +3,6 @@
     Flash News
   </ion-item-divider>
   <ion-slides autoplay="5000" [loop]="true" pager="true" #slides>
-<<<<<<< HEAD
-    <ion-slide *ngFor="let flashNews of flashes;trackBy:getFlashID">
-      <h1>{{flashNews.Flash}}</h1>
-      <p>
-        <ion-row>
-          <ion-col text-left>
-            <ion-icon name="ios-person"></ion-icon>
-            {{flashNews.CreatedBy}}
-          </ion-col>
-          <ion-col text-right>
-            <ion-icon name="ios-clock"></ion-icon>
-            {{flashNews.StartDate_UTC | time}}
-          </ion-col>
-        </ion-row>
-      </p>
-=======
     <ion-slide (tap)="openFlashNews($event,flashNews,GroupID)" GroupID="GroupID"  *ngFor="let flashNews of flashes;trackBy:getFlashID">
         <h1>{{flashNews.Flash}}
             <ion-icon *ngIf="flashNews.AttachmentCount > 0" (click)="openFlashNews($event,flashNews,GroupID)" color="primary" name="ios-attach"></ion-icon>
@@ -35,7 +19,6 @@
             </ion-col>
           </ion-row>
         </p>
->>>>>>> master
     </ion-slide>
   </ion-slides>
 </div>

@@ -15,6 +15,7 @@
     },
     "HomeScreen": {
         "_Home_": "Accueil",
+        "_forms_": "Formes"
         "_Dashboard_": "Tableau de bord",
         "_ManageGroup_" : "Gérer le groupe",
         "_DashboardSummary_": "Votre tableau de bord analytique",

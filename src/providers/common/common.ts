@@ -27,8 +27,6 @@ export class CommonProvider {
       .map(k => esc(k) + '=' + esc(params[k]))
       .join('&');
   }
-<<<<<<< HEAD
-=======
 
   hasClass(element, cls) {
     if (element && cls) {
@@ -52,6 +50,5 @@ export class CommonProvider {
     }
     return joined;
   }
->>>>>>> master
 
 }

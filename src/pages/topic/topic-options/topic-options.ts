@@ -19,10 +19,6 @@ export class TopicOptionsPage {
   }
 
   ionViewDidLoad() {
-<<<<<<< HEAD
-    console.log('ionViewDidLoad TopicOptionsPage');
-=======
->>>>>>> master
   }
 
 }

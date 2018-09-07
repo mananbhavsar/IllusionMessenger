@@ -1,30 +1,18 @@
 import { Injectable } from '@angular/core';
 import { Badge } from '@ionic-native/badge';
 import { Storage } from '@ionic/storage';
-<<<<<<< HEAD
-import { TranslateService } from '@ngx-translate/core';
-import { AngularFireDatabase } from 'angularfire2/database';
-=======
 import * as firebase from 'firebase';
->>>>>>> master
 import { AlertController, Events, Platform } from 'ionic-angular';
 import 'rxjs/add/operator/map';
 import * as _ from 'underscore';
 import { Global } from "../../app/global";
 import { ConnectionProvider } from '../connection/connection';
 import { FirebaseTransactionProvider } from "../firebase-transaction/firebase-transaction";
-<<<<<<< HEAD
-
-
-
-
-=======
 import { TranslateServiceProvider } from '../translate-service/translate-service';
 
 
 
 
->>>>>>> master
 
 @Injectable()
 export class UserProvider {
@@ -37,17 +25,11 @@ export class UserProvider {
     bye_bye_translate: string = 'Good bye see you soon';
     logging_you_in_translate: string = 'Logging you in';
     login_failed_translate: string = 'Login Failed';
-<<<<<<< HEAD
-    isFromMobile: boolean = true;
-    totalBadgeCount: number = 0;
-
-=======
 
     //total badge count
     totalBadgeCount: number = 0;
     //firebase activity flag
     LoadFirebaseData: boolean = true;
->>>>>>> master
     constructor(
         public events: Events,
         public storage: Storage,
@@ -74,10 +56,6 @@ export class UserProvider {
             this.isFromMobile = false;
         }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> master
         setTimeout(() => {
             this.doTranslate();
         });
@@ -198,16 +176,9 @@ export class UserProvider {
                 this.connection.doPost('Chat/RegisterDevice', {
                     DeviceID: push_id,
                     IsLogin: push_id !== '',
-<<<<<<< HEAD
-                    IsFromMobile: this.isFromMobile
-                }, false).then((response: any) => {
-                    console.log(response);
-
-=======
                     IsFromMobile: this.isFromMobile,
                     LoadFirebaseData: firebaseDataNeeded,
                 }, false).then((response: any) => {
->>>>>>> master
                     //LogOutForcefully
                     if (response.Data.LogOutForcefully) {
                         if (response.Data.Message) {
@@ -216,26 +187,16 @@ export class UserProvider {
                         this.logout();
                         reject(false);
                     } else if (response.Data.Status === 0) {
-<<<<<<< HEAD
-                        this._firebaseTransaction.doTransaction(response.FireBaseTransaction).catch(error => { })
-=======
                         this._firebaseTransaction.doTransaction(response.FireBaseTransaction).catch(error => { });
->>>>>>> master
                         reject(response.Data);
                     } else {
                         //now doing firebase transaction
                         this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => {
-<<<<<<< HEAD
-                            resolve(response);
-                        }).catch(error => {
-                            if (error == 'Empty') {
-=======
                             this.LoadFirebaseData = false;
                             resolve(response);
                         }).catch(error => {
                             if (error == 'Empty') {
                                 this.LoadFirebaseData = false;
->>>>>>> master
                                 resolve(response);
                             } else {
                                 reject(error);
@@ -273,19 +234,6 @@ export class UserProvider {
         } if (this.platform.is('core')) {
             OSName = 'web';
         }
-<<<<<<< HEAD
-        this.angularFireDatabase.object('VersionOptions/' + OSName).snapshotChanges().subscribe(snapshot => {
-            let allowAlertClose = snapshot.payload.val();
-            this.angularFireDatabase.object('Version/' + OSName).snapshotChanges().subscribe(snapshot => {
-                let AppVersion = snapshot.payload.val();
-                if (AppVersion && this.global.AppVersion !== AppVersion) {
-                    let buttons: Array<any> = [
-                        {
-                            text: 'Update Now',
-                            handler: () => {
-                                window.open(this.global.APP_URL[OSName], '_system');
-                                return allowAlertClose;
-=======
         firebase.database().ref('VersionOptions/' + OSName).on('value', snapshot => {
             let allowAlertClose = snapshot.val();
             if (allowAlertClose) {
@@ -318,7 +266,6 @@ export class UserProvider {
                                 message += ' go to <b>menu</b> of Play Store, naviagte to <b>My apps & games.</b>';
                             } else {
                                 message += ' go to <b>updates tab</b> of App Store, <b>pull down refresh.</b>';
->>>>>>> master
                             }
 
                             let alert = this.alertCtrl.create({
@@ -330,27 +277,8 @@ export class UserProvider {
                             alert.present();
                         }
                     }
-<<<<<<< HEAD
-                    let message = 'There is a new version available, kindly update your application now. <br/><br/>Note: if <b>open</b> button is present instead of <b>update</b>,';
-                    if (OSName === 'android') {
-                        message += ' go to <b>menu</b> of Play Store, naviagte to <b>My apps & games.</b>';
-                    } else {
-                        message += ' go to <b>updates tab</b> of App Store, <b>pull down refresh.</b>';
-                    }
-
-                    let alert = this.alertCtrl.create({
-                        // enableBackdropDismiss: allowAlertClose,
-                        title: 'Version Update Available',
-                        message: message,
-                        buttons: buttons
-                    });
-                    alert.present();
-                }
-            });
-=======
                 });
             }
->>>>>>> master
         });
     }
 

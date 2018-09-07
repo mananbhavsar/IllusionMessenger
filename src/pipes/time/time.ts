@@ -1,14 +1,7 @@
-<<<<<<< HEAD
-import { DateProvider } from './../../providers/date/date';
-import { Pipe, PipeTransform } from '@angular/core';
-
-import * as moment from 'moment';
-=======
 import { Pipe, PipeTransform } from '@angular/core';
 import * as moment from 'moment';
 import { DateProvider } from './../../providers/date/date';
 
->>>>>>> master
 @Pipe({
   name: 'time',
 })
@@ -18,11 +11,6 @@ export class TimePipe implements PipeTransform {
   ) {
 
   }
-<<<<<<< HEAD
-  transform(value: string, avoidExtra: boolean = false) {
-    if (value && moment(value).isValid()) {
-      return this._date.get(value);
-=======
   transform(value: string, aging: boolean = false, timeAgo: boolean = false) {
     if (value && moment(value).isValid()) {
       let date = this._date.get(value);
@@ -54,7 +42,6 @@ export class TimePipe implements PipeTransform {
 
       }
       return date;
->>>>>>> master
     }
     return value;
   }

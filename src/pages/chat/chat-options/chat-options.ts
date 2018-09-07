@@ -1,12 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
-<<<<<<< HEAD
-import { Storage } from '@ionic/storage';
-import { ActionSheetController, DateTime, Events, IonicPage, ModalController, NavController, NavParams, ViewController } from 'ionic-angular';
-=======
 import { CallNumber } from '@ionic-native/call-number';
 import { Storage } from '@ionic/storage';
 import { ActionSheetController, DateTime, Events, IonicPage, ModalController, NavController, NavParams, Platform, ViewController } from 'ionic-angular';
->>>>>>> master
 import * as moment from 'moment';
 import * as _ from 'underscore';
 import { ConnectionProvider } from '../../../providers/connection/connection';
@@ -16,10 +11,7 @@ import { UserProvider } from '../../../providers/user/user';
 import { ManageParticipantsPage } from '../../topic/create-topic/manage-participants/manage-participants';
 import { DateProvider } from './../../../providers/date/date';
 import { SavedMediaPage } from "./saved-media/saved-media";
-<<<<<<< HEAD
-=======
 import { RatingPage } from '../rating/rating';
->>>>>>> master
 
 
 
@@ -35,15 +27,11 @@ export class ChatOptionsPage {
   @ViewChild('dueDate') dueDate: DateTime;
   dueDateOpened: boolean = false;
 
-<<<<<<< HEAD
-  data: any = {}
-=======
   @ViewChild('reminder') reminder: DateTime;
   reminderOpened: boolean = false;
 
   data: any = {};
   reminders: any = [];
->>>>>>> master
   title: string = '';
   topicCode: string = null;
   topicID: string = null;
@@ -58,12 +46,9 @@ export class ChatOptionsPage {
   amIAdmin: boolean = false;
   amIResponsible: boolean = false;
   responsibleUserID: string = null;
-<<<<<<< HEAD
-=======
   isBrowser: boolean = false;
   groupMemberCount: number = 0;
   value:number;
->>>>>>> master
 
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
@@ -72,20 +57,12 @@ export class ChatOptionsPage {
     public connection: ConnectionProvider,
     public user: UserProvider,
     public events: Events,
-<<<<<<< HEAD
-=======
     public platform: Platform,
->>>>>>> master
     private _firebaseTransaction: FirebaseTransactionProvider,
     private _notifications: NotificationsProvider,
     public storage: Storage,
     private viewController: ViewController,
     private _date: DateProvider,
-<<<<<<< HEAD
-  ) {
-    this.data = this.navParams.data.data;
-    this.title = this.navParams.data.data.Topic + '\'s options';
-=======
     private callNumber: CallNumber
   ) {
     this.data = this.navParams.data.data;
@@ -93,17 +70,10 @@ export class ChatOptionsPage {
 
     this.reminders = this.navParams.data.reminders || [];
 
->>>>>>> master
     this.topicID = this.navParams.data.data.TopicID;
     this.groupID = this.navParams.data.data.GroupID;
     this.statusID = this.navParams.data.data.StatusID;
     this.topicCode = this.navParams.data.folder;
-<<<<<<< HEAD
-
-    this.path = this.navParams.data.path;
-    this.group_name = this.navParams.data.group_name;
-
-=======
     this.path = this.navParams.data.path;
     this.group_name = this.navParams.data.group_name;
     this.isBrowser = this.platform.is('core');
@@ -112,7 +82,6 @@ export class ChatOptionsPage {
 
 
     this.setTitle();
->>>>>>> master
     this.processParticipants();
   }
 
@@ -154,17 +123,11 @@ export class ChatOptionsPage {
 
     let savedMediaModal = this.modal.create(SavedMediaPage, params);
     savedMediaModal.onDidDismiss(data => {
-<<<<<<< HEAD
-
-=======
       this.setTitle();
->>>>>>> master
     });
     savedMediaModal.present();
   }
 
-<<<<<<< HEAD
-=======
   closureRequest() {
     if (this.amIResponsible) {
       let actionSheet = this.actionSheetCtrl.create({
@@ -232,7 +195,6 @@ export class ChatOptionsPage {
     return false;
   }
 
->>>>>>> master
   rescheduleTopic() {
     this.dueDate.mode = 'ios';
     this.dueDate.setValue(this._date.fromServerFormat(this.data.DueDate_UTC).format());
@@ -294,35 +256,6 @@ export class ChatOptionsPage {
           text: 'Close it now!',
           role: 'destructive',
           handler: () => {
-<<<<<<< HEAD
-            this.connection.doPost('Chat/UpdateTopicStatus', {
-              GroupID: this.groupID,
-              TopicID: this.topicID,
-              StatusID: 2
-            }).then((response: any) => {
-              this.data.StatusID = 2;
-
-              if (this.data.StatusID = 2) {
-                this.closeButton = true;
-                this.data.CloseDatime_UTC = this._date.toUTCISOString(new Date(), false);
-              }
-              if (response.Data.Message) {
-                this.events.publish('toast:create', response.Data.Message);
-              }
-              //firebase 
-              if (response.FireBaseTransaction) {
-                this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { });
-              }
-              //send notification
-              if (response.OneSignalTransaction) {
-                this._notifications.sends(response.OneSignalTransaction, 'ChatPage', {
-                  topicID: this.topicID,
-                  groupID: this.groupID,
-                });
-              }
-            }).catch(error => {
-            });
-=======
             let modal = this.modal.create(RatingPage, {
             });
             modal.onDidDismiss(data => {
@@ -360,7 +293,6 @@ export class ChatOptionsPage {
               }
             });
             modal.present();
->>>>>>> master
           }
         }, {
           text: 'Cancel',
@@ -370,8 +302,6 @@ export class ChatOptionsPage {
     actionSheet.present();
   }
 
-<<<<<<< HEAD
-=======
   openReminder(event) {
     event.preventDefault();
     event.stopPropagation();
@@ -452,7 +382,6 @@ export class ChatOptionsPage {
     });
   }
 
->>>>>>> master
   dismiss(data) {
     this.viewController.dismiss(data);
   }
@@ -461,63 +390,6 @@ export class ChatOptionsPage {
     //only if I'm admin
     if (this.amIAdmin && this.statusID === 1) {
       let buttons = [];
-<<<<<<< HEAD
-      if (participant.UserID !== this.connection.user.LoginUserID) {//can't remove/add self
-        //making user reposnsible
-        if (!participant.IsResponsible) {
-          buttons.push({
-            text: 'Mark Responsible',
-            handler: () => {
-              this.markResponsible(participant, index);
-            }
-          });
-        }
-        //make, remove admin
-        if (participant.IsAdmin) {
-          //if not by created
-          if (participant.UserID !== this.data.CreatedByID)
-            buttons.push({
-              role: 'destructive',
-              text: 'Remove as Admin',
-              handler: () => {
-                this.removeAsAdmin(participant, index);
-              }
-            });
-        } else {
-          buttons.push({
-            text: 'Make Admin',
-            handler: () => {
-              this.makeAsAdmin(participant, index);
-            }
-          });
-        }
-        //remove from user 
-        if (!participant.IsResponsible && participant.UserID !== this.data.CreatedByID) {//if not responsible or created by
-          buttons.push({
-            role: 'destructive',
-            text: 'Remove from Topic',
-            handler: () => {
-              this.removeFromTopic(participant, index);
-            }
-          });
-        }
-      }
-
-      if (buttons.length) { //at least on button other than cancel
-        //cancel button
-        buttons.push({
-          role: 'cancel',
-          text: 'Cancel',
-          handler: () => {
-
-          }
-        });
-        let userOptionActionSheet = this.actionSheetCtrl.create({
-          title: 'Take Action',
-          buttons: buttons
-        });
-        userOptionActionSheet.present();
-=======
       if (participant.IsResponsible) {
         return false;
       } else {
@@ -578,7 +450,6 @@ export class ChatOptionsPage {
 
           userOptionActionSheet.present();
         }
->>>>>>> master
       }
     }
   }
@@ -750,10 +621,7 @@ export class ChatOptionsPage {
         });
 
         modal.onDidDismiss(data => {
-<<<<<<< HEAD
-=======
           this.setTitle();
->>>>>>> master
           if (data) {
             //saving new users
             this.connection.doPost('Chat/Add_Participant', {
@@ -806,8 +674,6 @@ export class ChatOptionsPage {
   getTagColor(id) {
     return 'tag-' + (id % 10);
   }
-<<<<<<< HEAD
-=======
 
   setTitle() {
     this.title = null;
@@ -823,5 +689,4 @@ export class ChatOptionsPage {
   trackByUserID(index, user) {
     return user.UserID;
   }
->>>>>>> master
 }

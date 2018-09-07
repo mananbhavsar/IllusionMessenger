@@ -1,10 +1,4 @@
-<<<<<<< HEAD
-import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { NavController, Events } from 'ionic-angular';
-
-=======
 import { Component, EventEmitter, Input, Output } from '@angular/core';
->>>>>>> master
 import { StatusBar } from '@ionic-native/status-bar';
 import { Events, NavController } from 'ionic-angular';
 import { Global } from "../../app/global";
@@ -15,10 +9,7 @@ import { Global } from "../../app/global";
     templateUrl: 'header.html'
 })
 export class HeaderComponent {
-<<<<<<< HEAD
-=======
     @Input() title: string = null;
->>>>>>> master
     @Input() subTitle: string = null;
     @Input() buttons: any = null;
     @Output() buttonClicked = new EventEmitter();

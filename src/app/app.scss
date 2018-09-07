@@ -17,10 +17,6 @@
     font-weight: 300;
 }
 
-<<<<<<< HEAD
-@import "../../node_modules/ionic2-auto-complete-ng5/auto-complete";
-=======
->>>>>>> master
 /*
 Platform Wide styles
 */
@@ -222,34 +218,14 @@ ion-item-divider {
     }
 }
 
-<<<<<<< HEAD
-@mixin repeat($character,
-$times) {
-    $result: "";
-    @for $i from 0 through $times {
-        $result: $result + $character;
-    }
-    return {
-        content: $result
-    }
-}
-
-.reschedule-count {
-    @for $i from 0 through 10 {
-        &.reschedule-count-#{$i}::after {
-            @include repeat('*', $i);
-=======
 .reschedule-count {
     @for $i from 0 through 10 {
         &.reschedule-count-#{$i}::after {
             content: repeat($i, '*');
->>>>>>> master
         }
     }
 }
 
-<<<<<<< HEAD
-=======
 .badge-md {
     border-radius: 10px;
 }
@@ -263,4 +239,3 @@ button {
         }
     }
 }
->>>>>>> master

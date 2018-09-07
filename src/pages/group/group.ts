@@ -9,10 +9,7 @@ import { ChatPage } from './../chat/chat';
 import { GroupOptionsPage } from './../group/group-options/group-options';
 import { CloseTopicPage } from './../topic/close-topic/close-topic';
 import { CreateTopicPage } from './../topic/create-topic/create-topic';
-<<<<<<< HEAD
-=======
 import { FlashNewsProvider } from '../../providers/flash-news/flash-news';
->>>>>>> master
 
 
 @IonicPage()
@@ -25,18 +22,11 @@ export class GroupPage {
 
   group_id: number = 0;
   title: string = '';
-<<<<<<< HEAD
-  group: any = {};
-  badges: any = {};
-  page: number = 0;
-
-=======
   group: any = [];
   badges: any = {};
   page: number = 0;
   query: string;
   searchInputBtn: boolean = false;
->>>>>>> master
 
   //sort option
   sort_by: string = 'CreationDate';
@@ -47,48 +37,16 @@ export class GroupPage {
     private connection: ConnectionProvider,
     private _date: DateProvider,
     private modalController: ModalController,
-<<<<<<< HEAD
-    private actionSheetController: ActionSheetController,
-  ) {
-    this.title = this.navParams.data.Group;
-    this.group_id = this.navParams.data.GroupID;
-  }
-
-  ionViewDidEnter() {
-    this.getGroupDetails().then(status => {
-
-    }).catch(error => {
-
-    });
-=======
     public flashNewsProvider: FlashNewsProvider,
     private actionSheetController: ActionSheetController,
   ) {
     this.group_id = this.navParams.data.GroupID;
     this.setTitle();
     this.getGroupDetails();
->>>>>>> master
   }
 
   getGroupDetails() {
     return new Promise((resolve, reject) => {
-<<<<<<< HEAD
-      this.connection.doPost('Chat/GetGroupDetail', {
-        GroupID: this.group_id,
-        PageNumber: this.page,
-        RowsPerPage: 20,
-        Query: '',
-        OrderBy: this.sort_by,
-        Order: this.sort_order,
-      }, false).then((response: any) => {
-        this.group = response;
-
-        this.setForBadge();
-        resolve(true);
-      }).catch(error => {
-        reject(error);
-      });
-=======
       if (this.page === -1) {
         reject();
       } else {
@@ -123,7 +81,6 @@ export class GroupPage {
           resolve(false);
         });
       }
->>>>>>> master
     });
   }
 
@@ -152,8 +109,6 @@ export class GroupPage {
     })
   }
 
-<<<<<<< HEAD
-=======
   paginate(paginator) {
     this.getGroupDetails().then(status => {
       if (status) {
@@ -166,7 +121,6 @@ export class GroupPage {
     });
   }
 
->>>>>>> master
   isExpired(date) {
     if (moment(date).isValid() && Math.abs(moment().diff(moment(date), 'years')) < 20) {
       return (new Date().getTime() - this._date.fromServerFormat(date).toDate().getTime()) > 0;
@@ -191,18 +145,10 @@ export class GroupPage {
     return _.isEmpty(object);
   }
 
-<<<<<<< HEAD
-  openTopic(topic, index, type) {
-    if (topic) {
-      if (topic.Count) {
-        topic.Count = 0;
-        console.log(this.group, type);
-=======
   openGeneralTopic(topic, index, type) {
     if (topic) {
       if (topic.Count) {
         topic.Count = 0;
->>>>>>> master
         this.group[type].Count = 0;
       }
       this.navCtrl.push(ChatPage, {
@@ -212,8 +158,6 @@ export class GroupPage {
     }
   }
 
-<<<<<<< HEAD
-=======
   topicCliked(event) {
     if (event && event.topic) {
       if (event.topic.Count) {
@@ -225,7 +169,6 @@ export class GroupPage {
     }
   }
 
->>>>>>> master
   viewAllClosedTopics() {
     let closeTopicModal = this.modalController.create(CloseTopicPage, {
       group_id: this.group_id,
@@ -233,10 +176,7 @@ export class GroupPage {
       group_code: this.group['GroupDetail'][0].GroupCode,
     });
     closeTopicModal.onDidDismiss(data => {
-<<<<<<< HEAD
-=======
       this.setTitle();
->>>>>>> master
       //refresh page
       this.page = 0;//to keep consistency
       this.getGroupDetails().catch(erroe => {
@@ -254,12 +194,6 @@ export class GroupPage {
 
       case 'create-topic':
         this.navCtrl.push(CreateTopicPage, this.group_id);
-<<<<<<< HEAD
-        break
-    }
-  }
-
-=======
         break;
 
       case 'search':
@@ -314,17 +248,13 @@ export class GroupPage {
 
 
 
->>>>>>> master
   openGroupOptions(event) {
     let groupOptionsModal = this.modalController.create(GroupOptionsPage, {
       group_id: this.group_id,
       group_name: this.title,
     });
     groupOptionsModal.onDidDismiss(data => {
-<<<<<<< HEAD
-=======
       this.setTitle();
->>>>>>> master
       if (data) {
         this.group = [];
         this.page = 0;
@@ -386,8 +316,6 @@ export class GroupPage {
     this.page = 0;
     this.getGroupDetails();
   }
-<<<<<<< HEAD
-=======
 
   setTitle() {
     this.title = null;
@@ -399,5 +327,4 @@ export class GroupPage {
   getTitle() {
     return this.title;
   }
->>>>>>> master
 }

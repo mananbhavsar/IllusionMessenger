@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-<ion-row class="attachments">
-=======
 <ion-row class="attachments" *ngIf="editable && (!isBrowser)">
   <ion-col showWhen="android" col-4>
     <button block ion-button color="primary" (click)="capture('file')">
@@ -12,7 +9,6 @@
       </div>
     </button>
   </ion-col>
->>>>>>> master
   <ion-col>
     <button block ion-button color="primary" (click)="capture('image')">
       <div>
@@ -34,8 +30,6 @@
     </button>
   </ion-col>
 </ion-row>
-<<<<<<< HEAD
-=======
 <ion-row *ngIf="editable && isBrowser">
   <button ion-button icon-start class="upload">
     <!-- file format   -->
@@ -44,16 +38,12 @@
     Choose File
   </button>
 </ion-row>
->>>>>>> master
 <div class="attachment-progress">
   <progress-bar [progress]="progresses[UUID]" *ngFor="let UUID  of progresses | keys"></progress-bar>
 </div>
 <div class="attachment-container" *ngIf="attachments">
   <div class="attachment-thumb" *ngFor="let attachment of attachments;let i = index;">
     <ion-icon name="ios-trash" (click)="removeAttachment(i)" color="danger" *ngIf="editable"></ion-icon>
-<<<<<<< HEAD
-    <img [src]="attachment.file + '_160.jpg'" width="90" height="90" (click)="openAttachment(attachment.file)" />
-=======
       <img *ngIf="attachment.FileExtension === 'pdf'" src="assets/img/pdf.png" (click)="openAttachment(attachment.VirtualPath)" width="90"
         height="90">
       <img *ngIf="attachment.FileExtension === 'png' || attachment.FileExtension === 'jpeg' || attachment.FileExtension === 'jpg'"
@@ -66,6 +56,5 @@
         width="90" height="90">
       <img *ngIf="attachment.FileExtension === 'txt'" src="assets/img/txt.png" (click)="openImage(url.VirtualPath)" width="90"
         height="90">
->>>>>>> master
   </div>
 </div>

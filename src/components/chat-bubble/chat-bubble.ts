@@ -17,16 +17,8 @@ import { TranslateServiceProvider } from '../../providers/translate-service/tran
 
 
 
-<<<<<<< HEAD
-import 'moment/locale/fr';
-import 'moment/locale/en-gb';
-import { Global } from '../../app/global';
-import { retry } from 'rxjs/operator/retry';
-import { ImageViewerController } from 'ionic-img-viewer';
-=======
 
 
->>>>>>> master
 
 
 
@@ -47,11 +39,7 @@ export class ChatBubbleComponent {
   @Input() users: any = {};
   @Input() myLanguage: string = 'en';
   @Input() responsibleUserID: number = 0;
-<<<<<<< HEAD
-
-=======
   @Input() replyMessage: string;
->>>>>>> master
   global: any = Global;
 
   pathIdentifier: string = null;
@@ -79,11 +67,7 @@ export class ChatBubbleComponent {
     private network: Network,
     private translate: TranslateServiceProvider,
     private fileOps: FileOpsProvider,
-<<<<<<< HEAD
-    
-=======
     private modal: ModalController
->>>>>>> master
   ) {
     this.global = Global;
     this.isCordova = this.platform.is('cordova');
@@ -198,9 +182,6 @@ export class ChatBubbleComponent {
       this.events.publish('toast:error', this.not_available_offline_translate);
       return;
     }
-<<<<<<< HEAD
-    let file: string = this.message.URL;
-=======
     if (this.message.MessageType === 'Text') {
       return;
     }
@@ -210,34 +191,10 @@ export class ChatBubbleComponent {
     }
     let file: string = this.message.URL;
     
->>>>>>> master
     //if already downloading
     if (this.message.downloading) {
       return;
     }
-<<<<<<< HEAD
-      let wasDownloaded = this.message.downloaded;
-      this.check(file).then(entry => {
-        if (wasDownloaded) {
-          switch (this.message.MessageType) {
-            case 'Image':
-              this.openImage();
-              break;
-
-            case 'Audio':
-              this.openAudio();
-              break;
-
-            case 'Video':
-              this.openVideo();
-              break;
-          }
-        }
-
-      }).catch(error => {
-        console.log(error);
-      });
-=======
     let wasDownloaded = this.message.downloaded;
     this.check(file).then(entry => {
       if (wasDownloaded) {
@@ -264,7 +221,6 @@ export class ChatBubbleComponent {
   openContact() {
     let modalCtrl = this.modal.create(ContactDetailPage, this.message);
     modalCtrl.present();
->>>>>>> master
   }
 
   openImage() {
@@ -279,13 +235,8 @@ export class ChatBubbleComponent {
       window.open(this.message.URL, '_blank');
     } else if (this.isCordova) {
       let options = {
-<<<<<<< HEAD
-        successCallback: () => { console.log('Audio played') },
-        errorCallback: (e) => { console.log('Error streaming') },
-=======
         successCallback: () => { },
         errorCallback: (e) => { },
->>>>>>> master
         shouldAutoClose: true,
         bgImage: 'https://s3-ap-southeast-1.amazonaws.com/eiosys/images/equilizer.gif',
       };
@@ -298,14 +249,8 @@ export class ChatBubbleComponent {
       window.open(this.message.URL, '_blank');
     } else if (this.isCordova) {
       let options = {
-<<<<<<< HEAD
-        successCallback: () => { console.log('Video played') },
-        errorCallback: (e) => {
-          console.log(e);
-=======
         successCallback: () => { },
         errorCallback: (e) => {
->>>>>>> master
           return false;
         },
         shouldAutoClose: true,
@@ -326,20 +271,12 @@ export class ChatBubbleComponent {
         }).catch(error => {
           this.message.downloading = true;
           this.fileOps.downloadFile(file, this.downloadDirectory).then((entry: any) => {
-<<<<<<< HEAD
-            this.message.nativeURL = this.fileOps.getNativeURL(file, this.downloadDirectory);
-=======
             this.message.nativeURL = this.fileOps.getNativeURL(file, this.downloadDirectory).replace(/^file:\/\//, '');;
->>>>>>> master
             this.message.downloading = false;
             this.message.downloaded = true;
 
             this.subscribeToFileDelete(file);
             setTimeout(() => {
-<<<<<<< HEAD
-              console.log(entry);
-=======
->>>>>>> master
               resolve(entry);
             });
           }).catch(error => {
@@ -347,10 +284,6 @@ export class ChatBubbleComponent {
             this.message.downloaded = false;
             this.message['error'] = error;
             this.events.publish('toast:error', error);
-<<<<<<< HEAD
-            reject(error);
-=======
->>>>>>> master
           })
         });
       }
@@ -380,11 +313,7 @@ export class ChatBubbleComponent {
           }
         });
       } else {
-<<<<<<< HEAD
-        this.message['downloaded'] = false;
-=======
         this.message['downloaded'] = true;
->>>>>>> master
         this.message.nativeURL = this.message.URL;
       }
     } else {

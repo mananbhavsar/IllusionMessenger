@@ -1,13 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import * as _ from "underscore";
 
-<<<<<<< HEAD
-import * as _ from "underscore";
-import { retry } from 'rxjs/operators/retry';
-/**
-=======
 /*
->>>>>>> master
  * Generated class for the ObjectFilterPipe pipe.
  *
  * See https://angular.io/api/core/Pipe for more info on Angular Pipes.

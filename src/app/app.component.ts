@@ -29,6 +29,7 @@ import { TranslateServiceProvider } from '../providers/translate-service/transla
 import { UserProvider } from '../providers/user/user';
 import { GroupPage } from './../pages/group/group';
 import { Global } from './global';
+import { FormsPage } from '../pages/forms/forms';
 
 export const firebaseConfig = {
     apiKey: "AIzaSyAFDZ9UPTMiDTjT4qAG0d9uVeOdhL-2PBw",
@@ -77,7 +78,8 @@ export class MyApp {
         { title: 'Home', translate_key: 'HomeScreen._Home_', name: 'HomePage', component: HomePage, icon: 'home' },
         { title: 'Manage Group', translate_key: 'HomeScreen._ManageGroup_', name: 'ManageGroupPage', component: ManageGroupPage, icon: 'people' },
         { title: 'Tag', translate_key: 'HomeScreen._Tag_', name: 'TagPage', component: TagPage, icon: 'tab' },
-        { title: 'Users', translate_key: 'HomeScreen._users_', name: 'UsersPage', component: UsersPage, icon: 'person' }
+        { title: 'Users', translate_key: 'HomeScreen._users_', name: 'UsersPage', component: UsersPage, icon: 'person' },
+        { title: 'Forms', translate_key: 'HomeScreen._forms_', name: 'FormsPage', component: FormsPage, icon: 'paper' }        
     ];
     accountPages: PageInterface[] = [
         { title: 'Account', translate_key: 'Common._Account_', name: 'AccountPage', component: AccountPage, icon: 'user' },
@@ -102,7 +104,6 @@ export class MyApp {
         public events: Events,
         public menu: MenuController,
         public platform: Platform,
-        private ringtones: NativeRingtones,
         private _statusBar: StatusBar,
         public storage: Storage,
         private connection: ConnectionProvider,
@@ -503,7 +504,6 @@ export class MyApp {
             });
             notificationToast.onDidDismiss((data, role) => {
                 if (role === 'close') {
-                    this.ringtones.stopRingtone('../assets/ringtones/notification-ringtone.mp3');
                     this.openNotificationPage(payload);
                 }
             });

@@ -1,24 +1,9 @@
 import { Storage } from '@ionic/storage';
 import { Injectable } from '@angular/core';
-<<<<<<< HEAD
-import { Platform, Events, normalizeURL } from 'ionic-angular';
-
-import * as _ from 'underscore';
-import { Camera, CameraOptions } from '@ionic-native/camera';
-import * as mime from 'mime-types';
-import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer';
-import { File } from '@ionic-native/file';
-import { StreamingMedia, StreamingVideoOptions } from '@ionic-native/streaming-media';
-
-import { Network } from '@ionic-native/network';
-import { AndroidPermissions } from '@ionic-native/android-permissions';
-
-=======
 import { AndroidPermissions } from '@ionic-native/android-permissions';
 import { Camera, CameraOptions } from '@ionic-native/camera';
 import { File, FileEntry } from '@ionic-native/file';
 import { FileChooser } from '@ionic-native/file-chooser';
->>>>>>> master
 import { FileOpener } from '@ionic-native/file-opener';
 import { FilePath } from '@ionic-native/file-path';
 import { FileTransfer, FileTransferObject, FileUploadOptions } from '@ionic-native/file-transfer';
@@ -39,12 +24,7 @@ export class FileOpsProvider {
   directory: string = null;
   progressPercent: number = 0;
   isCordova: boolean = false;
-<<<<<<< HEAD
-  progressPercent: number = 0;
-
-=======
   //camera
->>>>>>> master
   private cameraOptions: CameraOptions = {
     quality: 80,
     destinationType: this.camera.DestinationType.FILE_URI,
@@ -65,8 +45,6 @@ export class FileOpsProvider {
     mediaType: this.camera.MediaType.PICTURE
   }
 
-<<<<<<< HEAD
-=======
 
   private allowedMimes = [
     'application/pdf', 'image/png', 'image/jpeg',
@@ -74,7 +52,6 @@ export class FileOpsProvider {
     // 'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
     'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
   ];
->>>>>>> master
 
   constructor(
     private network: Network,
@@ -85,13 +62,9 @@ export class FileOpsProvider {
     private events: Events,
     public camera : Camera,
     private fileOpener: FileOpener,
-<<<<<<< HEAD
-=======
     private fileChooser: FileChooser,
-    private camera: Camera,
     private filePath: FilePath,
     private common: CommonProvider,
->>>>>>> master
     private androidPermissions: AndroidPermissions,
   ) {
     this.isIOS = this.platform.is('ios');
@@ -133,21 +106,11 @@ export class FileOpsProvider {
                   });
                 }
               }, error => {
-<<<<<<< HEAD
-                console.log(error);
-                reject('Permission reject to write files');
-              });
-            }
-          }, error => {
-            console.log(error);
-
-=======
                 reject('Permission rejected to write files');
               });
             }
           }, error => {
             reject('Permission rejected to write files');
->>>>>>> master
           });
 
         } else { //iOS
@@ -291,14 +254,6 @@ export class FileOpsProvider {
     });
   }
 
-<<<<<<< HEAD
-  uploadFile(file, params, identifier) {
-    return new Promise((resolve, reject) => {
-      let fileName = this.getFileName(file);
-      const fileTransfer: FileTransferObject = this.transfer.create();
-
-      fileTransfer.upload(file, Global.SERVER_URL + 'Communication/InsertChat_Attachement', this.setFileOptions(file, params)).then(data => {
-=======
 
   uploadFile(file, identifier, params: any = {}) {
     return new Promise((resolve, reject) => {
@@ -308,7 +263,6 @@ export class FileOpsProvider {
 
       fileTransfer.upload(file, Global.SERVER_URL + 'Chat/CreateFlashNews_Attachement', options).then(data => {
 
->>>>>>> master
         if (data.response.indexOf('http') === -1) {
           reject(data);
         } else if (data.response.indexOf('>') > -1) {
@@ -334,13 +288,7 @@ export class FileOpsProvider {
     });
   }
 
-<<<<<<< HEAD
-
-  
-  setFileOptions(file, params = {}): FileUploadOptions {
-=======
   setFileOptions(file, params: any = {}): FileUploadOptions {
->>>>>>> master
     //removing ? if any
     if (file.indexOf('?') === -1) {
       file += '?';
@@ -349,8 +297,6 @@ export class FileOpsProvider {
     let fileName = this.getFileName(file);
     let fileExtension = this.getFileExtension(file);
 
-<<<<<<< HEAD
-=======
     //set params
     params = Object.assign(params, {
       VirtualPath: file,
@@ -358,7 +304,6 @@ export class FileOpsProvider {
       FileExtension: fileExtension
     });
     //set options
->>>>>>> master
     let options: FileUploadOptions = {
       fileKey: 'file',
       fileName: fileName,
@@ -373,42 +318,6 @@ export class FileOpsProvider {
     return options;
   }
 
-<<<<<<< HEAD
-
-
-  
-  captureAndUpload(type, identifier: string = null) {
-    return new Promise((resolve, reject) => {
-      this.capture(type).then(uri => {
-        this.uploadFile(uri, {
-          date: identifier || new Date().getTime(),
-        }, identifier).then(uploadedURL => {
-          resolve(uploadedURL);
-        }).catch(error => {
-          this.events.publish('toast:error', error);
-          reject(error)
-        });
-      }).catch(error => {
-
-      });
-    });
-  }
-
-  capture(type) {
-    return new Promise((resolve, reject) => {
-      switch (type) {
-        case 'camera':
-        case 'image':
-          let optons = type === 'camera' ? this.cameraOptions : this.galleryOptions;
-          this.camera.getPicture(optons).then(url => {
-            resolve(url);
-          }).catch(error => {
-            reject(error);
-          });
-          break;
-      }
-    });
-=======
   getFileDir(file) {
     if (file.indexOf('?') === -1) {
       file += '?';
@@ -416,7 +325,6 @@ export class FileOpsProvider {
     file = file.substring(0, file.lastIndexOf('?'));
 
     return file.substring(0, file.lastIndexOf('/'));
->>>>>>> master
   }
 
   getFileName(file) {
@@ -430,22 +338,12 @@ export class FileOpsProvider {
 
   getFileNameWithoutExtension(file) {
     if (file) {
-<<<<<<< HEAD
-      return file.substring(0, file.lastIndexOf('.'));
-=======
       return file.substring(0, file.lastIndexOf('.')).toLowerCase();
->>>>>>> master
     }
   }
 
   getFileExtension(file) {
     if (file) {
-<<<<<<< HEAD
-      return file.substring(file.lastIndexOf('.') + 1);
-    }
-  }
-
-=======
       return file.substring(file.lastIndexOf('.') + 1).toLowerCase();
     }
   }
@@ -525,5 +423,4 @@ export class FileOpsProvider {
     });
   }
 
->>>>>>> master
 }

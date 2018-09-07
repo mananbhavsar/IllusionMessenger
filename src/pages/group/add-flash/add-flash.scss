@@ -1,28 +1,4 @@
 page-add-flash {
-<<<<<<< HEAD
-	ion-content {
-		ion-textarea {
-			width: 100%;
-			height: 60px;
-		}
-		.italic-small-grey {
-			font-style: italic;
-			color: color($colors, pickup);
-		}
-		label{
-			padding: 10px;
-			background: color($colors,primary); 
-			display: table;
-			color: #fff;
-			 }
-		
-		
-		
-		input[type="file"] {
-			display: none;
-		}
-	}
-=======
     ion-content {
         ion-textarea {
             width: 100%;
@@ -33,5 +9,4 @@ page-add-flash {
             color: color($colors, pickup);
         }
     }
->>>>>>> master
 }

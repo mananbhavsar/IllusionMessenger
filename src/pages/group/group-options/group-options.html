@@ -1,19 +1,5 @@
 <ion-header no-border>
-<<<<<<< HEAD
-	<ion-navbar color="primary">
-		<ion-title>
-			<div>{{title}}</div>
-			<small>{{group_name}}</small>
-		</ion-title>
-		<ion-buttons end>
-			<button color="light" ion-button outline (click)="dismiss(null)">
-				Close
-			</button>
-		</ion-buttons>
-	</ion-navbar>
-=======
 	<modal-toolbar [title]="getTitle()" [subTitle]="group_name" (dismiss)="dismiss($event)"></modal-toolbar>
->>>>>>> master
 </ion-header>
 <ion-content padding>
 	<ion-row class="buttons-container">

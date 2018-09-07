@@ -15,6 +15,7 @@
     },
     "HomeScreen": {
         "_Home_": "Home",
+        "_forms_": "Forms",
         "_Dashboard_": "Dashboard",
         "_ManageGroup_" : "Manage Group",
         "_DashboardSummary_": "Your dashboard summary",

@@ -43,36 +43,15 @@ export class CloseTopicPage {
     this.group_id = this.navParams.data.group_id;
     this.group_name = this.navParams.data.group_name;
     this.group_code = this.navParams.data.group_code;
-<<<<<<< HEAD
-  }
-
-  ionViewDidEnter() {
-    this.initializeItems();
-=======
 
   }
 
   ionViewDidEnter() {
->>>>>>> master
     this.getDetails().then(status => {
       this.setForBadge();
     }).catch(error => {
 
     });
-<<<<<<< HEAD
-    this.initializeItems();
-  }
-
-  getData(event) {
-    this.initializeItems();
-    let val = event.target.value;
-
-    this.query = val.trim();
-    this.getDetails().catch(error => {
-
-    });
-=======
->>>>>>> master
   }
 
   getDetails() {
@@ -80,12 +59,8 @@ export class CloseTopicPage {
       if (this.page === -1) {
         reject(false);
       } else {
-<<<<<<< HEAD
-        let params = {
-=======
         this.connection.doPost('Chat/GetClosedTopicDetail',
         {
->>>>>>> master
           GroupID: this.group_id,
           StatusID: 1,
           DisablePaging: true,
@@ -93,19 +68,9 @@ export class CloseTopicPage {
           RowsPerPage: 20,
           OrderBy: this.sort_by,
           Order: this.sort_order,
-<<<<<<< HEAD
-        };
-        if (this.query) {
-          params['Query'] = this.query;
-        }
-        this.connection.doPost('Chat/GetClosedTopicDetail', params, false).then((response: any) => {
-          let data = response.ClosedTopicList;
-
-=======
           Query : this.query
         }, false).then((response: any) => {
           let data = response.ClosedTopicList;
->>>>>>> master
           if (data.length > 0) {
             data.forEach(list => {
               this.topics.push(list);
@@ -124,23 +89,6 @@ export class CloseTopicPage {
     });
   }
 
-<<<<<<< HEAD
-  initializeItems() {
-    this.page = 0;
-    this.topics = [];
-  }
-
-  onCancel() {
-    this.initializeItems();
-    console.log('cancel');
-  }
-
-  onClear() {
-    this.initializeItems();
-    console.log('clear');
-    this.query = '';
-    this.getDetails();
-=======
   getItems(event) {
     // set val to the value of the ev target
     let val = event.target.value;
@@ -174,7 +122,6 @@ export class CloseTopicPage {
   onClear(event) {
     this.query = null;
     this.initializeItems();
->>>>>>> master
   }
 
   refresh(refresher) {
@@ -215,9 +162,6 @@ export class CloseTopicPage {
   }
 
   toggleSearch() {
-<<<<<<< HEAD
-    this.showSearch = !this.showSearch;
-=======
     if (this.showSearch) {
       this.showSearch = false;
       this.topics = [];
@@ -226,7 +170,6 @@ export class CloseTopicPage {
     } else if (this.showSearch === false) {
       this.showSearch = true;
     }
->>>>>>> master
   }
 
   isExpired(date) {

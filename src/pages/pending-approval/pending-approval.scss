@@ -1,0 +1,14 @@
+page-pending-approval {
+ion-content{
+    ion-grid{
+        ion-row{
+            ion-col{
+                border: 1px solid gray;
+                .col-lab{
+                 font-weight: 600;
+                }
+            }
+        }
+    }
+}
+}

@@ -1,0 +1,100 @@
+<ion-header>
+  <header [title]="getTitle()"></header>
+</ion-header>
+
+<ion-content padding>
+  <div class="calendar-header">
+    <ion-row class="calendar-month">
+      <ion-col col-2 (click)="goToLastMonth()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-col>
+      <ion-col col-8>{{currentMonth}} {{currentYear}}</ion-col>
+      <ion-col col-2 (click)="goToNextMonth()">
+        <ion-icon name="arrow-forward"></ion-icon>
+      </ion-col>
+    </ion-row>
+  </div>
+  <div class="calendar-body">
+    <ion-grid>
+      <ion-row class="calendar-weekday">
+        <ion-col>Su</ion-col>
+        <ion-col>Mo</ion-col>
+        <ion-col>Tu</ion-col>
+        <ion-col>We</ion-col>
+        <ion-col>Th</ion-col>
+        <ion-col>Fr</ion-col>
+        <ion-col>Sa</ion-col>
+      </ion-row>
+      <ion-row class="calendar-date">
+        <ion-col col-1 *ngFor="let lastDay of daysInLastMonth" class="last-month">{{lastDay.Day}}</ion-col>
+        <ion-col (click)="SelectDate(day)" col-1 *ngFor="let day of daysInThisMonth">
+          <span [ngClass]="{'currentDate' : todayDate === day.Day && todayMonth === currentMonth}" *ngIf="todayDate === day.Day && todayMonth === currentMonth; else otherDate">{{day.Day}}</span>
+          <ng-template #otherDate class="otherDate">
+            <span [ngClass]="{'selected-date' : isSelected === day.Day, 'holiday' : day.Holiday}">{{day.Day}}</span>
+          </ng-template>
+          <div *ngIf="!day.Holiday" class="event-bullet">{{day.WorkDuration}}</div>
+          <!-- <div *ngIf="day.Holiday" class="holiday-event">Holiday</div> -->
+        </ion-col>
+        <ion-col col-1 *ngFor="let nextDay of daysInNextMonth" class="next-month">{{nextDay.Day}}</ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+
+  <ion-list *ngIf="eventList">
+    <ion-item>
+      <ion-row>
+        <ion-col col-6>
+          In-Time : 9.35 AM
+        </ion-col>
+        <ion-col col-6>
+          Out-Time : 9.35 AM
+        </ion-col>
+      </ion-row>
+    </ion-item>
+    <ion-item>
+      <ion-row>
+        <ion-col class="timings" col-6>
+          Target Units : NA
+        </ion-col>
+        <ion-col class="timings" col-6>
+          Complated Units : NA
+        </ion-col>
+      </ion-row>
+    </ion-item>
+    <ion-item>
+      <ion-row>
+        <ion-col col-6 class="shift">
+          Shift : Morning
+        </ion-col>
+      </ion-row>
+    </ion-item>
+    <ion-item>
+      <ion-row>
+        <ion-col class="total-hrs-label">
+          Total Hrs Completed / Required Hrs :
+        </ion-col>
+        <ion-col class="total-hr-value">
+          233/555
+        </ion-col>
+      </ion-row>
+    </ion-item>
+  </ion-list>
+</ion-content>
+<ion-footer *ngIf="eventList" class="hide-on-keyboard-open">
+  <ion-row>
+    <ion-col class="total-present-value">
+      45
+    </ion-col>
+    <ion-col class="total-present-value">
+      0
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col class="total-present-label">
+      Total present days
+    </ion-col>
+    <ion-col class="total-absent-label">
+      Total absent days
+    </ion-col>
+  </ion-row>
+</ion-footer>

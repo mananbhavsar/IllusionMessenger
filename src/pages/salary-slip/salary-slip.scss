@@ -1,0 +1,15 @@
+page-salary-slip {
+    ion-grid{
+        ion-row{
+            ion-col{
+                border: 1px solid gray;
+                .col-lab{
+                 font-weight: 600;
+                }
+                ion-icon{
+                    color: green;
+                }
+            }
+        }
+    }
+}

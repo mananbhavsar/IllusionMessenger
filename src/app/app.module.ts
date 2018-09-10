@@ -79,7 +79,9 @@ import { DailyShedulePageModule } from '../pages/topic/daily-shedule/daily-shedu
 import { ForwardTopicPageModule } from '../pages/topic/forward-topic/forward-topic.module';
 import { TopicOptionsPageModule } from '../pages/topic/topic-options/topic-options.module';
 import { TopicPageModule } from '../pages/topic/topic.module';
+// import { RequestDetailPageModule } from '../pages/request-detail/request-detail.module';
 import { TutorialPageModule } from '../pages/tutorial/tutorial.module';
+import { SalarySlipPageModule } from '../pages/salary-slip/salary-slip.module';
 import { WelcomePageModule } from '../pages/welcome/welcome.module';
 import { PipesModule } from "../pipes/pipes.module";
 import { CommonProvider } from "../providers/common/common";
@@ -90,6 +92,8 @@ import { FirebaseTransactionProvider } from '../providers/firebase-transaction/f
 import { FlashNewsProvider } from '../providers/flash-news/flash-news';
 import { NotificationsProvider } from "../providers/notifications/notifications";
 import { ReadMessageProvider } from '../providers/read-message/read-message';
+import { CalenderPageModule } from '../pages/calender/calender.module';
+import { PendingApprovalPageModule } from '../pages/pending-approval/pending-approval.module';
 import { TranslateServiceProvider } from '../providers/translate-service/translate-service';
 import { UserProvider } from '../providers/user/user';
 import { UserAutoCompleteService } from './../pages/topic/create-topic/user-auto-complete';
@@ -158,9 +162,13 @@ import { MyApp } from './app.component';
         ComponentsModule,
         CreateGroupPageModule,
         PipesModule,
+        CalenderPageModule,
         ManageGroupPageModule,
         DailyShedulePageModule,
-        RatingPageModule
+        RatingPageModule,
+        SalarySlipPageModule,
+        PendingApprovalPageModule,
+        // RequestDetailPageModule
     ],
     bootstrap: [IonicApp],
     entryComponents: [

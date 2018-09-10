@@ -1,38 +1,35 @@
 <ion-header>
-  <header [title]="setTitle()"></header>
+  <header [title]="getTitle()"></header>
 </ion-header>
 
 <ion-content padding>
   <form [formGroup]="advanceRequestForm">
     <ion-list>
-        <ion-item>
+      <!-- <ion-item>
             <ion-label ion-text color="primary">
             Date
             </ion-label>
-            <ion-datetime displayFormat="DD MMM YYYY" pickerFormat="DD MMM YYYY" formControlName="date" max="2050">
+            <ion-datetime (ionChange)="getDate()" displayFormat="DD MMM YYYY" pickerFormat="DD MMM YYYY" formControlName="date" max="2050">
             </ion-datetime>
-        </ion-item>
-        <ion-item>
-            <ion-label ion-text color="primary" floating>
-            Request Amount
-            </ion-label>
-            <ion-input required formControlName="amount" type="tel" name="amount"></ion-input>
-        </ion-item>
-        <div class="error-message-block" *ngIf="advanceRequestForm.controls.amount.errors && (advanceRequestForm.controls.amount.dirty || advanceRequestForm.controls.amount.touched)">
-          <span *ngIf="advanceRequestForm.controls.amount.errors.required">Amount is required</span>
-        </div>
-        <ion-item>
-          <ion-label ion-text color="primary" floating>
-          Remark
-          </ion-label>
-          <ion-textarea required formControlName="remark" type="text" name="remark"></ion-textarea>
+        </ion-item> -->
+      <ion-item>
+        <ion-label ion-text color="primary" floating>
+          Request Amount
+        </ion-label>
+        <ion-input required formControlName="amount" type="tel" name="amount"></ion-input>
       </ion-item>
-      <div class="error-message-block" *ngIf="advanceRequestForm.controls.remark.errors && (advanceRequestForm.controls.remark.dirty || advanceRequestForm.controls.remark.touched)">
-				<span *ngIf="advanceRequestForm.controls.remark.errors.required">Remark is required</span>
-			</div>
+      <div class="error-message-block" *ngIf="advanceRequestForm.controls.amount.errors && (advanceRequestForm.controls.amount.dirty || advanceRequestForm.controls.amount.touched)">
+        <span *ngIf="advanceRequestForm.controls.amount.errors.required">Amount is required</span>
+      </div>
+      <ion-item>
+        <ion-label ion-text color="primary" floating>
+          Remark
+        </ion-label>
+        <ion-textarea formControlName="remark" type="text" name="remark"></ion-textarea>
+      </ion-item>
     </ion-list>
     <button ion-button block type="submit" (click)="submit()" [disabled]="!advanceRequestForm.valid">
-    Submit
+      Submit
     </button>
-</form>
+  </form>
 </ion-content>

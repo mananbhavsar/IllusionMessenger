@@ -10,16 +10,26 @@ import { LeaveApplicationPage } from '../../pages/forms/leave-application/leave-
   templateUrl: 'forms.html',
 })
 export class FormsPage {
-
+  title: string = 'Forms';
   constructor(public navCtrl: NavController, public navParams: NavParams) {
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad FormsPage');
   }
 
-  openPage(page){
+  openPage(page) {
     this.navCtrl.push(page);
+  }
+
+  setTitle() {
+    this.title = null;
+    setTimeout(() => {
+      this.title = 'Leave Application Form';
+    });
+  }
+
+  getTitle() {
+    return this.title;
   }
 
 }

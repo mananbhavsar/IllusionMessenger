@@ -1,49 +1,59 @@
 <ion-header>
-  <header [title]="setTitle()"></header>
+  <header [title]="getTitle()"></header>
 </ion-header>
 
 <ion-content padding>
   <form [formGroup]="leaveApplicationForm">
     <ion-list>
-        <ion-item>
-            <ion-label ion-text color="primary">
-            From Date
-            </ion-label>
-            <ion-datetime (ionChange)="getTotalLeaves()" displayFormat="DD MMM YYYY" pickerFormat="DD MMM YYYY" formControlName="from_date" max="2050">
-            </ion-datetime>
-        </ion-item>
-        <ion-item>
-          <ion-label ion-text color="primary">
-          To Date
-          </ion-label>
-          <ion-datetime (ionChange)="getTotalLeaves()" displayFormat="DD MMM YYYY" pickerFormat="DD MMM YYYY" formControlName="to_date" max="2050">
-          </ion-datetime>
+      <ion-item>
+        <ion-label ion-text color="primary">
+          From Date
+        </ion-label>
+        <ion-datetime (ionChange)="getTotalLeaves()" displayFormat="DD MMM YYYY" pickerFormat="DD MMM YYYY" formControlName="from_date"
+          max="2050">
+        </ion-datetime>
       </ion-item>
       <ion-item>
         <ion-label ion-text color="primary">
-        Reporting Date
+          To Date
         </ion-label>
-        <ion-datetime  displayFormat="DD MMM YYYY" pickerFormat="DD MMM YYYY" formControlName="reporting_date" max="2050">
+        <ion-datetime (ionChange)="getTotalLeaves()" displayFormat="DD MMM YYYY" pickerFormat="DD MMM YYYY" formControlName="to_date"
+          max="2050">
         </ion-datetime>
-        </ion-item>
-        <ion-item>
-          <ion-label ion-text color="primary" floating>
+      </ion-item>
+      <ion-item>
+        <ion-label ion-text color="primary">
+          Reporting Date
+        </ion-label>
+        <ion-datetime (ionChange)="getTotalLeaves()" displayFormat="DD MMM YYYY" pickerFormat="DD MMM YYYY" formControlName="reporting_date"
+          max="2050">
+        </ion-datetime>
+      </ion-item>
+      <ion-item>
+        <ion-label ion-text color="primary" floating>
           No of leaves
-          </ion-label>
-          <ion-input required formControlName="leaves" type="number" name="leaves"></ion-input>
+        </ion-label>
+        <ion-input (input)="getLeaves()" required formControlName="leaves" type="number" name="leaves"></ion-input>
       </ion-item>
-        <ion-item>
-          <ion-label ion-text color="primary" floating>
+      <ion-item>
+        <ion-label>Leave Type</ion-label>
+        <ion-select required formControlName="leaveType">
+          <ion-option value="night" (ionSelect)="getType($event)">late night</ion-option>
+          <ion-option value="morning" (ionSelect)="getType($event)">early morning</ion-option>
+        </ion-select>
+      </ion-item>
+      <div class="error-message-block" *ngIf="leaveApplicationForm.controls.leaveType.errors && (leaveApplicationForm.controls.leaveType.dirty || leaveApplicationForm.controls.leaveType.touched)">
+        <span *ngIf="leaveApplicationForm.controls.leaveType.errors.required">Select leave type</span>
+      </div>
+      <ion-item>
+        <ion-label ion-text color="primary" floating>
           Remark
-          </ion-label>
-          <ion-textarea required formControlName="remark" type="text" name="remark"></ion-textarea>
+        </ion-label>
+        <ion-textarea formControlName="remark" type="text" name="remark"></ion-textarea>
       </ion-item>
-      <div class="error-message-block" *ngIf="leaveApplicationForm.controls.remark.errors && (leaveApplicationForm.controls.remark.dirty || leaveApplicationForm.controls.remark.touched)">
-				<span *ngIf="leaveApplicationForm.controls.remark.errors.required">Remark is required</span>
-			</div>
     </ion-list>
     <button ion-button block type="submit" (click)="submit()" [disabled]="!leaveApplicationForm.valid">
-    Submit
+      Submit
     </button>
-</form>
+  </form>
 </ion-content>

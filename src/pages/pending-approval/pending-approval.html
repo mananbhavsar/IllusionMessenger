@@ -1,0 +1,45 @@
+<ion-header>
+  <header [title]="getTitle()"></header>
+</ion-header>
+
+
+<ion-content>
+  <empty *ngIf="pendingData; else data_template"></empty>
+  <ion-refresher (ionRefresh)="refresh($event)">
+    <ion-refresher-content pullingIcon="arrow-round-down" pullingText="Pull to refresh" refreshingSpinner="crescent" refreshingText="Refreshing...">
+    </ion-refresher-content>
+  </ion-refresher>
+  <ng-template #data_template>
+    <ion-grid>
+      <ion-row>
+        <ion-col class="col-lab" col-2>
+          Date
+        </ion-col>
+        <ion-col class="col-lab" col-2>
+          Request Type
+        </ion-col>
+        <ion-col class="col-lab" col-3>
+          Status
+        </ion-col>
+        <ion-col class="col-lab" col-2>
+          View
+        </ion-col>
+        <ion-col class="col-lab" col-3>
+          Remark
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col col-2>11/34/2010</ion-col>
+        <ion-col col-2>Leave</ion-col>
+        <ion-col col-3>REST</ion-col>
+        <ion-col col-2>
+          <ion-icon name="ios-eye"></ion-icon>
+        </ion-col>
+        <ion-col col-3>personal issue</ion-col>
+      </ion-row>
+    </ion-grid>
+    <ion-infinite-scroll *ngIf="page !== -1" (ionInfinite)="paginate($event)">
+      <ion-infinite-scroll-content></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </ng-template>
+</ion-content>

@@ -1,10 +1,13 @@
 <ion-header>
-  <header [title]="title"></header>
+  <header [title]="getTitle()"></header>
 </ion-header>
 
 <ion-content padding>
-  <button ion-button (click)="openPage('AdvanceRequestPage')" full>Over Time</button>
-  <button ion-button (click)="openPage('LeaveApplicationPage')" full>Leave Application</button>
-  <button ion-button (click)="openPage('OverTimePage')" full>Advance Request</button>
- 
+  <button ion-button outline (click)="openPage('OverTimePage')" block>Over Time</button>
+  <button ion-button outline (click)="openPage('LeaveApplicationPage')" block>Leave Application</button>
+  <button ion-button outline (click)="openPage('AdvanceRequestPage')" block>Advance Request</button>
+  <button ion-button outline (click)="openPage('CalenderPage')" block>Calender</button>
+  <button ion-button outline (click)="openPage('PendingApprovalPage')" block>Pending requests</button>
+  <button ion-button outline (click)="openPage('SalarySlipPage')" block>Salary Slip</button>
+
 </ion-content>

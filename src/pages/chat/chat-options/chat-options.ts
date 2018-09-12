@@ -327,7 +327,7 @@ export class ChatOptionsPage {
     changedDate.setHours(remider.hour);
     changedDate.setMinutes(remider.minute);
     changedDate.setSeconds(remider.second);
-
+    
     let changedMoment = moment(changedDate);
 
     let SelectedDateTime = moment(this._date.get(changedMoment), 'Do MMM, hh:mm A');

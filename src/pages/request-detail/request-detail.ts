@@ -1,12 +1,6 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
 
-/**
- * Generated class for the RequestDetailPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
 
 @IonicPage()
 @Component({
@@ -15,18 +9,26 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class RequestDetailPage {
   title: string = 'Request Detail';
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  requestDetail : any;
+  constructor(public navCtrl: NavController,
+     public navParams: NavParams,
+     public viewCtrl: ViewController) {
+     this.requestDetail = this.navParams.data;
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad RequestDetailPage');
   }
 
+  dismiss(event){
+    this.viewCtrl.dismiss();
+  }
+
 
   setTitle() {
     this.title = null;
     setTimeout(() => {
-      this.title = 'Pending Approval';
+      this.title = 'Request Detail';
     });
   }
 

@@ -79,7 +79,7 @@ import { DailyShedulePageModule } from '../pages/topic/daily-shedule/daily-shedu
 import { ForwardTopicPageModule } from '../pages/topic/forward-topic/forward-topic.module';
 import { TopicOptionsPageModule } from '../pages/topic/topic-options/topic-options.module';
 import { TopicPageModule } from '../pages/topic/topic.module';
-// import { RequestDetailPageModule } from '../pages/request-detail/request-detail.module';
+import { RequestDetailPageModule } from '../pages/request-detail/request-detail.module';
 import { TutorialPageModule } from '../pages/tutorial/tutorial.module';
 import { SalarySlipPageModule } from '../pages/salary-slip/salary-slip.module';
 import { WelcomePageModule } from '../pages/welcome/welcome.module';
@@ -168,7 +168,7 @@ import { MyApp } from './app.component';
         RatingPageModule,
         SalarySlipPageModule,
         PendingApprovalPageModule,
-        // RequestDetailPageModule
+        RequestDetailPageModule
     ],
     bootstrap: [IonicApp],
     entryComponents: [

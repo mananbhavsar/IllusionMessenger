@@ -12,7 +12,7 @@ import * as _ from 'underscore';
 export class AdvanceRequestPage {
   advanceRequestForm: FormGroup;
   type: any;
-  title: string = null;
+  title: string = 'Advance Request';
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public formBuilder: FormBuilder,

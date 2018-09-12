@@ -55,6 +55,7 @@ export class OverTimePage {
       this.event.publish('toast:error', 'Selected date must be less than today');
       this.overtTimeForm.setErrors({ 'invalid': true });
     }
+    console.log(this.date.toUTCISOString(moment(this.overtTimeForm.get('date').value)));
   }
 
   setTitle() {

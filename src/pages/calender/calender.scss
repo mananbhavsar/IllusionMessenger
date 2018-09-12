@@ -116,6 +116,9 @@ page-calender {
               margin-top: 2px;
           }
           ion-item{
+            &.item-md {
+             padding-left: 0;
+            }
               ion-icon{
                   color : #cf3d23;
               }

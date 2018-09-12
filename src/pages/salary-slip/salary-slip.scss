@@ -6,9 +6,21 @@ page-salary-slip {
                 .col-lab{
                  font-weight: 600;
                 }
+                &.col{
+                    text-align: center;
+                }
                 ion-icon{
                     color: green;
                 }
+                span{
+                    &.download{
+                        font-style: italic;
+                        text-decoration: underline;
+                        margin: 0px 9px;
+                        color: green;
+                    }
+                }
+
             }
         }
     }

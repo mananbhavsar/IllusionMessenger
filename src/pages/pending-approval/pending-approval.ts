@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ModalController } from 'ionic-angular';
 import { ConnectionProvider } from '../../providers/connection/connection';
 import * as _ from 'underscore';
+import { RequestDetailPage } from '../request-detail/request-detail';
 ; @IonicPage()
 @Component({
   selector: 'page-pending-approval',
@@ -13,7 +14,8 @@ export class PendingApprovalPage {
   page: number = 0;
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
-    public connection: ConnectionProvider) {
+    public connection: ConnectionProvider,
+    public modalCtrl : ModalController) {
   }
 
   getData() {
@@ -53,12 +55,22 @@ export class PendingApprovalPage {
     });
   }
 
+  ViewDetail(data){
+    let modal = this.modalCtrl.create(RequestDetailPage,data);
+    modal.present();
+    modal.onDidDismiss((response) => {
+
+    });
+  }
+
   setTitle() {
     this.title = null;
     setTimeout(() => {
       this.title = 'Pending Approval';
     });
   }
+
+
 
   getTitle() {
     return this.title;

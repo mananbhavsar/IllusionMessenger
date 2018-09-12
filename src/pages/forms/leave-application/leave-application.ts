@@ -13,8 +13,11 @@ import * as _ from 'underscore';
 export class LeaveApplicationPage {
   leaveApplicationForm: FormGroup;
   leaves: number;
-  title: string = null;
+  title: string = 'Leave Application Form';
   type: any;
+  startDate : any;
+  endDate : any;
+  reportingDate : any;
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public formBuilder: FormBuilder,
@@ -32,23 +35,21 @@ export class LeaveApplicationPage {
   }
 
   getTotalLeaves() {
-    let startDate = moment(this.leaveApplicationForm.get('from_date').value, "YYYY/MM/DD");
-    let endDate = moment(this.leaveApplicationForm.get('to_date').value, "YYYY/MM/DD");
-    if (this.leaveApplicationForm.get('reporting_date').value) {
-      let reportingDate = moment(this.leaveApplicationForm.get('reporting_date').value, "YYYY/MM/DD");
-      if (reportingDate.isSameOrBefore(endDate)) {
-        this.event.publish('toast:error', 'Reporting date must be greater than end date');
-        this.leaveApplicationForm.setErrors({ 'invalid': true });
-      }
-    }
-    this.leaves = endDate.diff(startDate, 'days');
-    if (startDate.isSameOrAfter(endDate)) {
+    this.startDate = moment(this.leaveApplicationForm.get('from_date').value, "YYYY/MM/DD");
+    this.endDate = moment(this.leaveApplicationForm.get('to_date').value, "YYYY/MM/DD");
+    this.reportingDate = moment(this.leaveApplicationForm.get('reporting_date').value, "YYYY/MM/DD");
+    this.leaves = this.endDate.diff(this.startDate, 'days');
+    if (this.startDate.isSameOrAfter(this.endDate)) {
       this.event.publish('toast:error', 'End Date must be greater than start date');
       this.leaveApplicationForm.setErrors({ 'invalid': true });
       this.leaves = null;
     }
     if (this.leaves > 0) {
       this.leaveApplicationForm.controls['leaves'].setValue(this.leaves);
+    }
+    if (this.reportingDate.isSameOrBefore(this.endDate)) {
+      this.event.publish('toast:error', 'Reporting date must be greater than end date');
+      this.leaveApplicationForm.setErrors({ 'invalid': true });
     }
   }
 
@@ -66,7 +67,10 @@ export class LeaveApplicationPage {
 
   submit() {
     return new Promise((resolve, reject) => {
-      this.connection.doPost('', {
+      if((!this.startDate.isSameOrAfter(this.endDate)) || (!this.reportingDate.isSameOrBefore(this.endDate))){
+        this.event.publish('toast:error', 'Invalid detail check date you have selected');      
+      } else {
+        this.connection.doPost('', {
         FromDate: this.leaveApplicationForm.get('from_date').value,
         ToDate: this.leaveApplicationForm.get('to_date').value,
         ReportingDate: this.leaveApplicationForm.get('reporting_date').value,
@@ -81,6 +85,7 @@ export class LeaveApplicationPage {
       }).catch((error) => {
         reject();
       });
+    }
     });
   }
 

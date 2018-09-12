@@ -30,6 +30,7 @@ import { UserProvider } from '../providers/user/user';
 import { GroupPage } from './../pages/group/group';
 import { Global } from './global';
 import { FormsPage } from '../pages/forms/forms';
+import { DailyShedulePage } from '../pages/topic/daily-shedule/daily-shedule';
 
 export const firebaseConfig = {
     apiKey: "AIzaSyAFDZ9UPTMiDTjT4qAG0d9uVeOdhL-2PBw",
@@ -682,7 +683,7 @@ export class MyApp {
                 ref.on('value', (status) => {
                     if (status.val() === null) {
                         // show popup
-                        // this.nav.setRoot(DailyShedulePage);
+                        this.nav.setRoot(DailyShedulePage);
                     }
                 });
             }

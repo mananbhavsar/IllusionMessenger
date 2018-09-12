@@ -9,7 +9,7 @@
         <ion-label ion-text color="primary">
           Date
         </ion-label>
-        <ion-datetime (ionChange)="getDate($event)" displayFormat="DD MMM YYYY" pickerFormat="DD MMM YYYY" formControlName="date"
+        <ion-datetime (ionChange)="getDate($event)" #reminder displayFormat="DD MMM YYYY" pickerFormat="DD MMM YYYY" formControlName="date"
           max="2050">
         </ion-datetime>
       </ion-item>

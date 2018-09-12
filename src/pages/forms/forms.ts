@@ -14,9 +14,6 @@ export class FormsPage {
   constructor(public navCtrl: NavController, public navParams: NavParams) {
   }
 
-  ionViewDidLoad() {
-  }
-
   openPage(page) {
     this.navCtrl.push(page);
   }

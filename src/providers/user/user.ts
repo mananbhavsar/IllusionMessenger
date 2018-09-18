@@ -91,7 +91,6 @@ export class UserProvider {
 
     logout() {
         return new Promise((resolve, reject) => {
-            let name = this._user.LoginUser;
             this.registerPushID('').then(response => {
                 this.LoadFirebaseData = true;
                 //removing from Storage
@@ -180,6 +179,9 @@ export class UserProvider {
                     LoadFirebaseData: firebaseDataNeeded,
                 }, false).then((response: any) => {
                     //LogOutForcefully
+                    if (response.MenuList) {
+                        this.events.publish('menu:created', response.MenuList);
+                    }
                     if (response.Data.LogOutForcefully) {
                         if (response.Data.Message) {
                             this.events.publish('alert:basic', 'Logged Out!', response.Data.Message);

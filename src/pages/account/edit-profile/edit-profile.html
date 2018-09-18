@@ -8,7 +8,7 @@
         <ion-label ion-text color="primary" floating>
           Code
         </ion-label>
-        <ion-input formControlName="code" autofocus required type="text" placeholder="Code" name="code"></ion-input>
+        <ion-input readonly formControlName="code" autofocus required type="text" placeholder="Code" name="code"></ion-input>
       </ion-item>
       <div class="error-message-block" *ngIf="editProfileForm.controls.code.errors && (editProfileForm.controls.code.dirty || editProfileForm.controls.code.touched)">
         <span *ngIf="editProfileForm.controls.code.errors.required">Code is required</span>
@@ -17,7 +17,7 @@
         <ion-label ion-text color="primary" floating>
           Name
         </ion-label>
-        <ion-input formControlName="name" autofocus required type="text" placeholder="Name" name="name"></ion-input>
+        <ion-input readonly formControlName="name" autofocus required type="text" placeholder="Name" name="name"></ion-input>
       </ion-item>
       <div class="error-message-block" *ngIf="editProfileForm.controls.name.errors && (editProfileForm.controls.name.dirty || editProfileForm.controls.name.touched)">
         <span *ngIf="editProfileForm.controls.name.errors.required">Name is required</span>
@@ -64,7 +64,7 @@
         <ion-label ion-text color="primary" floating>
           Aadhar Number
         </ion-label>
-        <ion-input required minLength="12" maxLength="12" formControlName="aadhar_number" type="tel" placeholder="Mobile Number"
+        <ion-input [readonly]="aadharNoExist" required minLength="12" maxLength="12" formControlName="aadhar_number" type="tel" placeholder="Mobile Number"
           name="aadhar_number"></ion-input>
       </ion-item>
       <div class="error-message-block" *ngIf="editProfileForm.controls.mobile_number.errors && (editProfileForm.controls.mobile_number.dirty || editProfileForm.controls.mobile_number.touched)">

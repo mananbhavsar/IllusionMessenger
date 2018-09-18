@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { StreamingMedia, StreamingVideoOptions } from '@ionic-native/streaming-media';
 import { VideoPlayer } from '@ionic-native/video-player';
 import { Events, IonicPage, NavController, NavParams, Platform } from 'ionic-angular';
 import { Global } from '../../app/global';
@@ -27,7 +26,6 @@ export class HelpPage {
     private fileOps: FileOpsProvider,
     private videoPlayer: VideoPlayer,
     private platform : Platform,
-    private streamingMedia: StreamingMedia,
     private events: Events
   ) {
     this.global = Global;

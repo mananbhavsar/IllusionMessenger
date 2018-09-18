@@ -49,16 +49,26 @@ export class SalarySlipPage {
 
   getData() {
     return new Promise((resolve, reject) => {
+      if (this.page === -1) {
+        reject();
+      } else {
       this.connection.doPost('', {
-
+      PageNumber : this.page
       }).then((response: any) => {
         if (!_.isEmpty(response)) {
           this.salarySlipData = response.Data;
+          this.page++;
           resolve(true);
+        } else {
+          this.page = -1;
+          resolve(false);
         }
       }).catch((error) => {
+        this.page = -1;
+        resolve(false);
         reject();
       });
+    }
     });
   }
 

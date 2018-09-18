@@ -4,6 +4,7 @@ import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import moment from 'moment';
 import { ConnectionProvider } from '../../../providers/connection/connection';
 import * as _ from 'underscore';
+import { DateProvider } from '../../../providers/date/date';
 
 @IonicPage()
 @Component({
@@ -18,11 +19,16 @@ export class LeaveApplicationPage {
   startDate : any;
   endDate : any;
   reportingDate : any;
+  userData:any;
+  typeList:any;
+  error:any={isError:false,errorMessage:''};
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public formBuilder: FormBuilder,
     public connection: ConnectionProvider,
+    public date: DateProvider,
     public event: Events) {
+    this.typeList = ['t','r','e'];
     this.leaveApplicationForm = this.formBuilder.group({
       from_date: ['', Validators.required],
       to_date: ['', Validators.required],
@@ -34,7 +40,17 @@ export class LeaveApplicationPage {
     this.setTitle();
   }
 
-  getTotalLeaves() {
+  getData(){
+    return new Promise((resolve,reject) => {
+    this.connection.doPost('',{
+     
+    }).then((response : any) => {
+     this.userData = response.Data;
+    });
+    });
+  }
+
+  getTotalLeaves(date) {
     this.startDate = moment(this.leaveApplicationForm.get('from_date').value, "YYYY/MM/DD");
     this.endDate = moment(this.leaveApplicationForm.get('to_date').value, "YYYY/MM/DD");
     this.reportingDate = moment(this.leaveApplicationForm.get('reporting_date').value, "YYYY/MM/DD");
@@ -59,21 +75,27 @@ export class LeaveApplicationPage {
     }
   }
 
-
   getType(type) {
     this.type = type;
   }
 
+compareTwoDates(){
+  console.log(new Date(this.leaveApplicationForm.controls['to_date'].value));
+  
+   if(new Date(this.leaveApplicationForm.controls['to_date'].value) < new Date(this.leaveApplicationForm.controls['from_date'].value)){
+      this.error= {
+        isError:true,
+        errorMessage:'End Date can not before start date'
+      };
+   }
+}
 
   submit() {
     return new Promise((resolve, reject) => {
-      if((!this.startDate.isSameOrAfter(this.endDate)) || (!this.reportingDate.isSameOrBefore(this.endDate))){
-        this.event.publish('toast:error', 'Invalid detail check date you have selected');      
-      } else {
         this.connection.doPost('', {
-        FromDate: this.leaveApplicationForm.get('from_date').value,
-        ToDate: this.leaveApplicationForm.get('to_date').value,
-        ReportingDate: this.leaveApplicationForm.get('reporting_date').value,
+        FromDate: this.date.toUTCISOString(this.date.toUTC(new Date(this.leaveApplicationForm.get('from_date').value))),
+        ToDate: this.date.toUTCISOString(moment(this.leaveApplicationForm.get('to_date').value)),
+        ReportingDate: this.date.toUTCISOString(moment(this.leaveApplicationForm.get('reporting_date').value)),
         Leaves: this.leaveApplicationForm.get('leaves').value,
         LeaveType: this.type,
         Remark: this.leaveApplicationForm.get('remark').value,
@@ -85,7 +107,6 @@ export class LeaveApplicationPage {
       }).catch((error) => {
         reject();
       });
-    }
     });
   }
 

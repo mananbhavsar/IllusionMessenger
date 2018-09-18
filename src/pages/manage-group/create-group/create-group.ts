@@ -1,4 +1,4 @@
-import { Component, group } from '@angular/core';
+import { Component } from '@angular/core';
 import { IonicPage, Events, Platform, ViewController, ActionSheetController, NavController, NavParams } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConnectionProvider } from '../../../providers/connection/connection';

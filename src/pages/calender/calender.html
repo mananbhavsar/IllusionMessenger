@@ -1,5 +1,7 @@
 <ion-header>
-  <header [title]="getTitle()"></header>
+    <header [title]="getTitle()" [buttons]="[{icon : 'search', name : 'search'},{ icon: 'flash', name: 'flash'},{ icon: 'ios-options', name: 'sort'}]"
+    (buttonClicked)="headerButtonClicked($event)"></header>
+    <internet-status></internet-status>
 </ion-header>
 
 <ion-content padding>

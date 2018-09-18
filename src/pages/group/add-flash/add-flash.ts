@@ -6,7 +6,6 @@ import { ConnectionProvider } from '../../../providers/connection/connection';
 import { UserProvider } from '../../../providers/user/user';
 import { DateValidator } from '../../../validators/date-validator';
 import { DateProvider } from './../../../providers/date/date';
-import { FileOpsProvider } from '../../../providers/file-ops/file-ops';
 
 @IonicPage()
 @Component({
@@ -32,7 +31,6 @@ export class AddFlashPage {
     private viewController: ViewController,
     private events: Events,
     private platform: Platform,
-    private _fileOps: FileOpsProvider
   ) {
     this.group_id = this.navParams.data.group_id;
     this.group_name = this.navParams.data.group_name;

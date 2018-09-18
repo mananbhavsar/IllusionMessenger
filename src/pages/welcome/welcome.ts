@@ -6,6 +6,7 @@ import { HomePage } from  '../home/home';
 
 import { UserProvider } from '../../providers/user/user';
 import { Global } from '../../app/global';
+import { TabsPage } from '../tabs/tabs';
 
 
 @IonicPage()
@@ -29,7 +30,7 @@ export class WelcomePage {
         this.user.hasLoggedIn().then((user) => {
             if (user) {
                 if(this.sendToHomeFlag){
-                    this.navCtrl.setRoot(HomePage);
+                    this.navCtrl.setRoot(TabsPage);
                 }
             } else {
                 //checking if Tutorial required

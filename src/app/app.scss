@@ -191,7 +191,7 @@ ion-app.md {
     padding: 3px;
     min-height: 25px;
     .toolbar-background {
-        background: #646464;
+        background: color($colors, primary);
     }
     ion-title {
         div {

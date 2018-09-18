@@ -601,7 +601,6 @@ export class ChatOptionsPage {
       });
       //removing self
       if (response.UserDetail.length) {
-        let userIndex = -1;
         response.UserDetail.forEach((user, index) => {
           //only adding users which are not in topic
           if (selectedParticipantIDs.indexOf(user.User[0].UserID) === -1) {

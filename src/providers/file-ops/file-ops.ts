@@ -1,4 +1,3 @@
-import { Storage } from '@ionic/storage';
 import { Injectable } from '@angular/core';
 import { AndroidPermissions } from '@ionic-native/android-permissions';
 import { Camera, CameraOptions } from '@ionic-native/camera';
@@ -7,8 +6,6 @@ import { FileChooser } from '@ionic-native/file-chooser';
 import { FileOpener } from '@ionic-native/file-opener';
 import { FilePath } from '@ionic-native/file-path';
 import { FileTransfer, FileTransferObject, FileUploadOptions } from '@ionic-native/file-transfer';
-import { Network } from '@ionic-native/network';
-import { StreamingMedia } from '@ionic-native/streaming-media';
 import { Events, normalizeURL, Platform } from 'ionic-angular';
 import * as mime from 'mime-types';
 import { Global } from '../../app/global';
@@ -54,8 +51,6 @@ export class FileOpsProvider {
   ];
 
   constructor(
-    private network: Network,
-    private streamingMedia: StreamingMedia,
     private file: File,
     private transfer: FileTransfer,
     private platform: Platform,
@@ -197,7 +192,6 @@ export class FileOpsProvider {
         directory = this.directory;
       }
       let fileName = this.getFileName(file);
-      let url = encodeURI(file);
       const fileTransfer: FileTransferObject = this.transfer.create();
       fileTransfer.download(file, directory + fileName).then((entry) => {
         resolve(entry);
@@ -257,7 +251,6 @@ export class FileOpsProvider {
 
   uploadFile(file, identifier, params: any = {}) {
     return new Promise((resolve, reject) => {
-      let fileName = this.getFileName(file);
       const fileTransfer: FileTransferObject = this.transfer.create();
       let options = this.setFileOptions(file, params);
 
@@ -404,8 +397,6 @@ export class FileOpsProvider {
   copyFile(file, directory) {
     return new Promise((resolve, reject) => {
       let fileName = this.getFileName(file);
-      let fileDir = this.getFileDir(file);
-      
       //resolve to local
       (<any>window).resolveLocalFileSystemURL(file, (fileEntry: FileEntry) => {
         //new dir to system URI

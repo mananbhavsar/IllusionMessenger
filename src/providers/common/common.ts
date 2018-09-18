@@ -1,23 +1,21 @@
 import { Injectable } from '@angular/core';
-import { Platform, Events } from 'ionic-angular';
-
-import { File } from '@ionic-native/file';
-
+import { Platform, ActionSheetController } from 'ionic-angular';
 
 @Injectable()
 export class CommonProvider {
   isIOS: boolean = false;
   isAndroid: boolean = false;
   isCordova: boolean = false;
-
+  sort_by: any;
+  sort_order : any;
   constructor(
-    private file: File,
     private platform: Platform,
-    private events: Events,
+    public actionSheetController  :ActionSheetController
   ) {
     this.isIOS = this.platform.is('ios');
     this.isAndroid = this.platform.is('android');
     this.isCordova = this.platform.is('cordova');
+    
   }
 
   build_query(params) {
@@ -32,6 +30,53 @@ export class CommonProvider {
     if (element && cls) {
       return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1;
     }
+  }
+
+  openSortOption(){
+    return new Promise((resolve,reject) => {
+        //creating buttons
+        let buttons = [];
+        let sortingOptions = {
+            'CreationDate': 'Creation Date',
+            'DueDate': 'Due Date'
+        };
+        for (let key in sortingOptions) {
+            let label = sortingOptions[key];
+            let icon = null;
+            if (key === this.sort_by) {
+                icon = this.sort_order === 'ASC' ? 'ios-arrow-round-up-outline' : 'ios-arrow-round-down-outline';
+            }
+            buttons.push({
+                text: label,
+                icon: icon,
+                handler: () => {
+                    //if not selected initially, making it desc so it could be reversed later
+                    if (this.sort_by !== key) {
+                        this.sort_order = 'DESC';
+                    }
+                    this.sort_by = key;
+                    this.sort_order = this.sort_order === 'ASC' ? 'DESC' : 'ASC';
+                    resolve(true);
+                }
+            });
+          }
+
+        //cancel button
+        buttons.push({
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () => {
+            reject(false);
+          }
+
+      });
+      //creating action sheet
+      let sortActionSheet = this.actionSheetController.create({
+          title: 'Select sort options',
+          buttons: buttons
+      });
+      sortActionSheet.present();
+    });
   }
 
 

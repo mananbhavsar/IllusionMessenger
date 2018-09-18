@@ -21,7 +21,7 @@ export class FormsPage {
   setTitle() {
     this.title = null;
     setTimeout(() => {
-      this.title = 'Leave Application Form';
+      this.title = 'Forms';
     });
   }
 

@@ -1,6 +1,5 @@
 import { Component, enableProdMode, ViewChild } from '@angular/core';
 import { Badge } from '@ionic-native/badge';
-import { Diagnostic } from '@ionic-native/diagnostic';
 import { Globalization } from '@ionic-native/globalization';
 import { Keyboard } from '@ionic-native/keyboard';
 import { Network } from '@ionic-native/network';
@@ -13,6 +12,7 @@ import { AlertController, Events, LoadingController, MenuController, ModalContro
 import * as moment from "moment";
 import * as _ from 'underscore';
 import { AccountPage } from '../pages/account/account';
+import { TabsPage } from '../pages/tabs/tabs';
 import { ChatPage } from '../pages/chat/chat';
 import { TagPage } from '../pages/create-tag/tag/tag';
 import { UsersPage } from '../pages/create-user/users/users';
@@ -24,7 +24,6 @@ import { LogoutPage } from '../pages/logout/logout';
 import { ManageGroupPage } from '../pages/manage-group/manage-group';
 import { TutorialPage } from '../pages/tutorial/tutorial';
 import { WelcomePage } from '../pages/welcome/welcome';
-import { ConnectionProvider } from '../providers/connection/connection';
 import { TranslateServiceProvider } from '../providers/translate-service/translate-service';
 import { UserProvider } from '../providers/user/user';
 import { GroupPage } from './../pages/group/group';
@@ -107,7 +106,6 @@ export class MyApp {
         public platform: Platform,
         private _statusBar: StatusBar,
         public storage: Storage,
-        private connection: ConnectionProvider,
         public splashScreen: SplashScreen,
         public user: UserProvider,
         public loadingCtrl: LoadingController,
@@ -260,6 +258,11 @@ export class MyApp {
 
     listenToGobalEvents() {
         this.doTranslate();
+        this.events.subscribe('menu:created', (menu) => {
+            setTimeout(() => {
+                this.loggedInPages = menu;
+            });
+        });
 
         this.events.subscribe('loading:create', (content) => {
             content = content || this.loading_translate;
@@ -470,7 +473,7 @@ export class MyApp {
                     break;
 
                 default:
-                    page = HomePage;
+                    page = TabsPage;
                     break;
             }
             if (page) {
@@ -639,7 +642,7 @@ export class MyApp {
             }
         }
             this.translate.use(user.MyLanguage);
-            this.nav.setRoot(HomePage);
+            this.nav.setRoot(TabsPage);
             setTimeout(() => {
                 let full_name = user ? user.LoginUser : '';
                 this.events.publish('toast:create', this.welcome_translate + ' ' + full_name);

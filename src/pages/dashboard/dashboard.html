@@ -1,0 +1,19 @@
+<ion-header color="primary">
+        <header [title]="getTitle()" [buttons]="[{icon : 'search', name : 'search'},{ icon: 'flash', name: 'flash'},{ icon: 'ios-options', name: 'sort'}]"
+        (buttonClicked)="headerButtonClicked($event)"></header>
+        <internet-status></internet-status>
+</ion-header>   
+<ion-content>
+<ion-row *ngIf="data">
+    <ion-col (click)="openTopics($event, day)" col-6 *ngFor="let day of data | keys">
+        <div class="wrapper">
+            <div class="title" [ngClass]="day">
+                {{days[day].label}}
+            </div>
+            <div class="value">
+                {{data[day]}}
+            </div>
+        </div>
+    </ion-col>
+</ion-row>
+</ion-content>

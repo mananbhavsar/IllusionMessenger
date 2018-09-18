@@ -41,6 +41,7 @@ import { OrderModule } from 'ngx-order-pipe';
 import { ComponentsModule } from '../components/components.module';
 import { AboutPageModule } from '../pages/about/about.module';
 import { AccountPageModule } from '../pages/account/account.module';
+import { TabsPageModule } from '../pages/tabs/tabs.module';
 import { FormsPageModule } from '../pages/forms/forms.module';
 import { OverTimePageModule } from '../pages/forms/over-time/over-time.module';
 import { AdvanceRequestPageModule } from '../pages/forms/advance-request/advance-request.module';
@@ -98,6 +99,8 @@ import { TranslateServiceProvider } from '../providers/translate-service/transla
 import { UserProvider } from '../providers/user/user';
 import { UserAutoCompleteService } from './../pages/topic/create-topic/user-auto-complete';
 import { MyApp } from './app.component';
+import { DashboardPageModule } from '../pages/dashboard/dashboard.module';
+import { GroupListPageModule } from '../pages/group-list/group-list.module';
 
 @NgModule({
     declarations: [
@@ -111,6 +114,7 @@ import { MyApp } from './app.component';
         BrowserModule,
         IonicModule.forRoot(MyApp, {
             mode: 'md',
+            tabsHideOnSubPages: true,
         }),
         HttpModule,
         IonicStorageModule.forRoot({
@@ -120,6 +124,7 @@ import { MyApp } from './app.component';
         IonicImageViewerModule,
         AboutPageModule,
         AddFlashPageModule,
+        GroupListPageModule,
         CreateTagPageModule,
         CreateUserPageModule,
         FormsPageModule,
@@ -143,6 +148,7 @@ import { MyApp } from './app.component';
         GroupPageModule,
         GroupOptionsPageModule,
         ContactDetailPageModule,
+        DashboardPageModule,
         DueTopicsPageModule,
         HelpPageModule,
         SearchPageModule,
@@ -168,7 +174,8 @@ import { MyApp } from './app.component';
         RatingPageModule,
         SalarySlipPageModule,
         PendingApprovalPageModule,
-        RequestDetailPageModule
+        RequestDetailPageModule,
+        TabsPageModule
     ],
     bootstrap: [IonicApp],
     entryComponents: [

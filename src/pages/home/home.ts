@@ -18,6 +18,7 @@ import { FirebaseTransactionProvider } from './../../providers/firebase-transact
 import { NotificationsProvider } from './../../providers/notifications/notifications';
 import { AddFlashPage } from './../group/add-flash/add-flash';
 import { CreateTopicPage } from './../topic/create-topic/create-topic';
+import { CommonProvider } from '../../providers/common/common';
 
 @IonicPage()
 @Component({
@@ -32,6 +33,7 @@ export class HomePage {
     query: any = null;
     searchInputBtn: boolean = false;
     firebaseConnected: boolean = false;
+    situationID: number = 0;
 
     flashNews: Array<any> = [];
     reorder: boolean = false;
@@ -44,17 +46,18 @@ export class HomePage {
     deviceRegsiter: number = 0;
     page: number = 0;
     connectedTime: string = null;
+
     sort_by: string = '';
     sort_order: string = '';
 
     dataFetched: boolean = false;
     selectedGroup: any = [];
     tabs = [
-        {
-            name: 'Task due in days',
-            icon: 'stats',
-            key: 'Task_due_in_days',
-        },
+        // {
+        //     name: 'Task due in days',
+        //     icon: 'stats',
+        //     key: 'Task_due_in_days',
+        // },
         {
             name: 'Assigned To Me',
             icon: 'star',
@@ -65,11 +68,11 @@ export class HomePage {
             icon: 'people',
             key: 'Created_By_Me'
         },
-        {
-            name: 'Groups',
-            icon: 'list-box',
-            key: 'Groups_Wise'
-        },
+        // {
+        //     name: 'Groups',
+        //     icon: 'list-box',
+        //     key: 'Groups_Wise'
+        // },
         {
             name: 'Priority',
             icon: 'flag',
@@ -80,7 +83,7 @@ export class HomePage {
             icon: 'paper',
             key: 'Topic_Wise'
         },];
-    selectedTab: string = 'stats';
+    selectedTab: string = 'star';
     readOptions: boolean = false;
     selectedTopic: Array<any> = [];
     readAllSelected: boolean = true;
@@ -95,11 +98,11 @@ export class HomePage {
         private _oneSignal: OneSignal,
         private platform: Platform,
         private _network: Network,
-        private _flashNews: FlashNewsProvider,
         private modalController: ModalController,
         private notifications: NotificationsProvider,
         private _firebaseTransaction: FirebaseTransactionProvider,
         public actionSheetController: ActionSheetController,
+        public common : CommonProvider
     ) {
         this.global = Global;
         //listening to Resume & Pause events
@@ -170,6 +173,7 @@ export class HomePage {
             }
             this.connection.doPost('Chat/GetTaskDetail', {
                 PageNumber: this.page,
+                SituationID: this.situationID,
                 RowsPerPage: 100,
                 Query: this.query,
                 OrderBy: this.sort_by,
@@ -640,44 +644,11 @@ export class HomePage {
     }
 
     openSortOptions() {
-        //creating buttons
-        let buttons = [];
-        let sortingOptions = {
-            'CreationDate': 'Creation Date',
-            'DueDate': 'Due Date'
-        };
-        for (let key in sortingOptions) {
-            let label = sortingOptions[key];
-            let icon = null;
-            if (key === this.sort_by) {
-                icon = this.sort_order === 'ASC' ? 'ios-arrow-round-up-outline' : 'ios-arrow-round-down-outline';
-            }
-            buttons.push({
-                text: label,
-                icon: icon,
-                handler: () => {
-                    //if not selected initially, making it desc so it could be reversed later
-                    if (this.sort_by !== key) {
-                        this.sort_order = 'DESC';
-                    }
-                    this.sort_by = key;
-                    this.sort_order = this.sort_order === 'ASC' ? 'DESC' : 'ASC';
-                    this.doSorting();
-                }
-            });
-        }
-
-        //cancel button
-        buttons.push({
-            text: 'Cancel',
-            role: 'cancel',
-        });
-        //creating action sheet
-        let sortActionSheet = this.actionSheetController.create({
-            title: 'Select sort options',
-            buttons: buttons
-        });
-        sortActionSheet.present();
+     this.common.openSortOption().then((response) => {
+         if(response){
+             this.doSorting();
+         }
+     });
     }
 
     doSorting() {

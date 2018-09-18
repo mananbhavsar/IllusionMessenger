@@ -5,6 +5,7 @@ import { ConnectionProvider } from '../../../providers/connection/connection';
 import * as moment from "moment";
 import * as firebase from 'firebase';
 import * as _ from 'underscore';
+import { TabsPage } from '../../tabs/tabs';
 
 @IonicPage()
 @Component({
@@ -26,7 +27,7 @@ export class DailyShedulePage {
   }
 
   dismiss(event) {
-    this.navCtrl.setRoot('HomePage');
+    this.navCtrl.setRoot('TabsPage');
   }
 
 
@@ -36,7 +37,7 @@ export class DailyShedulePage {
 
       }).then((response: any) => {
         if (_.isEmpty(response.TopicList)) {
-          this.navCtrl.setRoot('HomePage');
+          this.navCtrl.setRoot('TabsPage');
         } else {
           this.topics = response.TopicList;
         }
@@ -63,7 +64,7 @@ export class DailyShedulePage {
       if (status.val() === null) {
         // update to firebase
         ref.set(true);
-        this.navCtrl.setRoot(HomePage);
+        this.navCtrl.setRoot(TabsPage);
       }
     });
   }

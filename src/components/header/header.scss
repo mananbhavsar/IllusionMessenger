@@ -1,8 +1,15 @@
 header {
     .bar-button {
         font-size: 2rem;
+        color : #fff;
     }
     .toolbar-title {
         line-height: 1em;
+    }
+    .toolbar-background {
+        background: color($colors,primary);
+    }
+    .toolbar-title{
+        color : #fff;
     }
 }

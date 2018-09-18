@@ -1,4 +1,10 @@
-dashboard {
+page-dashboard {
+    ion-header {
+            .toolbar-background .toolbar-background-md {
+                background: color($colors,primary);
+        }
+    }
+ion-content{
     ion-row {
         ion-col {
             ion-label {
@@ -67,4 +73,5 @@ dashboard {
             }
         }
     }
+}
 }

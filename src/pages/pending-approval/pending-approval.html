@@ -1,9 +1,14 @@
 <ion-header>
-  <header [title]="getTitle()"></header>
+  <header [title]="getTitle()" [buttons]="[{icon : 'search',name : 'search'}]" (buttonClicked)="searchData($event)"></header>
+  <ion-toolbar ion-text color="primary" *ngIf="searchInputBtn">
+    <ion-searchbar [showCancelButton]="true" (ionInput)="getItems($event)" (ionClear)="onClear($event)"
+    (ionCancel)="onCancel($event)">
+  </ion-searchbar>
+</ion-toolbar>
 </ion-header>
 
 
-<ion-content>
+<ion-content [ngClass]="{extraTop: searchInputBtn}">
   <empty *ngIf="pendingData; else data_template"></empty>
   <ion-refresher (ionRefresh)="refresh($event)">
     <ion-refresher-content pullingIcon="arrow-round-down" pullingText="Pull to refresh" refreshingSpinner="crescent" refreshingText="Refreshing...">
@@ -16,26 +21,30 @@
           Date
         </ion-col>
         <ion-col class="col-lab" col-2>
+          Employee Name
+        </ion-col>
+        <ion-col class="col-lab" col-2>
           Request Type
         </ion-col>
-        <ion-col class="col-lab" col-3>
+        <ion-col class="col-lab" col-2>
           Status
         </ion-col>
         <ion-col class="col-lab" col-2>
           View
         </ion-col>
-        <ion-col class="col-lab" col-3>
+        <ion-col class="col-lab" col-2>
           Remark
         </ion-col>
       </ion-row>
       <ion-row>
         <ion-col col-2>11/34/2010</ion-col>
+        <ion-col col-2>tur did</ion-col>        
         <ion-col col-2>Leave</ion-col>
-        <ion-col col-3>REST</ion-col>
+        <ion-col col-2>REST</ion-col>
         <ion-col col-2>
           <ion-icon (click)="ViewDetail(data)" name="ios-eye"></ion-icon>
         </ion-col>
-        <ion-col col-3>personal issue</ion-col>
+        <ion-col col-2>personal issue</ion-col>
       </ion-row>
     </ion-grid>
     <ion-infinite-scroll *ngIf="page !== -1" (ionInfinite)="paginate($event)">

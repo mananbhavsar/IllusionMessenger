@@ -7,7 +7,6 @@ import { AttachmentComponent } from './attachment/attachment';
 import { CallFabComponent } from './call-fab/call-fab';
 import { CenterSpinnerComponent } from './center-spinner/center-spinner';
 import { ChatBubbleComponent } from './chat-bubble/chat-bubble';
-import { DashboardComponent } from './dashboard/dashboard';
 import { EmptyComponent } from './empty/empty';
 import { FlashNewsComponent } from './flash-news/flash-news';
 import { HeaderComponent } from './header/header';
@@ -20,6 +19,7 @@ import { RefreshComponent } from './refresh/refresh';
 import { TitleComponent } from './title/title';
 import { TopicComponent } from './topic/topic';
 import { RatingComponent } from './rating/rating';
+import { InternetStatusComponent } from './internet-status/internet-status';
 
 
 @NgModule({
@@ -37,9 +37,9 @@ import { RatingComponent } from './rating/rating';
         TopicComponent,
         TitleComponent,
         ModalToolbarComponent,
-        DashboardComponent,
         AttachmentComponent,
-        RatingComponent
+        RatingComponent,
+    InternetStatusComponent
     ],
     imports: [
         MomentModule,
@@ -77,9 +77,9 @@ import { RatingComponent } from './rating/rating';
         TopicComponent,
         TitleComponent,
         ModalToolbarComponent,
-        DashboardComponent,
         RatingComponent,
-        AttachmentComponent
+        AttachmentComponent,
+    InternetStatusComponent
     ]
 })
 export class ComponentsModule { }

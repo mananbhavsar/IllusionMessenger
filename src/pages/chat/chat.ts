@@ -30,6 +30,7 @@ import { LogoutPage } from '../logout/logout';
 import { DateProvider } from './../../providers/date/date';
 import { ChatOptionsPage } from "./chat-options/chat-options";
 import { SavedMediaPage } from "./chat-options/saved-media/saved-media";
+import { TabsPage } from '../tabs/tabs';
 
 @IonicPage()
 @Component({
@@ -163,7 +164,6 @@ export class ChatPage {
   video_translate: string = 'Video';
   cancel_translate: string = 'Cancel';
   contact_translate: string = 'Contact';
-  private window: any = window;
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -682,7 +682,7 @@ export class ChatPage {
             this.connectFireBase();
             resolve(true);
           }).catch(error => {
-            this.navCtrl.setRoot(HomePage);
+            this.navCtrl.setRoot(TabsPage);
             this.events.publish('toast:create', error);
             reject(false);
           })

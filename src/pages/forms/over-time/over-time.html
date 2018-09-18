@@ -22,13 +22,12 @@
         <div class="error-message-block" *ngIf="overtTimeForm.controls.code.errors && (overtTimeForm.controls.code.dirty || overtTimeForm.controls.code.touched)">
           <span *ngIf="overtTimeForm.controls.code.errors.required">Code is required</span>
         </div> -->
-      <ion-item>
-        <ion-label>Type of Over Time</ion-label>
-        <ion-select required formControlName="type">
-          <ion-option value="night" (ionSelect)="getType($event)">late night</ion-option>
-          <ion-option value="morning" (ionSelect)="getType($event)">early morning</ion-option>
-        </ion-select>
-      </ion-item>
+        <ion-item>
+          <ion-label>Type</ion-label>
+          <ion-select formControlName="type">
+            <ion-option required *ngFor="let type of typeList" [value]="type" (ionSelect)="getType($event)">{{type}}</ion-option>
+          </ion-select>
+        </ion-item>
       <div class="error-message-block" *ngIf="overtTimeForm.controls.type.errors && (overtTimeForm.controls.type.dirty || overtTimeForm.controls.type.touched)">
         <span *ngIf="overtTimeForm.controls.type.errors.required">Select over time type</span>
       </div>

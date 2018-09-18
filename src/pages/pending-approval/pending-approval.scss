@@ -1,5 +1,10 @@
 page-pending-approval {
 ion-content{
+    &.extraTop {
+        .scroll-content {
+            margin-top: 136px !important;
+        }
+    }
     ion-grid{
         ion-row{
             ion-col{

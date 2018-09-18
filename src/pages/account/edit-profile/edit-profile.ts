@@ -20,6 +20,7 @@ export class EditProfilePage {
   editProfileForm: FormGroup;
   submitted = false;
   global: any = {};
+  aadharNoExist : boolean = false;
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -56,6 +57,7 @@ export class EditProfilePage {
   getData() {
     this.connection.doPost('MobileApp/GetUserProfile').then(response => {
       this.editProfileForm.setValue({
+        code: response[0].Code,
         name: response[0].Displayname,
         personal_email: response[0].PersonalEmailID,
         official_email: response[0].OfficialEmailID,
@@ -63,6 +65,9 @@ export class EditProfilePage {
         aadhar_number: response[0].AadharNo,
         emrgancy_number: response[0].EmergancyNo
       });
+      if(response[0].AadharNo){
+        this.aadharNoExist = true;
+      }
     }).catch(error => {
       this.dismiss(error);
     });

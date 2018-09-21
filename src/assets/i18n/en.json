@@ -16,7 +16,11 @@
     "HomeScreen": {
         "_Home_": "Home",
         "_forms_": "Forms",
-        "_Dashboard_": "Dashboard",
+        "_dashboard_": "Dashboard",
+        "_task_": "Task",
+        "_group_": "Groups",
+        "_calendar_": "Calendar",
+        "_forms" : "Forms",
         "_ManageGroup_" : "Manage Group",
         "_DashboardSummary_": "Your dashboard summary",
         "_PickUp_": "Pickup",
@@ -27,8 +31,8 @@
         "_ViewCommunication_": "View your communications",
         "_Invoice_": "Invoice",
         "_Payments_": "Payments",
-        "_Tag_" : "Tags",
-        "_users_" : "Users"
+        "_Tags_" : "Tags",
+        "_Users_" : "Users"
     },
     "DashboardDetail": {
         "_Payment_": "Payment",

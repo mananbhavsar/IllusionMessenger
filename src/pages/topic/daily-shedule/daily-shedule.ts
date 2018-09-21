@@ -35,7 +35,7 @@ export class DailyShedulePage {
     return new Promise((resolve, reject) => {
       this.connectionProvider.doPost('Chat/MyTaskDueToday', {
 
-      }).then((response: any) => {
+      },false).then((response: any) => {
         if (_.isEmpty(response.TopicList)) {
           this.navCtrl.setRoot('TabsPage');
         } else {

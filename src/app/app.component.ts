@@ -30,6 +30,9 @@ import { GroupPage } from './../pages/group/group';
 import { Global } from './global';
 import { FormsPage } from '../pages/forms/forms';
 import { DailyShedulePage } from '../pages/topic/daily-shedule/daily-shedule';
+import { DashboardPage } from '../pages/dashboard/dashboard';
+import { CalendarPage } from '../pages/calendar/calendar';
+import { GroupsPage } from '../pages/groups/groups';
 
 export const firebaseConfig = {
     apiKey: "AIzaSyAFDZ9UPTMiDTjT4qAG0d9uVeOdhL-2PBw",
@@ -67,6 +70,7 @@ export class MyApp {
     lastOfflineMessageShown: number = 0;
     latitude: number = 0.0;
     longitude: number = 0.0;
+    loggedInPages : any;
     // List of pages that can be navigated to from the left menu
     // the left menu only works after login
     // the login page disables the left menu
@@ -74,13 +78,17 @@ export class MyApp {
         // { title: 'About', translate_key: 'Common._About', name: 'AboutPage', component: AboutPage, icon: 'information-circle' },
         { title: 'Help', translate_key: 'Common._Help_', name: 'HelpPage', component: HelpPage, icon: 'help-circle' },
     ];
-    loggedInPages: PageInterface[] = [
-        { title: 'Home', translate_key: 'HomeScreen._Home_', name: 'HomePage', component: HomePage, icon: 'home' },
-        { title: 'Manage Group', translate_key: 'HomeScreen._ManageGroup_', name: 'ManageGroupPage', component: ManageGroupPage, icon: 'people' },
-        { title: 'Tag', translate_key: 'HomeScreen._Tag_', name: 'TagPage', component: TagPage, icon: 'tab' },
-        { title: 'Users', translate_key: 'HomeScreen._users_', name: 'UsersPage', component: UsersPage, icon: 'person' },
-        { title: 'Forms', translate_key: 'HomeScreen._forms_', name: 'FormsPage', component: FormsPage, icon: 'paper' }        
-    ];
+    // loggedInPages: PageInterface[] = [
+    //     { title: 'Home', translate_key: 'HomeScreen._Home_', name: 'TabsPage', component: TabsPage, icon: '' },
+    //     { title: 'Manage Group', translate_key: 'HomeScreen._ManageGroup_', name: 'ManageGroupPage', component: ManageGroupPage, icon: '' },
+    //     { title: 'Tag', translate_key: 'HomeScreen._Tags_', name: 'TagPage', component: TagPage, icon: '' },
+    //     { title: 'Users', translate_key: 'HomeScreen._Users_', name: 'UsersPage', component: UsersPage, icon: '' },
+    //     { title: 'Dashboard', translate_key: 'HomeScreen._dashboard_', name: 'DashboardPage', component : DashboardPage, icon : '' },
+    //     { title: 'Task', translate_key: 'HomeScreen._task_', name: 'HomePage', component : HomePage, icon :''},
+    //     { title: 'Group', translate_key: 'HomeScreen._group_', name: 'GroupsPage', component : GroupsPage, icon :''},
+    //     { title: 'Calendar', translate_key: 'HomeScreen._calendar_', name: 'CalendarPage', component : CalendarPage, icon : '' },
+    //     { title: 'Forms', translate_key: 'HomeScreen._forms_', name: 'FormsPage', component: FormsPage, icon: '' },  
+    // ];
     accountPages: PageInterface[] = [
         { title: 'Account', translate_key: 'Common._Account_', name: 'AccountPage', component: AccountPage, icon: 'user' },
         { title: 'Logout', translate_key: 'Common._LogOut_', name: 'LogoutPage', component: LogoutPage, icon: 'log-out', logsOut: true }
@@ -258,7 +266,7 @@ export class MyApp {
 
     listenToGobalEvents() {
         this.doTranslate();
-        this.events.subscribe('menu:created', (menu) => {
+        this.events.subscribe('menu:created', (menu : any) => {
             setTimeout(() => {
                 this.loggedInPages = menu;
             });

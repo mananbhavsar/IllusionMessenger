@@ -15,8 +15,12 @@
     },
     "HomeScreen": {
         "_Home_": "Accueil",
-        "_forms_": "Formes"
-        "_Dashboard_": "Tableau de bord",
+        "_forms_": "Formes",
+        "_dashboard_": "Tableau de bord",
+        "_task_": "Tâche",
+        "_group_": "Groupes",
+        "_calendar_": "Calendrier",
+        "_forms" : "Forms",
         "_ManageGroup_" : "Gérer le groupe",
         "_DashboardSummary_": "Votre tableau de bord analytique",
         "_PickUp_": "Décroché",
@@ -27,8 +31,8 @@
         "_ViewCommunication_": "Voir votre communication",
         "_Invoice_": "facture d'achat",
         "_Payments_": "Paiements",
-        "_Tag_" : "Mots clés",
-        "_users_" : "Utilisateurs"
+        "_Tags_" : "Mots clés",
+        "_Users_" : "Utilisateurs"
     },
     "DashboardDetail": {
         "_Payment_": "Versement",

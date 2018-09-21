@@ -34,9 +34,8 @@ export class CreateGroupPage {
     public actionSheetCtrl: ActionSheetController,
     public _firebaseTransaction: FirebaseTransactionProvider) {
     this.createGroupForm = this.formBuilder.group({
-      Group: ['', [Validators.required, Validators.maxLength(30), Validators.pattern('[A-Za-z ]*')]],
+      Group: ['', [Validators.required, Validators.maxLength(30)]],
       GroupCode: ['', [Validators.required, Validators.maxLength(10)]],
-      search: [],
     
     });
     if (!_.isEmpty(this.navParams.data.Group)) {
@@ -45,7 +44,6 @@ export class CreateGroupPage {
       this.createGroupForm.setValue({
         Group: this.navParams.data.Group,
         GroupCode: this.navParams.data.GroupCode,
-        search: ''
       });
     }
     this.getUserDetails();

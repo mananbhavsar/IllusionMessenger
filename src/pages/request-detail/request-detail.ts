@@ -16,9 +16,6 @@ export class RequestDetailPage {
      this.requestDetail = this.navParams.data;
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad RequestDetailPage');
-  }
 
   dismiss(event){
     this.viewCtrl.dismiss();

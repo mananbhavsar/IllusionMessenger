@@ -18,6 +18,7 @@ export class OverTimePage {
   title: string = 'Over Time Form';
   utcString: any;
   typeList:any = [];
+  validateDate : boolean = false;
   constructor(public navCtrl: NavController,
     public formBuilder: FormBuilder,
     public navParams: NavParams,
@@ -31,7 +32,21 @@ export class OverTimePage {
       type: ['', Validators.required],
       remark: ['']
     });
+    this.getOverTypes();
     this.setTitle();
+  }
+
+  getOverTypes(){
+    return new Promise((resolve,reject) => {
+    this.connection.doPost('Payroll/Get_TypeOfOT_Payroll',{
+      CompanyID : this.connection.user.CompanyID
+    },false).then((response : any) => {
+     this.typeList = response.TypeOfOT;
+     resolve(true);
+    }).catch((error) => {
+     reject();
+    });
+    });
   }
 
   getType(type) {
@@ -40,16 +55,18 @@ export class OverTimePage {
 
   submit() {
     return new Promise((resolve, reject) => {
-      
-      this.connection.doPost('Chat/', {
-        Code: this.user._user.EmployeeID,
-        Date: this.utcString,
-        Type: this.type,
+      if (moment(this.overtTimeForm.get('date').value).isSameOrAfter(moment().format('DD MMM YYYY'))) {
+        this.event.publish('toast:error', 'Selected date must be less than today');       
+      } else {
+      this.connection.doPost('Payroll/Set_OT_Payroll', {
+      CompanyID : this.connection.user.CompanyID,
+        Date: this.date.toUTCISOString(this.overtTimeForm.get('date').value,false),
+        TypeOfOTID: this.type,
         Remark: this.overtTimeForm.get('remark').value
       }).then((response: any) => {
         if (!_.isEmpty(response)) {
           if(response.Data.Message){
-            this.event.publish('toast:error',response.Data.Message);
+            this.event.publish('toast:create',response.Data.Message);
           }
           this.overtTimeForm.reset();
           resolve(true);
@@ -57,6 +74,7 @@ export class OverTimePage {
       }).catch((error) => {
         reject();
       });
+    }
     });
   }
 
@@ -66,8 +84,6 @@ export class OverTimePage {
     setDate.setMonth(date.month - 1);
     setDate.setDate(date.day);
     let dateMoment = moment(setDate);
-    let SelectedDate = moment(this.date.toUTC(dateMoment), 'DD MMM YYYY');
-    this.utcString = this.date.toUTCISOString(SelectedDate,false,false);
     if (dateMoment.isValid()) {
       if (moment(this.overtTimeForm.get('date').value).isSameOrAfter(moment().format('DD MMM YYYY'))) {
         this.event.publish('toast:error', 'Selected date must be less than today');

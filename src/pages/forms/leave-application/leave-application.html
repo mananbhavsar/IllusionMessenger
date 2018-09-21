@@ -9,7 +9,7 @@
         <ion-label ion-text color="primary">
           From Date
         </ion-label>
-        <ion-datetime (ionChange)="compareTwoDates()" displayFormat="DD MMM YYYY" pickerFormat="DD MMM YYYY" formControlName="from_date"
+        <ion-datetime (ionChange)="getTotalLeaves($event)" displayFormat="DD MMM YYYY" pickerFormat="DD MMM YYYY" formControlName="from_date"
           max="2050">
         </ion-datetime>
       </ion-item>
@@ -20,7 +20,7 @@
         <ion-label ion-text color="primary">
           To Date
         </ion-label>
-        <ion-datetime (ionChange)="compareTwoDates()" displayFormat="DD MMM YYYY" pickerFormat="DD MMM YYYY" formControlName="to_date"
+        <ion-datetime (ionChange)="getTotalLeaves($event)" displayFormat="DD MMM YYYY" pickerFormat="DD MMM YYYY" formControlName="to_date"
           max="2050">
         </ion-datetime>
       </ion-item>
@@ -28,7 +28,7 @@
         <ion-label ion-text color="primary">
           Reporting Date
         </ion-label>
-        <ion-datetime (ionChange)="getTotalLeaves()" displayFormat="DD MMM YYYY" pickerFormat="DD MMM YYYY" formControlName="reporting_date"
+        <ion-datetime (ionChange)="getTotalLeaves($event)" displayFormat="DD MMM YYYY" pickerFormat="DD MMM YYYY" formControlName="reporting_date"
           max="2050">
         </ion-datetime>
       </ion-item>
@@ -41,7 +41,7 @@
       <ion-item>
         <ion-label>Type</ion-label>
         <ion-select formControlName="leaveType">
-          <ion-option required *ngFor="let type of typeList" [value]="type" (ionSelect)="getType($event)">{{type}}</ion-option>
+          <ion-option required *ngFor="let type of typeList" [value]="type.TypeOfLeaveID" (ionSelect)="getType($event)">{{type.Description}}</ion-option>
         </ion-select>
       </ion-item>
       <div class="error-message-block" *ngIf="leaveApplicationForm.controls.leaveType.errors && (leaveApplicationForm.controls.leaveType.dirty || leaveApplicationForm.controls.leaveType.touched)">

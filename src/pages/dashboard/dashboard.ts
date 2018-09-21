@@ -2,6 +2,10 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, ModalController, Events } from 'ionic-angular';
 import { Network } from '@ionic-native/network';
 import { ConnectionProvider } from '../../providers/connection/connection';
+import { AddFlashPage } from '../group/add-flash/add-flash';
+import { NotificationsProvider } from '../../providers/notifications/notifications';
+import { FirebaseTransactionProvider } from '../../providers/firebase-transaction/firebase-transaction';
+import { CommonProvider } from '../../providers/common/common';
 
 @IonicPage()
 @Component({
@@ -40,9 +44,14 @@ export class DashboardPage {
     public modal: ModalController,
     public event: Events,
     public network: Network,
-   public connection: ConnectionProvider) {
+   public connection: ConnectionProvider,
+   public notifications : NotificationsProvider,
+   public common : CommonProvider,
+   public _firebaseTransaction : FirebaseTransactionProvider) {
    this.getData();
   }
+
+
 
   getData(){
     return new Promise((resolve, reject) => {
@@ -55,7 +64,7 @@ export class DashboardPage {
           Order: '',
       }, false).then((response: any) => {
         this.data = response.TaskDueInDays[0];
-        console.log(this.data);
+        this.registerDevice();
       });
     });
   }
@@ -69,6 +78,36 @@ export class DashboardPage {
       modal.present();
     }
   }
+
+  addFlash() {
+    let flashModal = this.modal.create(AddFlashPage, {
+      group_id: 0,
+      group_name: null,
+    });
+    flashModal.onDidDismiss(data => {
+      this.setTitle();
+
+      if (data) {
+        this.event.publish('toast:create', data.Data.Message);
+        this.notifications.sends(data.OneSignalTransaction);
+        this._firebaseTransaction.doTransaction(data.FireBaseTransaction).catch(error => {
+
+        });
+        //refresh
+        setTimeout(() => {
+          this.getData();
+        });
+      }
+    });
+    flashModal.present();
+  }
+
+  registerDevice(){
+    this.common.registerDevice(false).then((response : any) => {
+    });
+  }
+
+
   setTitle() {
     this.title = null;
     setTimeout(() => {

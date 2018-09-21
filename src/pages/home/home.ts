@@ -366,24 +366,24 @@ export class HomePage {
         });
     }
 
-    readMessage(ev, group) {
-        group.IsRead = ev.checked;
-        if (ev.checked) {
-            if (this.selectedGroup.indexOf(this.selectedGroup.GroupCode) === -1) {
-                this.selectedGroup.push({
-                    checked: group.IsRead,
-                    GroupCode: group.GroupCode,
-                });
-                this.readAllSelected = false;
-            }
-        } else {
-            this.selectedGroup.splice(this.selectedGroup.indexOf(this.selectedGroup.GroupCode), 1);
-        }
+    // readMessage(ev, group) {
+    //     group.IsRead = ev.checked;
+    //     if (ev.checked) {
+    //         if (this.selectedGroup.indexOf(this.selectedGroup.GroupCode) === -1) {
+    //             this.selectedGroup.push({
+    //                 checked: group.IsRead,
+    //                 GroupCode: group.GroupCode,
+    //             });
+    //             this.readAllSelected = false;
+    //         }
+    //     } else {
+    //         this.selectedGroup.splice(this.selectedGroup.indexOf(this.selectedGroup.GroupCode), 1);
+    //     }
 
-        if (this.selectedGroup.length === 0 && this.selectedTopic.length === 0) {
-            this.readAllSelected = true;
-        }
-    }
+    //     if (this.selectedGroup.length === 0 && this.selectedTopic.length === 0) {
+    //         this.readAllSelected = true;
+    //     }
+    // }
 
     useLang(lang) {
         this.translate.use(lang);
@@ -394,12 +394,12 @@ export class HomePage {
         this.navCtrl.push(GroupPage, { GroupID, Group });
     }
 
-    getBadge(groupCode) {
-        if (groupCode in this.badges) {
-            return this.badges[groupCode];
-        }
-        return false;
-    }
+    // getBadge(groupCode) {
+    //     if (groupCode in this.badges) {
+    //         return this.badges[groupCode];
+    //     }
+    //     return false;
+    // }
 
     createTopic(group_id) {
         this.navCtrl.push(CreateTopicPage, group_id);
@@ -451,9 +451,9 @@ export class HomePage {
     }
 
     searchData() {
-        if (this.selectedTab === 'stats') {
-            this.events.publish('toast:create', 'Search not available here');
-        } else {
+        // if (this.selectedTab === 'stats') {
+        //     this.events.publish('toast:create', 'Search not available here');
+        // } else {
             if (this.searchInputBtn) {
                 this.searchInputBtn = false;
             } else if (this.searchInputBtn === false) {
@@ -462,17 +462,17 @@ export class HomePage {
             this.data = [];
             this.query = null;
             this.initializeItems();
-        }
+        // }
     }
 
-    dashboardTabSearchHide() {
-        if (this.selectedTab === 'stats' && this.searchInputBtn) {
-            this.events.publish('toast:create', 'Search not available here');
-            this.data = [];
-            this.query = null;
-            this.initializeItems();
-        }
-    }
+    // dashboardTabSearchHide() {
+    //     if (this.selectedTab === 'stats' && this.searchInputBtn) {
+    //         this.events.publish('toast:create', 'Search not available here');
+    //         this.data = [];
+    //         this.query = null;
+    //         this.initializeItems();
+    //     }
+    // }
 
     initializeItems() {
         this.page = 0;
@@ -534,12 +534,12 @@ export class HomePage {
         flashModal.present();
     }
 
-    isGroupSelected() {
-        if (this.getSelectedTabName() === 'Groups') {
-            return true;
-        }
-        return false;
-    }
+    // isGroupSelected() {
+    //     if (this.getSelectedTabName() === 'Groups') {
+    //         return true;
+    //     }
+    //     return false;
+    // }
 
     refresherHidden() {
         this.hideRefresher = false;
@@ -550,11 +550,11 @@ export class HomePage {
         this.tabs.some(tab => {
             if (tab.icon === this.selectedTab) {
                 selectedName = tab.name;
-                if (selectedName === 'Groups' && this.reorder) {
-                    this.hideRefresher = false;
-                } else {
-                    this.hideRefresher = true;
-                }
+                // if (selectedName === 'Groups' && this.reorder) {
+                //     this.hideRefresher = false;
+                // } else {
+                //     this.hideRefresher = true;
+                // }
                 return true;
             }
             return false;
@@ -610,42 +610,44 @@ export class HomePage {
         return selectedRowsCount;
     }
 
-    reorderItems(indexes) {
-        this.data.Groups_Wise = reorderArray(this.data.Groups_Wise, indexes);
-        let group_reorder = [];
-        let groupIds = [];
+    // reorderItems(indexes) {
+    //     this.data.Groups_Wise = reorderArray(this.data.Groups_Wise, indexes);
+    //     let group_reorder = [];
+    //     let groupIds = [];
 
-        this.data.Groups_Wise.forEach((group, index) => {
-            if (groupIds.indexOf(group.GroupID) === -1) {
-                group_reorder.push({ 'OrderIndex': index, 'GroupID': group.GroupID });
-                groupIds.push(group.GroupID);
-            }
+    //     this.data.Groups_Wise.forEach((group, index) => {
+    //         if (groupIds.indexOf(group.GroupID) === -1) {
+    //             group_reorder.push({ 'OrderIndex': index, 'GroupID': group.GroupID });
+    //             groupIds.push(group.GroupID);
+    //         }
 
-        });
+    //     });
 
-        this.connection.doPost('chat/MyGroupOrder', {
-            OrderIndex: group_reorder.map(order => order.OrderIndex),
-            GroupID: group_reorder.map(groupId => groupId.GroupID)
-        }, false).then((response: any) => {
-            if (response) {
+    //     this.connection.doPost('chat/MyGroupOrder', {
+    //         OrderIndex: group_reorder.map(order => order.OrderIndex),
+    //         GroupID: group_reorder.map(groupId => groupId.GroupID)
+    //     }, false).then((response: any) => {
+    //         if (response) {
 
-            }
-        }).catch((error) => {
-        });
+    //         }
+    //     }).catch((error) => {
+    //     });
 
-    }
+    // }
 
-    reorderGroups() {
-        if (this.reorder) {
-            this.reorder = false;
-        } else {
-            this.reorder = true;
-        }
-    }
+    // reorderGroups() {
+    //     if (this.reorder) {
+    //         this.reorder = false;
+    //     } else {
+    //         this.reorder = true;
+    //     }
+    // }
 
     openSortOptions() {
-     this.common.openSortOption().then((response) => {
+     this.common.openSortOption().then((response : any) => {
          if(response){
+             this.sort_by = response.sort_by;
+             this.sort_order = response.sort_order;
              this.doSorting();
          }
      });

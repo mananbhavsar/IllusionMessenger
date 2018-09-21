@@ -1,4 +1,4 @@
-page-calender {
+page-calendar {
     ion-header{
         ion-navbar{
             ion-toolbar{
@@ -8,6 +8,7 @@ page-calender {
         }
     }
     }
+    ion-content{
     [col-1] {
         -webkit-box-flex: 0;
         -webkit-flex: 0 0 8.33333%;
@@ -19,7 +20,6 @@ page-calender {
       .col {
         text-align: -webkit-center;
         padding: 5px;
-        height: 40px;
       }
       .last-month, .next-month {
         color: #999999;
@@ -46,18 +46,26 @@ page-calender {
       }
       .selected-date {
         width: 5px;
-        height: 5px;
+        height: 3px;
         padding: 2px;
         border-radius: 50%;
         border:  3px solid #26c5e8;
       }
       .holiday{
         width: 5px;
-        height: 5px;
+        height: 3px;
         padding: 5px;
         border-radius: 50%;
         background: #e2657f;
         color: #6f4747;
+      }
+      .absent-date{
+          width: 5px;
+          height: 3px;
+          padding: 5px;
+          border-radius: 50%;
+          background:red;
+          color:white;
       }
       .holiday-event{
         margin-top : 5px;
@@ -99,18 +107,6 @@ page-calender {
           background: #f5f4f4;
         }
       }
-      ion-footer{
-          ion-fab{
-              button{
-              &.fab-md{
-                 background-color :  #cf3d23;
-              }
-              &.fab-ios{
-                  background-color: #cf3d23;
-              }
-            }
-          }
-      }
       ion-list{
           &.list-md{
               margin-top: 2px;
@@ -145,6 +141,7 @@ page-calender {
           }
           }
       }
+    }
       ion-footer{
         ion-row{
           ion-col{
@@ -167,5 +164,8 @@ page-calender {
             }
           }
         }
+      }
+      ion-footer{
+        bottom: 55px !important;
       }
 }

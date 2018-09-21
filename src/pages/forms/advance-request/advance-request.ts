@@ -29,12 +29,14 @@ export class AdvanceRequestPage {
 
   submit() {
     return new Promise((resolve, reject) => {
-      this.connection.doPost('Chat/', {
-        Date: this.date.toUTCISOString(moment()),
-        Amount: this.advanceRequestForm.get('amount').value,
+      this.connection.doPost('Payroll/Set_AdvanceRequest_Payroll', {
+        CompanyID : this.connection.user.CompanyID,
+        Date: this.date.toUTCISOString(new Date(), false),
+        RequestAmount: this.advanceRequestForm.get('amount').value,
         Remark: this.advanceRequestForm.get('remark').value
       }).then((response: any) => {
         if (!_.isEmpty(response)) {
+          this.event.publish('toast:create',response.Data.Message);
           this.advanceRequestForm.reset();
           resolve(true);
         }

@@ -4,7 +4,7 @@
 <ion-content padding="">
   <form [formGroup]="editProfileForm" (ngSubmit)="update()">
     <ion-list>
-      <ion-item>
+      <!-- <ion-item>
         <ion-label ion-text color="primary" floating>
           Code
         </ion-label>
@@ -21,7 +21,7 @@
       </ion-item>
       <div class="error-message-block" *ngIf="editProfileForm.controls.name.errors && (editProfileForm.controls.name.dirty || editProfileForm.controls.name.touched)">
         <span *ngIf="editProfileForm.controls.name.errors.required">Name is required</span>
-      </div>
+      </div>  -->
       <ion-item>
         <ion-label ion-text color="primary" floating>
           Official Email

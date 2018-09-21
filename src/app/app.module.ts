@@ -93,14 +93,14 @@ import { FirebaseTransactionProvider } from '../providers/firebase-transaction/f
 import { FlashNewsProvider } from '../providers/flash-news/flash-news';
 import { NotificationsProvider } from "../providers/notifications/notifications";
 import { ReadMessageProvider } from '../providers/read-message/read-message';
-import { CalenderPageModule } from '../pages/calender/calender.module';
+import { CalendarPageModule } from '../pages/calendar/calendar.module';
 import { PendingApprovalPageModule } from '../pages/pending-approval/pending-approval.module';
 import { TranslateServiceProvider } from '../providers/translate-service/translate-service';
 import { UserProvider } from '../providers/user/user';
 import { UserAutoCompleteService } from './../pages/topic/create-topic/user-auto-complete';
 import { MyApp } from './app.component';
 import { DashboardPageModule } from '../pages/dashboard/dashboard.module';
-import { GroupListPageModule } from '../pages/group-list/group-list.module';
+import { GroupsPageModule } from '../pages/groups/groups.module';
 
 @NgModule({
     declarations: [
@@ -124,8 +124,8 @@ import { GroupListPageModule } from '../pages/group-list/group-list.module';
         IonicImageViewerModule,
         AboutPageModule,
         AddFlashPageModule,
-        GroupListPageModule,
         CreateTagPageModule,
+        GroupsPageModule,
         CreateUserPageModule,
         FormsPageModule,
         OverTimePageModule,
@@ -168,7 +168,7 @@ import { GroupListPageModule } from '../pages/group-list/group-list.module';
         ComponentsModule,
         CreateGroupPageModule,
         PipesModule,
-        CalenderPageModule,
+        CalendarPageModule,
         ManageGroupPageModule,
         DailyShedulePageModule,
         RatingPageModule,

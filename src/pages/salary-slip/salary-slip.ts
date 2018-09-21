@@ -12,13 +12,15 @@ import { UUID } from 'angular2-uuid';
 })
 export class SalarySlipPage {
   title: string = 'Salary Slip';
-  salarySlipData: any;
+  salarySlipData: any = [];
   page: number = 0;
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public connection: ConnectionProvider,
     public platform : Platform,
     public _fileOps : FileOpsProvider) {
+
+    this.getData();
   }
 
 
@@ -52,11 +54,12 @@ export class SalarySlipPage {
       if (this.page === -1) {
         reject();
       } else {
-      this.connection.doPost('', {
-      PageNumber : this.page
+      this.connection.doPost('Payroll/Get_SalarySlip_Payroll', {
+      CompanyID : this.connection.user.CompanyID,
+      PageNumber : this.page,
       }).then((response: any) => {
         if (!_.isEmpty(response)) {
-          this.salarySlipData = response.Data;
+          this.salarySlipData = response.SalarySlip;
           this.page++;
           resolve(true);
         } else {

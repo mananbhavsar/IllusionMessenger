@@ -16,7 +16,7 @@
     <ng-template #data_template>
         <flash-news [flashNews]="flashNews"></flash-news>
         <ion-item-divider color="light">
-            <button button-mini [hidden]="(!getUnreadCount()) || (selectedTab === 'stats')" ion-button outline icon-right (click)="openReadOptions()">
+            <button button-mini [hidden]="(!getUnreadCount())" ion-button outline icon-right (click)="openReadOptions()">
                 <ng-container *ngIf="readOptions;else readAll">
                     Done
                 </ng-container>
@@ -24,20 +24,11 @@
                     Edit
                 </ng-template>
             </button>
-            <button button-mini *ngIf="isGroupSelected() && !isEmpty(data.Groups_Wise)" (click)="reorderGroups()" ion-button outline
-                icon-right>
-                <ng-container *ngIf="reorder;else askForReorder">
-                    Done
-                </ng-container>
-                <ng-template #askForReorder>
-                    Reorder Group
-                </ng-template>
-            </button>
         </ion-item-divider>
-        <ion-searchbar [showCancelButton]="true" *ngIf="searchInputBtn && selectedTab !== 'stats'" (ionInput)="getItems($event)"
+        <ion-searchbar [showCancelButton]="true" *ngIf="searchInputBtn" (ionInput)="getItems($event)"
             (ionClear)="onClear($event)" (ionCancel)="onCancel($event)">
         </ion-searchbar>
-        <ion-segment [(ngModel)]="selectedTab" (ionChange)="dashboardTabSearchHide()" color="theme" padding mode="ios">
+        <ion-segment [(ngModel)]="selectedTab" color="theme" padding mode="ios">
             <ion-segment-button [value]="tab.icon" *ngFor="let tab of tabs">
                 <ion-icon [name]="tab.icon"></ion-icon>
                 <span *ngIf="tab.icon !== 'stats'">
@@ -49,7 +40,7 @@
             <ion-list>
                 <ion-item-divider color="light">
                     <h2>
-                        <span class="total-rows-count" *ngIf="selectedTab !== 'stats'">{{getSelectedTabRowsCount()}}</span>
+                        <span class="total-rows-count">{{getSelectedTabRowsCount()}}</span>
                         &nbsp;-&nbsp; {{getSelectedTabName()}}
                     </h2>
                 </ion-item-divider>

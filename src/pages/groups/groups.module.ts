@@ -1,15 +1,15 @@
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
-import { GroupListPage } from './group-list';
+import { GroupsPage } from './groups';
 import { ComponentsModule } from '../../components/components.module';
 
 @NgModule({
   declarations: [
-    GroupListPage,
+    GroupsPage,
   ],
   imports: [
-    IonicPageModule.forChild(GroupListPage),
+    IonicPageModule.forChild(GroupsPage),
     ComponentsModule
   ],
 })
-export class GroupListPageModule {}
+export class GroupsPageModule {}

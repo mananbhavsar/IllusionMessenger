@@ -25,10 +25,13 @@ export class PendingApprovalPage {
       if (this.page === -1) {
         reject();
       } else {
-      this.connection.doPost('', {
-       PageNumber : this.page,
-       Query: this.query
+      this.connection.doPost('Payroll/Get_PendingRequest_Payroll', {
+      PageNumber : this.page,
+      RowsPerPage : 100,
+      CompanyID : this.connection.user.CompanyID,
+      // Query: this.query
       }).then((response: any) => {
+        console.log(response);
         if (!_.isEmpty(response)) {
           this.pendingData = response.Data;
           this.page++;

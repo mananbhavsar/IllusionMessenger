@@ -25,7 +25,7 @@
         <ion-item>
           <ion-label>Type</ion-label>
           <ion-select formControlName="type">
-            <ion-option required *ngFor="let type of typeList" [value]="type" (ionSelect)="getType($event)">{{type}}</ion-option>
+            <ion-option required *ngFor="let type of typeList" [value]="type.OTTypeID" (ionSelect)="getType($event)">{{type.Description}}</ion-option>
           </ion-select>
         </ion-item>
       <div class="error-message-block" *ngIf="overtTimeForm.controls.type.errors && (overtTimeForm.controls.type.dirty || overtTimeForm.controls.type.touched)">

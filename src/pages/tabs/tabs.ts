@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { HomePage } from '../home/home';
-import { CalenderPage } from '../calender/calender';
+import { CalendarPage } from '../calendar/calendar';
 import { DashboardPage } from '../dashboard/dashboard';
-import { GroupListPage } from '../group-list/group-list';
+import { GroupsPage } from '../groups/groups';
+import { FormsPage } from '../forms/forms';
+import { SalarySlipPage } from '../salary-slip/salary-slip';
 
 @IonicPage()
 @Component({
@@ -14,16 +16,12 @@ export class TabsPage {
   selectedIndex : number = 0;
   dashboardRoot = DashboardPage;
   taskRoot = HomePage;
-  groupRoot = GroupListPage;
-  CalenderRoot = CalenderPage;
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  groupRoot = GroupsPage;
+  CalendarRoot = FormsPage;
+  constructor(public navCtrl: NavController, public navParams: NavParams) {  
     this.selectedIndex = this.navParams.data || 0;
-    console.log(this.selectedIndex);
 
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad TabsPage');
-  }
 
 }

@@ -4,7 +4,7 @@
 
 
 <ion-content>
-  <empty *ngIf="salarySlipData; else data_template"></empty>
+  <empty *ngIf="salarySlipData.length === 0 else data_template"></empty>
   <ion-refresher (ionRefresh)="refresh($event)">
     <ion-refresher-content pullingIcon="arrow-round-down" pullingText="Pull to refresh" refreshingSpinner="crescent" refreshingText="Refreshing...">
     </ion-refresher-content>
@@ -16,13 +16,13 @@
           Date
         </ion-col>
         <ion-col class="col-lab" col-6>
-          Request Type
+          Download
         </ion-col>
       </ion-row>
-      <ion-row>
-        <ion-col col-6>MAY-2016</ion-col>
+      <ion-row *ngFor="let slip of salarySlipData">
+        <ion-col col-6>{{slip.MonthYear}}</ion-col>
         <ion-col col-6>
-          <ion-icon name="md-download"></ion-icon><span (click)="download(file)" class="download">Download</span>
+          <ion-icon name="md-download"></ion-icon><span (click)="download(slip.Download)" class="download">Download</span>
         </ion-col>
       </ion-row>
     </ion-grid>

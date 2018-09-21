@@ -21,6 +21,7 @@ export class LeaveApplicationPage {
   reportingDate : any;
   userData:any;
   typeList:any;
+
   error:any={isError:false,errorMessage:''};
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
@@ -28,7 +29,7 @@ export class LeaveApplicationPage {
     public connection: ConnectionProvider,
     public date: DateProvider,
     public event: Events) {
-    this.typeList = ['t','r','e'];
+    
     this.leaveApplicationForm = this.formBuilder.group({
       from_date: ['', Validators.required],
       to_date: ['', Validators.required],
@@ -38,16 +39,48 @@ export class LeaveApplicationPage {
       remark: ['']
     });
     this.setTitle();
+    this.getLeaveAppTypes();
+    this.getLeaveAppformDetail();
   }
 
-  getData(){
+  getLeaveAppformDetail(){
     return new Promise((resolve,reject) => {
-    this.connection.doPost('',{
-     
-    }).then((response : any) => {
-     this.userData = response.Data;
+      this.connection.doPost('Payroll/Get_LeaveApplication_Payroll',{
+        CompanyID : this.connection.user.CompanyID,
+      },false).then((response : any) => {
+       this.userData = response.LeaveApplication[0];
+       resolve(true);
+      }).catch((error) => {
+       reject();
+      });
+      }); 
+  }
+
+  getLeaveAppTypes(){
+    return new Promise((resolve,reject) => {
+    this.connection.doPost('Payroll/Get_TypeOfLeave_Payroll',{
+      CompanyID : this.connection.user.CompanyID,
+    },false).then((response : any) => {
+     this.typeList = response.TypeOfLeave;
+     resolve(true);
+    }).catch((error) => {
+     reject();
     });
     });
+  }
+
+  validateDates(startDate,endDate,reportingDate){
+    if (startDate.isSameOrAfter(endDate)) {
+      this.event.publish('toast:error', 'End Date must be greater than start date');
+      this.leaveApplicationForm.setErrors({ 'invalid': true });
+      return false;
+    }
+    if (reportingDate.isSameOrBefore(endDate)) {
+      this.event.publish('toast:error', 'Reporting date must be greater than end date');
+      this.leaveApplicationForm.setErrors({ 'invalid': true });
+      return false;
+    }
+    return true;
   }
 
   getTotalLeaves(date) {
@@ -55,17 +88,9 @@ export class LeaveApplicationPage {
     this.endDate = moment(this.leaveApplicationForm.get('to_date').value, "YYYY/MM/DD");
     this.reportingDate = moment(this.leaveApplicationForm.get('reporting_date').value, "YYYY/MM/DD");
     this.leaves = this.endDate.diff(this.startDate, 'days');
-    if (this.startDate.isSameOrAfter(this.endDate)) {
-      this.event.publish('toast:error', 'End Date must be greater than start date');
-      this.leaveApplicationForm.setErrors({ 'invalid': true });
-      this.leaves = null;
-    }
+    this.validateDates(this.startDate,this.endDate,this.reportingDate);
     if (this.leaves > 0) {
       this.leaveApplicationForm.controls['leaves'].setValue(this.leaves);
-    }
-    if (this.reportingDate.isSameOrBefore(this.endDate)) {
-      this.event.publish('toast:error', 'Reporting date must be greater than end date');
-      this.leaveApplicationForm.setErrors({ 'invalid': true });
     }
   }
 
@@ -79,34 +104,31 @@ export class LeaveApplicationPage {
     this.type = type;
   }
 
-compareTwoDates(){
-  console.log(new Date(this.leaveApplicationForm.controls['to_date'].value));
-  
-   if(new Date(this.leaveApplicationForm.controls['to_date'].value) < new Date(this.leaveApplicationForm.controls['from_date'].value)){
-      this.error= {
-        isError:true,
-        errorMessage:'End Date can not before start date'
-      };
-   }
-}
-
   submit() {
     return new Promise((resolve, reject) => {
-        this.connection.doPost('', {
-        FromDate: this.date.toUTCISOString(this.date.toUTC(new Date(this.leaveApplicationForm.get('from_date').value))),
-        ToDate: this.date.toUTCISOString(moment(this.leaveApplicationForm.get('to_date').value)),
-        ReportingDate: this.date.toUTCISOString(moment(this.leaveApplicationForm.get('reporting_date').value)),
-        Leaves: this.leaveApplicationForm.get('leaves').value,
-        LeaveType: this.type,
-        Remark: this.leaveApplicationForm.get('remark').value,
+    if(!this.validateDates(this.startDate,this.endDate,this.reportingDate)){   
+     this.event.publish('toast:error','invalid Details');
+    } else {
+      this.connection.doPost('Payroll/Set_LeaveApplication_Payroll', {
+      CompanyID : this.connection.user.CompanyID,
+      EMailID : this.userData.EMailID,
+      MobileNo : this.userData.MobileNo,
+      FromDate: this.date.toUTCISOString(this.leaveApplicationForm.get('from_date').value,false),
+      ToDate: this.date.toUTCISOString(this.leaveApplicationForm.get('to_date').value,false),
+      ReportingDate : this.date.toUTCISOString(this.leaveApplicationForm.get('reporting_date').value,false),
+      TypeOfLeaveID : this.type,
+      NoOfLeaves: this.leaveApplicationForm.get('leaves').value,
+      Remark: this.leaveApplicationForm.get('remark').value,
       }).then((response: any) => {
         if (!_.isEmpty(response)) {
+          this.event.publish('toast:create',response.Data.Message);
           this.leaveApplicationForm.reset();
           resolve(true);
         }
       }).catch((error) => {
         reject();
       });
+    }
     });
   }
 

@@ -16,6 +16,11 @@
     "HomeScreen": {
         "_Home_": "Accueil",
         "_forms_": "Formes",
+        "_OverTime_" : "Forme de temps",
+        "_LeaveApplication_" : "Laisser demande",
+        "_AdvanceRequest_" : "Formulaire de demande préalable",
+        "_PendingApproval_" : "Validation en attente",
+        "_SalarySlip_" : "Fiche de salaire",
         "_dashboard_": "Tableau de bord",
         "_task_": "Tâche",
         "_group_": "Groupes",
@@ -31,7 +36,7 @@
         "_ViewCommunication_": "Voir votre communication",
         "_Invoice_": "facture d'achat",
         "_Payments_": "Paiements",
-        "_Tags_" : "Mots clés",
+        "_Tag_" : "Mots clés",
         "_Users_" : "Utilisateurs"
     },
     "DashboardDetail": {

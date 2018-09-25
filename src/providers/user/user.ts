@@ -180,6 +180,7 @@ export class UserProvider {
                 }, false).then((response: any) => {
                     //LogOutForcefully
                     if (response.MenuList) {
+                        console.log(response.MenuList);
                         this.events.publish('menu:created', response.MenuList);
                     }
                     if (response.Data.LogOutForcefully) {

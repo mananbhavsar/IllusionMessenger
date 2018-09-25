@@ -3,7 +3,7 @@ import { IonicPage, NavController, NavParams, ModalController } from 'ionic-angu
 import { ConnectionProvider } from '../../providers/connection/connection';
 import * as _ from 'underscore';
 import { RequestDetailPage } from '../request-detail/request-detail';
-; @IonicPage()
+@IonicPage()
 @Component({
   selector: 'page-pending-approval',
   templateUrl: 'pending-approval.html',
@@ -14,18 +14,21 @@ export class PendingApprovalPage {
   page: number = 0;
   query: string = null;
   searchInputBtn:boolean = false;
+  myPendingUrl : string = 'Get_MyPendingAproval_Payroll';
+  pendingUrl : string = 'Get_PendingRequest_Payroll';
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public connection: ConnectionProvider,
     public modalCtrl : ModalController) {
-  }
+      this.getData();
+    }
 
   getData() {
     return new Promise((resolve, reject) => {
       if (this.page === -1) {
         reject();
       } else {
-      this.connection.doPost('Payroll/Get_PendingRequest_Payroll', {
+      this.connection.doPost('Payroll/' + this.myPendingUrl , {
       PageNumber : this.page,
       RowsPerPage : 100,
       CompanyID : this.connection.user.CompanyID,
@@ -48,6 +51,8 @@ export class PendingApprovalPage {
     }
     });
   }
+
+  
 
   searchData() {
     if (this.searchInputBtn) {

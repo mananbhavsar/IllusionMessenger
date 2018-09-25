@@ -16,6 +16,11 @@
     "HomeScreen": {
         "_Home_": "Home",
         "_forms_": "Forms",
+        "_OverTime_" : "Over Time Form",
+        "_LeaveApplication_" : "Leave Application",
+        "_AdvanceRequest_" : "Advance Request",
+        "_PendingApproval_" : "Pending Approval",
+        "_SalarySlip_" : "Salary Slip",
         "_dashboard_": "Dashboard",
         "_task_": "Task",
         "_group_": "Groups",
@@ -31,7 +36,7 @@
         "_ViewCommunication_": "View your communications",
         "_Invoice_": "Invoice",
         "_Payments_": "Payments",
-        "_Tags_" : "Tags",
+        "_Tag_" : "Tags",
         "_Users_" : "Users"
     },
     "DashboardDetail": {

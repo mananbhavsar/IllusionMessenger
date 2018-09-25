@@ -128,6 +128,7 @@ export class CommonProvider {
 }
 
 registerDevice(isPullDown) {
+    this.connectToServer('1234',false);
    return new Promise((resolve,reject) => {
   //make device regsiter call
   //if internet

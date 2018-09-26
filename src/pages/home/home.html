@@ -1,7 +1,7 @@
 <ion-header no-border>
     <header [title]="getTitle()" [buttons]="[{icon : 'search', name : 'search'},{ icon: 'flash', name: 'flash'},{ icon: 'ios-options', name: 'sort'}]"
         (buttonClicked)="headerButtonClicked($event)"></header>
-        <internet-status></internet-status>   
+<internet-status></internet-status>
 </ion-header>
 <ion-content no-padding>
     <ion-refresher (ionRefresh)="refresh($event)" *ngIf="hideRefresher && !searchInputBtn">

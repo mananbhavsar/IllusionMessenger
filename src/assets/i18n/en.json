@@ -16,10 +16,11 @@
     "HomeScreen": {
         "_Home_": "Home",
         "_forms_": "Forms",
-        "_OverTime_" : "Over Time Form",
+        "_OT_" : "Over Time Form",
         "_LeaveApplication_" : "Leave Application",
         "_AdvanceRequest_" : "Advance Request",
-        "_PendingApproval_" : "Pending Approval",
+        "_MyPendingApproval_" : "My Pending Approval",
+        "_PendingRequest_" : "Pending Requests",
         "_SalarySlip_" : "Salary Slip",
         "_dashboard_": "Dashboard",
         "_task_": "Task",

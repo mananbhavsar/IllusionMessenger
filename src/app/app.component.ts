@@ -152,6 +152,8 @@ export class MyApp {
     }
 
     openPage(page: PageInterface) {
+        console.log(page);
+        
         //not opening if same page
         if (page.name === Global.getActiveComponentName(this.nav.getActive())) {
             return true;
@@ -216,7 +218,7 @@ export class MyApp {
         if (this.user && this.user._user) {
             //creation rights
             if (['ManageGroupPage', 'TagPage', 'UsersPage'].indexOf(page.name) > -1) {
-                return [5, 15, 16].indexOf(this.user._user.LoginUserID) > -1;
+                return this.user._user.AllowPayrollLogin;
             } else {
                 return true;
             }

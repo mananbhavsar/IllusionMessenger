@@ -16,10 +16,11 @@
     "HomeScreen": {
         "_Home_": "Accueil",
         "_forms_": "Formes",
-        "_OverTime_" : "Forme de temps",
+        "_OT_" : "Forme de temps",
         "_LeaveApplication_" : "Laisser demande",
         "_AdvanceRequest_" : "Formulaire de demande préalable",
-        "_PendingApproval_" : "Validation en attente",
+        "_MyPendingApproval_" : "Mon approbation en attente",
+        "_PendingRequest_" : "Validation en attente",
         "_SalarySlip_" : "Fiche de salaire",
         "_dashboard_": "Tableau de bord",
         "_task_": "Tâche",

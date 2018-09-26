@@ -70,9 +70,9 @@ import { HelpPageModule } from '../pages/help/help.module';
 import { DueTopicsPageModule } from '../pages/home/due-topics/due-topics.module';
 import { HomePageModule } from '../pages/home/home.module';
 import { LoginPageModule } from '../pages/login/login.module';
+import { MyPendingApprovalPageModule } from '../pages/my-pending-approval/my-pending-approval.module';
 import { CreateGroupPageModule } from '../pages/manage-group/create-group/create-group.module';
 import { ManageGroupPageModule } from '../pages/manage-group/manage-group.module';
-import { SearchPageModule } from '../pages/search/search.module';
 import { CloseTopicPageModule } from '../pages/topic/close-topic/close-topic.module';
 import { CreateTopicPageModule } from '../pages/topic/create-topic/create-topic.module';
 import { ManageParticipantsPageModule } from "../pages/topic/create-topic/manage-participants/manage-participants.module";
@@ -94,7 +94,7 @@ import { FlashNewsProvider } from '../providers/flash-news/flash-news';
 import { NotificationsProvider } from "../providers/notifications/notifications";
 import { ReadMessageProvider } from '../providers/read-message/read-message';
 import { CalendarPageModule } from '../pages/calendar/calendar.module';
-import { PendingApprovalPageModule } from '../pages/pending-approval/pending-approval.module';
+import { PendingRequestPageModule } from '../pages/pending-request/pending-request.module';
 import { TranslateServiceProvider } from '../providers/translate-service/translate-service';
 import { UserProvider } from '../providers/user/user';
 import { UserAutoCompleteService } from './../pages/topic/create-topic/user-auto-complete';
@@ -151,7 +151,6 @@ import { GroupsPageModule } from '../pages/groups/groups.module';
         DashboardPageModule,
         DueTopicsPageModule,
         HelpPageModule,
-        SearchPageModule,
         HomePageModule,
         LoginPageModule,
         ManageParticipantsPageModule,
@@ -173,7 +172,8 @@ import { GroupsPageModule } from '../pages/groups/groups.module';
         DailyShedulePageModule,
         RatingPageModule,
         SalarySlipPageModule,
-        PendingApprovalPageModule,
+        PendingRequestPageModule,
+        MyPendingApprovalPageModule,
         RequestDetailPageModule,
         TabsPageModule
     ],

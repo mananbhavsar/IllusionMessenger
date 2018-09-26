@@ -1,15 +1,15 @@
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
-import { PendingApprovalPage } from './pending-approval';
+import { PendingRequestPage } from './pending-request';
 import { ComponentsModule } from '../../components/components.module';
 
 @NgModule({
   declarations: [
-    PendingApprovalPage,
+    PendingRequestPage,
   ],
   imports: [
-    IonicPageModule.forChild(PendingApprovalPage),
+    IonicPageModule.forChild(PendingRequestPage),
     ComponentsModule
   ],
 })
-export class PendingApprovalPageModule {}
+export class PendingRequestPageModule {}

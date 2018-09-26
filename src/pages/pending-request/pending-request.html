@@ -36,15 +36,15 @@
           Remark
         </ion-col>
       </ion-row>
-      <ion-row>
-        <ion-col col-2>11/34/2010</ion-col>
-        <ion-col col-2>tur did</ion-col>        
-        <ion-col col-2>Leave</ion-col>
-        <ion-col col-2>REST</ion-col>
+      <ion-row *ngFor="let request of pendingData">
+        <ion-col col-2>{{request.Date | date}}</ion-col>
+        <ion-col col-2>{{request.EmployeeName}}</ion-col>
+        <ion-col col-2>{{request.RequestType}}</ion-col>        
+        <ion-col col-2>{{request.Status}}</ion-col>
         <ion-col col-2>
           <ion-icon (click)="ViewDetail(data)" name="ios-eye"></ion-icon>
         </ion-col>
-        <ion-col col-2>personal issue</ion-col>
+        <ion-col col-2>{{request.Remark}}</ion-col>
       </ion-row>
     </ion-grid>
     <ion-infinite-scroll *ngIf="page !== -1" (ionInfinite)="paginate($event)">

@@ -4,8 +4,6 @@ import { HomePage } from '../home/home';
 import { CalendarPage } from '../calendar/calendar';
 import { DashboardPage } from '../dashboard/dashboard';
 import { GroupsPage } from '../groups/groups';
-import { FormsPage } from '../forms/forms';
-import { SalarySlipPage } from '../salary-slip/salary-slip';
 
 @IonicPage()
 @Component({
@@ -17,7 +15,7 @@ export class TabsPage {
   dashboardRoot = DashboardPage;
   taskRoot = HomePage;
   groupRoot = GroupsPage;
-  CalendarRoot = FormsPage;
+  CalendarRoot = CalendarPage;
   constructor(public navCtrl: NavController, public navParams: NavParams) {  
     this.selectedIndex = this.navParams.data || 0;
 

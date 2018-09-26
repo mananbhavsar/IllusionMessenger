@@ -5,16 +5,15 @@ import * as _ from 'underscore';
 import { RequestDetailPage } from '../request-detail/request-detail';
 @IonicPage()
 @Component({
-  selector: 'page-pending-approval',
-  templateUrl: 'pending-approval.html',
+  selector: 'page-pending-request',
+  templateUrl: 'pending-request.html',
 })
-export class PendingApprovalPage {
-  title: string = 'Pending Approval';
+export class PendingRequestPage {
+  title: string = 'Pending Request';
   pendingData: any;
   page: number = 0;
   query: string = null;
   searchInputBtn:boolean = false;
-  myPendingUrl : string = 'Get_MyPendingAproval_Payroll';
   pendingUrl : string = 'Get_PendingRequest_Payroll';
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
@@ -28,7 +27,7 @@ export class PendingApprovalPage {
       if (this.page === -1) {
         reject();
       } else {
-      this.connection.doPost('Payroll/' + this.myPendingUrl , {
+      this.connection.doPost('Payroll/' + this.pendingUrl , {
       PageNumber : this.page,
       RowsPerPage : 100,
       CompanyID : this.connection.user.CompanyID,
@@ -36,7 +35,12 @@ export class PendingApprovalPage {
       }).then((response: any) => {
         console.log(response);
         if (!_.isEmpty(response)) {
-          this.pendingData = response.Data;
+          response.OT.forEach(item => {
+            this.pendingData.push(item);
+          });
+          response.LA.forEach(item => {
+            this.pendingData.push(item);
+          });
           this.page++;
           resolve(true);
         } else {
@@ -51,7 +55,6 @@ export class PendingApprovalPage {
     }
     });
   }
-
   
 
   searchData() {
@@ -122,7 +125,7 @@ export class PendingApprovalPage {
   }
 
   ViewDetail(data){
-    let modal = this.modalCtrl.create(RequestDetailPage,data);
+    let modal = this.modalCtrl.create(RequestDetailPage,{detail : data, page : 'pendingRequest'});
     modal.present();
     modal.onDidDismiss((response) => {
 
@@ -132,11 +135,9 @@ export class PendingApprovalPage {
   setTitle() {
     this.title = null;
     setTimeout(() => {
-      this.title = 'Pending Approval';
+      this.title = 'Pending Request';
     });
   }
-
-
 
   getTitle() {
     return this.title;

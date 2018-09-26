@@ -26,7 +26,7 @@ export class CalendarPage {
   constructor(public navCtrl: NavController,
               public connection : ConnectionProvider,
               public events : Events) {
-    this.getDays(new Date().getMonth(),new Date().getFullYear());
+    this.getDays(new Date().getMonth() + 1,new Date().getFullYear());
     this.date = moment().toDate();
     this.formattedDate = moment(this.date, 'YYY/MM/DD');
     this.todayDate = new Date().getDay();
@@ -53,12 +53,12 @@ export class CalendarPage {
 
   goToLastMonth() {
     this.date = new Date(this.date.getFullYear(), this.date.getMonth(), 0);
-    this.getDays(this.date.getMonth(),this.date.getFullYear());
+    this.getDays(this.date.getMonth() + 1,this.date.getFullYear());
   }
 
   goToNextMonth() {
     this.date = new Date(this.date.getFullYear(), this.date.getMonth() + 2, 0);
-    this.getDays(this.date.getMonth(),this.date.getFullYear());
+    this.getDays(this.date.getMonth() + 1,this.date.getFullYear());
   }
 
   SelectDate(day,index) {

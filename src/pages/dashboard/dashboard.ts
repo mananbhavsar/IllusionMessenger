@@ -64,7 +64,7 @@ export class DashboardPage {
           Order: '',
       }, false).then((response: any) => {
         this.data = response.TaskDueInDays[0];
-        this.registerDevice();
+        // this.registerDevice();
       });
     });
   }
@@ -102,10 +102,10 @@ export class DashboardPage {
     flashModal.present();
   }
 
-  registerDevice(){
-    this.common.registerDevice(false).then((response : any) => {
-    });
-  }
+  // registerDevice(){
+  //   this.common.registerDevice(false).then((response : any) => {
+  //   });
+  // }
 
 
   setTitle() {

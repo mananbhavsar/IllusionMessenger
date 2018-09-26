@@ -127,7 +127,7 @@ export class HomePage {
         //online offline
         if (this.platform.is('cordova')) {
             this._network.onchange().subscribe(() => {
-                this.registerDevice(false);
+                // this.registerDevice(false);
             });
         }
     }
@@ -191,7 +191,7 @@ export class HomePage {
                         });
                     }
                     if (!search) {
-                        this.registerDevice(isPullDown);
+                        // this.registerDevice(isPullDown);
                     }
                     this.page++;
                     resolve(true);
@@ -210,58 +210,58 @@ export class HomePage {
         return _.isEmpty(object);
     }
 
-    registerDevice(isPullDown) {
-        //make device regsiter call
-        //if internet
-        if (this._network.type === 'none') {
-            this.deviceRegsiter = 0;
-        } else if (this.platform.is('core')) {
-            if (this.connection.getPushID()) {
-                this.deviceRegsiter = 1;
-                this.connectToServer(this.connection.push_id, isPullDown);
-            } else {
-                this.events.subscribe('pushid:created', (userId) => {
-                    this.deviceRegsiter = 1;
-                    this.connectToServer(userId, isPullDown);
+    // registerDevice(isPullDown) {
+    //     //make device regsiter call
+    //     //if internet
+    //     if (this._network.type === 'none') {
+    //         this.deviceRegsiter = 0;
+    //     } else if (this.platform.is('core')) {
+    //         if (this.connection.getPushID()) {
+    //             this.deviceRegsiter = 1;
+    //             this.connectToServer(this.connection.push_id, isPullDown);
+    //         } else {
+    //             this.events.subscribe('pushid:created', (userId) => {
+    //                 this.deviceRegsiter = 1;
+    //                 this.connectToServer(userId, isPullDown);
 
-                });
-                //wait 15sec and check again for user id
-                setTimeout(() => {
-                    let OneSignal = window['OneSignal'] || [];
-                    let that = this;
-                    OneSignal.push(function () {
-                        OneSignal.getUserId(function (userId: string) {
-                            if (userId) {
-                                that.deviceRegsiter = 1;
-                                that.connectToServer(userId, isPullDown);
+    //             });
+    //             //wait 15sec and check again for user id
+    //             setTimeout(() => {
+    //                 let OneSignal = window['OneSignal'] || [];
+    //                 let that = this;
+    //                 OneSignal.push(function () {
+    //                     OneSignal.getUserId(function (userId: string) {
+    //                         if (userId) {
+    //                             that.deviceRegsiter = 1;
+    //                             that.connectToServer(userId, isPullDown);
 
-                            }
-                        });
-                    });
-                });
-            }
-        } else if (this.platform.is('cordova')) {
-            this.deviceRegsiter = 1;
-            this._oneSignal.getIds().then((id) => {
-                this.connectToServer(id.userId, isPullDown);
-            }).catch(error => {
-                this.deviceRegsiter = 0;
-            });
-        }
-    }
+    //                         }
+    //                     });
+    //                 });
+    //             });
+    //         }
+    //     } else if (this.platform.is('cordova')) {
+    //         this.deviceRegsiter = 1;
+    //         this._oneSignal.getIds().then((id) => {
+    //             this.connectToServer(id.userId, isPullDown);
+    //         }).catch(error => {
+    //             this.deviceRegsiter = 0;
+    //         });
+    //     }
+    // }
 
-    connectToServer(pushID, isPullDown) {
-        this.user.registerPushID(pushID, isPullDown).then((response: any) => {
-            if (response.Data && response.Data.LastActivity) {
-                this.deviceRegsiter = 2; //connected
-                this.connectedTime = response.Data.LastActivity; //this will be utc
-            } else {
-                this.deviceRegsiter = 0;
-            }
-        }).catch(error => {
-            this.deviceRegsiter = 0;
-        });
-    }
+    // connectToServer(pushID, isPullDown) {
+    //     this.user.registerPushID(pushID, isPullDown).then((response: any) => {
+    //         if (response.Data && response.Data.LastActivity) {
+    //             this.deviceRegsiter = 2; //connected
+    //             this.connectedTime = response.Data.LastActivity; //this will be utc
+    //         } else {
+    //             this.deviceRegsiter = 0;
+    //         }
+    //     }).catch(error => {
+    //         this.deviceRegsiter = 0;
+    //     });
+    // }
 
     refresh(refresher) {
         this.page = 0;

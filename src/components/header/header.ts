@@ -48,9 +48,6 @@ export class HeaderComponent {
             name = Global.getActiveComponentName(this.navCtrl.getActive());
         }
         switch (name) {
-            case 'DashboardPage':
-                return 'dashboard';
-
             case 'PickupPage':
             case 'PickupTodayPage':
             case 'PickupTomorrowPage':

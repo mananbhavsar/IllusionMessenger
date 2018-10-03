@@ -28,7 +28,7 @@
       <ion-row class="calendar-date">
         <ion-col col-1 *ngFor="let lastDay of daysInLastMonth" class="last-month">{{lastDay.Day}}</ion-col>
         <ion-col (click)="SelectDate(day,i+1)" col-1 *ngFor="let day of daysInThisMonth; let i = index;">
-          <span [ngClass]="{'currentDate' : todayDate === i + 1 && todayMonth === currentMonth}" *ngIf="todayDate === i + 1 && (todayMonth === currentMonth); else otherDate">{{i + 1}}</span>
+          <span [ngClass]="{'currentDate' : todayDate === i + 1 && todayMonth === day.Month}" *ngIf="todayDate === i + 1 && (todayMonth === day.Month); else otherDate">{{i + 1}}</span>
           <ng-template #otherDate class="otherDate">
             <span *ngIf="day.TotalTime === '00:00'" [ngClass]="{'absent-date' : day.TotalTime === '00:00'}">{{i + 1}}</span>
             <span *ngIf="day.TotalTime !== '00:00'" [ngClass]="{'selected-date' : isSelected === i + 1, 'holiday' : day.IsHoliday}">{{i + 1}}</span>

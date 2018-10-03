@@ -1,7 +1,37 @@
 {
-  "name": "cordova-plugin-uniquedeviceid",
-  "version": "1.3.2",
-  "description": "PhoneGap / Cordova unique device id (UUID) plugin for Android, iOS and Windows Phone 8. Remains the same after app uninstall.",
+  "_from": "cordova-plugin-uniquedeviceid",
+  "_id": "cordova-plugin-uniquedeviceid@1.3.2",
+  "_inBundle": false,
+  "_integrity": "sha1-vgWUevL9GBXLjjQH1y32jIUi+pY=",
+  "_location": "/cordova-plugin-uniquedeviceid",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "cordova-plugin-uniquedeviceid",
+    "name": "cordova-plugin-uniquedeviceid",
+    "escapedName": "cordova-plugin-uniquedeviceid",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/cordova-plugin-uniquedeviceid/-/cordova-plugin-uniquedeviceid-1.3.2.tgz",
+  "_shasum": "be05947af2fd1815cb8e3407d72df68c8522fa96",
+  "_spec": "cordova-plugin-uniquedeviceid",
+  "_where": "/Users/eiosys/Documents/ionic/IllusionMessenger",
+  "author": {
+    "name": "Domonkos Pal",
+    "email": "public@dpal.hu",
+    "url": "https://github.com/Paldom"
+  },
+  "bugs": {
+    "url": "https://github.com/Paldom/UniqueDeviceID/issues"
+  },
+  "bundleDependencies": false,
   "cordova": {
     "id": "cordova-plugin-uniquedeviceid",
     "platforms": [
@@ -10,10 +40,15 @@
       "wp8"
     ]
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Paldom/UniqueDeviceID.git"
-  },
+  "deprecated": false,
+  "description": "PhoneGap / Cordova unique device id (UUID) plugin for Android, iOS and Windows Phone 8. Remains the same after app uninstall.",
+  "engines": [
+    {
+      "name": "cordova",
+      "version": ">=3.0.0"
+    }
+  ],
+  "homepage": "https://github.com/Paldom/UniqueDeviceID#readme",
   "keywords": [
     "phonegap",
     "cordova",
@@ -31,16 +66,11 @@
     "cordova-ios",
     "cordova-wp8"
   ],
-  "engines": [
-    {
-      "name": "cordova",
-      "version": ">=3.0.0"
-    }
-  ],
-  "author": "Domonkos Pal <public@dpal.hu> (https://github.com/Paldom)",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/Paldom/UniqueDeviceID/issues"
+  "name": "cordova-plugin-uniquedeviceid",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Paldom/UniqueDeviceID.git"
   },
-  "homepage": "https://github.com/Paldom/UniqueDeviceID#readme"
+  "version": "1.3.2"
 }

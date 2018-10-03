@@ -36,12 +36,12 @@
         <ion-label ion-text color="primary" floating>
           No of leaves
         </ion-label>
-        <ion-input (input)="getLeaves()" required formControlName="leaves" type="number" name="leaves"></ion-input>
+        <ion-input [readonly]="IsReadOnly" (input)="getLeaves()" required formControlName="leaves" type="number" name="leaves"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label>Type</ion-label>
         <ion-select formControlName="leaveType">
-          <ion-option required *ngFor="let type of typeList" [value]="type.TypeOfLeaveID" (ionSelect)="getType($event)">{{type.Description}}</ion-option>
+          <ion-option required *ngFor="let type of typeList" [hidden]="type.Description === ''" [value]="type.TypeOfLeaveID" (ionSelect)="getType($event)">{{type.Description}}</ion-option>
         </ion-select>
       </ion-item>
       <div class="error-message-block" *ngIf="leaveApplicationForm.controls.leaveType.errors && (leaveApplicationForm.controls.leaveType.dirty || leaveApplicationForm.controls.leaveType.touched)">

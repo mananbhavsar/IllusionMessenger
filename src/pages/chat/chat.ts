@@ -263,7 +263,7 @@ export class ChatPage {
     this.chattingRef = firebase.database().ref(this.basePath + 'Chatting');
 
     //keyboard disable
-    this.keyboard.disableScroll(true);
+    // this.keyboard.disableScroll(true);
 
     //listening to Close Topic
     firebase.database().ref(this.topicClosePath).on('value', snapshot => {
@@ -602,7 +602,7 @@ export class ChatPage {
 
   ionViewDidEnter() {
     //hiding keyboard accessory bar
-    this.keyboard.hideKeyboardAccessoryBar(true);
+    this.keyboard.hideFormAccessoryBar(true);
     //translate
     this.doTranslate();
     //checking if user logged in
@@ -643,7 +643,7 @@ export class ChatPage {
   }
 
   ionViewWillLeave() {
-    this.keyboard.hideKeyboardAccessoryBar(false);
+    this.keyboard.hideFormAccessoryBar(false);
     this.doLeaving(true);
     this.clearTypingStringInterval();
   }
@@ -1345,7 +1345,7 @@ export class ChatPage {
     if (this.keyboardOpen) {
       this.keyboardOpen = false;
       this.setTyping(false);
-      this.keyboard.close();
+      this.keyboard.hide();
     }
   }
 
@@ -1765,7 +1765,7 @@ export class ChatPage {
     }
 
     this.events.unsubscribe('user:ready');
-    this.keyboard.disableScroll(false);
+    // this.keyboard.disableScroll(false);
   }
 
   getLiveChatUsers(userChattingNow, nowTime) {

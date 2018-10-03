@@ -10,7 +10,7 @@ import { RequestDetailPage } from '../request-detail/request-detail';
 })
 export class PendingRequestPage {
   title: string = 'Pending Request';
-  pendingData: any;
+  pendingData: any = [];
   page: number = 0;
   query: string = null;
   searchInputBtn:boolean = false;
@@ -33,12 +33,11 @@ export class PendingRequestPage {
       CompanyID : this.connection.user.CompanyID,
       // Query: this.query
       }).then((response: any) => {
-        console.log(response);
         if (!_.isEmpty(response)) {
-          response.OT.forEach(item => {
+          response.PendingRequest.OT.forEach(item => {
             this.pendingData.push(item);
           });
-          response.LA.forEach(item => {
+          response.PendingRequest.LA.forEach(item => {
             this.pendingData.push(item);
           });
           this.page++;
@@ -60,7 +59,7 @@ export class PendingRequestPage {
   searchData() {
     if (this.searchInputBtn) {
       this.searchInputBtn = false;
-      // this.group = [];
+      this.pendingData = [];
       this.query = null;
       this.initializeItems();
     } else if (this.searchInputBtn === false) {
@@ -128,7 +127,10 @@ export class PendingRequestPage {
     let modal = this.modalCtrl.create(RequestDetailPage,{detail : data, page : 'pendingRequest'});
     modal.present();
     modal.onDidDismiss((response) => {
-
+      this.pendingData = [];
+     if(response){
+       this.getData();
+     }
     });
   }
 

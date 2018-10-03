@@ -14,6 +14,7 @@ import { DateProvider } from '../../../providers/date/date';
 export class LeaveApplicationPage {
   leaveApplicationForm: FormGroup;
   leaves: number;
+  IsReadOnly : boolean = false;
   title: string = 'Leave Application Form';
   type: any;
   startDate : any;
@@ -70,6 +71,12 @@ export class LeaveApplicationPage {
   }
 
   validateDates(startDate,endDate,reportingDate){
+    this.IsReadOnly = false;
+    if(startDate.isSameOrBefore(moment().toDate())){
+      this.event.publish('toast:error', 'Start date must be greater than today');
+      this.leaveApplicationForm.setErrors({ 'invalid': true });
+      return false; 
+    }
     if (startDate.isSameOrAfter(endDate)) {
       this.event.publish('toast:error', 'End Date must be greater than start date');
       this.leaveApplicationForm.setErrors({ 'invalid': true });
@@ -90,6 +97,7 @@ export class LeaveApplicationPage {
     this.leaves = this.endDate.diff(this.startDate, 'days');
     this.validateDates(this.startDate,this.endDate,this.reportingDate);
     if (this.leaves > 0) {
+      this.IsReadOnly = true;
       this.leaveApplicationForm.controls['leaves'].setValue(this.leaves);
     }
   }
@@ -111,8 +119,8 @@ export class LeaveApplicationPage {
     } else {
       this.connection.doPost('Payroll/Set_LeaveApplication_Payroll', {
       CompanyID : this.connection.user.CompanyID,
-      EMailID : this.userData.EMailID,
-      MobileNo : this.userData.MobileNo,
+      EMailID : this.userData.EMailID || '',
+      MobileNo : this.userData.MobileNo || '',
       FromDate: this.date.toUTCISOString(this.leaveApplicationForm.get('from_date').value,false),
       ToDate: this.date.toUTCISOString(this.leaveApplicationForm.get('to_date').value,false),
       ReportingDate : this.date.toUTCISOString(this.leaveApplicationForm.get('reporting_date').value,false),
@@ -126,6 +134,7 @@ export class LeaveApplicationPage {
           resolve(true);
         }
       }).catch((error) => {
+        this.event.publish('toast:create',error);
         reject();
       });
     }

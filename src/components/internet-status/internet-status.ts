@@ -25,7 +25,6 @@ export class InternetStatusComponent {
   }
 
   registerDevice(isPullDown) {
-    this.connectToServer('1234',false);
     //make device regsiter call
     //if internet
     if (this._network.type === 'none') {

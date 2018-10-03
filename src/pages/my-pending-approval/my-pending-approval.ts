@@ -34,7 +34,6 @@ export class MyPendingApprovalPage {
       CompanyID : this.connection.user.CompanyID,
       // Query: this.query
       }).then((response: any) => {
-        console.log(response);
         if (!_.isEmpty(response)) {
           response.MyPendingAproval.forEach(item => {
             this.pendingData.push(item);            

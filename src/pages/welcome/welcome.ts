@@ -50,7 +50,7 @@ export class WelcomePage {
                 }
             }
 
-        }).catch((error) => { console.log(error)});
+        }).catch((error) => {});
     }
 
 }

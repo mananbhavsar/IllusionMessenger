@@ -21,14 +21,6 @@
                 {{requestDetail.RequestType}}
             </ion-col>
         </ion-row>
-        <ion-row *ngIf="requestDetail.EmployeeName">
-            <ion-col class="col-lab">
-                Request Detail
-            </ion-col>
-            <ion-col class="col-lab">
-                fhf
-            </ion-col>
-        </ion-row>
     </ion-grid>
     <ion-grid>
         <ion-row *ngIf="requestDetail.Date">
@@ -140,7 +132,7 @@
         </ion-row>
         </div>
     </ion-grid>
-    <div class="action-btn" *ngIf="requestDetail && page">
+    <div class="action-btn" *ngIf="requestDetail && page === 'pendingRequest'">
         <button color="secondary" (click)="takeActionOnRequest('Approve')" ion-button>Approve</button>
         <button ion-button (click)="takeActionOnRequest('Reject')">Reject</button>
     </div>

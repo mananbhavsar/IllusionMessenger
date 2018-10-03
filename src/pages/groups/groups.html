@@ -1,10 +1,10 @@
 
 <ion-header>
-  <header [title]="getTitle()" [buttons]="[{icon : 'search', name : 'search'},{ icon: 'flash', name: 'flash'},{ icon: 'ios-options', name: 'sort'}]"
+  <header [title]="getTitle()" [buttons]="[{icon : 'search', name : 'search'},{ icon: 'flash', name: 'flash'}]"
   (buttonClicked)="headerButtonClicked($event)"></header>
-<internet-status></internet-status> 
+<internet-status></internet-status>
 </ion-header>
-<ion-content padding>
+<ion-content>
 <center-spinner *ngIf="groups.length === 0;else data_template"></center-spinner>
 <ng-template #data_template>
     <ion-refresher (ionRefresh)="refresh($event)" *ngIf="!searchInputBtn">
@@ -14,8 +14,9 @@
     <ion-searchbar [showCancelButton]="true" *ngIf="searchInputBtn" (ionInput)="getItems($event)"
     (ionClear)="onClear($event)" (ionCancel)="onCancel($event)">
     </ion-searchbar>
+    <flash-news [flashNews]="flashNews"></flash-news>
     <ion-item-divider color="light">
-        <button button-mini [hidden]="(!getUnreadCount())" ion-button outline icon-left (click)="openReadOptions()">
+        <button class="position-left" button-mini [hidden]="(!getUnreadCount())" ion-button outline icon-right (click)="openReadOptions()">
             <ng-container *ngIf="readOptions;else readAll">
                 Done
             </ng-container>
@@ -23,8 +24,8 @@
                 Edit
             </ng-template>
         </button>
-        <button button-mini  (click)="reorderGroups()" ion-button outline
-            icon-right>
+        <button class="position-right" button-mini  (click)="reorderGroups()" ion-button outline
+            icon-left>
             <ng-container *ngIf="reorder;else askForReorder">
                 Done
             </ng-container>

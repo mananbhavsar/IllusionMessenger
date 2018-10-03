@@ -43,7 +43,6 @@ import { AboutPageModule } from '../pages/about/about.module';
 import { AccountPageModule } from '../pages/account/account.module';
 import { TabsPageModule } from '../pages/tabs/tabs.module';
 import { FormsPageModule } from '../pages/forms/forms.module';
-import { OverTimePageModule } from '../pages/forms/over-time/over-time.module';
 import { AdvanceRequestPageModule } from '../pages/forms/advance-request/advance-request.module';
 import { LeaveApplicationPageModule } from '../pages/forms/leave-application/leave-application.module';
 import { ChangePasswordPageModule } from "../pages/account/change-password/change-password.module";
@@ -101,6 +100,7 @@ import { UserAutoCompleteService } from './../pages/topic/create-topic/user-auto
 import { MyApp } from './app.component';
 import { DashboardPageModule } from '../pages/dashboard/dashboard.module';
 import { GroupsPageModule } from '../pages/groups/groups.module';
+import { OTPageModule } from '../pages/forms/o-t/o-t.module';
 
 @NgModule({
     declarations: [
@@ -128,7 +128,7 @@ import { GroupsPageModule } from '../pages/groups/groups.module';
         GroupsPageModule,
         CreateUserPageModule,
         FormsPageModule,
-        OverTimePageModule,
+        OTPageModule,
         AdvanceRequestPageModule,
         LeaveApplicationPageModule,
         AccountPageModule,

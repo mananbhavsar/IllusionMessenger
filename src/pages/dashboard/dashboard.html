@@ -4,6 +4,9 @@
 <internet-status></internet-status>
 </ion-header> 
 <ion-content>
+<flash-news [flashNews]="flashNews"></flash-news>
+<ion-item-divider color="light">
+</ion-item-divider>
 <ion-row *ngIf="data">
     <ion-col (click)="openTopics($event, day)" col-6 *ngFor="let day of data | keys">
         <div class="wrapper">

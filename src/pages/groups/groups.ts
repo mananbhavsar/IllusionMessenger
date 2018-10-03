@@ -8,6 +8,8 @@ import { FirebaseTransactionProvider } from '../../providers/firebase-transactio
 import { CommonProvider } from '../../providers/common/common';
 import { UserProvider } from '../../providers/user/user';
 import firebase from 'firebase';
+import { FlashNewsProvider } from '../../providers/flash-news/flash-news';
+import { ReadMessageProvider } from '../../providers/read-message/read-message';
 
 @IonicPage()
 @Component({
@@ -29,6 +31,8 @@ export class GroupsPage {
   readAllSelected: boolean;
   hideRefresher : boolean = false;
   selectedGroup: any = [];
+  data : any;
+  flashNews : any;
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public connection: ConnectionProvider,
@@ -37,7 +41,9 @@ export class GroupsPage {
     public user : UserProvider,
     public notifications: NotificationsProvider,
     public _firebaseTransaction: FirebaseTransactionProvider,
-    public common : CommonProvider
+    public common : CommonProvider,
+    public flashNewsProvider : FlashNewsProvider,
+    public read : ReadMessageProvider
   ) {
     this.setTitle();
     this.getData();
@@ -56,10 +62,17 @@ export class GroupsPage {
         OrderBy: '',
         Order: '',
       }, false).then((response: any) => {
+        this.data = response;
         if (response.Groups_Wise.length > 0) {
           response.Groups_Wise.forEach(list => {
             this.groups.push(list);
           });
+          if (response.FlashNews) {
+            this.flashNews = response.FlashNews;
+            this.flashNews.forEach((news, key) => {
+                this.flashNewsProvider.openUnreadFlashNews(news);
+            });
+        }
           this.connectToFireBase();
           this.page++;
           resolve(true);
@@ -74,6 +87,44 @@ export class GroupsPage {
     }
     });
   }
+
+
+  readSelected() {
+    this.read.read(this.selectedGroup, null).then((response) => {
+        if (response) {
+            this.selectedGroup = [];
+            this.groups = [];
+            this.readAllSelected = true;
+            this.readOptions = false;
+        this.getData();
+        }
+    });
+}
+
+
+readAll() {
+    this.read.read(null, null, true).then((response: any) => {
+        this.selectedGroup = [];
+        this.groups = [];
+        this.readAllSelected = true;
+        this.readOptions = false;
+        this.getData();
+    }).catch((error) => {
+    });
+}
+
+  getUnreadCount() {
+    let field = 'Groups_Wise' + '_Count';
+    if (this.data) {
+        if (field in this.data) {
+            if (this.data[field] > 0) {
+                return true;
+            }
+            return false;
+        }
+    }
+    return false;
+}
 
   connectToFireBase() {
     //user setting
@@ -204,12 +255,6 @@ doSorting() {
   onClear(event) {
     this.query = null;
     this.initializeItems();
-  }
-
-  getUnreadCount(){
-    this.common.getUnreadCount(this.groups).then(response => {
-    return response;
-    });
   }
 
   openReadOptions() {

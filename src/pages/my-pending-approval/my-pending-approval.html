@@ -1,5 +1,6 @@
 <ion-header>
-  <header [title]="getTitle()" [buttons]="[{icon : 'search',name : 'search'}]" (buttonClicked)="searchData($event)"></header>
+    <!-- [buttons]="[{icon : 'search',name : 'search'}]" -->
+  <header [title]="getTitle()" (buttonClicked)="searchData($event)"></header>
   <ion-toolbar ion-text color="primary" *ngIf="searchInputBtn">
     <ion-searchbar [showCancelButton]="true" (ionInput)="getItems($event)" (ionClear)="onClear($event)"
     (ionCancel)="onCancel($event)">
@@ -35,8 +36,8 @@
         <ion-col col-2>{{item.Date | date}}</ion-col>
         <ion-col col-2>{{item.RequestType}}</ion-col>        
         <ion-col col-2>{{item.Status}}</ion-col>
-        <ion-col col-2>
-          <ion-icon (click)="ViewDetail(item)" name="ios-eye"></ion-icon>
+        <ion-col (click)="ViewDetail(item)" col-2>
+          <ion-icon  name="ios-eye"></ion-icon>
         </ion-col>
         <ion-col col-4>{{item.Remark}}</ion-col>
       </ion-row>

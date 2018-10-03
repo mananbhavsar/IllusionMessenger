@@ -1,5 +1,6 @@
 <ion-header>
-  <header [title]="getTitle()" [buttons]="[{icon : 'search',name : 'search'}]" (buttonClicked)="searchData($event)"></header>
+    <!-- [buttons]="[{icon : 'search',name : 'search'}]" -->
+  <header [title]="getTitle()"  (buttonClicked)="searchData($event)"></header>
   <ion-toolbar ion-text color="primary" *ngIf="searchInputBtn">
     <ion-searchbar [showCancelButton]="true" (ionInput)="getItems($event)" (ionClear)="onClear($event)"
     (ionCancel)="onCancel($event)">
@@ -9,7 +10,7 @@
 
 
 <ion-content [ngClass]="{extraTop: searchInputBtn}">
-  <empty *ngIf="pendingData; else data_template"></empty>
+  <empty *ngIf="pendingData.length === 0; else data_template"></empty>
   <ion-refresher (ionRefresh)="refresh($event)">
     <ion-refresher-content pullingIcon="arrow-round-down" pullingText="Pull to refresh" refreshingSpinner="crescent" refreshingText="Refreshing...">
     </ion-refresher-content>
@@ -41,8 +42,8 @@
         <ion-col col-2>{{request.EmployeeName}}</ion-col>
         <ion-col col-2>{{request.RequestType}}</ion-col>        
         <ion-col col-2>{{request.Status}}</ion-col>
-        <ion-col col-2>
-          <ion-icon (click)="ViewDetail(data)" name="ios-eye"></ion-icon>
+        <ion-col (click)="ViewDetail(request)" col-2>
+          <ion-icon name="ios-eye"></ion-icon>
         </ion-col>
         <ion-col col-2>{{request.Remark}}</ion-col>
       </ion-row>

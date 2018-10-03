@@ -26,7 +26,7 @@ import { CommonProvider } from '../../providers/common/common';
     templateUrl: 'home.html',
 })
 export class HomePage {
-    title: string = 'Home';
+    title: string = 'Tasks';
     global: any = {};
     data: any = null;
     badges: any = {};
@@ -271,7 +271,7 @@ export class HomePage {
             this.selectedGroup = [];
             this.readAllSelected = true;
             this.readOptions = false;
-
+            this.common.registerDevice(true);
             refresher.complete();
             this.connectToFireBase();
         }).catch(error => {
@@ -573,7 +573,6 @@ export class HomePage {
             }
         }
         return false;
-
     }
 
     getTabBadgeCount(key) {
@@ -662,7 +661,7 @@ export class HomePage {
     setTitle() {
         this.title = null;
         setTimeout(() => {
-            this.title = 'Home';
+            this.title = 'Tasks';
         });
     }
 

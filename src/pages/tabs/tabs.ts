@@ -18,7 +18,6 @@ export class TabsPage {
   CalendarRoot = CalendarPage;
   constructor(public navCtrl: NavController, public navParams: NavParams) {  
     this.selectedIndex = this.navParams.data || 0;
-
   }
 
 

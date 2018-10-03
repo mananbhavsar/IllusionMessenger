@@ -136,8 +136,8 @@ export class MyApp {
             this.enableMenu(false);
             this.listenToGobalEvents();
             this.listenToLoginEvents();
-            this._keyboard.hideKeyboardAccessoryBar(false);
-            this._keyboard.disableScroll(false);
+            this._keyboard.hideFormAccessoryBar(false);
+            // this._keyboard.disableScroll(false);
 
             setTimeout(() => {
                 this.initPreLoginPlugins();
@@ -152,8 +152,6 @@ export class MyApp {
     }
 
     openPage(page: PageInterface) {
-        console.log(page);
-        
         //not opening if same page
         if (page.name === Global.getActiveComponentName(this.nav.getActive())) {
             return true;
@@ -181,7 +179,6 @@ export class MyApp {
             // Set the root of the nav with params if it's a tab index
             this.nav.push(page.name, params);
         }
-
         if (page.logsOut === true) {
             // Give the menu time to close before changing to logged out
 

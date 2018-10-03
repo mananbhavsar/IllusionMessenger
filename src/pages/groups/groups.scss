@@ -1,5 +1,13 @@
 page-groups {
     ion-content{
+        button{
+            &.position-left{
+            float : left;
+            }
+            &.position-right{
+            float: right;
+            }
+        }
         ion-item {
             ion-label {
                 &.label-md {

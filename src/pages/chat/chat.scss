@@ -1,16 +1,17 @@
 page-chat {
     ion-header {
-        ion-toolbar.sub-header {
-            min-height: 0px;
+        .group-header {
+            padding: 3px;
+            min-height: 25px;
             .toolbar-background {
                 background: gray;
             }
             ion-title {
-                .toolbar-title {
-                    height: 23px;
-                    color: white;
-                    font-size: 1em;
+                div {
+                    text-transform: uppercase;
                     text-align: center;
+                    color: white;
+                    font-size: 12px;
                 }
             }
         }

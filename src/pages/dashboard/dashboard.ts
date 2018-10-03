@@ -6,6 +6,7 @@ import { AddFlashPage } from '../group/add-flash/add-flash';
 import { NotificationsProvider } from '../../providers/notifications/notifications';
 import { FirebaseTransactionProvider } from '../../providers/firebase-transaction/firebase-transaction';
 import { CommonProvider } from '../../providers/common/common';
+import { FlashNewsProvider } from '../../providers/flash-news/flash-news';
 
 @IonicPage()
 @Component({
@@ -40,10 +41,12 @@ export class DashboardPage {
   };
   situationID : number = 1;
   data : any;
+  flashNews : any = [];
   constructor(
     public modal: ModalController,
     public event: Events,
     public network: Network,
+    public flashNewsProvider : FlashNewsProvider,
    public connection: ConnectionProvider,
    public notifications : NotificationsProvider,
    public common : CommonProvider,
@@ -65,6 +68,12 @@ export class DashboardPage {
       }, false).then((response: any) => {
         this.data = response.TaskDueInDays[0];
         // this.registerDevice();
+        if (response.FlashNews) {
+          this.flashNews = response.FlashNews;
+          this.flashNews.forEach((news, key) => {
+              this.flashNewsProvider.openUnreadFlashNews(news);
+          });
+      }
       });
     });
   }

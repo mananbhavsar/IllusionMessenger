@@ -8,7 +8,6 @@ export var Global = {
         danger: 'f53d3d',
         light: 'f4f4f4',
         dark: '222',
-        dashboard: '4ECDC4',
         pickup: '2574A9',
         casestatus: '87D37C',
         communication: '00B16A',

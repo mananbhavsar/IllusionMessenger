@@ -73,6 +73,17 @@ export class CalendarPage {
     });
   }
 
+  getDate(day){
+  for(let i = 1; i < 10; i++){
+    if(day === i){
+      return '0'+i;
+    }
+    return day;
+  }
+  return day;
+
+  }
+
   goToLastMonth() {
     this.eventList = false;
     this.isSelected = 0;

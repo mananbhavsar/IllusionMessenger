@@ -40,7 +40,6 @@ export class RequestDetailPage {
         Remark :  this.requestDetail.Remark,
         Date : this.requestDetail.Date
       }).then((response : any) => {
-        console.log(response);
         this.events.publish('toast:create',response.Message);
         this.viewCtrl.dismiss(response);
         resolve(true);

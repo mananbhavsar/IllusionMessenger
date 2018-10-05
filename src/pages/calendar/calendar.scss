@@ -29,7 +29,14 @@ page-calendar {
       .currentDate, .otherDate {
         padding: 5px;
       }
+      .working-day{
+        width: 27px;
+        padding: 5px;
+        border-radius: 50%;
+        border:  1px solid #000;
+      }
       .currentDate {
+        width: 26px;
         font-weight: bold;
         background-color: #efa6a6;
         color: white;
@@ -41,29 +48,27 @@ page-calendar {
       }
       .event-bullet {
         margin-top : 5px;
+        margin-left: 4px;
         color: #ef6060;
         font-weight: bold;
         font-size: 0.7em;
       }
       .selected-date {
-        width: 5px;
-        height: 3px;
-        padding: 2px;
+        width: 29px;
+        padding: 5px;
         border-radius: 50%;
         border:  3px solid #26c5e8;
       }
       .holiday{
-        width: 5px;
-        height: 3px;
+        width: 27px;
         padding: 5px;
         border-radius: 50%;
         background: #e2657f;
         color: #6f4747;
       }
       .absent-date{
-          width: 5px;
-          height: 3px;
-          padding: 5px;
+        width: 26px;
+        padding: 5px;
           border-radius: 50%;
           background:red;
           color:white;

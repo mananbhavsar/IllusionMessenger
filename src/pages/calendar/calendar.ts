@@ -20,6 +20,7 @@ export class CalendarPage {
   eventList: any;
   selectedEvent: any;
   isSelected: any;
+  monthData : any;
   todayDate: any;
   todayMonth: any;
   today: any;
@@ -47,6 +48,9 @@ export class CalendarPage {
         this.selectedMonth = this.formattedDate.format('MMM');
         this.selectedYear = this.formattedDate.format('YYYY');
         this.daysInThisMonth = response.Calendar;
+         this.monthData = response.Month_Wise[0];
+         console.log(this.monthData);
+         
         if(this.daysInThisMonth){
             this.daysInThisMonth.forEach(day => {
               if(moment().format('M/D/YYYY') === moment(day.Date).format('M/D/YYYY')){
@@ -73,20 +77,17 @@ export class CalendarPage {
     });
   }
 
-  getDate(day){
-  for(let i = 1; i < 10; i++){
-    if(day === i){
-      return '0'+i;
-    }
-    return day;
+  getDate(date){
+    if(moment(date, 'MM-D-YYYY').isAfter(moment())){
+    return true;
   }
-  return day;
-
+  return false;
   }
 
   goToLastMonth() {
     this.eventList = false;
     this.isSelected = 0;
+    this.monthData = {};
     this.date = new Date(this.date.getFullYear(), this.date.getMonth(), 0);
     this.getDays(this.date.getMonth() + 1, this.date.getFullYear());
   }
@@ -94,17 +95,22 @@ export class CalendarPage {
   goToNextMonth() {
     this.eventList = false;
     this.isSelected = 0;
+    this.monthData = {};
     this.date = new Date(this.date.getFullYear(), this.date.getMonth() + 2, 0);
     this.getDays(this.date.getMonth() + 1, this.date.getFullYear());
   }
 
   SelectDate(day, index) {
-    if (day.IsHoliday || day.TotalTime === '00:00') {
+    if (day.IsAbsent || moment(day.Date).isAfter(moment().toDate(),'day')) {
       this.eventList = null;
       this.isSelected = 0;
     } else {
       this.isSelected = index;
       this.eventList = day;
+      if(day.IsTechnician){
+        day.TargetUnits = 'NA';
+        day.CompletedUnits = 'NA';
+      }
     }
   }
 

@@ -70,7 +70,7 @@ export class MyApp {
     lastOfflineMessageShown: number = 0;
     latitude: number = 0.0;
     longitude: number = 0.0;
-    loggedInPages : any;
+    loggedInPages: any;
     // List of pages that can be navigated to from the left menu
     // the left menu only works after login
     // the login page disables the left menu
@@ -152,12 +152,13 @@ export class MyApp {
     }
 
     openPage(page: PageInterface) {
+        console.log(page);
+        
         //not opening if same page
         if (page.name === Global.getActiveComponentName(this.nav.getActive())) {
             return true;
         }
         let params = {};
-
 
         //checking if logging out and need to ask for confirmation
         if (page.name === 'LogoutPage') {
@@ -175,6 +176,8 @@ export class MyApp {
                 }]
             });
             logoutConfirmation.present();
+        } else if (page.name === 'HomePage') {
+                this.nav.setRoot(page.name, params);
         } else {
             // Set the root of the nav with params if it's a tab index
             this.nav.push(page.name, params);
@@ -265,9 +268,11 @@ export class MyApp {
 
     listenToGobalEvents() {
         this.doTranslate();
-        this.events.subscribe('menu:created', (menu : any) => {
+        this.events.subscribe('menu:created', (menu: any) => {
             setTimeout(() => {
                 this.loggedInPages = menu;
+                console.log(this.loggedInPages);
+                
             });
         });
 
@@ -290,8 +295,8 @@ export class MyApp {
         });
 
         this.events.subscribe('page:setroot', (data) => {
-                this.events.publish('loading:close');
-                this.nav.setRoot(data.page, data.params);
+            this.events.publish('loading:close');
+            this.nav.setRoot(data.page, data.params);
         });
 
         this.events.subscribe('alert:basic', (title, subTitle, buttons) => {
@@ -643,11 +648,11 @@ export class MyApp {
         this.events.subscribe('user:login', (user) => {
             this.loggedIn = true;
             this.enableMenu(true);
-            if(!this.platform.is('core')){
-            if (Global.Push.OneSignal) {
-                this._oneSignal.setSubscription(true);
+            if (!this.platform.is('core')) {
+                if (Global.Push.OneSignal) {
+                    this._oneSignal.setSubscription(true);
+                }
             }
-        }
             this.translate.use(user.MyLanguage);
             this.nav.setRoot(TabsPage);
             setTimeout(() => {

@@ -19,6 +19,9 @@ export class PendingRequestPage {
     public navParams: NavParams,
     public connection: ConnectionProvider,
     public modalCtrl : ModalController) {
+    }
+
+    ionViewWillEnter(){
       this.getData();
     }
 
@@ -32,7 +35,7 @@ export class PendingRequestPage {
       RowsPerPage : 100,
       CompanyID : this.connection.user.CompanyID,
       // Query: this.query
-      }).then((response: any) => {
+      },false).then((response: any) => {
         if (!_.isEmpty(response)) {
           response.PendingRequest.OT.forEach(item => {
             this.pendingData.push(item);
@@ -127,8 +130,8 @@ export class PendingRequestPage {
     let modal = this.modalCtrl.create(RequestDetailPage,{detail : data, page : 'pendingRequest'});
     modal.present();
     modal.onDidDismiss((response) => {
-      this.pendingData = [];
      if(response){
+      this.pendingData = [];
        this.getData();
      }
     });

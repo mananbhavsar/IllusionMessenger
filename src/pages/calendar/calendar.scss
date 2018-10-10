@@ -57,7 +57,7 @@ page-calendar {
         width: 29px;
         padding: 5px;
         border-radius: 50%;
-        border:  3px solid #26c5e8;
+        border:  2px solid #26c5e8;
       }
       .holiday{
         width: 27px;
@@ -65,6 +65,7 @@ page-calendar {
         border-radius: 50%;
         background: #e2657f;
         color: #6f4747;
+        border-color: #e2657f;
       }
       .absent-date{
         width: 26px;
@@ -72,6 +73,7 @@ page-calendar {
           border-radius: 50%;
           background:red;
           color:white;
+          border-color: red;
       }
       .holiday-event{
         margin-top : 5px;
@@ -116,6 +118,7 @@ page-calendar {
       ion-list{
           &.list-md{
               margin-top: 2px;
+              margin-bottom: 2px;
           }
           ion-item{
             &.item-md {
@@ -146,18 +149,25 @@ page-calendar {
             }
           }
           }
+          &.month-data{
+            border-top: 1px solid gainsboro;
+            margin-top: 0;
+            padding-bottom: 38px;
+          }
       }
     }
       ion-footer{
+        background: #fff;
         ion-row{
           ion-col{
             &.col{
               height: auto;
               text-align: left;
+              padding: 0;
             }
             &.total-present-value{
               text-align: center;
-              font-size: 1.5em;
+              font-size: 1em;
               color: red;
             }
             &.total-present-label{

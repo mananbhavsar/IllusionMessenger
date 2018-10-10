@@ -22,30 +22,26 @@
           Date
         </ion-col>
         <ion-col class="col-lab" col-2>
-          Employee Name
+          Employee
         </ion-col>
-        <ion-col class="col-lab" col-2>
-          Request Type
+        <ion-col class="col-lab" col-3>
+          Type
         </ion-col>
-        <ion-col class="col-lab" col-2>
+        <ion-col class="col-lab" col-3>
           Status
         </ion-col>
         <ion-col class="col-lab" col-2>
           View
         </ion-col>
-        <ion-col class="col-lab" col-2>
-          Remark
-        </ion-col>
       </ion-row>
       <ion-row *ngFor="let request of pendingData">
-        <ion-col col-2>{{request.Date | date}}</ion-col>
+        <ion-col col-2>{{request.Date}}</ion-col>
         <ion-col col-2>{{request.EmployeeName}}</ion-col>
-        <ion-col col-2>{{request.RequestType}}</ion-col>        
-        <ion-col col-2>{{request.Status}}</ion-col>
+        <ion-col col-3>{{request.RequestType}}</ion-col>        
+        <ion-col col-3>{{request.Status}}</ion-col>
         <ion-col (click)="ViewDetail(request)" col-2>
           <ion-icon name="ios-eye"></ion-icon>
         </ion-col>
-        <ion-col col-2>{{request.Remark}}</ion-col>
       </ion-row>
     </ion-grid>
     <ion-infinite-scroll *ngIf="page !== -1" (ionInfinite)="paginate($event)">

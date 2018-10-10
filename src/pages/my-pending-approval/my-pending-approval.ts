@@ -10,7 +10,7 @@ import  * as _ from 'underscore';
   templateUrl: 'my-pending-approval.html',
 })
 export class MyPendingApprovalPage {
-  title: string = 'My Pending Approval';
+  title: string = 'My Requests';
   pendingData: any = [];
   page: number = 0;
   query: string = null;
@@ -20,6 +20,9 @@ export class MyPendingApprovalPage {
     public navParams: NavParams,
     public connection: ConnectionProvider,
     public modalCtrl : ModalController) {
+    }
+
+    ionViewWillEnter(){
       this.getData();
     }
 
@@ -33,7 +36,7 @@ export class MyPendingApprovalPage {
       RowsPerPage : 100,
       CompanyID : this.connection.user.CompanyID,
       // Query: this.query
-      }).then((response: any) => {
+      },false).then((response: any) => {
         if (!_.isEmpty(response)) {
           response.MyPendingAproval.forEach(item => {
             this.pendingData.push(item);            
@@ -131,7 +134,7 @@ export class MyPendingApprovalPage {
   setTitle() {
     this.title = null;
     setTimeout(() => {
-      this.title = 'My Pending Approval';
+      this.title = 'My Requests';
     });
   }
 

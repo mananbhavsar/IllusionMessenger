@@ -33,6 +33,11 @@ export class OTPage {
     });
     this.getOverTypes();
     this.setTitle();
+    this.overtTimeForm.setValue({
+    date : moment(moment().add(-1, 'days'), moment.ISO_8601).format(),
+    type : '',
+    remark : ''
+    });
   }
 
   getOverTypes(){

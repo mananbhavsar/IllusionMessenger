@@ -16,30 +16,26 @@
   <ng-template #data_template>
     <ion-grid>
       <ion-row>
-        <ion-col class="col-lab" col-2>
-          Date
+        <ion-col class="col-lab" col-6>
+          Date(Type)
         </ion-col>
-        <ion-col class="col-lab" col-2>
-          Request Type
-        </ion-col>
-        <ion-col class="col-lab" col-2>
+        <ion-col class="col-lab" col-4>
           Status
         </ion-col>
         <ion-col class="col-lab" col-2>
           View
         </ion-col>
-        <ion-col class="col-lab" col-4>
-          Remark
-        </ion-col>
       </ion-row>
       <ion-row *ngFor="let item of pendingData">
-        <ion-col col-2>{{item.Date | date}}</ion-col>
-        <ion-col col-2>{{item.RequestType}}</ion-col>        
-        <ion-col col-2>{{item.Status}}</ion-col>
+        <ion-col col-6>{{item.Date}} ({{item.RequestType}})</ion-col>        
+        <ion-col col-4 [ngClass]="{'pending' : item.Status === 'Pending', 'rejected' : item.Status === 'Reject', 'approve' : item.Status === 'Approved'}">
+          <ion-icon [ngClass]="{'approve' : item.Status === 'Approved'}" *ngIf="item.Status === 'Approved'" name="md-checkmark-circle"></ion-icon>
+          <ion-icon [ngClass]="{'pending' : item.Status === 'Pending'}" *ngIf="item.Status === 'Pending'" name="md-clock"></ion-icon>
+          <ion-icon [ngClass]="{'rejected' : item.Status === 'Reject'}" *ngIf="item.Status === 'Reject'" name="md-close-circle"></ion-icon>
+          <span>{{item.Status}}</span></ion-col>
         <ion-col (click)="ViewDetail(item)" col-2>
           <ion-icon  name="ios-eye"></ion-icon>
         </ion-col>
-        <ion-col col-4>{{item.Remark}}</ion-col>
       </ion-row>
     </ion-grid>
     <ion-infinite-scroll *ngIf="page !== -1" (ionInfinite)="paginate($event)">

@@ -9,7 +9,7 @@ ion-content{
         ion-row{
             ion-col{
                 border: 1px solid gray;
-                .col-lab{
+                &.col-lab{
                  font-weight: 600;
                 }
                 &.col{

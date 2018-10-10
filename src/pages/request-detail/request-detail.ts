@@ -38,7 +38,8 @@ export class RequestDetailPage {
         IsApproved : this.isApproved,
         IsReject : this.isReject,
         Remark :  this.requestDetail.Remark,
-        Date : this.requestDetail.Date
+        Date : this.requestDetail.Date,
+        TransactionNumber : this.requestDetail.TransactionNumber
       }).then((response : any) => {
         this.events.publish('toast:create',response.Message);
         this.viewCtrl.dismiss(response);

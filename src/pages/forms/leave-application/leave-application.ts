@@ -42,6 +42,17 @@ export class LeaveApplicationPage {
     this.setTitle();
     this.getLeaveAppTypes();
     this.getLeaveAppformDetail();
+    this.leaveApplicationForm.setValue({
+      from_date : moment(moment().add(1, 'days'), moment.ISO_8601).format(),
+      to_date : moment(moment().add(1, 'days'), moment.ISO_8601).format(),
+      reporting_date : moment(moment().add(2, 'days'), moment.ISO_8601).format(),
+      leaves : 1,
+      leaveType : '',
+      remark : '',
+    });
+    this.startDate = moment(this.leaveApplicationForm.get('from_date').value, "YYYY/MM/DD");
+    this.endDate = moment(this.leaveApplicationForm.get('to_date').value, "YYYY/MM/DD");
+    this.reportingDate = moment(this.leaveApplicationForm.get('reporting_date').value, "YYYY/MM/DD");
   }
 
   getLeaveAppformDetail(){
@@ -72,30 +83,44 @@ export class LeaveApplicationPage {
 
   validateDates(startDate,endDate,reportingDate){
     this.IsReadOnly = false;
-    if(startDate.isSameOrBefore(moment().toDate())){
+    
+    if(startDate.isValid()){
+    if(!startDate.isAfter(moment().toDate(),'day')){
       this.event.publish('toast:error', 'Start date must be greater than today');
       this.leaveApplicationForm.setErrors({ 'invalid': true });
       return false; 
     }
-    if (startDate.isSameOrAfter(endDate)) {
+  }
+
+  if(endDate.isValid()){
+    if (!startDate.isSameOrBefore(endDate)) {
       this.event.publish('toast:error', 'End Date must be greater than start date');
       this.leaveApplicationForm.setErrors({ 'invalid': true });
       return false;
-    }
-    if (reportingDate.isSameOrBefore(endDate)) {
-      this.event.publish('toast:error', 'Reporting date must be greater than end date');
-      this.leaveApplicationForm.setErrors({ 'invalid': true });
-      return false;
-    }
+  }
+}
+
+
+  if (reportingDate.isSameOrBefore(endDate)) {
+    this.event.publish('toast:error', 'Reporting date must be greater than end date');
+    this.leaveApplicationForm.setErrors({ 'invalid': true });
+    return false;
+ }
+
+    this.getTotalLeaves();
     return true;
   }
 
-  getTotalLeaves(date) {
+  getTotalLeaves() {
     this.startDate = moment(this.leaveApplicationForm.get('from_date').value, "YYYY/MM/DD");
     this.endDate = moment(this.leaveApplicationForm.get('to_date').value, "YYYY/MM/DD");
     this.reportingDate = moment(this.leaveApplicationForm.get('reporting_date').value, "YYYY/MM/DD");
-    this.leaves = this.endDate.diff(this.startDate, 'days');
-    this.validateDates(this.startDate,this.endDate,this.reportingDate);
+    this.leaves = this.endDate.diff(this.startDate, 'days') + 1;
+    // this.event.publish('loading:create');     
+    setTimeout(() => {
+      this.validateDates(this.startDate,this.endDate,this.reportingDate);
+      // this.event.publish('loading:close');     
+    },500);
     if (this.leaves > 0) {
       this.IsReadOnly = true;
       this.leaveApplicationForm.controls['leaves'].setValue(this.leaves);

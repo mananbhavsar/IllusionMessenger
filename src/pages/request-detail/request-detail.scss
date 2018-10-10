@@ -6,11 +6,18 @@ page-request-detail {
         ion-row{
             ion-col{
                 border: 1px solid gray;
-                .col-lab{
+                &.col-lab{
                  font-weight: 600;
                 }
                 &.col{
                     text-align: center;
+                    &.value{
+                        text-align: center;
+                    }
+                    &.sub-title{
+                        text-align: left;
+                        font-weight: 600;
+                    }
                 }
                 ion-icon{
                     font-size: 1.5em;

@@ -105,7 +105,7 @@ export class GroupPage {
   refresh(refresher) {
     this.page = 0;
     this.getGroupDetails().then(status => {
-      this.common.registerDevice(true);
+      // this.common.registerDevice(true);
       refresher.complete();
     }).catch(error => {
       refresher.complete();

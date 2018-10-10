@@ -61,7 +61,7 @@
     "@ionic-native/video-capture-plus": "^4.5.3",
     "@ionic-native/video-editor": "^4.5.3",
     "@ionic-native/video-player": "^4.15.0",
-    "@ionic/app-scripts": "^3.1.8",
+    "@ionic/app-scripts": "^3.2.0",
     "@ionic/cli-utils": "^1.19.1",
     "@ionic/storage": "^2.2.0",
     "@ngx-translate/core": "^9.1.1",

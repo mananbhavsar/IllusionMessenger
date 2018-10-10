@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, Platform } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, Platform, Events } from 'ionic-angular';
 import * as _ from 'underscore';
 import { ConnectionProvider } from '../../providers/connection/connection';
 import { FileOpsProvider } from '../../providers/file-ops/file-ops';
@@ -18,7 +18,8 @@ export class SalarySlipPage {
     public navParams: NavParams,
     public connection: ConnectionProvider,
     public platform : Platform,
-    public _fileOps : FileOpsProvider) {
+    public _fileOps : FileOpsProvider,
+    public events : Events) {
 
     this.getData();
   }
@@ -36,6 +37,7 @@ export class SalarySlipPage {
   }
 
   download(file){
+    if(!_.isEmpty(file)){
     if (this.platform.is('core')) {
       window.open(file, '_blank');
     } else {
@@ -46,6 +48,9 @@ export class SalarySlipPage {
         }).catch(error => {
         });
       });
+    }
+    } else {
+    this.events.publish('toast:create','No file Found');
     }
   }
 

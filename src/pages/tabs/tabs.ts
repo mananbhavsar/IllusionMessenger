@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, Events } from 'ionic-angular';
 import { HomePage } from '../home/home';
 import { CalendarPage } from '../calendar/calendar';
-import { DashboardPage } from '../dashboard/dashboard';
+// import { DashboardPage } from '../dashboard/dashboard';
 import { GroupsPage } from '../groups/groups';
 
 @IonicPage()
@@ -12,7 +12,7 @@ import { GroupsPage } from '../groups/groups';
 })
 export class TabsPage {
   selectedIndex : number = 0;
-  dashboardRoot = DashboardPage;
+  // dashboardRoot = DashboardPage;
   taskRoot = HomePage;
   groupRoot = GroupsPage;
   CalendarRoot = CalendarPage;

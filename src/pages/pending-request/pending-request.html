@@ -18,14 +18,11 @@
   <ng-template #data_template>
     <ion-grid>
       <ion-row>
-        <ion-col class="col-lab" col-2>
-          Date
-        </ion-col>
-        <ion-col class="col-lab" col-2>
-          Employee
+        <ion-col class="col-lab" col-4>
+          Date (Type)
         </ion-col>
         <ion-col class="col-lab" col-3>
-          Type
+          Employee
         </ion-col>
         <ion-col class="col-lab" col-3>
           Status
@@ -35,9 +32,8 @@
         </ion-col>
       </ion-row>
       <ion-row *ngFor="let request of pendingData">
-        <ion-col col-2>{{request.Date}}</ion-col>
-        <ion-col col-2>{{request.EmployeeName}}</ion-col>
-        <ion-col col-3>{{request.RequestType}}</ion-col>        
+        <ion-col col-4>{{request.Date}} ({{request.RequestType}})</ion-col>
+        <ion-col col-3>{{request.EmployeeName}}</ion-col>
         <ion-col col-3>{{request.Status}}</ion-col>
         <ion-col (click)="ViewDetail(request)" col-2>
           <ion-icon name="ios-eye"></ion-icon>

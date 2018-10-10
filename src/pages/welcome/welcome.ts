@@ -30,7 +30,7 @@ export class WelcomePage {
         this.user.hasLoggedIn().then((user) => {
             if (user) {
                 if(this.sendToHomeFlag){
-                    this.navCtrl.setRoot(TabsPage);
+                    this.navCtrl.setRoot(HomePage);
                 }
             } else {
                 //checking if Tutorial required

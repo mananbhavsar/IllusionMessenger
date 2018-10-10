@@ -1,7 +1,11 @@
 <ion-header no-border>
     <header [title]="getTitle()" [buttons]="[{icon : 'search', name : 'search'},{ icon: 'flash', name: 'flash'},{ icon: 'ios-options', name: 'sort'}]"
         (buttonClicked)="headerButtonClicked($event)"></header>
-<internet-status></internet-status>
+    <div class="device-register" [ngSwitch]="deviceRegsiter">
+        <span class="gray" *ngSwitchCase="0">Not Connected</span>
+        <span class="pickup" *ngSwitchCase="1">Connecting</span>
+        <span class="secondary" *ngSwitchCase="2">Last connected at {{connectedTime | time}}</span>
+    </div>
 </ion-header>
 <ion-content no-padding>
     <ion-refresher (ionRefresh)="refresh($event)" *ngIf="hideRefresher && !searchInputBtn">
@@ -12,7 +16,7 @@
     <ng-template #data_template>
         <flash-news [flashNews]="flashNews"></flash-news>
         <ion-item-divider color="light">
-            <button button-mini [hidden]="(!getUnreadCount())" ion-button outline icon-right (click)="openReadOptions()">
+            <button button-mini [hidden]="(!getUnreadCount()) || (selectedTab === 'stats')" ion-button outline icon-right (click)="openReadOptions()">
                 <ng-container *ngIf="readOptions;else readAll">
                     Done
                 </ng-container>
@@ -20,11 +24,20 @@
                     Edit
                 </ng-template>
             </button>
+            <button button-mini *ngIf="isGroupSelected() && !isEmpty(data.Groups_Wise)" (click)="reorderGroups()" ion-button outline
+                icon-right>
+                <ng-container *ngIf="reorder;else askForReorder">
+                    Done
+                </ng-container>
+                <ng-template #askForReorder>
+                    Reorder Group
+                </ng-template>
+            </button>
         </ion-item-divider>
-        <ion-searchbar [showCancelButton]="true" *ngIf="searchInputBtn" (ionInput)="getItems($event)"
+        <ion-searchbar [showCancelButton]="true" *ngIf="searchInputBtn && selectedTab !== 'stats'" (ionInput)="getItems($event)"
             (ionClear)="onClear($event)" (ionCancel)="onCancel($event)">
         </ion-searchbar>
-        <ion-segment [(ngModel)]="selectedTab" color="theme" padding mode="ios">
+        <ion-segment [(ngModel)]="selectedTab" (ionChange)="dashboardTabSearchHide()" color="theme" padding mode="ios">
             <ion-segment-button [value]="tab.icon" *ngFor="let tab of tabs">
                 <ion-icon [name]="tab.icon"></ion-icon>
                 <span *ngIf="tab.icon !== 'stats'">
@@ -36,14 +49,14 @@
             <ion-list>
                 <ion-item-divider color="light">
                     <h2>
-                        <span class="total-rows-count">{{getSelectedTabRowsCount()}}</span>
+                        <span class="total-rows-count" *ngIf="selectedTab !== 'stats'">{{getSelectedTabRowsCount()}}</span>
                         &nbsp;-&nbsp; {{getSelectedTabName()}}
                     </h2>
                 </ion-item-divider>
                 <ng-container *ngSwitchCase="'stats'">
-                    <!-- <ng-container *ngIf="data.TaskDueInDays">
+                    <ng-container *ngIf="data.TaskDueInDays">
                         <dashboard [dueDays]="data.TaskDueInDays[0]"></dashboard>
-                    </ng-container> -->
+                    </ng-container>
                 </ng-container>
                 <ng-container *ngSwitchCase="'star'">
                     <topic [isChecked]="selectedTopic.indexOf(topic.TopicCode) > -1" [group_id]="topic.GroupID" [selectable]="readOptions" type="ActiveTopicList"
@@ -53,7 +66,7 @@
                     <topic [isChecked]="selectedTopic.indexOf(topic.TopicCode) > -1" [group_id]="topic.GroupID" [selectable]="readOptions" type="ActiveTopicList"
                         [topic]="topic" *ngFor="let topic of data.Created_By_Me;" (selected)="checkedTopic($event)"></topic>
                 </ng-container>
-                <!-- <ng-container *ngSwitchCase="'list-box'">
+                <ng-container *ngSwitchCase="'list-box'">
                     <ion-item-group [reorder]="reorder" (ionItemReorder)="reorderItems($event)">
                         <ion-item *ngFor="let group of data.Groups_Wise" (click)="openGroup(group.GroupID,group.Group)">
                             <ion-label>
@@ -83,7 +96,7 @@
                             <ion-icon name="ios-arrow-forward" item-end></ion-icon>
                         </ion-item>
                     </ion-item-group>
-                </ng-container> -->
+                </ng-container>
                 <ng-container *ngSwitchCase="'flag'">
                     <topic [isChecked]="selectedTopic.indexOf(topic.TopicCode) > -1" [group_id]="topic.GroupID" [selectable]="readOptions" type="ActiveTopicList"
                         [topic]="topic" *ngFor="let topic of data.Priority;" (selected)="checkedTopic($event)"></topic>

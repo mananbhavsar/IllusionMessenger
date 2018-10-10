@@ -349,9 +349,9 @@
   version "4.15.0"
   resolved "https://registry.yarnpkg.com/@ionic-native/video-player/-/video-player-4.15.0.tgz#88f554dbbd319e83b0079075412e769c04264e04"
 
-"@ionic/app-scripts@^3.1.8":
-  version "3.1.10"
-  resolved "https://registry.yarnpkg.com/@ionic/app-scripts/-/app-scripts-3.1.10.tgz#222c5b9388d9c441d7649beef25edb3157c2d72d"
+"@ionic/app-scripts@^3.2.0":
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@ionic/app-scripts/-/app-scripts-3.2.0.tgz#91404db6a0dcc9c2945a0e4627b5b2919f61ea36"
   dependencies:
     "@angular-devkit/build-optimizer" "0.0.35"
     autoprefixer "^7.2.6"
@@ -359,6 +359,7 @@
     chokidar "^1.7.0"
     clean-css "^4.1.11"
     cross-spawn "^5.1.0"
+    dotenv-webpack "^1.5.7"
     express "^4.16.3"
     fs-extra "^4.0.2"
     glob "^7.1.2"
@@ -2108,6 +2109,12 @@ dot-prop@^4.1.0:
   resolved "https://registry.yarnpkg.com/dot-prop/-/dot-prop-4.2.0.tgz#1f19e0c2e1aa0e32797c49799f2837ac6af69c57"
   dependencies:
     is-obj "^1.0.0"
+
+dotenv-webpack@^1.5.7:
+  version "1.5.7"
+  resolved "https://registry.yarnpkg.com/dotenv-webpack/-/dotenv-webpack-1.5.7.tgz#c44395ab21d1fd28d79a90942a7b14b1debd145f"
+  dependencies:
+    dotenv "^5.0.1"
 
 dotenv@^5.0.1:
   version "5.0.1"

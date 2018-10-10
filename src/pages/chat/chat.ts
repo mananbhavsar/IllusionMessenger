@@ -682,7 +682,7 @@ export class ChatPage {
             this.connectFireBase();
             resolve(true);
           }).catch(error => {
-            this.navCtrl.setRoot(TabsPage);
+            this.navCtrl.setRoot(HomePage);
             this.events.publish('toast:create', error);
             reject(false);
           })

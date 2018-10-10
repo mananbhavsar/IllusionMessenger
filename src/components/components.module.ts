@@ -20,6 +20,7 @@ import { TitleComponent } from './title/title';
 import { TopicComponent } from './topic/topic';
 import { RatingComponent } from './rating/rating';
 import { InternetStatusComponent } from './internet-status/internet-status';
+import { DashboardComponent } from './dashboard/dashboard';
 
 
 @NgModule({
@@ -39,7 +40,8 @@ import { InternetStatusComponent } from './internet-status/internet-status';
         ModalToolbarComponent,
         AttachmentComponent,
         RatingComponent,
-    InternetStatusComponent
+    InternetStatusComponent,
+    DashboardComponent
     ],
     imports: [
         MomentModule,
@@ -60,6 +62,7 @@ import { InternetStatusComponent } from './internet-status/internet-status';
         IonicPageModule.forChild(ModalToolbarComponent),
         IonicPageModule.forChild(AttachmentComponent),
         IonicPageModule.forChild(RatingComponent),
+        IonicPageModule.forChild(DashboardComponent),
         PipesModule,
     ],
     exports: [
@@ -79,6 +82,7 @@ import { InternetStatusComponent } from './internet-status/internet-status';
         ModalToolbarComponent,
         RatingComponent,
         AttachmentComponent,
+        DashboardComponent,
     InternetStatusComponent
     ]
 })

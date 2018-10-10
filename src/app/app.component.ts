@@ -30,9 +30,6 @@ import { GroupPage } from './../pages/group/group';
 import { Global } from './global';
 import { FormsPage } from '../pages/forms/forms';
 import { DailyShedulePage } from '../pages/topic/daily-shedule/daily-shedule';
-import { DashboardPage } from '../pages/dashboard/dashboard';
-import { CalendarPage } from '../pages/calendar/calendar';
-import { GroupsPage } from '../pages/groups/groups';
 
 export const firebaseConfig = {
     apiKey: "AIzaSyAFDZ9UPTMiDTjT4qAG0d9uVeOdhL-2PBw",
@@ -485,7 +482,7 @@ export class MyApp {
                     break;
 
                 default:
-                    page = TabsPage;
+                    page = HomePage;
                     break;
             }
             if (page) {
@@ -654,7 +651,7 @@ export class MyApp {
                 }
             }
             this.translate.use(user.MyLanguage);
-            this.nav.setRoot(TabsPage);
+            this.nav.setRoot(HomePage);
             setTimeout(() => {
                 let full_name = user ? user.LoginUser : '';
                 this.events.publish('toast:create', this.welcome_translate + ' ' + full_name);

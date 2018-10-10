@@ -27,7 +27,7 @@ export class DailyShedulePage {
   }
 
   dismiss(event) {
-    this.navCtrl.setRoot('TabsPage');
+    this.navCtrl.setRoot('HomePage');
   }
 
 
@@ -37,7 +37,7 @@ export class DailyShedulePage {
 
       },false).then((response: any) => {
         if (_.isEmpty(response.TopicList)) {
-          this.navCtrl.setRoot('TabsPage');
+          this.navCtrl.setRoot('HomePage');
         } else {
           this.topics = response.TopicList;
         }
@@ -64,7 +64,7 @@ export class DailyShedulePage {
       if (status.val() === null) {
         // update to firebase
         ref.set(true);
-        this.navCtrl.setRoot(TabsPage);
+        this.navCtrl.setRoot(HomePage);
       }
     });
   }

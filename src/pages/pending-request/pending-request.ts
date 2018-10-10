@@ -131,6 +131,7 @@ export class PendingRequestPage {
     modal.present();
     modal.onDidDismiss((response) => {
      if(response){
+       this.page = 0;
       this.pendingData = [];
        this.getData();
      }

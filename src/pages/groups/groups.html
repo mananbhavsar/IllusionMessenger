@@ -2,7 +2,6 @@
 <ion-header>
   <header [title]="getTitle()" [buttons]="[{icon : 'search', name : 'search'},{ icon: 'flash', name: 'flash'}]"
   (buttonClicked)="headerButtonClicked($event)"></header>
-<internet-status></internet-status>
 </ion-header>
 <ion-content>
 <center-spinner *ngIf="groups.length === 0;else data_template"></center-spinner>

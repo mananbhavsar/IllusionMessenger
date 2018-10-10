@@ -18,7 +18,6 @@ import { FirebaseTransactionProvider } from './../../providers/firebase-transact
 import { NotificationsProvider } from './../../providers/notifications/notifications';
 import { AddFlashPage } from './../group/add-flash/add-flash';
 import { CreateTopicPage } from './../topic/create-topic/create-topic';
-import { CommonProvider } from '../../providers/common/common';
 
 @IonicPage()
 @Component({
@@ -26,14 +25,13 @@ import { CommonProvider } from '../../providers/common/common';
     templateUrl: 'home.html',
 })
 export class HomePage {
-    title: string = 'Tasks';
+    title: string = 'Home';
     global: any = {};
     data: any = null;
     badges: any = {};
     query: any = null;
     searchInputBtn: boolean = false;
     firebaseConnected: boolean = false;
-    situationID: number = 0;
 
     flashNews: Array<any> = [];
     reorder: boolean = false;
@@ -46,18 +44,17 @@ export class HomePage {
     deviceRegsiter: number = 0;
     page: number = 0;
     connectedTime: string = null;
-
     sort_by: string = '';
     sort_order: string = '';
 
     dataFetched: boolean = false;
     selectedGroup: any = [];
     tabs = [
-        // {
-        //     name: 'Task due in days',
-        //     icon: 'stats',
-        //     key: 'Task_due_in_days',
-        // },
+        {
+            name: 'Task due in days',
+            icon: 'stats',
+            key: 'Task_due_in_days',
+        },
         {
             name: 'Assigned To Me',
             icon: 'star',
@@ -68,11 +65,11 @@ export class HomePage {
             icon: 'people',
             key: 'Created_By_Me'
         },
-        // {
-        //     name: 'Groups',
-        //     icon: 'list-box',
-        //     key: 'Groups_Wise'
-        // },
+        {
+            name: 'Groups',
+            icon: 'list-box',
+            key: 'Groups_Wise'
+        },
         {
             name: 'Priority',
             icon: 'flag',
@@ -83,7 +80,7 @@ export class HomePage {
             icon: 'paper',
             key: 'Topic_Wise'
         },];
-    selectedTab: string = 'star';
+    selectedTab: string = 'stats';
     readOptions: boolean = false;
     selectedTopic: Array<any> = [];
     readAllSelected: boolean = true;
@@ -98,11 +95,11 @@ export class HomePage {
         private _oneSignal: OneSignal,
         private platform: Platform,
         private _network: Network,
+        private _flashNews: FlashNewsProvider,
         private modalController: ModalController,
         private notifications: NotificationsProvider,
         private _firebaseTransaction: FirebaseTransactionProvider,
         public actionSheetController: ActionSheetController,
-        public common : CommonProvider
     ) {
         this.global = Global;
         //listening to Resume & Pause events
@@ -127,7 +124,7 @@ export class HomePage {
         //online offline
         if (this.platform.is('cordova')) {
             this._network.onchange().subscribe(() => {
-                // this.registerDevice(false);
+                this.registerDevice(false);
             });
         }
     }
@@ -173,7 +170,6 @@ export class HomePage {
             }
             this.connection.doPost('Chat/GetTaskDetail', {
                 PageNumber: this.page,
-                SituationID: this.situationID,
                 RowsPerPage: 100,
                 Query: this.query,
                 OrderBy: this.sort_by,
@@ -191,7 +187,7 @@ export class HomePage {
                         });
                     }
                     if (!search) {
-                        // this.registerDevice(isPullDown);
+                        this.registerDevice(isPullDown);
                     }
                     this.page++;
                     resolve(true);
@@ -210,58 +206,59 @@ export class HomePage {
         return _.isEmpty(object);
     }
 
-    // registerDevice(isPullDown) {
-    //     //make device regsiter call
-    //     //if internet
-    //     if (this._network.type === 'none') {
-    //         this.deviceRegsiter = 0;
-    //     } else if (this.platform.is('core')) {
-    //         if (this.connection.getPushID()) {
-    //             this.deviceRegsiter = 1;
-    //             this.connectToServer(this.connection.push_id, isPullDown);
-    //         } else {
-    //             this.events.subscribe('pushid:created', (userId) => {
-    //                 this.deviceRegsiter = 1;
-    //                 this.connectToServer(userId, isPullDown);
+    registerDevice(isPullDown) {
+        this.connectToServer('1234',false);
+        //make device regsiter call
+        //if internet
+        if (this._network.type === 'none') {
+            this.deviceRegsiter = 0;
+        } else if (this.platform.is('core')) {
+            if (this.connection.getPushID()) {
+                this.deviceRegsiter = 1;
+                this.connectToServer(this.connection.push_id, isPullDown);
+            } else {
+                this.events.subscribe('pushid:created', (userId) => {
+                    this.deviceRegsiter = 1;
+                    this.connectToServer(userId, isPullDown);
 
-    //             });
-    //             //wait 15sec and check again for user id
-    //             setTimeout(() => {
-    //                 let OneSignal = window['OneSignal'] || [];
-    //                 let that = this;
-    //                 OneSignal.push(function () {
-    //                     OneSignal.getUserId(function (userId: string) {
-    //                         if (userId) {
-    //                             that.deviceRegsiter = 1;
-    //                             that.connectToServer(userId, isPullDown);
+                });
+                //wait 15sec and check again for user id
+                setTimeout(() => {
+                    let OneSignal = window['OneSignal'] || [];
+                    let that = this;
+                    OneSignal.push(function () {
+                        OneSignal.getUserId(function (userId: string) {
+                            if (userId) {
+                                that.deviceRegsiter = 1;
+                                that.connectToServer(userId, isPullDown);
 
-    //                         }
-    //                     });
-    //                 });
-    //             });
-    //         }
-    //     } else if (this.platform.is('cordova')) {
-    //         this.deviceRegsiter = 1;
-    //         this._oneSignal.getIds().then((id) => {
-    //             this.connectToServer(id.userId, isPullDown);
-    //         }).catch(error => {
-    //             this.deviceRegsiter = 0;
-    //         });
-    //     }
-    // }
+                            }
+                        });
+                    });
+                });
+            }
+        } else if (this.platform.is('cordova')) {
+            this.deviceRegsiter = 1;
+            this._oneSignal.getIds().then((id) => {
+                this.connectToServer(id.userId, isPullDown);
+            }).catch(error => {
+                this.deviceRegsiter = 0;
+            });
+        }
+    }
 
-    // connectToServer(pushID, isPullDown) {
-    //     this.user.registerPushID(pushID, isPullDown).then((response: any) => {
-    //         if (response.Data && response.Data.LastActivity) {
-    //             this.deviceRegsiter = 2; //connected
-    //             this.connectedTime = response.Data.LastActivity; //this will be utc
-    //         } else {
-    //             this.deviceRegsiter = 0;
-    //         }
-    //     }).catch(error => {
-    //         this.deviceRegsiter = 0;
-    //     });
-    // }
+    connectToServer(pushID, isPullDown) {
+        this.user.registerPushID(pushID, isPullDown).then((response: any) => {
+            if (response.Data && response.Data.LastActivity) {
+                this.deviceRegsiter = 2; //connected
+                this.connectedTime = response.Data.LastActivity; //this will be utc
+            } else {
+                this.deviceRegsiter = 0;
+            }
+        }).catch(error => {
+            this.deviceRegsiter = 0;
+        });
+    }
 
     refresh(refresher) {
         this.page = 0;
@@ -271,7 +268,7 @@ export class HomePage {
             this.selectedGroup = [];
             this.readAllSelected = true;
             this.readOptions = false;
-            this.common.registerDevice(true);
+
             refresher.complete();
             this.connectToFireBase();
         }).catch(error => {
@@ -366,24 +363,24 @@ export class HomePage {
         });
     }
 
-    // readMessage(ev, group) {
-    //     group.IsRead = ev.checked;
-    //     if (ev.checked) {
-    //         if (this.selectedGroup.indexOf(this.selectedGroup.GroupCode) === -1) {
-    //             this.selectedGroup.push({
-    //                 checked: group.IsRead,
-    //                 GroupCode: group.GroupCode,
-    //             });
-    //             this.readAllSelected = false;
-    //         }
-    //     } else {
-    //         this.selectedGroup.splice(this.selectedGroup.indexOf(this.selectedGroup.GroupCode), 1);
-    //     }
+    readMessage(ev, group) {
+        group.IsRead = ev.checked;
+        if (ev.checked) {
+            if (this.selectedGroup.indexOf(this.selectedGroup.GroupCode) === -1) {
+                this.selectedGroup.push({
+                    checked: group.IsRead,
+                    GroupCode: group.GroupCode,
+                });
+                this.readAllSelected = false;
+            }
+        } else {
+            this.selectedGroup.splice(this.selectedGroup.indexOf(this.selectedGroup.GroupCode), 1);
+        }
 
-    //     if (this.selectedGroup.length === 0 && this.selectedTopic.length === 0) {
-    //         this.readAllSelected = true;
-    //     }
-    // }
+        if (this.selectedGroup.length === 0 && this.selectedTopic.length === 0) {
+            this.readAllSelected = true;
+        }
+    }
 
     useLang(lang) {
         this.translate.use(lang);
@@ -394,12 +391,12 @@ export class HomePage {
         this.navCtrl.push(GroupPage, { GroupID, Group });
     }
 
-    // getBadge(groupCode) {
-    //     if (groupCode in this.badges) {
-    //         return this.badges[groupCode];
-    //     }
-    //     return false;
-    // }
+    getBadge(groupCode) {
+        if (groupCode in this.badges) {
+            return this.badges[groupCode];
+        }
+        return false;
+    }
 
     createTopic(group_id) {
         this.navCtrl.push(CreateTopicPage, group_id);
@@ -451,9 +448,9 @@ export class HomePage {
     }
 
     searchData() {
-        // if (this.selectedTab === 'stats') {
-        //     this.events.publish('toast:create', 'Search not available here');
-        // } else {
+        if (this.selectedTab === 'stats') {
+            this.events.publish('toast:create', 'Search not available here');
+        } else {
             if (this.searchInputBtn) {
                 this.searchInputBtn = false;
             } else if (this.searchInputBtn === false) {
@@ -462,17 +459,17 @@ export class HomePage {
             this.data = [];
             this.query = null;
             this.initializeItems();
-        // }
+        }
     }
 
-    // dashboardTabSearchHide() {
-    //     if (this.selectedTab === 'stats' && this.searchInputBtn) {
-    //         this.events.publish('toast:create', 'Search not available here');
-    //         this.data = [];
-    //         this.query = null;
-    //         this.initializeItems();
-    //     }
-    // }
+    dashboardTabSearchHide() {
+        if (this.selectedTab === 'stats' && this.searchInputBtn) {
+            this.events.publish('toast:create', 'Search not available here');
+            this.data = [];
+            this.query = null;
+            this.initializeItems();
+        }
+    }
 
     initializeItems() {
         this.page = 0;
@@ -534,12 +531,12 @@ export class HomePage {
         flashModal.present();
     }
 
-    // isGroupSelected() {
-    //     if (this.getSelectedTabName() === 'Groups') {
-    //         return true;
-    //     }
-    //     return false;
-    // }
+    isGroupSelected() {
+        if (this.getSelectedTabName() === 'Groups') {
+            return true;
+        }
+        return false;
+    }
 
     refresherHidden() {
         this.hideRefresher = false;
@@ -550,11 +547,12 @@ export class HomePage {
         this.tabs.some(tab => {
             if (tab.icon === this.selectedTab) {
                 selectedName = tab.name;
-                // if (selectedName === 'Groups' && this.reorder) {
-                //     this.hideRefresher = false;
-                // } else {
-                //     this.hideRefresher = true;
-                // }
+                if (selectedName === 'Groups' && this.reorder) {
+                    console.log(this.getUnreadCount());
+                    this.hideRefresher = false;
+                } else {
+                    this.hideRefresher = true;
+                }
                 return true;
             }
             return false;
@@ -563,16 +561,20 @@ export class HomePage {
     }
 
     getUnreadCount() {
-        let field = 'Topic_Wise' + '_Count';
         if (this.data) {
-            if (field in this.data) {
-                if (this.data[field] > 0) {
+            if ('Topic_Wise_Count' in this.data) {
+                if (this.data['Topic_Wise_Count'] > 0) {
                     return true;
                 }
-                return false;
+            }
+            if ('Groups_Wise_Count' in this.data) {
+                if (this.data['Groups_Wise_Count'] > 0) {
+                    return true;
+                }
             }
         }
         return false;
+
     }
 
     getTabBadgeCount(key) {
@@ -609,47 +611,78 @@ export class HomePage {
         return selectedRowsCount;
     }
 
-    // reorderItems(indexes) {
-    //     this.data.Groups_Wise = reorderArray(this.data.Groups_Wise, indexes);
-    //     let group_reorder = [];
-    //     let groupIds = [];
+    reorderItems(indexes) {
+        this.data.Groups_Wise = reorderArray(this.data.Groups_Wise, indexes);
+        let group_reorder = [];
+        let groupIds = [];
 
-    //     this.data.Groups_Wise.forEach((group, index) => {
-    //         if (groupIds.indexOf(group.GroupID) === -1) {
-    //             group_reorder.push({ 'OrderIndex': index, 'GroupID': group.GroupID });
-    //             groupIds.push(group.GroupID);
-    //         }
+        this.data.Groups_Wise.forEach((group, index) => {
+            if (groupIds.indexOf(group.GroupID) === -1) {
+                group_reorder.push({ 'OrderIndex': index, 'GroupID': group.GroupID });
+                groupIds.push(group.GroupID);
+            }
 
-    //     });
+        });
 
-    //     this.connection.doPost('chat/MyGroupOrder', {
-    //         OrderIndex: group_reorder.map(order => order.OrderIndex),
-    //         GroupID: group_reorder.map(groupId => groupId.GroupID)
-    //     }, false).then((response: any) => {
-    //         if (response) {
+        this.connection.doPost('chat/MyGroupOrder', {
+            OrderIndex: group_reorder.map(order => order.OrderIndex),
+            GroupID: group_reorder.map(groupId => groupId.GroupID)
+        }, false).then((response: any) => {
+            if (response) {
 
-    //         }
-    //     }).catch((error) => {
-    //     });
+            }
+        }).catch((error) => {
+        });
 
-    // }
+    }
 
-    // reorderGroups() {
-    //     if (this.reorder) {
-    //         this.reorder = false;
-    //     } else {
-    //         this.reorder = true;
-    //     }
-    // }
+    reorderGroups() {
+        if (this.reorder) {
+            this.reorder = false;
+        } else {
+            this.reorder = true;
+        }
+    }
 
     openSortOptions() {
-     this.common.openSortOption().then((response : any) => {
-         if(response){
-             this.sort_by = response.sort_by;
-             this.sort_order = response.sort_order;
-             this.doSorting();
-         }
-     });
+        //creating buttons
+        let buttons = [];
+        let sortingOptions = {
+            'CreationDate': 'Creation Date',
+            'DueDate': 'Due Date'
+        };
+        for (let key in sortingOptions) {
+            let label = sortingOptions[key];
+            let icon = null;
+            if (key === this.sort_by) {
+                icon = this.sort_order === 'ASC' ? 'ios-arrow-round-up-outline' : 'ios-arrow-round-down-outline';
+            }
+            buttons.push({
+                text: label,
+                icon: icon,
+                handler: () => {
+                    //if not selected initially, making it desc so it could be reversed later
+                    if (this.sort_by !== key) {
+                        this.sort_order = 'DESC';
+                    }
+                    this.sort_by = key;
+                    this.sort_order = this.sort_order === 'ASC' ? 'DESC' : 'ASC';
+                    this.doSorting();
+                }
+            });
+        }
+
+        //cancel button
+        buttons.push({
+            text: 'Cancel',
+            role: 'cancel',
+        });
+        //creating action sheet
+        let sortActionSheet = this.actionSheetController.create({
+            title: 'Select sort options',
+            buttons: buttons
+        });
+        sortActionSheet.present();
     }
 
     doSorting() {
@@ -661,11 +694,12 @@ export class HomePage {
     setTitle() {
         this.title = null;
         setTimeout(() => {
-            this.title = 'Tasks';
+            this.title = 'Home';
         });
     }
 
     getTitle() {
         return this.title;
     }
+
 }

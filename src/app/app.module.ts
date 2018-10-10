@@ -98,7 +98,6 @@ import { TranslateServiceProvider } from '../providers/translate-service/transla
 import { UserProvider } from '../providers/user/user';
 import { UserAutoCompleteService } from './../pages/topic/create-topic/user-auto-complete';
 import { MyApp } from './app.component';
-import { DashboardPageModule } from '../pages/dashboard/dashboard.module';
 import { GroupsPageModule } from '../pages/groups/groups.module';
 import { OTPageModule } from '../pages/forms/o-t/o-t.module';
 
@@ -148,7 +147,6 @@ import { OTPageModule } from '../pages/forms/o-t/o-t.module';
         GroupPageModule,
         GroupOptionsPageModule,
         ContactDetailPageModule,
-        DashboardPageModule,
         DueTopicsPageModule,
         HelpPageModule,
         HomePageModule,

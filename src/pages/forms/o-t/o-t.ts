@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, Events } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, Events, Platform } from 'ionic-angular';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { ConnectionProvider } from '../../../providers/connection/connection';
 import * as moment from 'moment';
 import { DateProvider } from '../../../providers/date/date';
 import * as _ from 'underscore';
 import { UserProvider } from '../../../providers/user/user';
+import { NotificationsProvider } from '../../../providers/notifications/notifications';
 
 @IonicPage()
 @Component({
@@ -25,6 +26,8 @@ export class OTPage {
     public connection: ConnectionProvider,
     public user: UserProvider,
     public date: DateProvider,
+    public notifications : NotificationsProvider,
+    public platform : Platform,
     public event: Events) {
     this.overtTimeForm = this.formBuilder.group({
       date: ['', Validators.required],
@@ -66,12 +69,15 @@ export class OTPage {
       CompanyID : this.connection.user.CompanyID,
         Date: this.date.toUTCISOString(this.overtTimeForm.get('date').value,false),
         TypeOfOTID: this.type,
-        Remark: this.overtTimeForm.get('remark').value
+        Remark: this.overtTimeForm.get('remark').value,
+        IsWeb : this.platform.is('core'),
+              
       }).then((response: any) => {
         if (!_.isEmpty(response)) {
           if(response.Data.Message){
             this.event.publish('toast:create',response.Data.Message);
           }
+          this.notifications.sends(response.OneSignalTransaction);          
           this.overtTimeForm.reset();
           resolve(true);
         }

@@ -38,7 +38,7 @@
     "@ionic-native/file-chooser": "^4.3.0",
     "@ionic-native/file-opener": "^4.5.3",
     "@ionic-native/file-path": "^4.15.0",
-    "@ionic-native/file-transfer": "^4.5.3",
+    "@ionic-native/file-transfer": "^4.15.0",
     "@ionic-native/geolocation": "^4.3.2",
     "@ionic-native/globalization": "^4.5.3",
     "@ionic-native/in-app-browser": "^4.5.3",

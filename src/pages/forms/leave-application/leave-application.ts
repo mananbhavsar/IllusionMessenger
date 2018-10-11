@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, Events } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, Events, Platform } from 'ionic-angular';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import moment from 'moment';
 import { ConnectionProvider } from '../../../providers/connection/connection';
 import * as _ from 'underscore';
 import { DateProvider } from '../../../providers/date/date';
+import { NotificationsProvider } from '../../../providers/notifications/notifications';
 
 @IonicPage()
 @Component({
@@ -29,6 +30,8 @@ export class LeaveApplicationPage {
     public formBuilder: FormBuilder,
     public connection: ConnectionProvider,
     public date: DateProvider,
+    public platform : Platform,
+    public notifications : NotificationsProvider,
     public event: Events) {
     
     this.leaveApplicationForm = this.formBuilder.group({
@@ -152,9 +155,11 @@ export class LeaveApplicationPage {
       TypeOfLeaveID : this.type,
       NoOfLeaves: this.leaveApplicationForm.get('leaves').value,
       Remark: this.leaveApplicationForm.get('remark').value,
+      IsWeb : this.platform.is('core')
       }).then((response: any) => {
         if (!_.isEmpty(response)) {
           this.event.publish('toast:create',response.Data.Message);
+          this.notifications.sends(response.OneSignalTransaction);          
           this.leaveApplicationForm.reset();
           resolve(true);
         }

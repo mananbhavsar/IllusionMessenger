@@ -5,6 +5,8 @@ import { ConnectionProvider } from '../../../providers/connection/connection';
 import moment from 'moment';
 import * as _ from 'underscore';
 import { DateProvider } from '../../../providers/date/date';
+import { Platform } from 'ionic-angular/platform/platform';
+import { NotificationsProvider } from '../../../providers/notifications/notifications';
 @IonicPage()
 @Component({
   selector: 'page-advance-request',
@@ -19,6 +21,8 @@ export class AdvanceRequestPage {
     public formBuilder: FormBuilder,
     public connection: ConnectionProvider,
     public event: Events,
+    public platform : Platform,
+    public notifications : NotificationsProvider,
     public date: DateProvider) {
     this.advanceRequestForm = this.formBuilder.group({
       amount: ['', [Validators.required, Validators.pattern('^[1-9][0-9]*$')]],
@@ -33,10 +37,12 @@ export class AdvanceRequestPage {
         CompanyID : this.connection.user.CompanyID,
         Date: this.date.toUTCISOString(new Date(), false),
         RequestAmount: this.advanceRequestForm.get('amount').value,
-        Remark: this.advanceRequestForm.get('remark').value
+        Remark: this.advanceRequestForm.get('remark').value,
+        IsWeb : this.platform.is('core')
       }).then((response: any) => {
         if (!_.isEmpty(response)) {
           this.event.publish('toast:create',response.Data.Message);
+          this.notifications.sends(response.OneSignalTransaction);
           this.advanceRequestForm.reset();
           resolve(true);
         }

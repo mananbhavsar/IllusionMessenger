@@ -253,9 +253,9 @@
   version "4.15.0"
   resolved "https://registry.yarnpkg.com/@ionic-native/file-path/-/file-path-4.15.0.tgz#3aa6af7d700533abd088ba2ccd8b486f104da447"
 
-"@ionic-native/file-transfer@^4.5.3":
-  version "4.9.0"
-  resolved "https://registry.yarnpkg.com/@ionic-native/file-transfer/-/file-transfer-4.9.0.tgz#41ed009c046fb49395df1b4e6e8e0e9ef5c0a347"
+"@ionic-native/file-transfer@^4.15.0":
+  version "4.15.0"
+  resolved "https://registry.yarnpkg.com/@ionic-native/file-transfer/-/file-transfer-4.15.0.tgz#1ec114205f1863fac48fdac1f8cc96d35afc5dbd"
 
 "@ionic-native/file@^4.5.3":
   version "4.9.0"

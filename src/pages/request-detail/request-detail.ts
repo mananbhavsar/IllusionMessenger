@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, ViewController, Events } from 'ionic-angular';
 import { ConnectionProvider } from '../../providers/connection/connection';
+import { Platform } from 'ionic-angular/platform/platform';
+import { NotificationsProvider } from '../../providers/notifications/notifications';
 
 
 @IonicPage()
@@ -18,6 +20,8 @@ export class RequestDetailPage {
      public navParams: NavParams,
      public viewCtrl: ViewController,
       public connection : ConnectionProvider,
+      public notifications : NotificationsProvider,
+      public platform  :Platform,
     public events : Events) {
     this.page = this.navParams.data.page;
      this.requestDetail = this.navParams.data.detail;
@@ -39,9 +43,11 @@ export class RequestDetailPage {
         IsReject : this.isReject,
         Remark :  this.requestDetail.Remark,
         Date : this.requestDetail.Date,
-        TransactionNumber : this.requestDetail.TransactionNumber
+        TransactionNumber : this.requestDetail.TransactionNumber,
+        IsWeb : this.platform.is('core')
       }).then((response : any) => {
         this.events.publish('toast:create',response.Message);
+        this.notifications.sends(response.OneSignalTransaction);          
         this.viewCtrl.dismiss(response);
         resolve(true);
       }).catch((error) => {

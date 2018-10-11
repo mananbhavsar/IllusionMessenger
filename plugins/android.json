@@ -60,6 +60,9 @@
     },
     "cordova-plugin-android-permissions": {
       "PACKAGE_NAME": "com.illusionmessenger.app"
+    },
+    "cordova-plugin-file-transfer": {
+      "PACKAGE_NAME": "com.illusionmessenger.app"
     }
   },
   "dependent_plugins": {}

@@ -20,7 +20,7 @@ import { TitleComponent } from './title/title';
 import { TopicComponent } from './topic/topic';
 import { RatingComponent } from './rating/rating';
 import { InternetStatusComponent } from './internet-status/internet-status';
-import { DashboardComponent } from './dashboard/dashboard';
+import { DashboardDetailComponent } from './dashboard-detail/dashboard-detail';
 
 
 @NgModule({
@@ -41,7 +41,7 @@ import { DashboardComponent } from './dashboard/dashboard';
         AttachmentComponent,
         RatingComponent,
     InternetStatusComponent,
-    DashboardComponent
+    DashboardDetailComponent
     ],
     imports: [
         MomentModule,
@@ -62,7 +62,7 @@ import { DashboardComponent } from './dashboard/dashboard';
         IonicPageModule.forChild(ModalToolbarComponent),
         IonicPageModule.forChild(AttachmentComponent),
         IonicPageModule.forChild(RatingComponent),
-        IonicPageModule.forChild(DashboardComponent),
+        IonicPageModule.forChild(DashboardDetailComponent),        
         PipesModule,
     ],
     exports: [
@@ -82,8 +82,8 @@ import { DashboardComponent } from './dashboard/dashboard';
         ModalToolbarComponent,
         RatingComponent,
         AttachmentComponent,
-        DashboardComponent,
-    InternetStatusComponent
+    InternetStatusComponent,
+    DashboardDetailComponent
     ]
 })
 export class ComponentsModule { }

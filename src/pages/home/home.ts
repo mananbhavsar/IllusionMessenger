@@ -32,9 +32,10 @@ export class HomePage {
     query: any = null;
     searchInputBtn: boolean = false;
     firebaseConnected: boolean = false;
-
+    buttons: any = [];
     flashNews: Array<any> = [];
     reorder: boolean = false;
+    message: any;
     hideRefresher: boolean = true;
     /**
      * 0 => not connected
@@ -50,11 +51,6 @@ export class HomePage {
     dataFetched: boolean = false;
     selectedGroup: any = [];
     tabs = [
-        {
-            name: 'Task due in days',
-            icon: 'stats',
-            key: 'Task_due_in_days',
-        },
         {
             name: 'Assigned To Me',
             icon: 'star',
@@ -79,8 +75,9 @@ export class HomePage {
             name: 'All Tasks',
             icon: 'paper',
             key: 'Topic_Wise'
-        },];
-    selectedTab: string = 'stats';
+        }];
+
+    selectedTab: string = 'star';
     readOptions: boolean = false;
     selectedTopic: Array<any> = [];
     readAllSelected: boolean = true;
@@ -175,25 +172,34 @@ export class HomePage {
                 OrderBy: this.sort_by,
                 Order: this.sort_order,
             }, false).then((response: any) => {
-                this.dataFetched = true;
                 //groups
-                this.data = response;
-                if (!_.isEmpty(this.data)) {
-                    //flash
-                    if (response.FlashNews) {
-                        this.flashNews = response.FlashNews;
-                        this.flashNews.forEach((news, key) => {
-                            this.flashNewsProvider.openUnreadFlashNews(news);
-                        });
+                if (!search) {
+                    this.registerDevice(isPullDown);
+                }
+                if (response.MenuAccess[0].HomePageAccess) {
+                    this.buttons = [];
+                    this.data = response;
+                    this.dataFetched = true;
+                    this.buttons.push({ icon: 'search', name: 'search' }, { icon: 'flash', name: 'flash' }, { icon: 'ios-options', name: 'sort' });
+                    console.log(this.buttons);
+                    if (!_.isEmpty(this.data)) {
+                        //flash
+                        if (response.FlashNews) {
+                            this.flashNews = response.FlashNews;
+                            this.flashNews.forEach((news, key) => {
+                                this.flashNewsProvider.openUnreadFlashNews(news);
+                            });
+                        }
+                        this.page++;
+                        resolve(true);
+                    } else {
+                        this.page = -1;
+                        resolve(false);
                     }
-                    if (!search) {
-                        this.registerDevice(isPullDown);
-                    }
-                    this.page++;
-                    resolve(true);
                 } else {
-                    this.page = -1;
-                    resolve(false);
+                    this.hideRefresher = true;
+                    this.dataFetched = false;
+                    this.message = response.MenuAccess[0].Message;
                 }
             }).catch(error => {
                 this.page = -1;
@@ -207,7 +213,6 @@ export class HomePage {
     }
 
     registerDevice(isPullDown) {
-        this.connectToServer('1234',false);
         //make device regsiter call
         //if internet
         if (this._network.type === 'none') {

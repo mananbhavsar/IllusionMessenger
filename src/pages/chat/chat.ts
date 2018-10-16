@@ -1,4 +1,4 @@
-import { Component, ElementRef,ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { Http } from '@angular/http';
 import { Camera, CameraOptions } from '@ionic-native/camera';
 import { Clipboard } from '@ionic-native/clipboard';
@@ -842,7 +842,7 @@ export class ChatPage {
     let reader = new FileReader();
     let context = this;
     reader.onload = function () {
-      dataURL = reader.result.replace(/^data:image\/\w+;base64,/, "");
+      dataURL = (<any>reader).result.replace(/^data:image\/\w+;base64,/, "");
       context.uploadFileFromBrowser(fileName, fileExtension, dataURL)
         .then((data: any) => {
           if (data.Data.indexOf('https') === 0) {

@@ -2,3 +2,5 @@
 [self.viewController dismissViewControllerAnimated:NO completion:nil];
 
 2. find . -name "*.png" -exec convert "{}" -alpha off "{}" \;
+
+ ionic cordova build android --prod;ionic cordova build ios --prod;cd platforms/ios/Laxmi\ Task\ Manager/Images.xcassets/;find . -name "*.png" -exec convert "{}" -alpha off "{}" \;cd ..;cd ..;cd ..;cd ..;open platforms/ios/Laxmi\ Task\ Manager.xcworkspace/

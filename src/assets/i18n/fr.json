@@ -15,7 +15,18 @@
     },
     "HomeScreen": {
         "_Home_": "Accueil",
-        "_Dashboard_": "Tableau de bord",
+        "_forms_": "Formes",
+        "_OT_" : "Forme de temps",
+        "_LeaveApplication_" : "Laisser demande",
+        "_AdvanceRequest_" : "Formulaire de demande préalable",
+        "_MyPendingApproval_" : "Mes demandes",
+        "_PendingRequest_" : "Requêtes en attente",
+        "_SalarySlip_" : "Fiche de salaire",
+        "_dashboard_": "Tableau de bord",
+        "_task_": "Tâche",
+        "_group_": "Groupes",
+        "_calendar_": "Calendrier",
+        "_forms" : "Forms",
         "_ManageGroup_" : "Gérer le groupe",
         "_DashboardSummary_": "Votre tableau de bord analytique",
         "_PickUp_": "Décroché",
@@ -27,7 +38,7 @@
         "_Invoice_": "facture d'achat",
         "_Payments_": "Paiements",
         "_Tag_" : "Mots clés",
-        "_users_" : "Utilisateurs"
+        "_Users_" : "Utilisateurs"
     },
     "DashboardDetail": {
         "_Payment_": "Versement",
@@ -153,6 +164,7 @@
         "_ReceiptRoute_": "Receipt Route"
     },
     "Common": {
+        "_ChangePassword_" : "Changer le mot de passe",
         "_Menu_": "Menu",
         "_Home_": "Home",
         "_AboutApp_": "À propos d'App",

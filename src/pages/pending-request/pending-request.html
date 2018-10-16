@@ -1,0 +1,47 @@
+<ion-header>
+    <!-- [buttons]="[{icon : 'search',name : 'search'}]" -->
+  <header [title]="getTitle()"  (buttonClicked)="searchData($event)"></header>
+  <ion-toolbar ion-text color="primary" *ngIf="searchInputBtn">
+    <ion-searchbar [showCancelButton]="true" (ionInput)="getItems($event)" (ionClear)="onClear($event)"
+    (ionCancel)="onCancel($event)">
+  </ion-searchbar>
+</ion-toolbar>
+</ion-header>
+
+
+<ion-content [ngClass]="{extraTop: searchInputBtn}">
+  <empty *ngIf="pendingData.length === 0; else data_template"></empty>
+  <ion-refresher (ionRefresh)="refresh($event)">
+    <ion-refresher-content pullingIcon="arrow-round-down" pullingText="Pull to refresh" refreshingSpinner="crescent" refreshingText="Refreshing...">
+    </ion-refresher-content>
+  </ion-refresher>
+  <ng-template #data_template>
+    <ion-grid>
+      <ion-row>
+        <ion-col class="col-lab" col-4>
+          Date (Type)
+        </ion-col>
+        <ion-col class="col-lab" col-3>
+          Employee
+        </ion-col>
+        <ion-col class="col-lab" col-3>
+          Status
+        </ion-col>
+        <ion-col class="col-lab" col-2>
+          View
+        </ion-col>
+      </ion-row>
+      <ion-row *ngFor="let request of pendingData">
+        <ion-col col-4>{{request.Date}} ({{request.RequestType}})</ion-col>
+        <ion-col col-3>{{request.EmployeeName}}</ion-col>
+        <ion-col col-3>{{request.Status}}</ion-col>
+        <ion-col (click)="ViewDetail(request)" col-2>
+          <ion-icon name="ios-eye"></ion-icon>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <ion-infinite-scroll *ngIf="page !== -1" (ionInfinite)="paginate($event)">
+      <ion-infinite-scroll-content></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </ng-template>
+</ion-content>

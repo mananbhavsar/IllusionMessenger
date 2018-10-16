@@ -1,12 +1,12 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Output, Input } from '@angular/core';
+import { ModalController, Events } from 'ionic-angular';
 import { Network } from '@ionic-native/network';
-import { Events, ModalController } from 'ionic-angular';
 
 @Component({
-  selector: 'dashboard',
-  templateUrl: 'dashboard.html'
+  selector: 'dashboard-detail',
+  templateUrl: 'dashboard-detail.html'
 })
-export class DashboardComponent {
+export class DashboardDetailComponent {
   @Output() buttonClicked = new EventEmitter;
   @Input() dueDays: any = null;
 
@@ -53,3 +53,4 @@ export class DashboardComponent {
   }
 
 }
+

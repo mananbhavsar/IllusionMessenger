@@ -1,0 +1,33 @@
+<ion-header>
+  <header [title]="getTitle()"></header>
+</ion-header>
+
+
+<ion-content>
+  <empty *ngIf="salarySlipData.length === 0 else data_template"></empty>
+  <ion-refresher (ionRefresh)="refresh($event)">
+    <ion-refresher-content pullingIcon="arrow-round-down" pullingText="Pull to refresh" refreshingSpinner="crescent" refreshingText="Refreshing...">
+    </ion-refresher-content>
+  </ion-refresher>
+  <ng-template #data_template>
+    <ion-grid>
+      <ion-row>
+        <ion-col class="col-lab" col-6>
+          Date
+        </ion-col>
+        <ion-col class="col-lab" col-6>
+          Download
+        </ion-col>
+      </ion-row>
+      <ion-row *ngFor="let slip of salarySlipData">
+        <ion-col col-6>{{slip.MonthYear}}</ion-col>
+        <ion-col col-6>
+          <ion-icon name="md-download"></ion-icon><span (click)="download(slip.Download)" class="download">Download</span>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <ion-infinite-scroll *ngIf="page !== -1" (ionInfinite)="paginate($event)">
+      <ion-infinite-scroll-content></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </ng-template>
+</ion-content>

@@ -1,5 +1,5 @@
 <ion-header no-border>
-    <header [title]="getTitle()" [buttons]="[{icon : 'search', name : 'search'},{ icon: 'flash', name: 'flash'},{ icon: 'ios-options', name: 'sort'}]"
+    <header [title]="getTitle()" [buttons]="buttons"
         (buttonClicked)="headerButtonClicked($event)"></header>
     <div class="device-register" [ngSwitch]="deviceRegsiter">
         <span class="gray" *ngSwitchCase="0">Not Connected</span>
@@ -12,7 +12,9 @@
         <ion-refresher-content pullingIcon="arrow-round-down" pullingText="Pull to refresh" refreshingSpinner="crescent" refreshingText="Refreshing...">
         </ion-refresher-content>
     </ion-refresher>
-    <center-spinner *ngIf="dataFetched === false;else data_template"></center-spinner>
+    <div class="message" *ngIf="dataFetched === false;else data_template">
+        {{message}}
+    </div>
     <ng-template #data_template>
         <flash-news [flashNews]="flashNews"></flash-news>
         <ion-item-divider color="light">
@@ -55,7 +57,7 @@
                 </ion-item-divider>
                 <ng-container *ngSwitchCase="'stats'">
                     <ng-container *ngIf="data.TaskDueInDays">
-                        <dashboard [dueDays]="data.TaskDueInDays[0]"></dashboard>
+                        <dashboard-detail [dueDays]="data.TaskDueInDays[0]"></dashboard-detail>
                     </ng-container>
                 </ng-container>
                 <ng-container *ngSwitchCase="'star'">

@@ -7,7 +7,6 @@ import { AttachmentComponent } from './attachment/attachment';
 import { CallFabComponent } from './call-fab/call-fab';
 import { CenterSpinnerComponent } from './center-spinner/center-spinner';
 import { ChatBubbleComponent } from './chat-bubble/chat-bubble';
-import { DashboardComponent } from './dashboard/dashboard';
 import { EmptyComponent } from './empty/empty';
 import { FlashNewsComponent } from './flash-news/flash-news';
 import { HeaderComponent } from './header/header';
@@ -20,6 +19,8 @@ import { RefreshComponent } from './refresh/refresh';
 import { TitleComponent } from './title/title';
 import { TopicComponent } from './topic/topic';
 import { RatingComponent } from './rating/rating';
+import { InternetStatusComponent } from './internet-status/internet-status';
+import { DashboardDetailComponent } from './dashboard-detail/dashboard-detail';
 
 
 @NgModule({
@@ -37,9 +38,10 @@ import { RatingComponent } from './rating/rating';
         TopicComponent,
         TitleComponent,
         ModalToolbarComponent,
-        DashboardComponent,
         AttachmentComponent,
-        RatingComponent
+        RatingComponent,
+    InternetStatusComponent,
+    DashboardDetailComponent
     ],
     imports: [
         MomentModule,
@@ -60,6 +62,7 @@ import { RatingComponent } from './rating/rating';
         IonicPageModule.forChild(ModalToolbarComponent),
         IonicPageModule.forChild(AttachmentComponent),
         IonicPageModule.forChild(RatingComponent),
+        IonicPageModule.forChild(DashboardDetailComponent),        
         PipesModule,
     ],
     exports: [
@@ -77,9 +80,10 @@ import { RatingComponent } from './rating/rating';
         TopicComponent,
         TitleComponent,
         ModalToolbarComponent,
-        DashboardComponent,
         RatingComponent,
-        AttachmentComponent
+        AttachmentComponent,
+    InternetStatusComponent,
+    DashboardDetailComponent
     ]
 })
 export class ComponentsModule { }

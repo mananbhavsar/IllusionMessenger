@@ -10,6 +10,7 @@ import { GroupOptionsPage } from './../group/group-options/group-options';
 import { CloseTopicPage } from './../topic/close-topic/close-topic';
 import { CreateTopicPage } from './../topic/create-topic/create-topic';
 import { FlashNewsProvider } from '../../providers/flash-news/flash-news';
+import { CommonProvider } from '../../providers/common/common';
 
 
 @IonicPage()
@@ -39,6 +40,7 @@ export class GroupPage {
     private modalController: ModalController,
     public flashNewsProvider: FlashNewsProvider,
     private actionSheetController: ActionSheetController,
+    public common : CommonProvider
   ) {
     this.group_id = this.navParams.data.GroupID;
     this.setTitle();
@@ -103,6 +105,7 @@ export class GroupPage {
   refresh(refresher) {
     this.page = 0;
     this.getGroupDetails().then(status => {
+      // this.common.registerDevice(true);
       refresher.complete();
     }).catch(error => {
       refresher.complete();

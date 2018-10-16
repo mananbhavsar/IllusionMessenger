@@ -1,0 +1,33 @@
+page-request-detail {
+    ion-grid{
+        &.grid{
+            padding: 0;
+        }
+        ion-row{
+            ion-col{
+                border: 1px solid gray;
+                &.col-lab{
+                 font-weight: 600;
+                }
+                &.col{
+                    text-align: center;
+                    &.value{
+                        text-align: center;
+                    }
+                    &.sub-title{
+                        text-align: left;
+                        font-weight: 600;
+                    }
+                }
+                ion-icon{
+                    font-size: 1.5em;
+                    color: darkred;
+                }
+            }
+        }
+    }
+    .action-btn{
+    display: flex;
+    justify-content: center;
+    }
+}

@@ -8,7 +8,6 @@ export var Global = {
         danger: 'f53d3d',
         light: 'f4f4f4',
         dark: '222',
-        dashboard: '4ECDC4',
         pickup: '2574A9',
         casestatus: '87D37C',
         communication: '00B16A',
@@ -45,8 +44,8 @@ export var Global = {
         ios: 'https://itunes.apple.com/us/app/laxmi-task-manager/id1347861725?ls=1&mt=8'
     },
     // SERVER_URL: 'http://104.211.240.240/Labguru_Mobile/api/',
-    SERVER_URL: 'https://messengerapi.illusiondentallab.com/api/',
-    // SERVER_URL : 'https://mobileuat.illusiondentallab.com/api/',
+    // SERVER_URL: 'https://messengerapi.illusiondentallab.com/api/',
+    SERVER_URL : 'https://mobileuat.illusiondentallab.com/api/',
     CDN: 'https://d3nwpy9993ruf3.cloudfront.net/',
 
     getActiveComponentName(component) {

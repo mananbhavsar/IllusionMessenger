@@ -4,7 +4,6 @@ import { ComponentsModule } from "../../../components/components.module";
 import { PipesModule } from '../../../pipes/pipes.module';
 import { ChangePasswordPage } from './change-password';
 
-
 @NgModule({
   declarations: [
     ChangePasswordPage,

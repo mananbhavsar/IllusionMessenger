@@ -18,7 +18,7 @@ export class ModalToolbarComponent {
   }
 
   sendDismiss(data) {
-    this.dismiss.emit(data);
+    this.dismiss.emit();
   }
 
   sendButtonClicked(button, event) {

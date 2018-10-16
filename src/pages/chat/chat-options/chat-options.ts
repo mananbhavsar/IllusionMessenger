@@ -327,7 +327,7 @@ export class ChatOptionsPage {
     changedDate.setHours(remider.hour);
     changedDate.setMinutes(remider.minute);
     changedDate.setSeconds(remider.second);
-
+    
     let changedMoment = moment(changedDate);
 
     let SelectedDateTime = moment(this._date.get(changedMoment), 'Do MMM, hh:mm A');
@@ -601,7 +601,6 @@ export class ChatOptionsPage {
       });
       //removing self
       if (response.UserDetail.length) {
-        let userIndex = -1;
         response.UserDetail.forEach((user, index) => {
           //only adding users which are not in topic
           if (selectedParticipantIDs.indexOf(user.User[0].UserID) === -1) {

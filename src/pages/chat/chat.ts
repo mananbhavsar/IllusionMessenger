@@ -30,6 +30,7 @@ import { LogoutPage } from '../logout/logout';
 import { DateProvider } from './../../providers/date/date';
 import { ChatOptionsPage } from "./chat-options/chat-options";
 import { SavedMediaPage } from "./chat-options/saved-media/saved-media";
+import { TabsPage } from '../tabs/tabs';
 
 @IonicPage()
 @Component({
@@ -163,7 +164,6 @@ export class ChatPage {
   video_translate: string = 'Video';
   cancel_translate: string = 'Cancel';
   contact_translate: string = 'Contact';
-  private window: any = window;
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -263,7 +263,7 @@ export class ChatPage {
     this.chattingRef = firebase.database().ref(this.basePath + 'Chatting');
 
     //keyboard disable
-    this.keyboard.disableScroll(true);
+    // this.keyboard.disableScroll(true);
 
     //listening to Close Topic
     firebase.database().ref(this.topicClosePath).on('value', snapshot => {
@@ -528,7 +528,6 @@ export class ChatPage {
     this.platformPauseReference = this.platform.pause.subscribe(() => {
       this.doLeaving(false);
     }, error => {
-
     });
 
     //notification subs
@@ -603,7 +602,7 @@ export class ChatPage {
 
   ionViewDidEnter() {
     //hiding keyboard accessory bar
-    this.keyboard.hideKeyboardAccessoryBar(true);
+    this.keyboard.hideFormAccessoryBar(true);
     //translate
     this.doTranslate();
     //checking if user logged in
@@ -644,7 +643,7 @@ export class ChatPage {
   }
 
   ionViewWillLeave() {
-    this.keyboard.hideKeyboardAccessoryBar(false);
+    this.keyboard.hideFormAccessoryBar(false);
     this.doLeaving(true);
     this.clearTypingStringInterval();
   }
@@ -720,7 +719,6 @@ export class ChatPage {
     this.pathIdentifier = this.groupCode + '/' + this.topicCode;
 
     this.basePath = 'Communications/' + this.pathIdentifier + '/';
-
 
     //Chat close event
     this.topicClosePath = 'CloseTopics/' + this.pathIdentifier + '/' + this.userID;
@@ -872,7 +870,6 @@ export class ChatPage {
       });
     });
   }
-
 
   openUploadOptions() {
     const actionSheet = this.actionSheetCtrl.create({
@@ -1348,7 +1345,7 @@ export class ChatPage {
     if (this.keyboardOpen) {
       this.keyboardOpen = false;
       this.setTyping(false);
-      this.keyboard.close();
+      this.keyboard.hide();
     }
   }
 
@@ -1768,7 +1765,7 @@ export class ChatPage {
     }
 
     this.events.unsubscribe('user:ready');
-    this.keyboard.disableScroll(false);
+    // this.keyboard.disableScroll(false);
   }
 
   getLiveChatUsers(userChattingNow, nowTime) {

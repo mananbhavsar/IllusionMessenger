@@ -1,0 +1,73 @@
+
+<ion-header>
+  <header [title]="getTitle()" [buttons]="[{icon : 'search', name : 'search'},{ icon: 'flash', name: 'flash'}]"
+  (buttonClicked)="headerButtonClicked($event)"></header>
+</ion-header>
+<ion-content>
+<center-spinner *ngIf="groups.length === 0;else data_template"></center-spinner>
+<ng-template #data_template>
+    <ion-refresher (ionRefresh)="refresh($event)" *ngIf="!searchInputBtn">
+        <ion-refresher-content pullingIcon="arrow-round-down" pullingText="Pull to refresh" refreshingSpinner="crescent" refreshingText="Refreshing...">
+        </ion-refresher-content>
+    </ion-refresher>
+    <ion-searchbar [showCancelButton]="true" *ngIf="searchInputBtn" (ionInput)="getItems($event)"
+    (ionClear)="onClear($event)" (ionCancel)="onCancel($event)">
+    </ion-searchbar>
+    <flash-news [flashNews]="flashNews"></flash-news>
+    <ion-item-divider color="light">
+        <button class="position-left" button-mini [hidden]="(!getUnreadCount())" ion-button outline icon-right (click)="openReadOptions()">
+            <ng-container *ngIf="readOptions;else readAll">
+                Done
+            </ng-container>
+            <ng-template #readAll>
+                Edit
+            </ng-template>
+        </button>
+        <button class="position-right" button-mini  (click)="reorderGroups()" ion-button outline
+            icon-left>
+            <ng-container *ngIf="reorder;else askForReorder">
+                Done
+            </ng-container>
+            <ng-template #askForReorder>
+                Reorder Group
+            </ng-template>
+        </button>
+    </ion-item-divider>
+    <ion-item-group [reorder]="reorder" (ionItemReorder)="reorderItems($event)">
+    <ion-item *ngFor="let group of groups" (click)="openGroup(group.GroupID,group.Group)">
+        <ion-label>
+            <h2>
+                {{group.Group}}
+                <span float-right>
+                    <ion-badge *ngIf="getBadge(group.GroupCode)">{{badges[group.GroupCode]}}</ion-badge>
+                </span>
+            </h2>
+            <p>
+                <ion-row>
+                    <ion-col text-start class="activetopics" *ngIf="group.ActiveTopics > 0">
+                        <ion-icon name="ios-alarm"></ion-icon> {{group.ActiveTopics}} {{'due' + (group.ActiveTopics > 1 ? 's' :
+                        '')}}
+                    </ion-col>
+                    <ion-col text-center class="responsibletopics" *ngIf="group.ResponsibleCount && group.ResponsibleCount > 0">
+                        <ion-icon name="ios-star"></ion-icon> {{group.ResponsibleCount}} assigned
+                    </ion-col>
+                    <ion-col text-end class="overdue" *ngIf="group.OverDueTopics > 0">
+                        <ion-icon name="ios-alert"></ion-icon> {{group.OverDueTopics}} {{'over-due' + (group.OverDueTopics > 1 ?
+                        's' : '')}}
+                    </ion-col>
+                </ion-row>
+            </p>
+        </ion-label>
+        <ion-checkbox *ngIf="readOptions" item-start color="primary" [checked]="group.IsRead" (ionChange)="readMessage($event,group)"></ion-checkbox>
+        <ion-icon name="ios-arrow-forward" item-end></ion-icon>
+    </ion-item>
+</ion-item-group>
+    <ion-infinite-scroll *ngIf="page !== -1" (ionInfinite)="paginate($event)">
+        <ion-infinite-scroll-content>Nothing to load</ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+</ng-template>
+</ion-content>
+<ion-footer *ngIf="readOptions" class="hide-on-keyboard-open">
+        <button ion-button outline *ngIf="readAllSelected" (click)="readAll()">Read All</button>
+        <button ion-button outline *ngIf="!readAllSelected" (click)="readSelected()">Mark As Read</button>
+    </ion-footer>

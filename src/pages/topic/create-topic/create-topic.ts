@@ -24,7 +24,6 @@ import { UserAutoCompleteService } from './user-auto-complete';
 export class CreateTopicPage {
   @ViewChild('dueDate') dueDate: DateTime;
   hourAddition: number = 3;
-
   title: string = 'Create Topic';
 
   group_id: number = 0;
@@ -246,7 +245,6 @@ export class CreateTopicPage {
           assigned: data.assigned
         });
         this.setSelectedParticipants();
-
       }
     });
     modal.present();

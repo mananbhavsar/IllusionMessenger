@@ -5,6 +5,7 @@ import { ConnectionProvider } from '../../../providers/connection/connection';
 import * as moment from "moment";
 import * as firebase from 'firebase';
 import * as _ from 'underscore';
+import { TabsPage } from '../../tabs/tabs';
 
 @IonicPage()
 @Component({
@@ -34,7 +35,7 @@ export class DailyShedulePage {
     return new Promise((resolve, reject) => {
       this.connectionProvider.doPost('Chat/MyTaskDueToday', {
 
-      }).then((response: any) => {
+      },false).then((response: any) => {
         if (_.isEmpty(response.TopicList)) {
           this.navCtrl.setRoot('HomePage');
         } else {

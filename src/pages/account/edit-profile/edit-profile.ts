@@ -20,6 +20,8 @@ export class EditProfilePage {
   editProfileForm: FormGroup;
   submitted = false;
   global: any = {};
+  userProfile: any;
+  aadharNoExist : boolean = false;
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -33,9 +35,11 @@ export class EditProfilePage {
   ) {
     this.global = Global;
     this.editProfileForm = this.formBuilder.group({
-      name: ['', [Validators.required]],
-      email: ['', [Validators.required, Validators.pattern(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]],
-      mobile_number: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern(/^\d{10}$/)]]
+      official_email: [Validators.pattern(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)],
+      personal_email: ['', [Validators.pattern(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]],
+      mobile_number: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern(/^\d{10}$/)]],
+      emrgancy_number: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern(/^\d{10}$/)]],
+      aadhar_number: ['', [Validators.required, Validators.minLength(12), Validators.maxLength(12), Validators.pattern(/^\d{12}$/)]]
     });
   }
 
@@ -50,12 +54,18 @@ export class EditProfilePage {
   }
 
   getData() {
-    this.connection.doPost('MobileApp/GetUserProfile').then(response => {
+    this.connection.doPost('Payroll/Get_Profile_Payroll').then((response : any) => {
+      this.userProfile = response.Profile;
       this.editProfileForm.setValue({
-        name: response[0].Displayname,
-        email: response[0].EmailID,
-        mobile_number: response[0].MobileNo,
+        personal_email: response.Profile[0].PersonalEmail,
+        official_email: response.Profile[0].OfficialEmail,
+        mobile_number: response.Profile[0].MobileNo,
+        aadhar_number: Number(response.Profile[0].AdharNumber),
+        emrgancy_number: response.Profile[0].EmergancyContactNumber
       });
+      if(Number(response.Profile[0].AdharNumber)){
+        this.aadharNoExist = true;
+      }
     }).catch(error => {
       this.dismiss(error);
     });
@@ -68,19 +78,24 @@ export class EditProfilePage {
     }
     this.submitted = true;
     //updating
-    this.connection.doPost('MobileApp/UserProfile_EditInfo', {
-      DisplayName: this.editProfileForm.get('name').value,
-      EmailID: this.editProfileForm.get('email').value,
-      MobileNo: this.editProfileForm.get('mobile_number').value,
+    this.connection.doPost('Payroll/Set_Profile_Payroll', {
+      EmployeeCode: this.userProfile[0].EmployeeCode,
+      Name: this.userProfile[0].Name,
+      OfficialEmail: this.userProfile[0].OfficialEmail,
+      PersonalEmail: this.userProfile[0].PersonalEmail,
+      MobileNo: this.userProfile[0].MobileNo,
+      AdharNumber: this.userProfile[0].AdharNumber,
+      EmergancyContactNumber: this.userProfile[0].EmergancyContactNumber
     }, 'updating').then((response: any) => {
       if (response.Status) {
         this.events.publish('toast:create', response.Message);
         //set in User data
         this.storage.get('User').then(user => {
           if (user) {
-            user.DisplayName = this.editProfileForm.get('name').value;
+            user.Name = this.editProfileForm.get('name').value;
             user.Customer = this.editProfileForm.get('name').value;
-            user.EmailID = this.editProfileForm.get('email').value;
+            user.PersonalEmail = this.editProfileForm.get('personal_email').value;
+            user.OfficialEmail = this.editProfileForm.get('official_email').value;
             user.MobileNo = this.editProfileForm.get('mobile_number').value;
 
             this.storage.set('User', user).then(user => {

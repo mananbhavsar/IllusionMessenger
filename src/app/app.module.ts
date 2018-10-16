@@ -41,6 +41,10 @@ import { OrderModule } from 'ngx-order-pipe';
 import { ComponentsModule } from '../components/components.module';
 import { AboutPageModule } from '../pages/about/about.module';
 import { AccountPageModule } from '../pages/account/account.module';
+import { TabsPageModule } from '../pages/tabs/tabs.module';
+import { FormsPageModule } from '../pages/forms/forms.module';
+import { AdvanceRequestPageModule } from '../pages/forms/advance-request/advance-request.module';
+import { LeaveApplicationPageModule } from '../pages/forms/leave-application/leave-application.module';
 import { ChangePasswordPageModule } from "../pages/account/change-password/change-password.module";
 import { EditProfilePageModule } from "../pages/account/edit-profile/edit-profile.module";
 import { NotificationPreferencesPageModule } from "../pages/account/notification-preferences/notification-preferences.module";
@@ -65,9 +69,9 @@ import { HelpPageModule } from '../pages/help/help.module';
 import { DueTopicsPageModule } from '../pages/home/due-topics/due-topics.module';
 import { HomePageModule } from '../pages/home/home.module';
 import { LoginPageModule } from '../pages/login/login.module';
+import { MyPendingApprovalPageModule } from '../pages/my-pending-approval/my-pending-approval.module';
 import { CreateGroupPageModule } from '../pages/manage-group/create-group/create-group.module';
 import { ManageGroupPageModule } from '../pages/manage-group/manage-group.module';
-import { SearchPageModule } from '../pages/search/search.module';
 import { CloseTopicPageModule } from '../pages/topic/close-topic/close-topic.module';
 import { CreateTopicPageModule } from '../pages/topic/create-topic/create-topic.module';
 import { ManageParticipantsPageModule } from "../pages/topic/create-topic/manage-participants/manage-participants.module";
@@ -75,7 +79,9 @@ import { DailyShedulePageModule } from '../pages/topic/daily-shedule/daily-shedu
 import { ForwardTopicPageModule } from '../pages/topic/forward-topic/forward-topic.module';
 import { TopicOptionsPageModule } from '../pages/topic/topic-options/topic-options.module';
 import { TopicPageModule } from '../pages/topic/topic.module';
+import { RequestDetailPageModule } from '../pages/request-detail/request-detail.module';
 import { TutorialPageModule } from '../pages/tutorial/tutorial.module';
+import { SalarySlipPageModule } from '../pages/salary-slip/salary-slip.module';
 import { WelcomePageModule } from '../pages/welcome/welcome.module';
 import { PipesModule } from "../pipes/pipes.module";
 import { CommonProvider } from "../providers/common/common";
@@ -86,10 +92,14 @@ import { FirebaseTransactionProvider } from '../providers/firebase-transaction/f
 import { FlashNewsProvider } from '../providers/flash-news/flash-news';
 import { NotificationsProvider } from "../providers/notifications/notifications";
 import { ReadMessageProvider } from '../providers/read-message/read-message';
+import { CalendarPageModule } from '../pages/calendar/calendar.module';
+import { PendingRequestPageModule } from '../pages/pending-request/pending-request.module';
 import { TranslateServiceProvider } from '../providers/translate-service/translate-service';
 import { UserProvider } from '../providers/user/user';
 import { UserAutoCompleteService } from './../pages/topic/create-topic/user-auto-complete';
 import { MyApp } from './app.component';
+import { GroupsPageModule } from '../pages/groups/groups.module';
+import { OTPageModule } from '../pages/forms/o-t/o-t.module';
 
 @NgModule({
     declarations: [
@@ -99,9 +109,11 @@ import { MyApp } from './app.component';
         // IonicApp
     ],
     imports: [
+    
         BrowserModule,
         IonicModule.forRoot(MyApp, {
             mode: 'md',
+            tabsHideOnSubPages: true,
         }),
         HttpModule,
         IonicStorageModule.forRoot({
@@ -112,7 +124,12 @@ import { MyApp } from './app.component';
         AboutPageModule,
         AddFlashPageModule,
         CreateTagPageModule,
+        GroupsPageModule,
         CreateUserPageModule,
+        FormsPageModule,
+        OTPageModule,
+        AdvanceRequestPageModule,
+        LeaveApplicationPageModule,
         AccountPageModule,
         CloseTopicPageModule,
         TopicPageModule,
@@ -132,7 +149,6 @@ import { MyApp } from './app.component';
         ContactDetailPageModule,
         DueTopicsPageModule,
         HelpPageModule,
-        SearchPageModule,
         HomePageModule,
         LoginPageModule,
         ManageParticipantsPageModule,
@@ -149,9 +165,15 @@ import { MyApp } from './app.component';
         ComponentsModule,
         CreateGroupPageModule,
         PipesModule,
+        CalendarPageModule,
         ManageGroupPageModule,
         DailyShedulePageModule,
-        RatingPageModule
+        RatingPageModule,
+        SalarySlipPageModule,
+        PendingRequestPageModule,
+        MyPendingApprovalPageModule,
+        RequestDetailPageModule,
+        TabsPageModule
     ],
     bootstrap: [IonicApp],
     entryComponents: [

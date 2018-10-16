@@ -1,10 +1,11 @@
 <ion-header>
   <header [title]="getTitle()" [buttons]="[{icon : 'search',name : 'search'},{icon:'ios-more',name:'options'}]" (buttonClicked)="headerButtonClicked($event)"></header>
-	<ion-toolbar ion-text color="primary" *ngIf="searchInputBtn" >
+  <ion-toolbar ion-text color="primary" *ngIf="searchInputBtn" >
       <ion-searchbar [showCancelButton]="true" (ionInput)="getItems($event)" (ionClear)="onClear($event)"
       (ionCancel)="onCancel($event)">
     </ion-searchbar>
-	</ion-toolbar>
+  </ion-toolbar>
+  <internet-status></internet-status>
 </ion-header>
 <ion-content no-padding [ngClass]="{extraTop: searchInputBtn}">
   <ion-refresher (ionRefresh)="refresh($event)" *ngIf="!searchInputBtn">

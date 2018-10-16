@@ -218,7 +218,6 @@ export class SavedMediaPage {
 
   setThumbnail(index) {
     let file = this.files[index];
-    let thumbnail = '';
 
     switch (file.type) {
       case 'image':

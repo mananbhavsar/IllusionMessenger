@@ -150,8 +150,6 @@ export class ConnectionProvider {
                 reject(error);
             });
         });
-
-
     }
 
     getURLSearchParams(params): URLSearchParams {
@@ -159,7 +157,6 @@ export class ConnectionProvider {
         for (let key in params) {
             urlSearchParams.append(key, params[key]);
         }
-
         if (this.platform.is('core')) {
             urlSearchParams.append('Device', navigator.platform);
             urlSearchParams.append('Manufacturer', navigator.appCodeName);
@@ -186,10 +183,15 @@ export class ConnectionProvider {
 
     }
 
+    
+
     addUserInfo(urlSearchParams: URLSearchParams): URLSearchParams {
         urlSearchParams.append('LoginUserID', this.user.LoginUserID);
+        urlSearchParams.append('EmployeeID', this.user.EmployeeID);
+        urlSearchParams.append('EmployeeCode', this.user.EmployeeCode);
+        urlSearchParams.append('AllowPayrollLogin', this.user.AllowPayrollLogin);
         urlSearchParams.append('PushID', this.push_id);
-        return urlSearchParams
+        return urlSearchParams;
     }
 
     getPushID() {

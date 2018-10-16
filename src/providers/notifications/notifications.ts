@@ -58,6 +58,7 @@ export class NotificationsProvider {
         ios_badgeType: 'SetTo',
         ios_badgeCount: badge,
       };
+      console.log(notificationObj);
 
       //checking if need to open page
       if (page) {

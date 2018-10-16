@@ -12,6 +12,7 @@ import { AlertController, Events, LoadingController, MenuController, ModalContro
 import * as moment from "moment";
 import * as _ from 'underscore';
 import { AccountPage } from '../pages/account/account';
+import { TabsPage } from '../pages/tabs/tabs';
 import { ChatPage } from '../pages/chat/chat';
 import { TagPage } from '../pages/create-tag/tag/tag';
 import { UsersPage } from '../pages/create-user/users/users';
@@ -23,11 +24,12 @@ import { LogoutPage } from '../pages/logout/logout';
 import { ManageGroupPage } from '../pages/manage-group/manage-group';
 import { TutorialPage } from '../pages/tutorial/tutorial';
 import { WelcomePage } from '../pages/welcome/welcome';
-import { ConnectionProvider } from '../providers/connection/connection';
 import { TranslateServiceProvider } from '../providers/translate-service/translate-service';
 import { UserProvider } from '../providers/user/user';
 import { GroupPage } from './../pages/group/group';
 import { Global } from './global';
+import { FormsPage } from '../pages/forms/forms';
+import { DailyShedulePage } from '../pages/topic/daily-shedule/daily-shedule';
 
 export const firebaseConfig = {
     apiKey: "AIzaSyAFDZ9UPTMiDTjT4qAG0d9uVeOdhL-2PBw",
@@ -65,6 +67,7 @@ export class MyApp {
     lastOfflineMessageShown: number = 0;
     latitude: number = 0.0;
     longitude: number = 0.0;
+    loggedInPages: any;
     // List of pages that can be navigated to from the left menu
     // the left menu only works after login
     // the login page disables the left menu
@@ -72,12 +75,17 @@ export class MyApp {
         // { title: 'About', translate_key: 'Common._About', name: 'AboutPage', component: AboutPage, icon: 'information-circle' },
         { title: 'Help', translate_key: 'Common._Help_', name: 'HelpPage', component: HelpPage, icon: 'help-circle' },
     ];
-    loggedInPages: PageInterface[] = [
-        { title: 'Home', translate_key: 'HomeScreen._Home_', name: 'HomePage', component: HomePage, icon: 'home' },
-        { title: 'Manage Group', translate_key: 'HomeScreen._ManageGroup_', name: 'ManageGroupPage', component: ManageGroupPage, icon: 'people' },
-        { title: 'Tag', translate_key: 'HomeScreen._Tag_', name: 'TagPage', component: TagPage, icon: 'tab' },
-        { title: 'Users', translate_key: 'HomeScreen._users_', name: 'UsersPage', component: UsersPage, icon: 'person' }
-    ];
+    // loggedInPages: PageInterface[] = [
+    //     { title: 'Home', translate_key: 'HomeScreen._Home_', name: 'TabsPage', component: TabsPage, icon: '' },
+    //     { title: 'Manage Group', translate_key: 'HomeScreen._ManageGroup_', name: 'ManageGroupPage', component: ManageGroupPage, icon: '' },
+    //     { title: 'Tag', translate_key: 'HomeScreen._Tags_', name: 'TagPage', component: TagPage, icon: '' },
+    //     { title: 'Users', translate_key: 'HomeScreen._Users_', name: 'UsersPage', component: UsersPage, icon: '' },
+    //     { title: 'Dashboard', translate_key: 'HomeScreen._dashboard_', name: 'DashboardPage', component : DashboardPage, icon : '' },
+    //     { title: 'Task', translate_key: 'HomeScreen._task_', name: 'HomePage', component : HomePage, icon :''},
+    //     { title: 'Group', translate_key: 'HomeScreen._group_', name: 'GroupsPage', component : GroupsPage, icon :''},
+    //     { title: 'Calendar', translate_key: 'HomeScreen._calendar_', name: 'CalendarPage', component : CalendarPage, icon : '' },
+    //     { title: 'Forms', translate_key: 'HomeScreen._forms_', name: 'FormsPage', component: FormsPage, icon: '' },  
+    // ];
     accountPages: PageInterface[] = [
         { title: 'Account', translate_key: 'Common._Account_', name: 'AccountPage', component: AccountPage, icon: 'user' },
         { title: 'Logout', translate_key: 'Common._LogOut_', name: 'LogoutPage', component: LogoutPage, icon: 'log-out', logsOut: true }
@@ -103,7 +111,6 @@ export class MyApp {
         public platform: Platform,
         private _statusBar: StatusBar,
         public storage: Storage,
-        private connection: ConnectionProvider,
         public splashScreen: SplashScreen,
         public user: UserProvider,
         public loadingCtrl: LoadingController,
@@ -126,8 +133,8 @@ export class MyApp {
             this.enableMenu(false);
             this.listenToGobalEvents();
             this.listenToLoginEvents();
-            this._keyboard.hideKeyboardAccessoryBar(false);
-            this._keyboard.disableScroll(false);
+            this._keyboard.hideFormAccessoryBar(false);
+            // this._keyboard.disableScroll(false);
 
             setTimeout(() => {
                 this.initPreLoginPlugins();
@@ -142,12 +149,13 @@ export class MyApp {
     }
 
     openPage(page: PageInterface) {
+        console.log(page);
+        
         //not opening if same page
         if (page.name === Global.getActiveComponentName(this.nav.getActive())) {
             return true;
         }
         let params = {};
-
 
         //checking if logging out and need to ask for confirmation
         if (page.name === 'LogoutPage') {
@@ -165,11 +173,12 @@ export class MyApp {
                 }]
             });
             logoutConfirmation.present();
+        } else if (page.name === 'HomePage') {
+                this.nav.setRoot(page.name, params);
         } else {
             // Set the root of the nav with params if it's a tab index
             this.nav.push(page.name, params);
         }
-
         if (page.logsOut === true) {
             // Give the menu time to close before changing to logged out
 
@@ -206,7 +215,7 @@ export class MyApp {
         if (this.user && this.user._user) {
             //creation rights
             if (['ManageGroupPage', 'TagPage', 'UsersPage'].indexOf(page.name) > -1) {
-                return [5, 15, 16].indexOf(this.user._user.LoginUserID) > -1;
+                return this.user._user.AllowPayrollLogin;
             } else {
                 return true;
             }
@@ -256,6 +265,13 @@ export class MyApp {
 
     listenToGobalEvents() {
         this.doTranslate();
+        this.events.subscribe('menu:created', (menu: any) => {
+            setTimeout(() => {
+                this.loggedInPages = menu;
+                console.log(this.loggedInPages);
+                
+            });
+        });
 
         this.events.subscribe('loading:create', (content) => {
             content = content || this.loading_translate;
@@ -276,8 +292,8 @@ export class MyApp {
         });
 
         this.events.subscribe('page:setroot', (data) => {
-                this.events.publish('loading:close');
-                this.nav.setRoot(data.page, data.params);
+            this.events.publish('loading:close');
+            this.nav.setRoot(data.page, data.params);
         });
 
         this.events.subscribe('alert:basic', (title, subTitle, buttons) => {
@@ -613,6 +629,9 @@ export class MyApp {
                 this.events.publish('badge:set', total);
                 if (total) {
                     this._badge.set(total);
+                    if (this.platform.is('core')) {
+                        this.events.publish('Badge:set', total);
+                    }
                 } else {
                     this._badge.clear();
                 }
@@ -626,11 +645,12 @@ export class MyApp {
         this.events.subscribe('user:login', (user) => {
             this.loggedIn = true;
             this.enableMenu(true);
-            if (Global.Push.OneSignal) {
-                this._oneSignal.setSubscription(true);
+            if (!this.platform.is('core')) {
+                if (Global.Push.OneSignal) {
+                    this._oneSignal.setSubscription(true);
+                }
             }
             this.translate.use(user.MyLanguage);
-
             this.nav.setRoot(HomePage);
             setTimeout(() => {
                 let full_name = user ? user.LoginUser : '';
@@ -675,7 +695,7 @@ export class MyApp {
                 ref.on('value', (status) => {
                     if (status.val() === null) {
                         // show popup
-                        // this.nav.setRoot(DailyShedulePage);
+                        this.nav.setRoot(DailyShedulePage);
                     }
                 });
             }

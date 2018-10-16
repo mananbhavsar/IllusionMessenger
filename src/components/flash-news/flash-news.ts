@@ -1,5 +1,5 @@
 import { Component, Input, SimpleChanges, ViewChild } from '@angular/core';
-import { ModalController, NavController, Slides } from 'ionic-angular';
+import { ModalController, Slides } from 'ionic-angular';
 import { FlashPage } from '../../pages/flash/flash';
 import { DateProvider } from './../../providers/date/date';
 
@@ -20,7 +20,6 @@ export class FlashNewsComponent {
 
   constructor(
     private _date: DateProvider,
-    private navCntl: NavController,
     public modalCntl: ModalController
   ) {
     

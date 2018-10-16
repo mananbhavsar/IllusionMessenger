@@ -1,6 +1,5 @@
 import { Component, ElementRef, Input } from '@angular/core';
-import { File, FileEntry } from '@ionic-native/file';
-import { FileTransfer } from '@ionic-native/file-transfer';
+import { FileEntry } from '@ionic-native/file';
 import { Network } from '@ionic-native/network';
 import { StreamingMedia } from '@ionic-native/streaming-media';
 import * as firebase from 'firebase';
@@ -11,9 +10,12 @@ import 'moment/locale/en-gb';
 import * as _ from 'underscore';
 import { Global } from '../../app/global';
 import { ContactDetailPage } from '../../pages/chat/contact-detail/contact-detail';
-import { CommonProvider } from "../../providers/common/common";
 import { FileOpsProvider } from "../../providers/file-ops/file-ops";
 import { TranslateServiceProvider } from '../../providers/translate-service/translate-service';
+
+
+
+
 
 
 
@@ -51,15 +53,12 @@ export class ChatBubbleComponent {
 
   not_available_offline_translate: string = 'Not available in Offline';
   constructor(
-    private file: File,
-    private transfer: FileTransfer,
     private platform: Platform,
     private events: Events,
     private navCtlr: NavController,
     private streamingMedia: StreamingMedia,
     private _imageViewerController: ImageViewerController,
     private _elementRef: ElementRef,
-    private common: CommonProvider,
     private network: Network,
     private translate: TranslateServiceProvider,
     private fileOps: FileOpsProvider,

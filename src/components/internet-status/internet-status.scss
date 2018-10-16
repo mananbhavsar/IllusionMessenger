@@ -1,0 +1,18 @@
+internet-status {
+    .device-register {
+        text-align: center;
+        span {
+            color: white;
+            display: block;
+            &.gray {
+                background-color: gray;
+            }
+            &.secondary {
+                background-color: color($colors, secondary);
+            }
+            &.pickup {
+                background-color: color($colors, pickup);
+            }
+        }
+    }
+}

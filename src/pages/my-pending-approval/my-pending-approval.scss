@@ -1,0 +1,47 @@
+page-my-pending-approval {
+    ion-content{
+        &.extraTop {
+            .scroll-content {
+                margin-top: 136px !important;
+            }
+        }
+        ion-grid{
+            ion-row{
+                ion-col{
+                    border: 1px solid gray;
+                    &.col-lab{
+                     font-weight: 600;
+                    }
+                    &.col{
+                        text-align: center;
+                    }
+                    ion-icon{
+                        font-size: 1.5em;
+                        color: darkred;
+                        &.pending{
+                            color: orangered;
+                            font-size: 15px;
+                             }
+                             &.rejected{
+                             color : red; 
+                             font-size: 15px;
+                             }
+                             &.approve{
+                                 color : green;
+                                 font-size: 15px;
+                             }
+                    }
+                    &.pending{
+                   color: orangered;
+                    }
+                    &.rejected{
+                    color : red; 
+                    }
+                    &.approve{
+                        color : green;
+                    }
+                }
+            }
+        }
+    }
+}

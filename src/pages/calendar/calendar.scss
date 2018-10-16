@@ -1,0 +1,188 @@
+page-calendar {
+    ion-header{
+        ion-navbar{
+            ion-toolbar{
+            &.toolbar-background-md{
+                background : #561c1c;
+            }
+        }
+    }
+    }
+    ion-content{
+    [col-1] {
+        -webkit-box-flex: 0;
+        -webkit-flex: 0 0 8.33333%;
+        -ms-flex: 0 0 8.33333%;
+        flex: 0 0 14.285714285714286%;
+        width: 14.285714285714286%;
+        max-width: 14.285714285714286%;
+      }
+      .col {
+        text-align: -webkit-center;
+        padding: 5px;
+        font-size: 0.8em;
+      }
+      .last-month, .next-month {
+        color: #999999;
+        font-size: 90%;
+      }
+      .currentDate, .otherDate {
+        padding: 5px;
+      }
+      .working-day{
+        width: 27px;
+        padding: 5px;
+        border-radius: 50%;
+        border:  1px solid #000;
+      }
+      .currentDate {
+        width: 26px;
+        font-weight: bold;
+        background-color: #efa6a6;
+        color: white;
+        border-radius: 50%;
+      }
+      .calendar-header {
+        background-color: #e4e0e0;
+        color: #424242;
+      }
+      .event-bullet {
+        margin-top : 5px;
+        margin-left: 4px;
+        color: #ef6060;
+        font-weight: bold;
+        font-size: 0.7em;
+      }
+      .selected-date {
+        width: 29px;
+        padding: 5px;
+        border-radius: 50%;
+        border:  2px solid #26c5e8;
+      }
+      .holiday{
+        width: 27px;
+        padding: 5px;
+        border-radius: 50%;
+        background: #e2657f;
+        color: #6f4747;
+        border-color: #e2657f;
+      }
+      .absent-date{
+        width: 26px;
+        padding: 5px;
+          border-radius: 50%;
+          background:red;
+          color:white;
+          border-color: red;
+      }
+      .holiday-event{
+        margin-top : 5px;
+        font-weight: bold;
+        font-size: 0.7em;
+        color: #3eafe8;
+      }
+      .timings{
+        color: #1f8da5;
+      }
+      .shift{
+        color: green;
+      }
+      .absent{
+        background-color: #f53d3d;
+      }
+      .unselected-date {
+        border: none;
+      }
+      .calendar-body {
+        .grid {
+          padding: 0;
+        }
+        .col:last-child {
+          border-right: none;
+        }
+        .calendar-weekday, .calendar-date {
+          text-align: center;
+          margin: 0;
+        }
+        .calendar-weekday {
+          font-weight: bold;
+          border-bottom: solid 1px #e2dedd;
+          background: #f5f4f4;
+        }
+        .calendar-date {
+          border-top: solid 1px #e2dedd;
+          border-bottom: solid 1px #e2dedd;
+          background: #f5f4f4;
+        }
+      }
+      ion-list{
+          &.list-md{
+              margin-top: 2px;
+              margin-bottom: 2px;
+          }
+          ion-item{
+            &.item-md {
+             padding-left: 0;
+            }
+              ion-icon{
+                  color : #cf3d23;
+              }
+              ion-label{
+                &.label-md{
+                margin: auto;
+                font-size: 0.8em;
+              ion-row{
+                ion-col{
+                  &.col{
+                    height: auto;
+                    text-align: left;
+                  }
+                  &.total-hrs-label{
+                    color: red;
+                   }
+                   &.total-hr-value{
+                     color: red;
+                     font-weight: bold;
+                   }
+                }
+              }
+            }
+          }
+          }
+          &.month-data{
+            border-top: 1px solid gainsboro;
+            margin-top: 0;
+            padding-bottom: 38px;
+          }
+      }
+    }
+      ion-footer{
+        background: #fff;
+        padding: 5px;
+        ion-row{
+          ion-col{
+            &.col{
+              height: auto;
+              text-align: left;
+              padding: 0;
+            }
+            &.total-present-value{
+              text-align: center;
+              font-size: 1em;
+              color: red;
+            }
+            &.total-present-label{
+              text-align: center;
+              color: green;
+            }
+            &.total-absent-label{
+              text-align: center;
+              color: red;
+            }
+          }
+        }
+      }
+      ion-footer{
+        bottom: 5px !important;
+      }
+}

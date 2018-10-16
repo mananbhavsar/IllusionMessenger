@@ -15,7 +15,18 @@
     },
     "HomeScreen": {
         "_Home_": "Home",
-        "_Dashboard_": "Dashboard",
+        "_forms_": "Forms",
+        "_OT_" : "Over Time Form",
+        "_LeaveApplication_" : "Leave Application",
+        "_AdvanceRequest_" : "Advance Request",
+        "_MyPendingApproval_" : "My Requests",
+        "_PendingRequest_" : "Pending Requests",
+        "_SalarySlip_" : "Salary Slip",
+        "_dashboard_": "Dashboard",
+        "_task_": "Task",
+        "_group_": "Groups",
+        "_calendar_": "Calendar",
+        "_forms" : "Forms",
         "_ManageGroup_" : "Manage Group",
         "_DashboardSummary_": "Your dashboard summary",
         "_PickUp_": "Pickup",
@@ -27,7 +38,7 @@
         "_Invoice_": "Invoice",
         "_Payments_": "Payments",
         "_Tag_" : "Tags",
-        "_users_" : "Users"
+        "_Users_" : "Users"
     },
     "DashboardDetail": {
         "_Payment_": "Payment",
@@ -150,7 +161,9 @@
         "_ReceiptNo_": "Receipt No",
         "_ReceiptRoute_": "Receipt Route"
     },
+
     "Common": {
+        "_ChangePassword_" : "Change Password",
         "_Menu_": "Menu",
         "_Home_": "Home",
         "_AboutApp_": "About App",

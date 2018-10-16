@@ -36,12 +36,12 @@ export class KeyboardAttachDirective implements OnInit, OnDestroy {
     private onShow(e) {
         const keyboardHeight: number = e.keyboardHeight || (e.detail && e.detail.keyboardHeight);
         this.setElementPosition(keyboardHeight);
-        this.keyboard.disableScroll(true);
+        // this.keyboard.disableScroll(true);
     };
 
     private onHide() {
         this.setElementPosition(0);
-        this.keyboard.disableScroll(false);
+        // this.keyboard.disableScroll(false);
     };
 
     private setElementPosition(pixels: number) {

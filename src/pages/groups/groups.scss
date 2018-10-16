@@ -1,0 +1,44 @@
+page-groups {
+    ion-content{
+        button{
+            &.position-left{
+            float : left;
+            }
+            &.position-right{
+            float: right;
+            }
+        }
+        ion-item {
+            ion-label {
+                &.label-md {
+                    margin: 0;
+                }
+                h2 {}
+                ion-row {
+                    ion-col {
+                        &.col {
+                            font-size: 11px;
+                            padding: 0;
+                        }
+                        &.activetopics {
+                            color: color($colors, secondary);
+                            font-style: italic;
+                        }
+                        &.responsibletopics {
+                            color: color($colors, pickup);
+                            font-style: italic;
+                        }
+                        &.overdue {
+                            color: color($colors, danger);
+                            font-style: italic;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    ion-footer{
+        bottom : 55px;
+        text-align: center;
+    }
+}

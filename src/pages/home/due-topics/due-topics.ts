@@ -25,8 +25,12 @@ export class DueTopicsPage {
     this.setTitle();
   }
 
-  dismiss() {
+  dismiss(event) {
+    console.log(event);
+    
     this.viewCntl.dismiss();
+    console.log('dismiss');
+    
   }
 
   headerButtonClicked(event) {

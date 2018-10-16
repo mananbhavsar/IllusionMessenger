@@ -60,9 +60,9 @@ export class AccountPage {
 
     openEditProfile() {
         let editProfilePageModal = this.modalCtrl.create(EditProfilePage);
-        editProfilePageModal.onDidDismiss(data => {
-            this.setTitle();
-        });
+        // editProfilePageModal.onDidDismiss(data => {
+        //     this.setTitle();
+        // });
         editProfilePageModal.present();
     }
 

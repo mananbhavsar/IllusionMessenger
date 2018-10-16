@@ -1,0 +1,48 @@
+<ion-header>
+  <header [title]="getTitle()"></header>
+</ion-header>
+
+<ion-content padding>
+  <form [formGroup]="overtTimeForm">
+    <ion-list>
+      <ion-item>
+        <ion-label ion-text color="primary">
+          Date
+        </ion-label>
+        <ion-datetime (ionChange)="getDate($event)" #reminder displayFormat="DD MMM YYYY" pickerFormat="DD MMM YYYY" formControlName="date"
+          max="2050">
+        </ion-datetime>
+      </ion-item>
+      <!-- <ion-item>
+            <ion-label ion-text color="primary" floating>
+            Code
+            </ion-label>
+            <ion-input required formControlName="code" type="text" name="code"></ion-input>
+        </ion-item>
+        <div class="error-message-block" *ngIf="overtTimeForm.controls.code.errors && (overtTimeForm.controls.code.dirty || overtTimeForm.controls.code.touched)">
+          <span *ngIf="overtTimeForm.controls.code.errors.required">Code is required</span>
+        </div> -->
+        <ion-item>
+          <ion-label>Type</ion-label>
+          <ion-select formControlName="type">
+            <ion-option required *ngFor="let type of typeList" [hidden]="type.Description === ''" [value]="type.OTTypeID" (ionSelect)="getType($event)">{{type.Description}}</ion-option>
+          </ion-select>
+        </ion-item>
+      <div class="error-message-block" *ngIf="overtTimeForm.controls.type.errors && (overtTimeForm.controls.type.dirty || overtTimeForm.controls.type.touched)">
+        <span *ngIf="overtTimeForm.controls.type.errors.required">Select over time type</span>
+      </div>
+      <ion-item>
+        <ion-label ion-text color="primary" floating>
+          Remark
+        </ion-label>
+        <ion-textarea formControlName="remark" type="text" name="remark"></ion-textarea>
+      </ion-item>
+      <div class="error-message-block" *ngIf="overtTimeForm.controls.remark.errors && (overtTimeForm.controls.remark.dirty || overtTimeForm.controls.remark.touched)">
+        <span *ngIf="overtTimeForm.controls.remark.errors.required">Remark is required</span>
+      </div>
+    </ion-list>
+    <button ion-button block type="submit" (click)="submit()" [disabled]="!overtTimeForm.valid">
+      Submit
+    </button>
+  </form>
+</ion-content>

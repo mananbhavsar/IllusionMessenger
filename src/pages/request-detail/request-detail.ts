@@ -46,8 +46,12 @@ export class RequestDetailPage {
         TransactionNumber : this.requestDetail.TransactionNumber,
         IsWeb : this.platform.is('core')
       }).then((response : any) => {
-        this.events.publish('toast:create',response.Message);
-        this.notifications.sends(response.OneSignalTransaction);          
+        this.events.publish('toast:create',response.Data.Message);
+        try{
+        this.notifications.sends(response.OneSignalTransaction);   
+        }catch(error){
+          console.log(error);
+        }     
         this.viewCtrl.dismiss(response);
         resolve(true);
       }).catch((error) => {

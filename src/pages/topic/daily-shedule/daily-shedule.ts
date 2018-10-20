@@ -37,7 +37,7 @@ export class DailyShedulePage {
 
       },false).then((response: any) => {
         if (_.isEmpty(response.TopicList)) {
-          this.navCtrl.setRoot('HomePage');
+          // this.navCtrl.setRoot('HomePage');
         } else {
           this.topics = response.TopicList;
         }

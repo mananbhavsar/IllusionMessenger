@@ -58,8 +58,6 @@ export class NotificationsProvider {
         ios_badgeType: 'SetTo',
         ios_badgeCount: badge,
       };
-      console.log(notificationObj);
-
       //checking if need to open page
       if (page) {
         notificationObj.data.page = page;
@@ -78,7 +76,7 @@ export class NotificationsProvider {
       if (this._platform.is('cordova')) {
         this._oneSignal.postNotification(notificationObj).then(response => {
           resolve(response);
-        }).catch(error => {
+        }).catch((error) => {
           reject(error);
         });
       } else {

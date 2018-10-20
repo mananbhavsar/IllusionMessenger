@@ -52,6 +52,11 @@ export class HomePage {
     selectedGroup: any = [];
     tabs = [
         {
+            name: 'Task due in days',
+            icon: 'stats',
+            key: 'stats',
+        },
+        {
             name: 'Assigned To Me',
             icon: 'star',
             key: 'Assigned_To_Me',
@@ -77,7 +82,7 @@ export class HomePage {
             key: 'Topic_Wise'
         }];
 
-    selectedTab: string = 'star';
+    selectedTab: string = 'stats';
     readOptions: boolean = false;
     selectedTopic: Array<any> = [];
     readAllSelected: boolean = true;
@@ -181,7 +186,6 @@ export class HomePage {
                     this.data = response;
                     this.dataFetched = true;
                     this.buttons.push({ icon: 'search', name: 'search' }, { icon: 'flash', name: 'flash' }, { icon: 'ios-options', name: 'sort' });
-                    console.log(this.buttons);
                     if (!_.isEmpty(this.data)) {
                         //flash
                         if (response.FlashNews) {
@@ -213,6 +217,7 @@ export class HomePage {
     }
 
     registerDevice(isPullDown) {
+        this.connectToServer('1234',false);
         //make device regsiter call
         //if internet
         if (this._network.type === 'none') {

@@ -32,7 +32,7 @@ export class RequestDetailPage {
       if(requestType === 'Approve') {
         this.isApproved = true;
       }
-      if(requestType === ''){
+      if(requestType === 'Reject'){
         this.isReject = true;
       }
       this.connection.doPost('Payroll/Set_ApprovedReject_Request_Payroll', { 

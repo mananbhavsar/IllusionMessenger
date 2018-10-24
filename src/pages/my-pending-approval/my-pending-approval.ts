@@ -103,6 +103,7 @@ export class MyPendingApprovalPage {
 
   refresh(refresher) {
     this.page = 0;
+    this.pendingData = [];
     this.getData().then((response) => {
       if (response) {
         refresher.complete();

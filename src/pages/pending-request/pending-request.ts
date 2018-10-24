@@ -106,6 +106,7 @@ export class PendingRequestPage {
 
   refresh(refresher) {
     this.page = 0;
+    this.pendingData = [];
     this.getData().then((response) => {
       if (response) {
         refresher.complete();

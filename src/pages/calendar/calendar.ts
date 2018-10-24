@@ -42,19 +42,22 @@ export class CalendarPage {
         CompanyID: this.connection.user.CompanyID,
         Month: month,
         Year: year
-      }).then((response: any) => {
+      },false).then((response: any) => {
         this.formattedDate = moment(this.date, 'YYYY/MM/DD');
         this.today = this.formattedDate.format('D');
         this.selectedMonth = this.formattedDate.format('MMM');
         this.selectedYear = this.formattedDate.format('YYYY');
         this.daysInThisMonth = response.Calendar;
          this.monthData = response.Month_Wise[0];
-         console.log(this.monthData);
          
         if(this.daysInThisMonth){
             this.daysInThisMonth.forEach(day => {
               if(moment().format('M/D/YYYY') === moment(day.Date).format('M/D/YYYY')){
                 this.eventList = day;
+                if(day.IsTechnician){
+                  day.TargetUnits = 'NA';
+                  day.CompletedUnits = 'NA';
+                }
                 this.todayDate = new Date().getDate();
                 this.todayMonth = new Date().getMonth() + 1;
               }

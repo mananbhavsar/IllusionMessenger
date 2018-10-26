@@ -6,6 +6,9 @@ page-calendar {
                 background : #561c1c;
             }
         }
+        &.header-md::after{
+        height: 0;
+        }
     }
     }
     ion-content{

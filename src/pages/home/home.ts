@@ -204,6 +204,7 @@ export class HomePage {
                     this.hideRefresher = true;
                     this.dataFetched = false;
                     this.message = response.MenuAccess[0].Message;
+                    this.hideRefresher = true;
                 }
             }).catch(error => {
                 this.page = -1;
@@ -558,7 +559,6 @@ export class HomePage {
             if (tab.icon === this.selectedTab) {
                 selectedName = tab.name;
                 if (selectedName === 'Groups' && this.reorder) {
-                    console.log(this.getUnreadCount());
                     this.hideRefresher = false;
                 } else {
                     this.hideRefresher = true;

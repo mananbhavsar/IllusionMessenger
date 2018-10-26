@@ -78,7 +78,11 @@ export class OTPage {
             this.event.publish('toast:create',response.Data.Message);
           }
           this.notifications.sends(response.OneSignalTransaction);          
-          this.overtTimeForm.reset();
+          this.overtTimeForm.setValue({
+            date : moment(moment().add(-1, 'days'), moment.ISO_8601).format(),
+            type : '',
+            remark : ''
+            });
           resolve(true);
         }
       }).catch((error) => {

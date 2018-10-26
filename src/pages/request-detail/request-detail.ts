@@ -50,7 +50,6 @@ export class RequestDetailPage {
         try{
         this.notifications.sends(response.OneSignalTransaction);   
         }catch(error){
-          console.log(error);
         }     
         this.viewCtrl.dismiss(response);
         resolve(true);

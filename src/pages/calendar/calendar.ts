@@ -54,7 +54,7 @@ export class CalendarPage {
             this.daysInThisMonth.forEach(day => {
               if(moment().format('M/D/YYYY') === moment(day.Date).format('M/D/YYYY')){
                 this.eventList = day;
-                if(day.IsTechnician){
+                if(!day.IsTechnician){
                   day.TargetUnits = 'NA';
                   day.CompletedUnits = 'NA';
                 }
@@ -110,7 +110,7 @@ export class CalendarPage {
     } else {
       this.isSelected = index;
       this.eventList = day;
-      if(day.IsTechnician){
+      if(!day.IsTechnician){
         day.TargetUnits = 'NA';
         day.CompletedUnits = 'NA';
       }

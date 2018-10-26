@@ -19,9 +19,6 @@ export class PendingRequestPage {
     public navParams: NavParams,
     public connection: ConnectionProvider,
     public modalCtrl : ModalController) {
-    }
-
-    ionViewWillEnter(){
       this.getData();
     }
 
@@ -36,6 +33,7 @@ export class PendingRequestPage {
       CompanyID : this.connection.user.CompanyID,
       // Query: this.query
       },false).then((response: any) => {
+        
         if (!_.isEmpty(response)) {
           response.PendingRequest.OT.forEach(item => {
             this.pendingData.push(item);
@@ -108,9 +106,7 @@ export class PendingRequestPage {
     this.page = 0;
     this.pendingData = [];
     this.getData().then((response) => {
-      if (response) {
         refresher.complete();
-      }
     }).catch((error) => {
       refresher.complete();
     })

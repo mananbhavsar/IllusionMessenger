@@ -34,7 +34,11 @@
       <ion-row *ngFor="let request of pendingData">
         <ion-col col-4>{{request.Date}} ({{request.RequestType}})</ion-col>
         <ion-col col-3>{{request.EmployeeName}}</ion-col>
-        <ion-col col-3>{{request.Status}}</ion-col>
+        <ion-col col-3 [ngClass]="{'pending' : request.Status === 'Pending', 'rejected' : request.Status === 'Rejected', 'approve' : request.Status === 'Approved'}">
+          <ion-icon [ngClass]="{'approve' : request.Status === 'Approved'}" *ngIf="request.Status === 'Approved'" name="md-checkmark-circle"></ion-icon>
+          <ion-icon [ngClass]="{'pending' : request.Status === 'Pending'}" *ngIf="request.Status === 'Pending'" name="md-clock"></ion-icon>
+          <ion-icon [ngClass]="{'rejected' : request.Status === 'Rejected'}" *ngIf="request.Status === 'Rejected'" name="md-close-circle"></ion-icon>
+          <span>{{request.Status}}</span></ion-col>
         <ion-col (click)="ViewDetail(request)" col-2>
           <ion-icon name="ios-eye"></ion-icon>
         </ion-col>

@@ -19,7 +19,7 @@ page-my-pending-approval {
                         font-size: 1.5em;
                         color: darkred;
                         &.pending{
-                            color: orangered;
+                            color: #e6b40c;
                             font-size: 15px;
                              }
                              &.rejected{
@@ -32,7 +32,7 @@ page-my-pending-approval {
                              }
                     }
                     &.pending{
-                   color: orangered;
+                   color: #e6b40c;
                     }
                     &.rejected{
                     color : red; 

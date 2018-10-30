@@ -149,8 +149,6 @@ export class MyApp {
     }
 
     openPage(page: PageInterface) {
-        console.log(page);
-        
         //not opening if same page
         if (page.name === Global.getActiveComponentName(this.nav.getActive())) {
             return true;
@@ -268,8 +266,6 @@ export class MyApp {
         this.events.subscribe('menu:created', (menu: any) => {
             setTimeout(() => {
                 this.loggedInPages = menu;
-                console.log(this.loggedInPages);
-                
             });
         });
 

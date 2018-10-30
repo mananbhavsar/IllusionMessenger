@@ -18,6 +18,27 @@ ion-content{
                 ion-icon{
                     font-size: 1.5em;
                     color: darkred;
+                    &.pending{
+                        color: #e6b40c;
+                        font-size: 15px;
+                         }
+                         &.rejected{
+                         color : red; 
+                         font-size: 15px;
+                         }
+                         &.approve{
+                             color : green;
+                             font-size: 15px;
+                         }
+                }
+                &.pending{
+               color: #e6b40c;
+                }
+                &.rejected{
+                color : red; 
+                }
+                &.approve{
+                    color : green;
                 }
             }
         }

@@ -50,7 +50,7 @@ export class FlashNewsProvider {
       if (this.wastheredataLastTime) {
         this.wastheredataLastTime = false;
         this.events.publish('page:setroot', {
-          page: 'TabsPage',
+          page: 'HomePage',
           params: null,
         });
       }

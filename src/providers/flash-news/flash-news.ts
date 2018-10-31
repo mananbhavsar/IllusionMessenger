@@ -26,7 +26,7 @@ export class FlashNewsProvider {
     this.groupID = groupID;
     this.flashID = FlashNews.FlashID;
     //check if this flash has opened
-    firebase.database().ref('FlashNews/' + this.flashID + '/' + this.user._user.LoginUserID).on('value', (status) => {
+    firebase.database().ref('FlashNews/' + this.flashID + '/' + this.user._user.LoginUserID).once('value', (status) => {
       if (status.val() === null) {
         if (!(this.flashID in this.flashNews)) {
           this.flashNews[this.flashID] = FlashNews;
@@ -50,7 +50,7 @@ export class FlashNewsProvider {
       if (this.wastheredataLastTime) {
         this.wastheredataLastTime = false;
         this.events.publish('page:setroot', {
-          page: 'TabsPage',
+          page: 'HomePage',
           params: null,
         });
       }

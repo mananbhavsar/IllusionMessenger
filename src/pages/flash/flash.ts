@@ -38,10 +38,6 @@ export class FlashPage {
     this.initData();
   }
 
-  ionViewWillEnter(){
-    this.initData();
-  }
-
   initData() {
     this.connection.doPost('Chat/GetFlashNews_Attachement', {
       GroupID: this.groupId,

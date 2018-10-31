@@ -1,10 +1,10 @@
 import { Component, ElementRef } from '@angular/core';
-import { IonicPage, NavController, Events, Platform, ViewController, NavParams } from 'ionic-angular';
-import { ConnectionProvider } from '../../providers/connection/connection';
-import { ImageViewerController } from 'ionic-img-viewer';
 import { UUID } from 'angular2-uuid';
-import { FlashNewsProvider } from '../../providers/flash-news/flash-news';
+import { Events, IonicPage, NavController, NavParams, Platform, ViewController } from 'ionic-angular';
+import { ImageViewerController } from 'ionic-img-viewer';
+import { ConnectionProvider } from '../../providers/connection/connection';
 import { FileOpsProvider } from '../../providers/file-ops/file-ops';
+import { FlashNewsProvider } from '../../providers/flash-news/flash-news';
 
 @IonicPage()
 @Component({

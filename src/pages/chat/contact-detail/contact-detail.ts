@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Contact, ContactField, ContactName, Contacts } from '@ionic-native/contacts';
-import { IonicPage, Events, NavController, NavParams, Platform, ViewController } from 'ionic-angular';
+import { Events, IonicPage, NavController, NavParams, Platform, ViewController } from 'ionic-angular';
 
 @IonicPage()
 @Component({

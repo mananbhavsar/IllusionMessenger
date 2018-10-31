@@ -1,6 +1,6 @@
-import { Component, EventEmitter, Output, Input } from '@angular/core';
-import { ModalController, Events } from 'ionic-angular';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Network } from '@ionic-native/network';
+import { Events, ModalController } from 'ionic-angular';
 
 @Component({
   selector: 'dashboard-detail',

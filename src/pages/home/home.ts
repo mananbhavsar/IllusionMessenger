@@ -205,10 +205,12 @@ export class HomePage {
                     this.dataFetched = false;
                     this.message = response.MenuAccess[0].Message;
                     this.hideRefresher = true;
+                    resolve(true);
                 }
             }).catch(error => {
                 this.page = -1;
                 this.flashNews = [];
+                reject(false);
             })
         });
     }

@@ -7,20 +7,20 @@ import { AttachmentComponent } from './attachment/attachment';
 import { CallFabComponent } from './call-fab/call-fab';
 import { CenterSpinnerComponent } from './center-spinner/center-spinner';
 import { ChatBubbleComponent } from './chat-bubble/chat-bubble';
+import { DashboardDetailComponent } from './dashboard-detail/dashboard-detail';
 import { EmptyComponent } from './empty/empty';
 import { FlashNewsComponent } from './flash-news/flash-news';
 import { HeaderComponent } from './header/header';
+import { InternetStatusComponent } from './internet-status/internet-status';
 import { LogoComponent } from "./logo/logo";
 import { ModalToolbarComponent } from './modal-toolbar/modal-toolbar';
 import { OrComponent } from "./or/or";
 import { ProgressBarComponent } from "./progress-bar/progress-bar";
+import { RatingComponent } from './rating/rating';
 import { ReachUsComponent } from './reach-us/reach-us';
 import { RefreshComponent } from './refresh/refresh';
 import { TitleComponent } from './title/title';
 import { TopicComponent } from './topic/topic';
-import { RatingComponent } from './rating/rating';
-import { InternetStatusComponent } from './internet-status/internet-status';
-import { DashboardDetailComponent } from './dashboard-detail/dashboard-detail';
 
 
 @NgModule({
@@ -40,8 +40,8 @@ import { DashboardDetailComponent } from './dashboard-detail/dashboard-detail';
         ModalToolbarComponent,
         AttachmentComponent,
         RatingComponent,
-    InternetStatusComponent,
-    DashboardDetailComponent
+        InternetStatusComponent,
+        DashboardDetailComponent
     ],
     imports: [
         MomentModule,
@@ -62,7 +62,7 @@ import { DashboardDetailComponent } from './dashboard-detail/dashboard-detail';
         IonicPageModule.forChild(ModalToolbarComponent),
         IonicPageModule.forChild(AttachmentComponent),
         IonicPageModule.forChild(RatingComponent),
-        IonicPageModule.forChild(DashboardDetailComponent),        
+        IonicPageModule.forChild(DashboardDetailComponent),
         PipesModule,
     ],
     exports: [
@@ -82,8 +82,8 @@ import { DashboardDetailComponent } from './dashboard-detail/dashboard-detail';
         ModalToolbarComponent,
         RatingComponent,
         AttachmentComponent,
-    InternetStatusComponent,
-    DashboardDetailComponent
+        InternetStatusComponent,
+        DashboardDetailComponent
     ]
 })
 export class ComponentsModule { }

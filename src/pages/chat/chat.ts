@@ -867,7 +867,6 @@ export class ChatPage {
         TopicCode: this.topicCode,
         GroupCode: this.groupCode,
       }).then((data: any) => {
-        console.log(data);
         resolve(data);
       }).catch((error) => {
         reject(false);

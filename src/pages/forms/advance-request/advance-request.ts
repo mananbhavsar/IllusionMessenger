@@ -7,6 +7,8 @@ import * as _ from 'underscore';
 import { DateProvider } from '../../../providers/date/date';
 import { Platform } from 'ionic-angular/platform/platform';
 import { NotificationsProvider } from '../../../providers/notifications/notifications';
+import { Network } from '@ionic-native/network';
+import { Storage } from '@ionic/storage';
 @IonicPage()
 @Component({
   selector: 'page-advance-request',
@@ -22,6 +24,9 @@ export class AdvanceRequestPage {
     public connection: ConnectionProvider,
     public event: Events,
     public platform : Platform,
+    public _network : Network,
+    public storage : Storage,
+    public events : Events,
     public notifications : NotificationsProvider,
     public date: DateProvider) {
     this.advanceRequestForm = this.formBuilder.group({
@@ -33,6 +38,10 @@ export class AdvanceRequestPage {
 
   submit() {
     return new Promise((resolve, reject) => {
+      if (this._network.type === 'none') {
+        this.events.publish('toast:create', 'You seems to be offline' + '!');
+        resolve(true);
+      } else {
       this.connection.doPost('Payroll/Set_AdvanceRequest_Payroll', {
         CompanyID : this.connection.user.CompanyID,
         Date: this.date.toUTCISOString(new Date(), false),
@@ -49,6 +58,7 @@ export class AdvanceRequestPage {
       }).catch((error) => {
         reject();
       });
+    }
     });
   }
 

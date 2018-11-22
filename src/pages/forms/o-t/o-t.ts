@@ -7,6 +7,7 @@ import { DateProvider } from '../../../providers/date/date';
 import * as _ from 'underscore';
 import { UserProvider } from '../../../providers/user/user';
 import { NotificationsProvider } from '../../../providers/notifications/notifications';
+import { Network } from '@ionic-native/network';
 
 @IonicPage()
 @Component({
@@ -18,16 +19,17 @@ export class OTPage {
   type: any;
   title: string = 'Over Time Form';
   utcString: any;
-  typeList:any = [];
-  validateDate : boolean = false;
+  typeList: any = [];
+  validateDate: boolean = false;
   constructor(public navCtrl: NavController,
     public formBuilder: FormBuilder,
     public navParams: NavParams,
     public connection: ConnectionProvider,
     public user: UserProvider,
     public date: DateProvider,
-    public notifications : NotificationsProvider,
-    public platform : Platform,
+    public notifications: NotificationsProvider,
+    public platform: Platform,
+    public _network : Network,
     public event: Events) {
     this.overtTimeForm = this.formBuilder.group({
       date: ['', Validators.required],
@@ -37,22 +39,27 @@ export class OTPage {
     this.getOverTypes();
     this.setTitle();
     this.overtTimeForm.setValue({
-    date : moment(moment().add(-1, 'days'), moment.ISO_8601).format(),
-    type : '',
-    remark : ''
+      date: moment(moment().add(-1, 'days'), moment.ISO_8601).format(),
+      type: '',
+      remark: ''
     });
   }
 
-  getOverTypes(){
-    return new Promise((resolve,reject) => {
-    this.connection.doPost('Payroll/Get_TypeOfOT_Payroll',{
-      CompanyID : this.connection.user.CompanyID
-    },false).then((response : any) => {
-     this.typeList = response.TypeOfOT;
-     resolve(true);
-    }).catch((error) => {
-     reject();
-    });
+  getOverTypes() {
+    return new Promise((resolve, reject) => {
+      if (this._network.type === 'none') {
+        this.event.publish('toast:create', 'You seems to be offline' + '!');
+        resolve(true);
+      } else {
+        this.connection.doPost('Payroll/Get_TypeOfOT_Payroll', {
+          CompanyID: this.connection.user.CompanyID
+        }, false).then((response: any) => {
+          this.typeList = response.TypeOfOT;
+          resolve(true);
+        }).catch((error) => {
+          reject();
+        });
+      }
     });
   }
 
@@ -63,32 +70,32 @@ export class OTPage {
   submit() {
     return new Promise((resolve, reject) => {
       if (moment(this.overtTimeForm.get('date').value).isSameOrAfter(moment().format('DD MMM YYYY'))) {
-        this.event.publish('toast:error', 'Selected date must be less than today');       
+        this.event.publish('toast:error', 'Selected date must be less than today');
       } else {
-      this.connection.doPost('Payroll/Set_OT_Payroll', {
-      CompanyID : this.connection.user.CompanyID,
-        Date: this.date.toUTCISOString(this.overtTimeForm.get('date').value,false),
-        TypeOfOTID: this.type,
-        Remark: this.overtTimeForm.get('remark').value,
-        IsWeb : this.platform.is('core'),
-              
-      }).then((response: any) => {
-        if (!_.isEmpty(response)) {
-          if(response.Data.Message){
-            this.event.publish('toast:create',response.Data.Message);
-          }
-          this.notifications.sends(response.OneSignalTransaction);          
-          this.overtTimeForm.setValue({
-            date : moment(moment().add(-1, 'days'), moment.ISO_8601).format(),
-            type : '',
-            remark : ''
+        this.connection.doPost('Payroll/Set_OT_Payroll', {
+          CompanyID: this.connection.user.CompanyID,
+          Date: this.date.toUTCISOString(this.overtTimeForm.get('date').value, false),
+          TypeOfOTID: this.type,
+          Remark: this.overtTimeForm.get('remark').value,
+          IsWeb: this.platform.is('core'),
+
+        }).then((response: any) => {
+          if (!_.isEmpty(response)) {
+            if (response.Data.Message) {
+              this.event.publish('toast:create', response.Data.Message);
+            }
+            this.notifications.sends(response.OneSignalTransaction);
+            this.overtTimeForm.setValue({
+              date: moment(moment().add(-1, 'days'), moment.ISO_8601).format(),
+              type: '',
+              remark: ''
             });
-          resolve(true);
-        }
-      }).catch((error) => {
-        reject();
-      });
-    }
+            resolve(true);
+          }
+        }).catch((error) => {
+          reject();
+        });
+      }
     });
   }
 

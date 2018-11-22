@@ -17,7 +17,7 @@
     </div>
     <ng-template #data_template>
         <flash-news [flashNews]="flashNews"></flash-news>
-        <ion-item-divider color="light">
+        <ion-item-divider color="light" *ngIf="hasInternet">
             <button button-mini [hidden]="(!getUnreadCount()) || (selectedTab === 'stats')" ion-button outline icon-right (click)="openReadOptions()">
                 <ng-container *ngIf="readOptions;else readAll">
                     Done

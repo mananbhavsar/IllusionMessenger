@@ -11,9 +11,9 @@ export class DashboardDetailComponent {
   @Input() dueDays: any = null;
 
   days = {
-    Today : {
-      label : 'Today',
-      value : 0
+    Today: {
+      label: 'Today',
+      value: 0
     },
     Day_1: {
       label: '1 Day',
@@ -22,16 +22,22 @@ export class DashboardDetailComponent {
     Day_2: {
       label: '2 Day',
       value: 2
-    }, Day_3: {
+    },
+    Day_3: {
       label: '3 Day',
       value: 3
-    }, Day_4Plus: {
+    },
+    Day_4Plus: {
       label: '4+ Day',
       value: 4
     },
-    Past_Day : {
-      label : 'Past Due Days',
-      value : -1
+    Past_Day: {
+      label: 'Past Due Days',
+      value: -1
+    },
+    archive: {
+      label: 'Archive',
+      value: -2
     }
   };
 
@@ -49,6 +55,8 @@ export class DashboardDetailComponent {
         this.event.publish('dashboard:close');
       });
       modal.present();
+    } else {
+      this.event.publish('toast:create','You seems to be offline');
     }
   }
 

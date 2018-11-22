@@ -3,6 +3,8 @@ import { IonicPage, NavController, NavParams, ModalController } from 'ionic-angu
 import { RequestDetailPage } from '../request-detail/request-detail';
 import { ConnectionProvider } from '../../providers/connection/connection';
 import  * as _ from 'underscore';
+import { Network } from '@ionic-native/network';
+import { Storage } from '@ionic/storage';
 
 @IonicPage()
 @Component({
@@ -18,6 +20,8 @@ export class MyPendingApprovalPage {
   myPendingUrl : string = 'Get_MyPendingAproval_Payroll';
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
+    public _network : Network,
+    public storage  :Storage,
     public connection: ConnectionProvider,
     public modalCtrl : ModalController) {
     }
@@ -28,6 +32,14 @@ export class MyPendingApprovalPage {
 
   getData() {
     return new Promise((resolve, reject) => {
+      if(this._network.type === 'none'){
+        this.storage.get('pendingrequest:offline').then((data : any) => {
+          if(data){
+           this.pendingData = data;
+           resolve(true);
+          }
+        }); 
+      } else {
       if (this.page === -1) {
         reject();
       } else {
@@ -53,6 +65,7 @@ export class MyPendingApprovalPage {
         reject();
       });
     }
+  }
     });
   }
 

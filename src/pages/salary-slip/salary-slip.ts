@@ -4,6 +4,8 @@ import * as _ from 'underscore';
 import { ConnectionProvider } from '../../providers/connection/connection';
 import { FileOpsProvider } from '../../providers/file-ops/file-ops';
 import { UUID } from 'angular2-uuid';
+import { Network } from '@ionic-native/network';
+import { Storage } from '@ionic/storage';
 
 @IonicPage()
 @Component({
@@ -17,9 +19,11 @@ export class SalarySlipPage {
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public connection: ConnectionProvider,
-    public platform : Platform,
-    public _fileOps : FileOpsProvider,
-    public events : Events) {
+    public platform: Platform,
+    public _network : Network,
+    public storage  :Storage,
+    public _fileOps: FileOpsProvider,
+    public events: Events) {
 
     this.getData();
   }
@@ -36,47 +40,57 @@ export class SalarySlipPage {
     return this.title;
   }
 
-  download(file){
-    if(!_.isEmpty(file)){
-    if (this.platform.is('core')) {
-      window.open(file, '_blank');
-    } else {
-      this._fileOps.getDataDirectory().then(path => {
-        let identifier = UUID.UUID();
-        let filePath = path + 'Salary Slips' + '/';
-        this._fileOps.openRemoteFile(file, filePath, identifier).then(status => {
-        }).catch(error => {
+  download(file) {
+    if (!_.isEmpty(file)) {
+      if (this.platform.is('core')) {
+        window.open(file, '_blank');
+      } else {
+        this._fileOps.getDataDirectory().then(path => {
+          let identifier = UUID.UUID();
+          let filePath = path + 'Salary Slips' + '/';
+          this._fileOps.openRemoteFile(file, filePath, identifier).then(status => {
+          }).catch(error => {
+          });
         });
-      });
-    }
+      }
     } else {
-    this.events.publish('toast:create','No file Found');
+      this.events.publish('toast:create', 'No file Found');
     }
   }
 
   getData() {
     return new Promise((resolve, reject) => {
-      if (this.page === -1) {
-        reject();
-      } else {
-      this.connection.doPost('Payroll/Get_SalarySlip_Payroll', {
-      CompanyID : this.connection.user.CompanyID,
-      PageNumber : this.page,
-      }).then((response: any) => {
-        if (!_.isEmpty(response)) {
-          this.salarySlipData = response.SalarySlip;
-          this.page++;
+      if (this._network.type === 'none') {
+        this.storage.get('salaryslips:offline').then((data: any) => {
+          if(data){
+          this.salarySlipData = data;
           resolve(true);
+          }
+        });
+      } else {
+        if (this.page === -1) {
+          reject();
         } else {
-          this.page = -1;
-          resolve(false);
+          this.connection.doPost('Payroll/Get_SalarySlip_Payroll', {
+            CompanyID: this.connection.user.CompanyID,
+            PageNumber: this.page,
+          }).then((response: any) => {
+            if (!_.isEmpty(response)) {
+              this.salarySlipData = response.SalarySlip;
+              this.storage.set('salaryslips',this.salarySlipData);
+              this.page++;
+              resolve(true);
+            } else {
+              this.page = -1;
+              resolve(false);
+            }
+          }).catch((error) => {
+            this.page = -1;
+            resolve(false);
+            reject();
+          });
         }
-      }).catch((error) => {
-        this.page = -1;
-        resolve(false);
-        reject();
-      });
-    }
+      }
     });
   }
 

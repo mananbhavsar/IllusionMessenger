@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
-import { IonicPage,ModalController, Events, ActionSheetController, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, ModalController, Events, ActionSheetController, NavController, NavParams } from 'ionic-angular';
 import { CreateUserPage } from '../create-user';
 import { ConnectionProvider } from '../../../providers/connection/connection';
+import { Network } from '@ionic-native/network';
+import { Storage } from '@ionic/storage';
 
 @IonicPage()
 @Component({
@@ -19,6 +21,8 @@ export class UsersPage {
     public modal: ModalController,
     public connection: ConnectionProvider,
     public events: Events,
+    public _network: Network,
+    public storage: Storage,
     public actionSheetCntl: ActionSheetController
   ) {
     this.getUsers();
@@ -26,28 +30,38 @@ export class UsersPage {
 
   getUsers() {
     return new Promise((resolve, reject) => {
-      if (this.page === -1) {
-        reject();
-      } else {
-        this.connection.doPost('Chat/GetUserList', {
-          Query: this.query,
-          PageNumber: this.page,
-          RowsPerPage: 20
-        },false).then((response: any) => {
-          if (response.UserList.length > 0) {
-            response.UserList.forEach(list => {
-              this.users.push(list);
-            });
-            this.page++;
+      if (this._network.type === 'none') {
+        this.storage.get('users:offline').then((data: any) => {
+          if (data) {
+            this.users = data;
             resolve(true);
-          } else {
-            this.page = -1;
-            resolve(false);
           }
-        }).catch((error) => {
-          this.page = -1;
-          reject();
         });
+      } else {
+        if (this.page === -1) {
+          reject();
+        } else {
+          this.connection.doPost('Chat/GetUserList', {
+            Query: this.query,
+            PageNumber: this.page,
+            RowsPerPage: 20
+          }, false).then((response: any) => {
+            if (response.UserList.length > 0) {
+              response.UserList.forEach(list => {
+                this.users.push(list);
+              });
+              this.storage.set('users:offline', this.users);
+              this.page++;
+              resolve(true);
+            } else {
+              this.page = -1;
+              resolve(false);
+            }
+          }).catch((error) => {
+            this.page = -1;
+            reject();
+          });
+        }
       }
     });
 
@@ -82,13 +96,13 @@ export class UsersPage {
       });
 
     } else {
-      this.users = [];      
+      this.users = [];
       this.query = null;
       this.initializeItems();
     }
   }
 
-  headerBtnClicked(event){
+  headerBtnClicked(event) {
     switch (event.name) {
       case 'search':
         this.SearchTag();
@@ -110,16 +124,23 @@ export class UsersPage {
   }
 
   addUser() {
-    let modal = this.modal.create(CreateUserPage);
-    modal.onDidDismiss((data) => {
-      if (data) {
-        this.getUsers();
-      }
-    });
-    modal.present();
+    if (this._network.type === 'none') {
+      this.events.publish('toast:create', 'You seems to be offline');
+    } else {
+      let modal = this.modal.create(CreateUserPage);
+      modal.onDidDismiss((data) => {
+        if (data) {
+          this.getUsers();
+        }
+      });
+      modal.present();
+    }
   }
 
-  updateUser(user) {  
+  updateUser(user) {
+    if (this._network.type === 'none') {
+      this.events.publish('toast:create', 'You seems to be offline');
+    } else {
     let modal = this.modal.create(CreateUserPage, user);
     modal.onDidDismiss((data) => {
       if (data) {
@@ -127,6 +148,7 @@ export class UsersPage {
       }
     });
     modal.present();
+  }
   }
 
   removeUser(user, index) {

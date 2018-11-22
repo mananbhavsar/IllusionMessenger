@@ -6,6 +6,7 @@ import { ConnectionProvider } from '../../../providers/connection/connection';
 import * as _ from 'underscore';
 import { DateProvider } from '../../../providers/date/date';
 import { NotificationsProvider } from '../../../providers/notifications/notifications';
+import { Network } from '@ionic-native/network';
 
 @IonicPage()
 @Component({
@@ -31,6 +32,7 @@ export class LeaveApplicationPage {
     public connection: ConnectionProvider,
     public date: DateProvider,
     public platform : Platform,
+    public _network : Network,
     public notifications : NotificationsProvider,
     public event: Events) {
     
@@ -60,6 +62,10 @@ export class LeaveApplicationPage {
 
   getLeaveAppformDetail(){
     return new Promise((resolve,reject) => {
+      if (this._network.type === 'none') {
+        this.event.publish('toast:create', 'You seems to be offline' + '!');
+        resolve(true);
+      } else {
       this.connection.doPost('Payroll/Get_LeaveApplication_Payroll',{
         CompanyID : this.connection.user.CompanyID,
       },false).then((response : any) => {
@@ -68,6 +74,7 @@ export class LeaveApplicationPage {
       }).catch((error) => {
        reject();
       });
+      }
       }); 
   }
 

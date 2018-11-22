@@ -4,6 +4,7 @@ import { OneSignal } from '@ionic-native/onesignal';
 import * as firebase from 'firebase';
 import { ActionSheetController, Events, IonicPage, ModalController, NavController, Platform, reorderArray } from 'ionic-angular';
 import * as _ from 'underscore';
+import { Storage } from '@ionic/storage';
 import { Global } from '../../app/global';
 import { ConnectionProvider } from '../../providers/connection/connection';
 import { FlashNewsProvider } from '../../providers/flash-news/flash-news';
@@ -44,6 +45,7 @@ export class HomePage {
      */
     deviceRegsiter: number = 0;
     page: number = 0;
+    hasInternet = true;    
     connectedTime: string = null;
     sort_by: string = '';
     sort_order: string = '';
@@ -97,6 +99,7 @@ export class HomePage {
         private _oneSignal: OneSignal,
         private platform: Platform,
         private _network: Network,
+        private storage: Storage,
         private _flashNews: FlashNewsProvider,
         private modalController: ModalController,
         private notifications: NotificationsProvider,
@@ -170,48 +173,67 @@ export class HomePage {
             if (!search) {
                 this.dataFetched = _.size(this.data) > 0;
             }
-            this.connection.doPost('Chat/GetTaskDetail', {
-                PageNumber: this.page,
-                RowsPerPage: 100,
-                Query: this.query,
-                OrderBy: this.sort_by,
-                Order: this.sort_order,
-            }, false).then((response: any) => {
-                //groups
-                if (!search) {
-                    this.registerDevice(isPullDown);
-                }
-                if (response.MenuAccess[0].HomePageAccess) {
-                    this.buttons = [];
-                    this.data = response;
-                    this.dataFetched = true;
-                    this.buttons.push({ icon: 'search', name: 'search' }, { icon: 'flash', name: 'flash' }, { icon: 'ios-options', name: 'sort' });
-                    if (!_.isEmpty(this.data)) {
-                        //flash
-                        if (response.FlashNews) {
-                            this.flashNews = response.FlashNews;
-                            this.flashNews.forEach((news, key) => {
-                                this.flashNewsProvider.openUnreadFlashNews(news);
-                            });
+            this.hasInternet = this._network.type !== 'none';
+            if (this._network.type === 'none') {
+                this.storage.get('GetTaskDetail:offline').then((data: any) => {
+                    if (data) {
+                        this.data = data;
+                        this.dataFetched = true;
+                        this.flashNews = data.FlashNews;
+                        if (!search) {
+                            this.registerDevice(isPullDown);
                         }
-                        this.page++;
                         resolve(true);
-                    } else {
-                        this.page = -1;
-                        resolve(false);
                     }
-                } else {
-                    this.hideRefresher = true;
-                    this.dataFetched = false;
-                    this.message = response.MenuAccess[0].Message;
-                    this.hideRefresher = true;
-                    resolve(true);
-                }
-            }).catch(error => {
-                this.page = -1;
-                this.flashNews = [];
-                reject(false);
-            })
+                }).catch(error => {
+                    reject(false);
+                });
+
+            } else {
+                this.connection.doPost('Chat/GetTaskDetail', {
+                    PageNumber: this.page,
+                    RowsPerPage: 100,
+                    Query: this.query,
+                    OrderBy: this.sort_by,
+                    Order: this.sort_order,
+                }, false).then((response: any) => {
+                    //groups
+                    if (!search) {
+                        this.registerDevice(isPullDown);
+                    }
+                    this.storage.set('GetTaskDetail:offline', response);
+                    if (response.MenuAccess[0].HomePageAccess) {
+                        this.buttons = [];
+                        this.data = response;
+                        this.dataFetched = true;
+                        this.buttons.push({ icon: 'search', name: 'search' }, { icon: 'flash', name: 'flash' }, { icon: 'ios-options', name: 'sort' });
+                        if (!_.isEmpty(this.data)) {
+                            //flash
+                            if (response.FlashNews) {
+                                this.flashNews = response.FlashNews;
+                                this.flashNews.forEach((news, key) => {
+                                    this.flashNewsProvider.openUnreadFlashNews(news);
+                                });
+                            }
+                            this.page++;
+                            resolve(true);
+                        } else {
+                            this.page = -1;
+                            resolve(false);
+                        }
+                    } else {
+                        this.hideRefresher = true;
+                        this.dataFetched = false;
+                        this.message = response.MenuAccess[0].Message;
+                        this.hideRefresher = true;
+                        resolve(true);
+                    }
+                }).catch(error => {
+                    this.page = -1;
+                    this.flashNews = [];
+                    reject(false);
+                })
+            }
         });
     }
 
@@ -222,8 +244,14 @@ export class HomePage {
     registerDevice(isPullDown) {
         //make device regsiter call
         //if internet
+        this.connectToServer('1234',true);
         if (this._network.type === 'none') {
-            this.deviceRegsiter = 0;
+            this.storage.get('lastActivityTime:offline').then((data: any) => {
+                if (data) {
+                    this.deviceRegsiter = 2;
+                    this.connectedTime = data;
+                }
+            });
         } else if (this.platform.is('core')) {
             if (this.connection.getPushID()) {
                 this.deviceRegsiter = 1;
@@ -263,7 +291,8 @@ export class HomePage {
         this.user.registerPushID(pushID, isPullDown).then((response: any) => {
             if (response.Data && response.Data.LastActivity) {
                 this.deviceRegsiter = 2; //connected
-                this.connectedTime = response.Data.LastActivity; //this will be utc
+                this.connectedTime = response.Data.LastActivity;
+                this.storage.set('lastActivityTime:offline', response.Data.LastActivity); //this will be utc
             } else {
                 this.deviceRegsiter = 0;
             }
@@ -520,6 +549,9 @@ export class HomePage {
 
 
     addFlash() {
+        if (this._network.type === 'none') {
+            this.events.publish('toast:create', 'You seems to be offline');
+          } else {
         let flashModal = this.modalController.create(AddFlashPage, {
             group_id: 0,
             group_name: null,
@@ -541,6 +573,7 @@ export class HomePage {
             }
         });
         flashModal.present();
+    }
     }
 
     isGroupSelected() {

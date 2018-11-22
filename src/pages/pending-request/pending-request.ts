@@ -3,6 +3,8 @@ import { IonicPage, NavController, NavParams, ModalController } from 'ionic-angu
 import { ConnectionProvider } from '../../providers/connection/connection';
 import * as _ from 'underscore';
 import { RequestDetailPage } from '../request-detail/request-detail';
+import { Network } from '@ionic-native/network';
+import { Storage } from '@ionic/storage';
 @IonicPage()
 @Component({
   selector: 'page-pending-request',
@@ -17,6 +19,8 @@ export class PendingRequestPage {
   pendingUrl : string = 'Get_PendingRequest_Payroll';
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
+    public _network : Network,
+    public storage  :Storage,
     public connection: ConnectionProvider,
     public modalCtrl : ModalController) {
       this.getData();
@@ -24,6 +28,14 @@ export class PendingRequestPage {
 
   getData() {
     return new Promise((resolve, reject) => {
+      if(this._network.type === 'none'){
+        this.storage.get('pendingrequest:offline').then((data : any) => {
+            if(data){
+           this.pendingData = data;
+           resolve(true);
+            }
+        }); 
+      } else {
       if (this.page === -1) {
         reject();
       } else {
@@ -41,6 +53,7 @@ export class PendingRequestPage {
           response.PendingRequest.LA.forEach(item => {
             this.pendingData.push(item);
           });
+          this.storage.set('pendingrequest:offline',this.pendingData);
           this.page++;
           resolve(true);
         } else {
@@ -53,6 +66,7 @@ export class PendingRequestPage {
         reject();
       });
     }
+  }
     });
   }
   

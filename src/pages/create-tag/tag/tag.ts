@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
-import { IonicPage, Events,ActionSheetController, ModalController, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, Events, ActionSheetController, ModalController, NavController, NavParams } from 'ionic-angular';
 import { ConnectionProvider } from '../../../providers/connection/connection';
 import { CreateTagPage } from '../create-tag';
+import { Network } from '@ionic-native/network';
+import { Storage } from '@ionic/storage';
 
 @IonicPage()
 @Component({
@@ -19,37 +21,49 @@ export class TagPage {
     public connection: ConnectionProvider,
     public modalCntl: ModalController,
     public events: Events,
-  public actionSheetCntl : ActionSheetController ) {
+    public _network: Network,
+    public storage: Storage,
+    public actionSheetCntl: ActionSheetController) {
     this.getTags();
   }
 
 
   getTags() {
     return new Promise((resolve, reject) => {
-      if (this.page === -1) {
-        reject();
-      } else {
-        this.connection.doPost('Chat/GetTagList', {
-          Query: this.query,
-          PageNumber: this.page,
-          RowsPerPage: 20
-        },false).then((response: any) => {   
-          if (response.TagList.length > 0) {
-            response.TagList.forEach(list => {
-              this.tags.push(list);
-            });            
-            this.page++;
+      if (this._network.type === 'none') {
+        this.storage.get('tags:offline').then((data: any) => {
+          if (data) {
+            this.tags = data;
             resolve(true);
-          } else {    
-            this.page = -1;
-            resolve(false);
           }
-        }).catch((error) => {
-          this.searchInputBtn = true;                      
-          this.page = -1;
-          this.events.publish('toast:create', error);
-          reject();
         });
+      } else {
+        if (this.page === -1) {
+          reject();
+        } else {
+          this.connection.doPost('Chat/GetTagList', {
+            Query: this.query,
+            PageNumber: this.page,
+            RowsPerPage: 20
+          }, false).then((response: any) => {
+            if (response.TagList.length > 0) {
+              response.TagList.forEach(list => {
+                this.tags.push(list);
+              });
+              this.storage.set('tags:offline', this.tags);
+              this.page++;
+              resolve(true);
+            } else {
+              this.page = -1;
+              resolve(false);
+            }
+          }).catch((error) => {
+            this.searchInputBtn = true;
+            this.page = -1;
+            this.events.publish('toast:create', error);
+            reject();
+          });
+        }
       }
     });
   }
@@ -66,7 +80,7 @@ export class TagPage {
   }
 
   onClear(event) {
-    this.query = null;    
+    this.query = null;
     this.initializeItems();
   }
 
@@ -78,10 +92,10 @@ export class TagPage {
       // if the value is an empty string don't filter the items
       this.query = val;
       this.page = 0;
-      this.tags = [];       
+      this.tags = [];
       this.getTags().catch(error => {
-      });       
-                
+      });
+
     } else {
       this.tags = [];
       this.query = null;
@@ -107,7 +121,7 @@ export class TagPage {
     });
   }
 
-  
+
   actionSheetOpen(tag, index) {
     let actionSheet = this.actionSheetCntl.create({
       title: 'Do You Want to Remove Tag',
@@ -164,23 +178,31 @@ export class TagPage {
   }
 
   updateTag(tag) {
-    let modal = this.modalCntl.create(CreateTagPage, tag);
-    modal.onDidDismiss((data) => {
-      if (data) {
-        this.getTags();
-      }
-    });
-    modal.present();
+    if (this._network.type === 'none') {
+      this.events.publish('toast:create', 'You seems to be offline');
+    } else {
+      let modal = this.modalCntl.create(CreateTagPage, tag);
+      modal.onDidDismiss((data) => {
+        if (data) {
+          this.getTags();
+        }
+      });
+      modal.present();
+    }
   }
 
   addTag() {
-    let modal = this.modalCntl.create(CreateTagPage);
-    modal.onDidDismiss((data) => {
-      if (data) {
-        this.getTags();
-      }
-    });
-    modal.present();
+    if (this._network.type === 'none') {
+      this.events.publish('toast:create', 'You seems to be offline');
+    } else {
+      let modal = this.modalCntl.create(CreateTagPage);
+      modal.onDidDismiss((data) => {
+        if (data) {
+          this.getTags();
+        }
+      });
+      modal.present();
+    }
   }
 
   refresh(refresher) {

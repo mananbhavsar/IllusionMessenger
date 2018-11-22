@@ -175,7 +175,15 @@ export class MyApp {
                 this.nav.setRoot(page.name, params);
         } else {
             // Set the root of the nav with params if it's a tab index
-            this.nav.push(page.name, params);
+            if(page.name === 'OTPage' || page.name === 'LeaveApplicationPage' || page.name === 'AdvanceRequestPage'){
+                if(this._network.type === 'none'){
+                    this.events.publish('toast:create',this.offline_translate);
+                } else {
+                    this.nav.push(page.name, params);
+                }
+            } else {
+                this.nav.push(page.name, params);
+            }
         }
         if (page.logsOut === true) {
             // Give the menu time to close before changing to logged out
@@ -263,11 +271,22 @@ export class MyApp {
 
     listenToGobalEvents() {
         this.doTranslate();
-        this.events.subscribe('menu:created', (menu: any) => {
-            setTimeout(() => {
-                this.loggedInPages = menu;
+
+        if (this._network.type === 'none') {
+            this.storage.get('menulist:offline').then((data: any) => {
+              if(data){
+                setTimeout(() => {
+                    this.loggedInPages = data;
+                });
+              }
             });
-        });
+          } else {
+            this.events.subscribe('menu:created', (menu: any) => {
+                setTimeout(() => {
+                    this.loggedInPages = menu;
+                });
+            });
+          }
 
         this.events.subscribe('loading:create', (content) => {
             content = content || this.loading_translate;

@@ -58,6 +58,7 @@ export class ChatPage {
   subSubTitle: string;
   users: any = [];
   hideWhenReply: boolean = false;
+  userList: any = [];
 
   title: string = 'loading';
   isIOS: boolean = false;
@@ -862,8 +863,11 @@ export class ChatPage {
       this.connection.doPost('Chat/InsertChat_Attachement_Base64', {
         FileName: fileName,
         FileExtension: fileExtension,
-        Base64String: Base64String
+        Base64String: Base64String,
+        TopicCode: this.topicCode,
+        GroupCode: this.groupCode,
       }).then((data: any) => {
+        console.log(data);
         resolve(data);
       }).catch((error) => {
         reject(false);
@@ -1084,16 +1088,22 @@ export class ChatPage {
   }
 
   getChildElement(element, className) {
+    let selectedmessage: any;
     switch (className) {
       case '.text':
-        return element.target.parentElement.querySelector('.text');
+        selectedmessage = element.target.parentElement.querySelector('.text');
+        break;
       case '.audio':
-        return element.target.parentElement.querySelector('.audio');
+        selectedmessage = element.target.parentElement.querySelector('.audio');
+        break;
       case '.video':
-        return element.target.parentElement.querySelector('.video');
+        selectedmessage = element.target.parentElement.querySelector('.video');
+        break;
       case '.picture':
-        return element.target.parentElement.querySelector('.picture');
+        selectedmessage = element.target.parentElement.querySelector('.picture');
+        break;
     }
+    return selectedmessage;
   }
 
 
@@ -1109,16 +1119,16 @@ export class ChatPage {
         selectedElement.classList.toggle("selected");
         if (this.getChildElement(element, '.text')) {
           this.selectedMessageElement = this.getChildElement(element, '.text');
-        }
-        if (this.getChildElement(element, '.video')) {
-          this.selectedMessageElement = this.getChildElement(element, '.video');
-        }
-        if (this.getChildElement(element, '.picture')) {
-          this.selectedMessageElement = this.getChildElement(element, '.picture');
-        }
-        if (this.getChildElement(element, '.audio')) {
-          this.selectedMessageElement = this.getChildElement(element, '.audio');
-        }
+        } else
+          if (this.getChildElement(element, '.video')) {
+            this.selectedMessageElement = this.getChildElement(element, '.video');
+          } else
+            if (this.getChildElement(element, '.picture')) {
+              this.selectedMessageElement = this.getChildElement(element, '.picture');
+            } else
+              if (this.getChildElement(element, '.audio')) {
+                this.selectedMessageElement = this.getChildElement(element, '.audio');
+              }
         if (!this.selectedMessageElement) {
           selectedElement.classList.remove("selected");
           this.messageKey = null;
@@ -1154,6 +1164,11 @@ export class ChatPage {
             this.common.hasClass(this.selectedMessageElement, 'audio') ||
             this.common.hasClass(this.selectedMessageElement, 'picture')) {
             this.headerButtons.push(
+              // {
+              //   icon: 'ios-undo',
+              //   name: 'ios-undo',
+              //   value: this.selectedMessageElement
+              // },
               {
                 icon: 'ios-redo',
                 name: 'ios-redo',
@@ -1193,7 +1208,6 @@ export class ChatPage {
     this.removeHeaderButtons();
   }
   checkMessageType(type) {
-
     //identify message type
     switch (type) {
       case 'text':
@@ -1267,6 +1281,19 @@ export class ChatPage {
       if (this.common.hasClass(element, 'text')) {
         this.replytoText = this.checkMessageType('text');
       }
+      if (this.common.hasClass(element, 'picture') || this.common.hasClass(element, 'audio') || this.common.hasClass(element, 'video')) {
+        // this.replyTo = this.checkMessageType('picture') || this.checkMessageType('audio') || this.checkMessageType('video');
+        if (this.common.hasClass(this.selectedMessageElement, 'picture')) {
+          this.replytoImg = this.checkMessageType('picture');
+        }
+        if (this.common.hasClass(this.selectedMessageElement, 'video')) {
+          this.replytoImg = this.checkMessageType('video');
+        }
+        if (this.common.hasClass(this.selectedMessageElement, 'audio')) {
+          this.replytoImg = this.checkMessageType('audio');
+        }
+      }
+
       this.hideWhenReply = true;
     }
   }
@@ -1315,9 +1342,26 @@ export class ChatPage {
           return;
       }
     }
-
-    if (this.message[this.message.length - 1] === '@') {
-      this.showUsers = true;
+    if (this.message.trim().length > 0) {
+      if (this.message[this.message.length - 1]) {
+        this.showUsers = true;
+        if (this.message && this.message.lastIndexOf('@') > -1 && this.message.charAt(this.message.lastIndexOf('@')) === '@') {
+          this.userList = this.users;
+          if (this.message.charAt(this.message.lastIndexOf('@') + 1) !== ' ' && this.message.lastIndexOf('@') + 1 !== this.message.lastIndexOf('')) {
+            this.userList = this.users.filter((item) => {
+              if (this.message[this.message.length - 1] === ' ') {
+                return false;
+              }
+              return (item.User.toLowerCase().includes(this.message.substring(this.message.lastIndexOf('@') + 1).toLowerCase()));
+            })
+          }
+        } else {
+          this.showUsers = false;
+        }
+        if (this.message.lastIndexOf('@') === -1 || this.message.trim().length === 0 || this.message.charAt(this.message.lastIndexOf('@') + 1) === ' ' && this.message.indexOf(' ') > -1) {
+          this.showUsers = false;
+        }
+      }
     } else {
       this.showUsers = false;
     }
@@ -1326,7 +1370,7 @@ export class ChatPage {
   }
 
   selectedUser(user) {
-    this.message = this.message + user.User;
+    this.message = this.message.substring(0, this.message.lastIndexOf('@') + 1) + user.User;
     this.showUsers = false;
 
   }
@@ -1574,10 +1618,10 @@ export class ChatPage {
         this.progressPercent = 0;
         const fileTransfer: FileTransferObject = this.transfer.create();
         let options = this.setFileOptions(file);
-        
+
         fileTransfer.upload(file, this.connection.URL + 'Chat/InsertChat_Attachement', options)
           .then((data) => {
-            
+
             this.progressPercent = 0;
             //getting URL from XML
             if (data.response.indexOf('http') === -1) {
@@ -1813,7 +1857,9 @@ export class ChatPage {
       };
 
       this.connection.doPost('Chat/UpdateChatStatus', params, false).then((response: any) => {
-        this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { })
+        this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => {
+
+        }).catch(error => { })
       }).catch(error => {
       });
     }

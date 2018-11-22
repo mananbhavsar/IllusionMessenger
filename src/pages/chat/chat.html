@@ -44,9 +44,7 @@
         <ion-icon name="ios-add-outline"></ion-icon>
       </button>
       <div *ngIf="isBrowser && !hideWhenReply" style="display: flex;">
-        <button ion-button clear icon-only>
-          <ion-icon name="images"></ion-icon>
-        </button>
+          <ion-icon  color="danger" class="upload-btn" name="images"></ion-icon>
         <input type="file" name="file" id="file" class="inputfile" accept="image/*" (change)="handleImageFiles($event)" />
       </div>
 
@@ -106,20 +104,21 @@
     </ng-container>
   </ng-template>
 </ion-footer>
-
 <div class="fixed-outside" *ngIf="showUsers">
+  <ion-card>
   <ion-list class="user-list">
-    <ion-item [ngClass]="{'active' : i == arrowKey}" (click)="selectedUser(user)" *ngFor="let user of users; let i = index">
+    <ion-item [ngClass]="{'active' : i == arrowKey}" (click)="selectedUser(user)" *ngFor="let user of userList; let i = index">
       {{user.User}}
     </ion-item>
   </ion-list>
+</ion-card>
 </div>
 
 <div class="reply-to" *ngIf="replyTo">
   <ion-row>
-    <!-- <ion-col *ngIf="replytoImg">
+    <ion-col *ngIf="replytoImg">
       <img class="reply-img" [src]="replytoImg" alt="">
-    </ion-col> -->
+    </ion-col>
     <ion-col *ngIf="replytoText" col-11>
       {{replytoText}}
     </ion-col>

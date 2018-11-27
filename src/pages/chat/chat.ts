@@ -56,7 +56,7 @@ export class ChatPage {
   groupCode: string = null;
   group_name: string = 'loading';
   subSubTitle: string;
-  users: any = [];
+  users: any = [{User : 'a'}, {User : 'b', },{User : 'c', },{User : 'd', },{User : 'e', }];
   hideWhenReply: boolean = false;
   userList: any = [];
 

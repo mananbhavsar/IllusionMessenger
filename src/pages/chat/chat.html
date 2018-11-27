@@ -12,15 +12,16 @@
   <div class="message-list">
     <div id="noMore" class="no-more" *ngIf="showNoMoreMessages">
       <span *ngIf="hasInternet || data.firstMessageKey === firstMessageKey">{{'Common._NothingToShow_' | translate}}</span>
-      <span *ngIf="hasInternet === false && data.firstMessageKey !== firstMessageKey">{{'ChatScreen._OfflineOldMessage_' | translate}}</span>
+      <span *ngIf="hasInternet === false && data.firstMessageKey !== firstMessageKey">{{'ChatScreen._OfflineOldMessage_'
+        | translate}}</span>
     </div>
     <ion-infinite-scroll *ngIf="messagesLoaded" [hidden]="showNoMoreMessages" (ionInfinite)="paginate($event)" position="top">
       <ion-infinite-scroll-content></ion-infinite-scroll-content>
     </ion-infinite-scroll>
     <ng-container *ngFor="let message of messages;trackBy:getTrackByField | orderBy:'CreateAt'">
-      <chat-bubble (tap)="deselectOptions($event)" (press)="getOptions($event,message)" [id]="'message-'+message.key" class="message-wrapper" [message]="message"
-        [userID]="userID" [topicID]="topicID" [topicCode]="topicCode" [groupID]="groupID"
-        [groupCode]="groupCode" [users]="chatUsers" [myLanguage]="myLanguage" [responsibleUserID]="responsibleUserID">
+      <chat-bubble (tap)="deselectOptions($event)" (press)="getOptions($event,message)" [id]="'message-'+message.key"
+        class="message-wrapper" [message]="message" [userID]="userID" [topicID]="topicID" [topicCode]="topicCode"
+        [groupID]="groupID" [groupCode]="groupCode" [users]="chatUsers" [myLanguage]="myLanguage" [responsibleUserID]="responsibleUserID">
       </chat-bubble>
     </ng-container>
     <!--   -->
@@ -39,40 +40,49 @@
     Cannot send messages on Closed Topic
   </ng-container>
   <ng-template #chatOpened>
+
     <ng-container *ngIf="hasInternet && messagesLoaded && aboutToRecord === false">
-      <button *ngIf="!isBrowser && !hideWhenReply" ion-button clear icon-only (click)="openUploadOptions()">
-        <ion-icon name="ios-add-outline"></ion-icon>
-      </button>
-      <div *ngIf="isBrowser && !hideWhenReply" style="display: flex;">
-          <ion-icon  color="danger" class="upload-btn" name="images"></ion-icon>
-        <input type="file" name="file" id="file" class="inputfile" accept="image/*" (change)="handleImageFiles($event)" />
+      <div class="fixed-outside" *ngIf="showUsers">
+        <ion-list class="user-list">
+          <ion-item [ngClass]="{'active' : i == arrowKey}" (click)="selectedUser(user)" *ngFor="let user of userList; let i = index">
+            {{user.User}}
+          </ion-item>
+        </ion-list>
       </div>
-
-      <label class="item-input-wrapper" [ngClass]="{'send': message.trim().length > 0}">
-        <!-- fz-elastic -->
-        <textarea autocomplete="on" autocorrect="on" fz-elastic rows="1" #messageInput [(ngModel)]="message" dir="auto" (keyup)="keyup($event)"
-          (keypress)="keyboardKey($event)" (focus)="onFocus($event)" (blur)="onBlur($event)"></textarea>
-      </label>
-
-      <span *ngIf="message.trim().length > 0">
-        <button (click)="sendTextMessage($event)" class="send-button" round ion-button small>
-          {{'ChatScreen._Send_' | translate}}
+      <div>
+        <button *ngIf="!isBrowser && !hideWhenReply" ion-button clear icon-only (click)="openUploadOptions()">
+          <ion-icon name="ios-add-outline"></ion-icon>
         </button>
-      </span>
-      <span *ngIf="!isBrowser && !hideWhenReply">
-        <span *ngIf="!message || message.trim().length === 0">
-          <button (click)="captureImage()" clear ion-button icon-only>
-            <ion-icon name="ios-camera-outline"></ion-icon>
-          </button>
-          <button class="buttons-seperator" ion-button clear icon-only>
-            <ion-icon name="md-more"></ion-icon>
-          </button>
-          <button (click)="captureAudio()" ion-button clear icon-only>
-            <ion-icon name="ios-mic-outline"></ion-icon>
+        <div *ngIf="isBrowser && !hideWhenReply" style="display: flex;">
+          <ion-icon color="danger" class="upload-btn" name="images"></ion-icon>
+          <input type="file" name="file" id="file" class="inputfile" accept="image/*" (change)="handleImageFiles($event)" />
+        </div>
+
+        <label class="item-input-wrapper" [ngClass]="{'send': message.trim().length > 0}">
+          <!-- fz-elastic -->
+          <textarea autocomplete="on" autocorrect="on" fz-elastic rows="1" #messageInput [(ngModel)]="message" dir="auto"
+            (keyup)="keyup($event)" (keypress)="keyboardKey($event)" (focus)="onFocus($event)" (blur)="onBlur($event)"></textarea>
+        </label>
+
+        <span *ngIf="message.trim().length > 0">
+          <button (click)="sendTextMessage($event)" class="send-button" round ion-button small>
+            {{'ChatScreen._Send_' | translate}}
           </button>
         </span>
-      </span>
-
+        <span *ngIf="!isBrowser && !hideWhenReply">
+          <span *ngIf="!message || message.trim().length === 0">
+            <button (click)="captureImage()" clear ion-button icon-only>
+              <ion-icon name="ios-camera-outline"></ion-icon>
+            </button>
+            <button class="buttons-seperator" ion-button clear icon-only>
+              <ion-icon name="md-more"></ion-icon>
+            </button>
+            <button (click)="captureAudio()" ion-button clear icon-only>
+              <ion-icon name="ios-mic-outline"></ion-icon>
+            </button>
+          </span>
+        </span>
+      </div>
     </ng-container>
     <ng-container *ngIf="hasInternet && aboutToRecord === true">
       <ion-grid no-padding class="recording">
@@ -104,15 +114,7 @@
     </ng-container>
   </ng-template>
 </ion-footer>
-<div class="fixed-outside" *ngIf="showUsers">
-  <ion-card>
-  <ion-list class="user-list">
-    <ion-item [ngClass]="{'active' : i == arrowKey}" (click)="selectedUser(user)" *ngFor="let user of userList; let i = index">
-      {{user.User}}
-    </ion-item>
-  </ion-list>
-</ion-card>
-</div>
+
 
 <div class="reply-to" *ngIf="replyTo">
   <ion-row>

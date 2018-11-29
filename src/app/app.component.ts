@@ -12,23 +12,18 @@ import { AlertController, Events, LoadingController, MenuController, ModalContro
 import * as moment from "moment";
 import * as _ from 'underscore';
 import { AccountPage } from '../pages/account/account';
-import { TabsPage } from '../pages/tabs/tabs';
 import { ChatPage } from '../pages/chat/chat';
-import { TagPage } from '../pages/create-tag/tag/tag';
-import { UsersPage } from '../pages/create-user/users/users';
 import { ForgotPasswordPage } from '../pages/forgot-password/forgot-password';
 import { HelpPage } from '../pages/help/help';
 import { HomePage } from '../pages/home/home';
 import { LoginPage } from '../pages/login/login';
 import { LogoutPage } from '../pages/logout/logout';
-import { ManageGroupPage } from '../pages/manage-group/manage-group';
 import { TutorialPage } from '../pages/tutorial/tutorial';
 import { WelcomePage } from '../pages/welcome/welcome';
 import { TranslateServiceProvider } from '../providers/translate-service/translate-service';
 import { UserProvider } from '../providers/user/user';
 import { GroupPage } from './../pages/group/group';
 import { Global } from './global';
-import { FormsPage } from '../pages/forms/forms';
 import { DailyShedulePage } from '../pages/topic/daily-shedule/daily-shedule';
 
 export const firebaseConfig = {
@@ -270,8 +265,9 @@ export class MyApp {
     }
 
     listenToGobalEvents() {
+        if(!this.platform.is('core')){
         this.doTranslate();
-
+        }
         if (this._network.type === 'none') {
             this.storage.get('menulist:offline').then((data: any) => {
               if(data){

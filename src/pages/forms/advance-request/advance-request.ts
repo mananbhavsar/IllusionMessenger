@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, Events } from 'ionic-angular';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { ConnectionProvider } from '../../../providers/connection/connection';
-import moment from 'moment';
 import * as _ from 'underscore';
 import { DateProvider } from '../../../providers/date/date';
 import { Platform } from 'ionic-angular/platform/platform';

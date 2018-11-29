@@ -19,6 +19,7 @@ import { FirebaseTransactionProvider } from './../../providers/firebase-transact
 import { NotificationsProvider } from './../../providers/notifications/notifications';
 import { AddFlashPage } from './../group/add-flash/add-flash';
 import { CreateTopicPage } from './../topic/create-topic/create-topic';
+import { OfflineStorageProvider } from '../../providers/offline-storage/offline-storage';
 
 @IonicPage()
 @Component({
@@ -100,7 +101,7 @@ export class HomePage {
         private platform: Platform,
         private _network: Network,
         private storage: Storage,
-        private _flashNews: FlashNewsProvider,
+        public _offlineStorage : OfflineStorageProvider,
         private modalController: ModalController,
         private notifications: NotificationsProvider,
         private _firebaseTransaction: FirebaseTransactionProvider,
@@ -184,6 +185,8 @@ export class HomePage {
                             this.registerDevice(isPullDown);
                         }
                         resolve(true);
+                    } else {
+                        reject();
                     }
                 }).catch(error => {
                     reject(false);
@@ -202,6 +205,8 @@ export class HomePage {
                         this.registerDevice(isPullDown);
                     }
                     this.storage.set('GetTaskDetail:offline', response);
+                    this._offlineStorage.set('offline:Groups-Wise',response.Groups_Wise);
+                    this._offlineStorage.set('offline:due-topics',response.TaskDueInDays);
                     if (response.MenuAccess[0].HomePageAccess) {
                         this.buttons = [];
                         this.data = response;
@@ -236,6 +241,8 @@ export class HomePage {
             }
         });
     }
+    
+ 
 
     isEmpty(object) {
         return _.isEmpty(object);
@@ -689,6 +696,9 @@ export class HomePage {
     }
 
     openSortOptions() {
+        if(this._network.type === 'none'){
+            this.events.publish('toast:create', 'You seems to be offline'); 
+        } else {
         //creating buttons
         let buttons = [];
         let sortingOptions = {
@@ -727,6 +737,7 @@ export class HomePage {
             buttons: buttons
         });
         sortActionSheet.present();
+    }
     }
 
     doSorting() {

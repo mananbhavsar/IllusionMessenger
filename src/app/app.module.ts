@@ -100,6 +100,7 @@ import { UserAutoCompleteService } from './../pages/topic/create-topic/user-auto
 import { MyApp } from './app.component';
 import { GroupsPageModule } from '../pages/groups/groups.module';
 import { OTPageModule } from '../pages/forms/o-t/o-t.module';
+import { OfflineStorageProvider } from '../providers/offline-storage/offline-storage';
 
 @NgModule({
     declarations: [
@@ -210,6 +211,7 @@ import { OTPageModule } from '../pages/forms/o-t/o-t.module';
         StreamingMedia,
         VideoEditor,
         UniqueDeviceID,
+        OfflineStorageProvider,
         PhotoLibrary,
         Globalization,
         CommonProvider,
@@ -224,6 +226,7 @@ import { OTPageModule } from '../pages/forms/o-t/o-t.module';
         FlashNewsProvider,
         TranslateServiceProvider,
         ReadMessageProvider,
+    OfflineStorageProvider,
 
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]

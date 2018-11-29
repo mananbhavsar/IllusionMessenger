@@ -5,6 +5,8 @@ import { ConnectionProvider } from './../../../providers/connection/connection';
 import { FirebaseTransactionProvider } from './../../../providers/firebase-transaction/firebase-transaction';
 import { NotificationsProvider } from './../../../providers/notifications/notifications';
 import { CreateTopicPage } from './../../topic/create-topic/create-topic';
+import { OfflineStorageProvider } from '../../../providers/offline-storage/offline-storage';
+import { Network } from '@ionic-native/network';
 
 @IonicPage()
 @Component({
@@ -26,6 +28,8 @@ export class GroupOptionsPage {
     private modalController: ModalController,
     private viewController: ViewController,
     private events: Events,
+    public network: Network,
+    public _offlineStorage: OfflineStorageProvider,
     private notifications: NotificationsProvider,
     private _firebaseTransaction: FirebaseTransactionProvider,
   ) {
@@ -51,39 +55,47 @@ export class GroupOptionsPage {
   }
 
   createTopic() {
-    let createTopicModal = this.modalController.create(CreateTopicPage, {
-      group_id: this.group_id,
-      group_name: this.group_name,
-    });
-    createTopicModal.onDidDismiss(data => {
-      this.setTitle();
-      if (data) {
-        this.dismiss({
-          page: 'ChatPage',
-          params: data
-        });
-      }
-    });
-    createTopicModal.present();
+    if (this.network.type !== 'none') {
+      let createTopicModal = this.modalController.create(CreateTopicPage, {
+        group_id: this.group_id,
+        group_name: this.group_name,
+      });
+      createTopicModal.onDidDismiss(data => {
+        this.setTitle();
+        if (data) {
+          this.dismiss({
+            page: 'ChatPage',
+            params: data
+          });
+        }
+      });
+      createTopicModal.present();
+    } else {
+      this.events.publish('toast:create', 'You seems to be offline');
+    }
   }
 
   addFlashNews() {
-    let flashModal = this.modalController.create(AddFlashPage, {
-      group_id: this.group_id,
-      group_name: this.group_name,
-    });
-    flashModal.onDidDismiss(data => {
-      this.setTitle();
-      if (data) {
-        this.events.publish('toast:create', data.Data.Message);
-        this.notifications.sends(data.OneSignalTransaction);
-        this._firebaseTransaction.doTransaction(data.FireBaseTransaction).catch(error => {
+    if (this.network.type !== 'none') {
+      let flashModal = this.modalController.create(AddFlashPage, {
+        group_id: this.group_id,
+        group_name: this.group_name,
+      });
+      flashModal.onDidDismiss(data => {
+        this.setTitle();
+        if (data) {
+          this.events.publish('toast:create', data.Data.Message);
+          this.notifications.sends(data.OneSignalTransaction);
+          this._firebaseTransaction.doTransaction(data.FireBaseTransaction).catch(error => {
 
-        });
-        this.dismiss(data);
-      }
-    });
-    flashModal.present();
+          });
+          this.dismiss(data);
+        }
+      });
+      flashModal.present();
+    } else {
+      this.events.publish('toast:create', 'You seems to be offline');
+    }
   }
 
   getTagColor(id) {

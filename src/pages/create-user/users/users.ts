@@ -4,6 +4,7 @@ import { CreateUserPage } from '../create-user';
 import { ConnectionProvider } from '../../../providers/connection/connection';
 import { Network } from '@ionic-native/network';
 import { Storage } from '@ionic/storage';
+import * as _ from 'underscore';
 
 @IonicPage()
 @Component({
@@ -12,7 +13,8 @@ import { Storage } from '@ionic/storage';
 })
 export class UsersPage {
   title: string = 'Users';
-  users: Array<any> = [];
+  users: Array<any> = null;
+  pushedUsersID : Array<any> = [];
   page: number = 0;
   query: string;
   searchInputBtn: boolean = false;
@@ -25,19 +27,23 @@ export class UsersPage {
     public storage: Storage,
     public actionSheetCntl: ActionSheetController
   ) {
+  }
+
+  ionViewWillEnter() {
+    this.users = [];
+    this.storage.get('offline:users').then((users: any) => {
+      if (_.isEmpty(users)) {
+        users = [];
+      }
+      users.forEach(user => {
+        this.pushItem(user);
+      });
+    });
     this.getUsers();
   }
 
   getUsers() {
     return new Promise((resolve, reject) => {
-      if (this._network.type === 'none') {
-        this.storage.get('users:offline').then((data: any) => {
-          if (data) {
-            this.users = data;
-            resolve(true);
-          }
-        });
-      } else {
         if (this.page === -1) {
           reject();
         } else {
@@ -48,11 +54,12 @@ export class UsersPage {
           }, false).then((response: any) => {
             if (response.UserList.length > 0) {
               response.UserList.forEach(list => {
-                this.users.push(list);
+                this.pushItem(list);
               });
-              this.storage.set('users:offline', this.users);
               this.page++;
-              resolve(true);
+              this.saveOfflineData().then(status => {
+                resolve(status);
+              });
             } else {
               this.page = -1;
               resolve(false);
@@ -62,10 +69,33 @@ export class UsersPage {
             reject();
           });
         }
-      }
     });
 
   }
+
+  pushItem(item) {
+    let index = this.pushedUsersID.indexOf(item.UserID);
+    if (index === -1) {//push
+      this.users.push(item);
+      this.pushedUsersID.push(item.UserID);
+    } else {
+      this.users[index] = item;
+    }
+  }
+
+  saveOfflineData() {
+    return new Promise((resolve, reject) => {
+      this.storage.get('offline:users').then(users => {
+        users = this.users;
+        this.storage.set('offline:users', users).then(status => {
+          resolve(status);
+        }).catch(error => {
+          reject(error);
+        });
+      })
+    });
+  }
+
 
   initializeItems() {
     this.page = 0;
@@ -141,14 +171,14 @@ export class UsersPage {
     if (this._network.type === 'none') {
       this.events.publish('toast:create', 'You seems to be offline');
     } else {
-    let modal = this.modal.create(CreateUserPage, user);
-    modal.onDidDismiss((data) => {
-      if (data) {
-        this.getUsers();
-      }
-    });
-    modal.present();
-  }
+      let modal = this.modal.create(CreateUserPage, user);
+      modal.onDidDismiss((data) => {
+        if (data) {
+          this.getUsers();
+        }
+      });
+      modal.present();
+    }
   }
 
   removeUser(user, index) {
@@ -205,6 +235,15 @@ export class UsersPage {
 
   refresh(refresher) {
     this.users = [];
+    this.page = 0;
+    this.storage.get('offline:users').then((users: any) => {
+      if (_.isEmpty(users)) {
+        users = [];
+      }
+      users.forEach(user => {
+        this.pushItem(user);
+      });
+    });
     this.getUsers().then((response) => {
       if (response) {
         refresher.complete();

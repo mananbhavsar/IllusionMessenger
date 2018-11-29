@@ -2,7 +2,8 @@
     <header [title]="getTitle()"></header>
 </ion-header>
 <ion-content>
-  <div class="calendar-header">
+  <empty *ngIf="!isInternetConnected"></empty>
+  <div *ngIf="daysInThisMonth" class="calendar-header">
     <ion-row class="calendar-month">
       <ion-col col-2 (click)="goToLastMonth()">
         <ion-icon name="arrow-back"></ion-icon>
@@ -13,7 +14,7 @@
       </ion-col>
     </ion-row>
   </div>
-  <div class="calendar-body">
+  <div  *ngIf="daysInThisMonth" class="calendar-body">
     <ion-grid>
       <ion-row class="calendar-weekday">
         <ion-col>Su</ion-col>

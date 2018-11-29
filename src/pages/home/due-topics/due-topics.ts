@@ -2,6 +2,10 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
 import { ConnectionProvider } from '../../../providers/connection/connection';
 import * as _ from 'underscore';
+import { Storage } from '@ionic/storage';
+import { OfflineStorageProvider } from '../../../providers/offline-storage/offline-storage';
+
+
 @IonicPage()
 @Component({
   selector: 'page-due-topics',
@@ -9,20 +13,33 @@ import * as _ from 'underscore';
 })
 export class DueTopicsPage {
   title: string = 'loading';
-  topics: Array<any> = [];
+  topics: any = [];
   day: number = 0;
   page: number = 0;
   headerbuttonsOption: any = [];
+  pushedTopicsID : Array<any> = [];
   query: string = null;
   searchInputBtn: boolean = false;
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public viewCntl: ViewController,
+    public _offlineStorage : OfflineStorageProvider,
+    public storage : Storage,
     public connection: ConnectionProvider) {
     this.day = this.navParams.data.Day;
+  }
 
-    this.getData();
+
+  ionViewWillEnter() {
     this.setTitle();
+    this._offlineStorage.get('offline:due-topics', this.topics, this.day).then(data => {
+      if(!data){
+      this.topics = [];
+      } else {
+      this.topics = data;
+      }
+    this.getData();
+   });
   }
 
   dismiss(event) {
@@ -48,9 +65,12 @@ export class DueTopicsPage {
           Query: this.query
         }, false).then((response: any) => {
           if (!_.isEmpty(response)) {
-            this.topics = response.TopicList;
-            this.page++;
-            resolve(true);
+              response.TopicList.forEach(item => {
+                this.topics.push(item);
+              });
+              this.page++;
+          this._offlineStorage.set('offline:due-topics',response.TopicList,this.day);
+          resolve(true);
           } else {
             this.page = -1;
             resolve(false);
@@ -63,9 +83,9 @@ export class DueTopicsPage {
   }
 
   refresh(refresher) {
+    this.topics = [];
+    this.page = 0;
     this.getData().then(status => {
-      this.topics = [];
-      this.page = 0;
       this.query = null;
       refresher.complete();
     }).catch(error => {

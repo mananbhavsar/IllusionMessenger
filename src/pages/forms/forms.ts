@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import { AdvanceRequestPage } from '../../pages/forms/advance-request/advance-request';
-import { LeaveApplicationPage } from '../../pages/forms/leave-application/leave-application';
 
 @IonicPage()
 @Component({

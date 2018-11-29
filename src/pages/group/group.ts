@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import * as firebase from 'firebase';
-import { ActionSheetController, IonicPage, ModalController, NavController, NavParams, Slides } from 'ionic-angular';
+import { ActionSheetController, IonicPage, ModalController, NavController, NavParams, Slides, Events } from 'ionic-angular';
 import * as moment from "moment";
 import * as _ from 'underscore';
 import { ConnectionProvider } from './../../providers/connection/connection';
@@ -11,6 +11,8 @@ import { CloseTopicPage } from './../topic/close-topic/close-topic';
 import { CreateTopicPage } from './../topic/create-topic/create-topic';
 import { FlashNewsProvider } from '../../providers/flash-news/flash-news';
 import { CommonProvider } from '../../providers/common/common';
+import { OfflineStorageProvider } from '../../providers/offline-storage/offline-storage';
+import { Network } from '@ionic-native/network';
 
 
 @IonicPage()
@@ -39,12 +41,25 @@ export class GroupPage {
     private _date: DateProvider,
     private modalController: ModalController,
     public flashNewsProvider: FlashNewsProvider,
+    public _offlineStorage : OfflineStorageProvider,
     private actionSheetController: ActionSheetController,
-    public common : CommonProvider
+    public common : CommonProvider,
+    public network : Network,
+    public events : Events,
   ) {
     this.group_id = this.navParams.data.GroupID;
+  }
+
+  ionViewDidEnter(){
     this.setTitle();
+    this._offlineStorage.get('offline:Groups-Wise', this.group, this.group_id).then(data => {
+      if(!data){
+      this.group = Object.assign({}, this.group, data);
+      } else {
+      this.group = data;
+      }
     this.getGroupDetails();
+   });
   }
 
   getGroupDetails() {
@@ -66,6 +81,7 @@ export class GroupPage {
               this.flashNewsProvider.openUnreadFlashNews(news,this.group_id);
             });
           }
+          this._offlineStorage.set('offline:Groups-Wise',response,this.group_id);
           this.group = response;
           if (this.group) {
             response.ActiveTopicList.forEach(list => {
@@ -104,6 +120,7 @@ export class GroupPage {
 
   refresh(refresher) {
     this.page = 0;
+    this.group = [];
     this.getGroupDetails().then(status => {
       // this.common.registerDevice(true);
       refresher.complete();
@@ -252,6 +269,7 @@ export class GroupPage {
 
 
   openGroupOptions(event) {
+    if (this.network.type !== 'none') {
     let groupOptionsModal = this.modalController.create(GroupOptionsPage, {
       group_id: this.group_id,
       group_name: this.title,
@@ -271,6 +289,9 @@ export class GroupPage {
       }
     });
     groupOptionsModal.present();
+  } else {
+    this.events.publish('toast:create', 'You seems to be offline');
+  }
   }
 
   openSortOptions() {

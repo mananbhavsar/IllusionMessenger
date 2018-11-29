@@ -11,7 +11,9 @@
   <ion-searchbar [showCancelButton]="shouldShowCancel" *ngIf="searchInputBtn" (ionInput)="getItems($event)"
   (ionCancel)="onCancel($event)">
 </ion-searchbar>
-<empty *ngIf="groups.length === 0;else data_template"></empty>
+<center-spinner *ngIf="!groups; else empty_template"></center-spinner>
+<ng-template #empty_template>
+<empty  *ngIf="groups.length === 0;else data_template"></empty>
   <ng-template #data_template>
     <ion-list>
       <ion-item *ngFor="let group of groups; let i = index">
@@ -33,4 +35,5 @@
   <ion-item-divider text-center [hidden]="page > 0">
     Nothing more to show
   </ion-item-divider>
+</ng-template>
 </ion-content>

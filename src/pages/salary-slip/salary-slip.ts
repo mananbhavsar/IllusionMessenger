@@ -14,7 +14,8 @@ import { Storage } from '@ionic/storage';
 })
 export class SalarySlipPage {
   title: string = 'Salary Slip';
-  salarySlipData: any = [];
+  salarySlipData: Array<any>  = null;
+  pushedSalarySlipID : Array<any> = [];
   page: number = 0;
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
@@ -24,7 +25,19 @@ export class SalarySlipPage {
     public storage  :Storage,
     public _fileOps: FileOpsProvider,
     public events: Events) {
+  }
 
+  ionViewWillEnter() {
+    this.setTitle();
+    this.salarySlipData = [];
+    this.storage.get('offline:salary-slips').then((slips: any) => {
+      if (_.isEmpty(slips)) {
+        slips = [];
+      }
+      slips.forEach(slip => {
+        this.pushItem(slip);
+      });
+    });
     this.getData();
   }
 
@@ -60,14 +73,6 @@ export class SalarySlipPage {
 
   getData() {
     return new Promise((resolve, reject) => {
-      if (this._network.type === 'none') {
-        this.storage.get('salaryslips:offline').then((data: any) => {
-          if(data){
-          this.salarySlipData = data;
-          resolve(true);
-          }
-        });
-      } else {
         if (this.page === -1) {
           reject();
         } else {
@@ -76,10 +81,13 @@ export class SalarySlipPage {
             PageNumber: this.page,
           }).then((response: any) => {
             if (!_.isEmpty(response)) {
-              this.salarySlipData = response.SalarySlip;
-              this.storage.set('salaryslips',this.salarySlipData);
+              response.SalarySlip.forEach(slips => {
+                this.pushItem(slips);
+              });
               this.page++;
-              resolve(true);
+              this.saveOfflineData().then(status => {
+                resolve(status);
+              });
             } else {
               this.page = -1;
               resolve(false);
@@ -90,11 +98,43 @@ export class SalarySlipPage {
             reject();
           });
         }
-      }
+    });
+  }
+
+  pushItem(item) {
+    let index = this.pushedSalarySlipID.indexOf(item.TransactionNumber);
+    if (index === -1) {//push
+      this.salarySlipData.push(item);
+      this.pushedSalarySlipID.push(item.TransactionNumber);
+    } else {
+      this.salarySlipData[index] = item;
+    }
+  }
+
+  saveOfflineData() {
+    return new Promise((resolve, reject) => {
+      this.storage.get('offline:salary-slips').then(request => {
+        request = this.salarySlipData;
+        this.storage.set('offline:salary-slips', request).then(status => {
+          resolve(status);
+        }).catch(error => {
+          reject(error);
+        });
+      })
     });
   }
 
   refresh(refresher) {
+    this.salarySlipData = [];
+    this.page = 0;
+    this.storage.get('offline:salary-slips').then((slips: any) => {
+      if (_.isEmpty(slips)) {
+        slips = [];
+      }
+      slips.forEach(slip => {
+        this.pushItem(slip);
+      });
+    });
     this.getData().then((response) => {
       if (response) {
         refresher.complete();

@@ -12,64 +12,95 @@ import { Storage } from '@ionic/storage';
 })
 export class PendingRequestPage {
   title: string = 'Pending Request';
-  pendingData: any = [];
+  pendingData: Array<any> = null;
+  pushedRequestID: Array<any> = [];
   page: number = 0;
   query: string = null;
-  searchInputBtn:boolean = false;
-  pendingUrl : string = 'Get_PendingRequest_Payroll';
+  searchInputBtn: boolean = false;
+  pendingUrl: string = 'Get_PendingRequest_Payroll';
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
-    public _network : Network,
-    public storage  :Storage,
+    public _network: Network,
+    public storage: Storage,
     public connection: ConnectionProvider,
-    public modalCtrl : ModalController) {
-      this.getData();
-    }
+    public modalCtrl: ModalController) {
+  }
+
+
+  ionViewWillEnter() {
+    this.pendingData = [];
+    this.storage.get('offline:pending-request').then((requests: any) => {
+      if (_.isEmpty(requests)) {
+        requests = [];
+      }
+      requests.forEach(request => {
+        this.pushItem(request);
+      });
+    });
+    this.getData();
+  }
 
   getData() {
     return new Promise((resolve, reject) => {
-      if(this._network.type === 'none'){
-        this.storage.get('pendingrequest:offline').then((data : any) => {
-            if(data){
-           this.pendingData = data;
-           resolve(true);
-            }
-        }); 
-      } else {
       if (this.page === -1) {
         reject();
       } else {
-      this.connection.doPost('Payroll/' + this.pendingUrl , {
-      PageNumber : this.page,
-      RowsPerPage : 100,
-      CompanyID : this.connection.user.CompanyID,
-      // Query: this.query
-      },false).then((response: any) => {
-        
-        if (!_.isEmpty(response)) {
-          response.PendingRequest.OT.forEach(item => {
-            this.pendingData.push(item);
-          });
-          response.PendingRequest.LA.forEach(item => {
-            this.pendingData.push(item);
-          });
-          this.storage.set('pendingrequest:offline',this.pendingData);
-          this.page++;
-          resolve(true);
-        } else {
+        this.connection.doPost('Payroll/' + this.pendingUrl, {
+          PageNumber: this.page,
+          RowsPerPage: 100,
+          CompanyID: this.connection.user.CompanyID,
+          // Query: this.query
+        }, false).then((response: any) => {
+
+          if (!_.isEmpty(response)) {
+            response.PendingRequest.OT.forEach(item => {
+              this.pushItem(item);
+            });
+            response.PendingRequest.LA.forEach(item => {
+              this.pushItem(item);
+            });
+            this.page++;
+            this.saveOfflineData().then(status => {
+              resolve(status);
+            }).catch(error => {
+              reject(error);
+            });
+          } else {
+            this.page = -1;
+            resolve(false);
+          }
+        }).catch((error) => {
           this.page = -1;
-          resolve(false);  
-        }
-      }).catch((error) => {
-        this.page = -1;
-        resolve(false);
-        reject();
-      });
-    }
-  }
+          resolve(false);
+          reject();
+        });
+      }
     });
   }
-  
+
+
+  pushItem(item) {
+    let index = this.pushedRequestID.indexOf(item.TransactionNumber);
+    if (index === -1) {//push
+      this.pendingData.push(item);
+      this.pushedRequestID.push(item.TransactionNumber);
+    } else {
+      this.pendingData[index] = item;
+    }
+  }
+
+  saveOfflineData() {
+    return new Promise((resolve, reject) => {
+      this.storage.get('offline:pending-request').then(request => {
+        request = this.pendingData;
+        this.storage.set('offline:pending-request', request).then(status => {
+          resolve(status);
+        }).catch(error => {
+          reject(error);
+        });
+      })
+    });
+  }
 
   searchData() {
     if (this.searchInputBtn) {
@@ -119,8 +150,16 @@ export class PendingRequestPage {
   refresh(refresher) {
     this.page = 0;
     this.pendingData = [];
+    this.storage.get('offline:pending-request').then((requests: any) => {
+      if (_.isEmpty(requests)) {
+        requests = [];
+      }
+      requests.forEach(request => {
+        this.pushItem(request);
+      });
+    });
     this.getData().then((response) => {
-        refresher.complete();
+      refresher.complete();
     }).catch((error) => {
       refresher.complete();
     })
@@ -138,15 +177,15 @@ export class PendingRequestPage {
     });
   }
 
-  ViewDetail(data){
-    let modal = this.modalCtrl.create(RequestDetailPage,{detail : data, page : 'pendingRequest'});
+  ViewDetail(data) {
+    let modal = this.modalCtrl.create(RequestDetailPage, { detail: data, page: 'pendingRequest' });
     modal.present();
     modal.onDidDismiss((response) => {
-     if(response){
-       this.page = 0;
-      this.pendingData = [];
-       this.getData();
-     }
+      if (response) {
+        this.page = 0;
+        this.pendingData = [];
+        this.getData();
+      }
     });
   }
 

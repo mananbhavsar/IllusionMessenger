@@ -6,7 +6,6 @@ import { HomePage } from  '../home/home';
 
 import { UserProvider } from '../../providers/user/user';
 import { Global } from '../../app/global';
-import { TabsPage } from '../tabs/tabs';
 
 
 @IonicPage()

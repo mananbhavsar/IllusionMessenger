@@ -27,7 +27,7 @@ export class ForgotPasswordPage {
   }
 
   doForgotPassword() {
-    this.connection.doPost('Chat/ForgotPassword	', {
+    this.connection.doPost('Chat/ForgotPassword', {
       UserCode: this.ForgotPassword.login_name,
     }, 'resetting password').then(response => {
       this.events.publish('alert:basic', 'Password sent!', response);

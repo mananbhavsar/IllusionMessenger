@@ -4,6 +4,7 @@ import { ConnectionProvider } from '../../../providers/connection/connection';
 import { CreateTagPage } from '../create-tag';
 import { Network } from '@ionic-native/network';
 import { Storage } from '@ionic/storage';
+import * as _ from 'underscore';
 
 @IonicPage()
 @Component({
@@ -12,9 +13,11 @@ import { Storage } from '@ionic/storage';
 })
 export class TagPage {
   title: string = 'Tags';
-  tags: Array<any> = [];
+  tags: Array<any> = null;
+  pushedTagsID: Array<any> = [];
   page: number = 0;
   query: string;
+
   searchInputBtn: boolean = false;
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
@@ -24,20 +27,24 @@ export class TagPage {
     public _network: Network,
     public storage: Storage,
     public actionSheetCntl: ActionSheetController) {
+  }
+
+  ionViewWillEnter() {
+    this.tags = [];
+    this.storage.get('offline:tags').then((tags: any) => {
+      if (_.isEmpty(tags)) {
+        tags = [];
+      }
+      tags.forEach(tag => {
+        this.pushItem(tag);
+      });
+    });
     this.getTags();
   }
 
 
   getTags() {
     return new Promise((resolve, reject) => {
-      if (this._network.type === 'none') {
-        this.storage.get('tags:offline').then((data: any) => {
-          if (data) {
-            this.tags = data;
-            resolve(true);
-          }
-        });
-      } else {
         if (this.page === -1) {
           reject();
         } else {
@@ -48,11 +55,14 @@ export class TagPage {
           }, false).then((response: any) => {
             if (response.TagList.length > 0) {
               response.TagList.forEach(list => {
-                this.tags.push(list);
+                this.pushItem(list);
               });
-              this.storage.set('tags:offline', this.tags);
               this.page++;
-              resolve(true);
+              this.saveOfflineData().then(status => {
+                resolve(status);
+              }).catch(error => {
+                reject(error);
+              });
             } else {
               this.page = -1;
               resolve(false);
@@ -64,7 +74,29 @@ export class TagPage {
             reject();
           });
         }
-      }
+    });
+  }
+
+  pushItem(item) {
+    let index = this.pushedTagsID.indexOf(item.TagID);
+    if (index === -1) {//push
+      this.tags.push(item);
+      this.pushedTagsID.push(item.TagID);
+    } else {
+      this.tags[index] = item;
+    }
+  }
+
+  saveOfflineData() {
+    return new Promise((resolve, reject) => {
+      this.storage.get('offline:tags').then(tags => {
+        tags = this.tags;
+        this.storage.set('offline:tags', tags).then(status => {
+          resolve(status);
+        }).catch(error => {
+          reject(error);
+        });
+      })
     });
   }
 
@@ -209,6 +241,14 @@ export class TagPage {
     this.tags = [];
     this.page = 0;
     this.query = null;
+    this.storage.get('offline:tags').then((tags: any) => {
+      if (_.isEmpty(tags)) {
+        tags = [];
+      }
+      tags.forEach(tag => {
+        this.pushItem(tag);
+      });
+    });
     this.getTags().then((response) => {
       if (response) {
         refresher.complete();

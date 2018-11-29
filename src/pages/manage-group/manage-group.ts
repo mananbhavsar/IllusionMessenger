@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-import { IonicPage, ModalController, Events, ActionSheetController, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, ModalController, Events, ActionSheetController, NavController, NavParams, ItemGroup } from 'ionic-angular';
 import { ConnectionProvider } from '../../providers/connection/connection';
 import { CreateGroupPage } from './create-group/create-group';
 import { Network } from '@ionic-native/network';
 import { Storage } from '@ionic/storage';
-
+import * as _ from 'underscore';
+import { group } from '@angular/core/src/animation/dsl';
 
 @IonicPage()
 @Component({
@@ -17,7 +18,8 @@ export class ManageGroupPage {
   sort_by: string = '';
   sort_order: string = '';
   badges: any;
-  groups: any = [];
+  groups: Array<any> = null;
+  pushedGroupsID: Array<any> = [];
   query: string;
   searchInputBtn: boolean = false;
   constructor(public navCtrl: NavController,
@@ -28,45 +30,75 @@ export class ManageGroupPage {
     public _network: Network,
     public storage: Storage,
     public actionSheetCntl: ActionSheetController) {
+  }
+
+  ionViewWillEnter() {
+    this.groups = [];
+    this.storage.get('offline:manage-groups').then((groups: any) => {
+      if (_.isEmpty(groups)) {
+        groups = [];
+      }
+      groups.forEach(group => {
+        this.pushItem(group);
+      });
+    });
     this.getData();
   }
 
-
   getData() {
     return new Promise((resolve, reject) => {
-      if (this._network.type === 'none') {
-        this.storage.get('managegroups:offline').then((data: any) => {
-          if (data) {
-            this.groups = data;
-            resolve(true);
-          }
-        });
+      if (this.page === -1) {
+        reject();
       } else {
-        if (this.page === -1) {
-          reject();
-        } else {
-          this.connection.doPost('Chat/GetGroupDetail_Master', {
-            Query: this.query,
-            PageNumber: this.page,
-            RowsPerPage: 20
-          }, false).then((response: any) => {
-            if (response.GroupList.length > 0) {
-              response.GroupList.forEach(list => {
-                this.groups.push(list);
-              });
-              this.storage.set('managegroups:offline', this.groups);
-              this.page++;
-              resolve(true);
-            } else {
-              this.page = -1;
-              resolve(false);
-            }
-          }).catch(error => {
+        this.connection.doPost('Chat/GetGroupDetail_Master', {
+          Query: this.query,
+          PageNumber: this.page,
+          RowsPerPage: 20
+        }, false).then((response: any) => {
+          if (response.GroupList.length > 0) {
+            response.GroupList.forEach(list => {
+              this.pushItem(list);
+            });
+            this.page++;
+            this.saveOfflineData().then(status => {
+              resolve(status);
+            }).catch(error => {
+              reject(error);
+            });
+            resolve(true);
+          } else {
             this.page = -1;
-            reject();
-          });
-        }
+            resolve(false);
+          }
+        }).catch(error => {
+          this.page = -1;
+          reject();
+        });
       }
+    });
+  }
+
+  pushItem(item) {
+    let index = this.pushedGroupsID.indexOf(item.GroupID);
+    if (index === -1) {//push
+      this.groups.push(item);
+      this.pushedGroupsID.push(item.GroupID);
+    } else {
+      this.groups[index] = item;
+    }
+  }
+
+  saveOfflineData() {
+    return new Promise((resolve, reject) => {
+      this.storage.get('offline:manage-groups').then(group => {
+
+        group = this.groups;
+        this.storage.set('offline:manage-groups', group).then(status => {
+          resolve(status);
+        }).catch(error => {
+          reject(error);
+        });
+      })
     });
   }
 
@@ -195,11 +227,21 @@ export class ManageGroupPage {
   refresh(refresher) {
     this.groups = [];
     this.page = 0;
-    this.getData().then((response) => {
+    return new Promise((resolve,reject) => {
+    this.storage.get('offline:manage-groups').then((groups: any) => {
+      if (_.isEmpty(groups)) {
+        groups = [];
+      }
+      groups.forEach(group => {
+        this.pushItem(group);
+      });
+    });
+    this.getData().then((data) => {
       refresher.complete();
     }).catch((error) => {
       refresher.complete();
     })
+  });
   }
 
   addGroup() {

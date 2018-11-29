@@ -49,7 +49,6 @@
           </ion-item>
         </ion-list>
       </div>
-      <div>
         <button *ngIf="!isBrowser && !hideWhenReply" ion-button clear icon-only (click)="openUploadOptions()">
           <ion-icon name="ios-add-outline"></ion-icon>
         </button>
@@ -82,7 +81,6 @@
             </button>
           </span>
         </span>
-      </div>
     </ng-container>
     <ng-container *ngIf="hasInternet && aboutToRecord === true">
       <ion-grid no-padding class="recording">

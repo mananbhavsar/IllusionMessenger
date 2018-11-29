@@ -5,7 +5,6 @@ import { ConnectionProvider } from '../../../providers/connection/connection';
 import * as moment from "moment";
 import * as firebase from 'firebase';
 import * as _ from 'underscore';
-import { TabsPage } from '../../tabs/tabs';
 
 @IonicPage()
 @Component({

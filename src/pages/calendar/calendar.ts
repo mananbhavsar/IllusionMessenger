@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, Events } from 'ionic-angular';
 import moment from 'moment';
 import { ConnectionProvider } from '../../providers/connection/connection';
+import { Network } from '@ionic-native/network';
 @IonicPage()
 @Component({
   selector: 'page-calendar',
@@ -17,6 +18,7 @@ export class CalendarPage {
   currentYear: any;
   currentDate: number;
   formattedDate: any;
+  isInternetConnected : boolean = true;
   eventList: any;
   selectedEvent: any;
   isSelected: any;
@@ -28,12 +30,17 @@ export class CalendarPage {
   selectedYear: any;
   constructor(public navCtrl: NavController,
     public connection: ConnectionProvider,
+    public network : Network,
     public events: Events) {
     this.getDays(new Date().getMonth() + 1, new Date().getFullYear());
     this.date = moment().toDate();
     this.formattedDate = moment(this.date, 'YYYY/MM/DD');
     this.todayDate = new Date().getDate();
     this.todayMonth = new Date().getMonth() + 1;
+  }
+
+  ionViewWillEnter(){
+    this.isInternetConnected = this.network.type !== 'none';
   }
 
   getDays(month, year) {

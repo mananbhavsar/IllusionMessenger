@@ -30,7 +30,6 @@ import { LogoutPage } from '../logout/logout';
 import { DateProvider } from './../../providers/date/date';
 import { ChatOptionsPage } from "./chat-options/chat-options";
 import { SavedMediaPage } from "./chat-options/saved-media/saved-media";
-import { TabsPage } from '../tabs/tabs';
 
 @IonicPage()
 @Component({
@@ -56,7 +55,7 @@ export class ChatPage {
   groupCode: string = null;
   group_name: string = 'loading';
   subSubTitle: string;
-  users: any = [{User : 'a'}, {User : 'b', },{User : 'c', },{User : 'd', },{User : 'e', }];
+  users: any = [];
   hideWhenReply: boolean = false;
   userList: any = [];
 
@@ -221,7 +220,7 @@ export class ChatPage {
       this.scrollBottom('keyboard hide').catch(error => { });
     });
 
-    this.hasInternet = this._network.type !== 'none';
+    this.hasInternet = this._network.type !== null;
     this.events.subscribe('network:online', () => {
       this.hasInternet = true;
       this.messagesLoaded = this.messages.length > 0;
@@ -651,7 +650,7 @@ export class ChatPage {
 
   initData() {
     return new Promise((resolve, reject) => {
-      if (this._network.type !== 'none') {
+      if (this._network.type !== null) {
         let params = {
           TopicID: this.topicID,
           GroupID: this.groupID,
@@ -834,10 +833,15 @@ export class ChatPage {
   }
 
   handleImageFiles(file) {
+    return new Promise((resolve, reject) => {
     let input = file.target;
     let dataURL: string;
+    let fileSize: number = input.files[0].size;
     let fileName = this._fileOps.getFileNameWithoutExtension(input.files[0].name);
     let fileExtension = this._fileOps.getFileExtension(input.files[0].name);
+    if(fileSize >= 3000000){
+      this.events.publish('alert:basic','File upload error','File size should not exceed more than 3MB');
+    } else {
     let reader = new FileReader();
     let context = this;
     reader.onload = function () {
@@ -846,14 +850,17 @@ export class ChatPage {
         .then((data: any) => {
           if (data.Data.indexOf('https') === 0) {
             context.sendToFirebase('', 'Image', data.Data);
-
+            resolve(true);
           } else {
             context.events.publish('alert:basic', data.Data);
           }
         }).catch((error) => {
+          reject(false);
         });
     }
     reader.readAsDataURL(input.files[0]);
+  }
+  });
   }
 
 

@@ -12,7 +12,9 @@
   <ion-searchbar [showCancelButton]="true" *ngIf="searchInputBtn" (ionInput)="getItems($event)"
   (ionClear)="onClear($event)" (ionCancel)="onCancel($event)">
 </ion-searchbar>
-  <empty *ngIf="users.length === 0;else data_template"></empty>  
+<center-spinner *ngIf="!users; else empty_template"></center-spinner>
+<ng-template #empty_template>
+<empty  *ngIf="users.length === 0;else data_template"></empty>
   <ng-template #data_template>
     <ion-item *ngFor="let user of users; let i = index">
       <ion-label>
@@ -32,4 +34,5 @@
   <ion-item-divider text-center [hidden]="page > 0">
     Nothing more to show
   </ion-item-divider>
+  </ng-template>
 </ion-content>

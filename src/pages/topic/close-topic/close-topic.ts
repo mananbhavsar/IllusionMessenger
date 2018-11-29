@@ -6,8 +6,8 @@ import * as _ from 'underscore';
 import { ConnectionProvider } from '../../../providers/connection/connection';
 import { DateProvider } from './../../../providers/date/date';
 import { ChatPage } from './../../chat/chat';
-
-
+import { Storage } from '@ionic/storage';
+import { OfflineStorageProvider } from '../../../providers/offline-storage/offline-storage';
 
 @IonicPage()
 @Component({
@@ -19,7 +19,8 @@ export class CloseTopicPage {
   group_code: string = null;
   group_name: string = 'loading';
 
-  topics: Array<any> = [];
+  topics: any = [];
+  pushedTopicsID : Array<any> = [];
   page: number = 0;
   list: Array<any> = [];
   query: string = null;
@@ -38,6 +39,8 @@ export class CloseTopicPage {
     public modalCtrl: ModalController,
     private viewController: ViewController,
     private _date: DateProvider,
+    public storage : Storage,
+    public _offlineStorage : OfflineStorageProvider,
     private actionSheetController: ActionSheetController,
   ) {
     this.group_id = this.navParams.data.group_id;
@@ -47,12 +50,43 @@ export class CloseTopicPage {
   }
 
   ionViewDidEnter() {
-    this.getDetails().then(status => {
-      this.setForBadge();
-    }).catch(error => {
-
-    });
+    this._offlineStorage.get('offline:Groups-Wise', this.topics,this.group_id,this.group_id).then(data => {
+      if(!data){
+      this.topics = [];
+      } else {
+      this.topics = data;
+      }
+      this.getDetails().then(status => {
+        this.setForBadge();
+      }).catch(error => {
+  
+      });
+   });
   }
+
+  // pushItem(item) {
+  //   let index = this.pushedTopicsID.indexOf(item.TopicID);
+  //   if (index === -1) {//push
+  //     this.topics.push(item);
+  //     this.pushedTopicsID.push(item.TopicID);
+  //   } else {
+  //     this.topics[index] = item;
+  //   }
+  // }
+
+  // saveOfflineData() {
+  //   return new Promise((resolve, reject) => {
+  //     this.storage.get('offline:close-topics').then(topics => {
+  //       topics = this.topics;
+  //       this.storage.set('offline:close-topics', topics,).then(status => {
+  //         resolve(status);
+  //       }).catch(error => {
+  //         reject(error);
+  //       });
+  //     })
+  //   });
+  // }
+
 
   getDetails() {
     return new Promise((resolve, reject) => {
@@ -76,7 +110,11 @@ export class CloseTopicPage {
               this.topics.push(list);
             });
             this.page++;
-            resolve(true);
+          this._offlineStorage.set('offline:Groups-Wise',this.topics,this.group_id,this.group_id).then((data) => {
+            console.log(data);
+            
+          });
+              resolve(status);
           } else {
             this.page = -1;
             resolve(false);

@@ -3,6 +3,9 @@ import { IonicPage, NavController, Events } from 'ionic-angular';
 import moment from 'moment';
 import { ConnectionProvider } from '../../providers/connection/connection';
 import { Network } from '@ionic-native/network';
+import { Storage } from '@ionic/storage';
+import * as _ from 'underscore';
+
 @IonicPage()
 @Component({
   selector: 'page-calendar',
@@ -24,6 +27,7 @@ export class CalendarPage {
   isSelected: any;
   monthData : any;
   todayDate: any;
+  pushedTodaysDaysId : Array<any> = [];
   todayMonth: any;
   today: any;
   selectedMonth: any;
@@ -31,16 +35,24 @@ export class CalendarPage {
   constructor(public navCtrl: NavController,
     public connection: ConnectionProvider,
     public network : Network,
+    public storage : Storage,
     public events: Events) {
-    this.getDays(new Date().getMonth() + 1, new Date().getFullYear());
-    this.date = moment().toDate();
-    this.formattedDate = moment(this.date, 'YYYY/MM/DD');
-    this.todayDate = new Date().getDate();
-    this.todayMonth = new Date().getMonth() + 1;
   }
 
   ionViewWillEnter(){
     this.isInternetConnected = this.network.type !== 'none';
+    this.date = moment().toDate();
+    this.formattedDate = moment(this.date, 'YYYY/MM/DD');
+    this.todayDate = new Date().getDate();
+    this.todayMonth = new Date().getMonth() + 1;
+    this.storage.get('offline:calendar').then((days: any) => {
+      if (_.isEmpty(days)) {
+        this.daysInThisMonth = [];
+      } else {
+        this.daysInThisMonth = days;
+      }
+    });
+    this.getDays(new Date().getMonth() + 1, new Date().getFullYear());
   }
 
   getDays(month, year) {
@@ -55,6 +67,7 @@ export class CalendarPage {
         this.selectedMonth = this.formattedDate.format('MMM');
         this.selectedYear = this.formattedDate.format('YYYY');
         this.daysInThisMonth = response.Calendar;
+        this.storage.set('offline:calendar',this.daysInThisMonth);
          this.monthData = response.Month_Wise[0];
          
         if(this.daysInThisMonth){
@@ -84,6 +97,29 @@ export class CalendarPage {
         resolve(true);
       }).catch((error) => {
       });
+    });
+  }
+
+  pushItem(item) {
+    let index = this.pushedTodaysDaysId.indexOf(item.GroupID);
+    if (index === -1) {//push
+      this.daysInThisMonth.push(item);
+      this.pushedTodaysDaysId.push(item.GroupID);
+    } else {
+      this.daysInThisMonth[index] = item;
+    }
+  }
+
+  saveOfflineData() {
+    return new Promise((resolve, reject) => {
+      this.storage.get('offline:manage-groups').then(group => {
+        group = this.daysInThisMonth;
+        this.storage.set('offline:manage-groups', group).then(status => {
+          resolve(status);
+        }).catch(error => {
+          reject(error);
+        });
+      })
     });
   }
 

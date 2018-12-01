@@ -12,7 +12,7 @@
     <ion-refresher-content pullingIcon="arrow-round-down" pullingText="Pull to refresh" refreshingSpinner="crescent" refreshingText="Refreshing...">
     </ion-refresher-content>
   </ion-refresher>
-  <center-spinner *ngIf="group !== -1 && isEmpty(group);else group_template">
+  <center-spinner *ngIf="isEmpty(group);else group_template">
   </center-spinner>
   <empty *ngIf="group === -1"></empty>
   <ng-template #group_template>

@@ -107,6 +107,10 @@
                     <topic [isChecked]="selectedTopic.indexOf(topic.TopicCode) > -1" [group_id]="topic.GroupID" [selectable]="readOptions" type="ActiveTopicList"
                         [topic]="topic" *ngFor="let topic of data.Topic_Wise;" (selected)="checkedTopic($event)"></topic>
                 </ng-container>
+                <ng-container *ngSwitchCase="'md-archive'">
+                    <topic [isChecked]="selectedTopic.indexOf(topic.TopicCode) > -1" [group_id]="topic.GroupID" [selectable]="readOptions" type="CloseTopicList"
+                        [topic]="topic" *ngFor="let topic of data.Priority;" (selected)="checkedTopic($event)"></topic>
+                </ng-container>
             </ion-list>
         </div>
         <ion-infinite-scroll *ngIf="page !== -1" (ionInfinite)="paginate($event)">

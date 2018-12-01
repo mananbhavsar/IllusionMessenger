@@ -14,9 +14,9 @@
     <ion-refresher-content pullingIcon="arrow-round-down" pullingText="Pull to refresh" refreshingSpinner="crescent" refreshingText="Refreshing...">
     </ion-refresher-content>
   </ion-refresher>
-  <center-spinner *ngIf="pendingData.length === 0; else empty_template"></center-spinner>
+  <center-spinner *ngIf="!pendingData; else empty_template"></center-spinner>
   <ng-template #empty_template>
-  <empty  *ngIf="!pendingData;else data_template"></empty>
+  <empty  *ngIf="pendingData.length === 0;else data_template"></empty>
   <ng-template #data_template>
     <ion-grid>
       <ion-row>

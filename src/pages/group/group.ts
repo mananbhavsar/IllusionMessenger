@@ -25,7 +25,7 @@ export class GroupPage {
 
   group_id: number = 0;
   title: string = '';
-  group: any = [];
+  group: Array<any> = null;
   badges: any = {};
   page: number = 0;
   query: string;
@@ -52,9 +52,10 @@ export class GroupPage {
 
   ionViewDidEnter(){
     this.setTitle();
-    this._offlineStorage.get('offline:Groups-Wise', this.group, this.group_id).then(data => {
+    this.group = [];
+    this._offlineStorage.get('offline:Groups-Wise', this.group, this.group_id).then((data :any) => {
       if(!data){
-      this.group = Object.assign({}, this.group, data);
+      this.group = [];
       } else {
       this.group = data;
       }
@@ -81,12 +82,12 @@ export class GroupPage {
               this.flashNewsProvider.openUnreadFlashNews(news,this.group_id);
             });
           }
-          this._offlineStorage.set('offline:Groups-Wise',response,this.group_id);
           this.group = response;
           if (this.group) {
             response.ActiveTopicList.forEach(list => {
               this.group.push(list);
             });
+          this._offlineStorage.set('offline:Groups-Wise',response,this.group_id);
             this.setForBadge();
             this.page++;
             resolve(true);

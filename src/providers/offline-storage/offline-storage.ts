@@ -18,7 +18,6 @@ export class OfflineStorageProvider {
   set(key, value, subKey = null, subSubKey = null, id = null) {
     return new Promise((resolve, reject) => {
       this.storage.get(key).then((data) => {
-
         //checking data is present
         if (_.isEmpty(data)) {
           data = {
@@ -34,16 +33,8 @@ export class OfflineStorageProvider {
               child: {}
             };
           }
-
+          
           data.child[subKey].child[subSubKey].child[id].data = value;
-        } else if (subKey) {   //checking data to subkey
-          if (!(subKey in data.child)) {
-            data.child[subKey] = {
-              data: null,
-              child: {}
-            };
-          }
-          data.child[subKey].data = value;
         } else if (subSubKey) {
 
           if (!(subSubKey in data.child[subKey].child)) {
@@ -55,6 +46,14 @@ export class OfflineStorageProvider {
           }
           data.child[subKey].child[subSubKey].data = value;
 
+        } else if (subKey) {   //checking data to subkey
+          if (!(subKey in data.child)) {
+            data.child[subKey] = {
+              data: null,
+              child: {}
+            };
+          }
+          data.child[subKey].data = value;
         } else {
           data.data = value;
         }
@@ -69,6 +68,7 @@ export class OfflineStorageProvider {
       });
     });
   }
+
 
   get(key, value, subData = null, subSubData = null, id = null) {
     return new Promise((resolve, reject) => {

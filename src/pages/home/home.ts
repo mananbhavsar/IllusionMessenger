@@ -83,6 +83,11 @@ export class HomePage {
             name: 'All Tasks',
             icon: 'paper',
             key: 'Topic_Wise'
+        },
+        {
+        name: 'Archived Topics',
+        icon: 'md-archive',
+        key: 'Archive_Topics_Wise'
         }];
 
     selectedTab: string = 'stats';
@@ -251,14 +256,9 @@ export class HomePage {
     registerDevice(isPullDown) {
         //make device regsiter call
         //if internet
-        this.connectToServer('1234',true);
+        this.connectToServer(1234,false);
         if (this._network.type === 'none') {
-            this.storage.get('lastActivityTime:offline').then((data: any) => {
-                if (data) {
-                    this.deviceRegsiter = 2;
-                    this.connectedTime = data;
-                }
-            });
+            this.deviceRegsiter = 0;
         } else if (this.platform.is('core')) {
             if (this.connection.getPushID()) {
                 this.deviceRegsiter = 1;
@@ -299,7 +299,6 @@ export class HomePage {
             if (response.Data && response.Data.LastActivity) {
                 this.deviceRegsiter = 2; //connected
                 this.connectedTime = response.Data.LastActivity;
-                this.storage.set('lastActivityTime:offline', response.Data.LastActivity); //this will be utc
             } else {
                 this.deviceRegsiter = 0;
             }
@@ -620,6 +619,11 @@ export class HomePage {
             }
             if ('Groups_Wise_Count' in this.data) {
                 if (this.data['Groups_Wise_Count'] > 0) {
+                    return true;
+                }
+            }
+            if ('Archive_Topic_Count' in this.data) {
+                if (this.data['Archive_Topic_Count'] > 0) {
                     return true;
                 }
             }

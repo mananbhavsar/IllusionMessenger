@@ -49,7 +49,7 @@ export class CloseTopicPage {
 
   }
 
-  ionViewDidEnter() {
+  ionViewWillEnter() {
     this._offlineStorage.get('offline:Groups-Wise', this.topics,this.group_id,this.group_id).then(data => {
       if(!data){
       this.topics = [];
@@ -63,30 +63,6 @@ export class CloseTopicPage {
       });
    });
   }
-
-  // pushItem(item) {
-  //   let index = this.pushedTopicsID.indexOf(item.TopicID);
-  //   if (index === -1) {//push
-  //     this.topics.push(item);
-  //     this.pushedTopicsID.push(item.TopicID);
-  //   } else {
-  //     this.topics[index] = item;
-  //   }
-  // }
-
-  // saveOfflineData() {
-  //   return new Promise((resolve, reject) => {
-  //     this.storage.get('offline:close-topics').then(topics => {
-  //       topics = this.topics;
-  //       this.storage.set('offline:close-topics', topics,).then(status => {
-  //         resolve(status);
-  //       }).catch(error => {
-  //         reject(error);
-  //       });
-  //     })
-  //   });
-  // }
-
 
   getDetails() {
     return new Promise((resolve, reject) => {
@@ -111,10 +87,9 @@ export class CloseTopicPage {
             });
             this.page++;
           this._offlineStorage.set('offline:Groups-Wise',this.topics,this.group_id,this.group_id).then((data) => {
-            console.log(data);
-            
+            resolve(status);
+
           });
-              resolve(status);
           } else {
             this.page = -1;
             resolve(false);

@@ -182,7 +182,6 @@ export class UserProvider {
                     if (response.MenuList) {
                         this.events.publish('menu:created', response.MenuList);
                     }
-                    this.storage.set('menulist:offline',response.MenuList);
                     if (response.Data.LogOutForcefully) {
                         if (response.Data.Message) {
                             this.events.publish('alert:basic', 'Logged Out!', response.Data.Message);

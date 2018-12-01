@@ -5,7 +5,6 @@ import { CreateGroupPage } from './create-group/create-group';
 import { Network } from '@ionic-native/network';
 import { Storage } from '@ionic/storage';
 import * as _ from 'underscore';
-import { group } from '@angular/core/src/animation/dsl';
 
 @IonicPage()
 @Component({

@@ -13,7 +13,7 @@ import { OfflineStorageProvider } from '../../../providers/offline-storage/offli
 })
 export class DueTopicsPage {
   title: string = 'loading';
-  topics: any = [];
+  topics: Array<any> = null;
   day: number = 0;
   page: number = 0;
   headerbuttonsOption: any = [];
@@ -31,15 +31,19 @@ export class DueTopicsPage {
 
 
   ionViewWillEnter() {
+    this.topics = [];
     this.setTitle();
-    this._offlineStorage.get('offline:due-topics', this.topics, this.day).then(data => {
+    this._offlineStorage.get('offline:due-topics', this.topics, this.day).then((data : any) => {
       if(!data){
       this.topics = [];
       } else {
-      this.topics = data;
+        data.forEach(group => {
+          this.pushItem(group);
+        });
       }
-    this.getData();
    });
+   this.getData();
+
   }
 
   dismiss(event) {
@@ -51,6 +55,17 @@ export class DueTopicsPage {
       case 'search':
         this.searchData();
         break;
+    }
+  }
+
+
+  pushItem(item) {
+    let index = this.pushedTopicsID.indexOf(item.TopicID);
+    if (index === -1) {//push
+      this.topics.push(item);
+      this.pushedTopicsID.push(item.TopicID);
+    } else {
+      this.topics[index] = item;
     }
   }
 
@@ -66,10 +81,12 @@ export class DueTopicsPage {
         }, false).then((response: any) => {
           if (!_.isEmpty(response)) {
               response.TopicList.forEach(item => {
-                this.topics.push(item);
+                if(this.topics.indexOf(item.TopicID) === -1){
+                this.pushItem(item);
+                }
               });
               this.page++;
-          this._offlineStorage.set('offline:due-topics',response.TopicList,this.day);
+          this._offlineStorage.set('offline:due-topics',this.topics,this.day);
           resolve(true);
           } else {
             this.page = -1;

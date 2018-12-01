@@ -220,7 +220,7 @@ export class ChatPage {
       this.scrollBottom('keyboard hide').catch(error => { });
     });
 
-    this.hasInternet = this._network.type !== null;
+    this.hasInternet = this._network.type !== 'none';
     this.events.subscribe('network:online', () => {
       this.hasInternet = true;
       this.messagesLoaded = this.messages.length > 0;
@@ -650,7 +650,7 @@ export class ChatPage {
 
   initData() {
     return new Promise((resolve, reject) => {
-      if (this._network.type !== null) {
+      if (this._network.type !== 'none') {
         let params = {
           TopicID: this.topicID,
           GroupID: this.groupID,

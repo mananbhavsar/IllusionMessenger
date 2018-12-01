@@ -268,21 +268,11 @@ export class MyApp {
         if(!this.platform.is('core')){
         this.doTranslate();
         }
-        if (this._network.type === 'none') {
-            this.storage.get('menulist:offline').then((data: any) => {
-              if(data){
-                setTimeout(() => {
-                    this.loggedInPages = data;
-                });
-              }
-            });
-          } else {
             this.events.subscribe('menu:created', (menu: any) => {
                 setTimeout(() => {
                     this.loggedInPages = menu;
                 });
             });
-          }
 
         this.events.subscribe('loading:create', (content) => {
             content = content || this.loading_translate;

@@ -48,18 +48,18 @@ export class GroupPage {
     public events : Events,
   ) {
     this.group_id = this.navParams.data.GroupID;
+    this.setTitle();
   }
 
-  ionViewDidEnter(){
-    this.setTitle();
-    this.group = [];
+  ionViewWillEnter(){
     this._offlineStorage.get('offline:Groups-Wise', this.group, this.group_id).then((data :any) => {
       if(!data){
       this.group = [];
       } else {
       this.group = data;
       }
-    this.getGroupDetails();
+   this.getGroupDetails();
+
    });
   }
 
@@ -84,10 +84,10 @@ export class GroupPage {
           }
           this.group = response;
           if (this.group) {
+          this._offlineStorage.set('offline:Groups-Wise',this.group, this.group_id);
             response.ActiveTopicList.forEach(list => {
               this.group.push(list);
             });
-          this._offlineStorage.set('offline:Groups-Wise',response,this.group_id);
             this.setForBadge();
             this.page++;
             resolve(true);
@@ -121,7 +121,7 @@ export class GroupPage {
 
   refresh(refresher) {
     this.page = 0;
-    this.group = [];
+    this.group = null;
     this.getGroupDetails().then(status => {
       // this.common.registerDevice(true);
       refresher.complete();
@@ -200,9 +200,7 @@ export class GroupPage {
       this.setTitle();
       //refresh page
       this.page = 0;//to keep consistency
-      this.getGroupDetails().catch(erroe => {
-
-      });
+      this.ionViewWillEnter();
     });
     closeTopicModal.present();
   }

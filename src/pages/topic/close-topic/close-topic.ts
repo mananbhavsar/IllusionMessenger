@@ -19,8 +19,8 @@ export class CloseTopicPage {
   group_code: string = null;
   group_name: string = 'loading';
 
-  topics: any = [];
-  pushedTopicsID : Array<any> = [];
+  topics: Array<any> = null;
+  pushedTopicsID: Array<any> = [];
   page: number = 0;
   list: Array<any> = [];
   query: string = null;
@@ -39,8 +39,8 @@ export class CloseTopicPage {
     public modalCtrl: ModalController,
     private viewController: ViewController,
     private _date: DateProvider,
-    public storage : Storage,
-    public _offlineStorage : OfflineStorageProvider,
+    public storage: Storage,
+    public _offlineStorage: OfflineStorageProvider,
     private actionSheetController: ActionSheetController,
   ) {
     this.group_id = this.navParams.data.group_id;
@@ -50,18 +50,35 @@ export class CloseTopicPage {
   }
 
   ionViewWillEnter() {
-    this._offlineStorage.get('offline:Groups-Wise', this.topics,this.group_id,this.group_id).then(data => {
-      if(!data){
-      this.topics = [];
+    this.topics = [];
+    this._offlineStorage.get('offline:Groups-Wise', this.topics, this.group_id, this.group_id).then((data: any) => {
+      if (_.isEmpty(data)) {
+        this.topics = [];
       } else {
-      this.topics = data;
+        data.forEach(group => {
+          this.pushItem(group);
+        });
       }
       this.getDetails().then(status => {
         this.setForBadge();
       }).catch(error => {
-  
+
       });
-   });
+    });
+  }
+
+  identify(index, item) {
+    return item.TopicID;
+  }
+
+  pushItem(item) {
+    let index = this.pushedTopicsID.indexOf(item.TopicID);
+    if (index === -1) {//push
+      this.topics.push(item);
+      this.pushedTopicsID.push(item.TopicID);
+    } else {
+      this.topics[index] = item;
+    }
   }
 
   getDetails() {
@@ -70,34 +87,33 @@ export class CloseTopicPage {
         reject(false);
       } else {
         this.connection.doPost('Chat/GetClosedTopicDetail',
-        {
-          GroupID: this.group_id,
-          StatusID: 1,
-          DisablePaging: true,
-          PageNumber: this.page,
-          RowsPerPage: 20,
-          OrderBy: this.sort_by,
-          Order: this.sort_order,
-          Query : this.query
-        }, false).then((response: any) => {
-          let data = response.ClosedTopicList;
-          if (data.length > 0) {
-            data.forEach(list => {
-              this.topics.push(list);
-            });
-            this.page++;
-          this._offlineStorage.set('offline:Groups-Wise',this.topics,this.group_id,this.group_id).then((data) => {
-            resolve(status);
-
-          });
-          } else {
+          {
+            GroupID: this.group_id,
+            StatusID: 1,
+            DisablePaging: true,
+            PageNumber: this.page,
+            RowsPerPage: 20,
+            OrderBy: this.sort_by,
+            Order: this.sort_order,
+            Query: this.query
+          }, false).then((response: any) => {
+            let data = response.ClosedTopicList;
+            if (data.length > 0) {
+              this._offlineStorage.set('offline:Groups-Wise', response.ClosedTopicList, this.group_id, this.group_id).then((data) => {
+              });
+              data.forEach(list => {
+               this.pushItem(list);
+              });
+              this.page++;
+              resolve(status);
+            } else {
+              this.page = -1;
+              resolve(false);
+            }
+          }).catch(error => {
             this.page = -1;
-            resolve(false);
-          }
-        }).catch(error => {
-          this.page = -1;
-          reject(false);
-        });
+            reject(false);
+          });
       }
     });
   }

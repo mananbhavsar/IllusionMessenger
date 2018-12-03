@@ -16,6 +16,7 @@ export class OfflineStorageProvider {
   }
 
   set(key, value, subKey = null, subSubKey = null, id = null) {
+    
     return new Promise((resolve, reject) => {
       this.storage.get(key).then((data) => {
         //checking data is present
@@ -66,6 +67,7 @@ export class OfflineStorageProvider {
       }).catch((error) => {
         reject(error);
       });
+    }).catch((error) => {
     });
   }
 

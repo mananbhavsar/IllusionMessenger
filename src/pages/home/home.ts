@@ -46,7 +46,7 @@ export class HomePage {
      */
     deviceRegsiter: number = 0;
     page: number = 0;
-    hasInternet = true;    
+    hasInternet = true;
     connectedTime: string = null;
     sort_by: string = '';
     sort_order: string = '';
@@ -85,9 +85,9 @@ export class HomePage {
             key: 'Topic_Wise'
         },
         {
-        name: 'Archived Topics',
-        icon: 'md-archive',
-        key: 'Archive_Topics_Wise'
+            name: 'Archived Topics',
+            icon: 'md-archive',
+            key: 'Archive_Topics_Wise'
         }];
 
     selectedTab: string = 'stats';
@@ -106,7 +106,7 @@ export class HomePage {
         private platform: Platform,
         private _network: Network,
         private storage: Storage,
-        public _offlineStorage : OfflineStorageProvider,
+        public _offlineStorage: OfflineStorageProvider,
         private modalController: ModalController,
         private notifications: NotificationsProvider,
         private _firebaseTransaction: FirebaseTransactionProvider,
@@ -210,8 +210,8 @@ export class HomePage {
                         this.registerDevice(isPullDown);
                     }
                     this.storage.set('GetTaskDetail:offline', response);
-                    this._offlineStorage.set('offline:Groups-Wise',response.Groups_Wise);
-                    this._offlineStorage.set('offline:due-topics',response.TaskDueInDays);
+                    this._offlineStorage.set('offline:Groups-Wise', response.Groups_Wise);
+                    this._offlineStorage.set('offline:due-topics', response.TaskDueInDays);
                     if (response.MenuAccess[0].HomePageAccess) {
                         this.buttons = [];
                         this.data = response;
@@ -246,8 +246,8 @@ export class HomePage {
             }
         });
     }
-    
- 
+
+
 
     isEmpty(object) {
         return _.isEmpty(object);
@@ -256,7 +256,7 @@ export class HomePage {
     registerDevice(isPullDown) {
         //make device regsiter call
         //if internet
-        this.connectToServer(1234,false);
+        this.connectToServer(1234, false);
         if (this._network.type === 'none') {
             this.deviceRegsiter = 0;
         } else if (this.platform.is('core')) {
@@ -358,16 +358,20 @@ export class HomePage {
     }
 
     openReadOptions() {
-        if (this.readOptions) {
-            this.readOptions = false;
-            this.selectedTopic = [];
-            this.selectedGroup = [];
-            this.readAllSelected = true;
+        if (this._network.type === 'none') {
+            this.events.publish('toast:create', 'You seems to be offline');
         } else {
-            this.readOptions = true;
-        }
-        if (this.selectedTopic.length !== 0) {
-            this.readAllSelected = false;
+            if (this.readOptions) {
+                this.readOptions = false;
+                this.selectedTopic = [];
+                this.selectedGroup = [];
+                this.readAllSelected = true;
+            } else {
+                this.readOptions = true;
+            }
+            if (this.selectedTopic.length !== 0) {
+                this.readAllSelected = false;
+            }
         }
     }
 
@@ -557,29 +561,29 @@ export class HomePage {
     addFlash() {
         if (this._network.type === 'none') {
             this.events.publish('toast:create', 'You seems to be offline');
-          } else {
-        let flashModal = this.modalController.create(AddFlashPage, {
-            group_id: 0,
-            group_name: null,
-        });
-        flashModal.onDidDismiss(data => {
-            this.setTitle();
+        } else {
+            let flashModal = this.modalController.create(AddFlashPage, {
+                group_id: 0,
+                group_name: null,
+            });
+            flashModal.onDidDismiss(data => {
+                this.setTitle();
 
-            if (data) {
-                this.events.publish('toast:create', data.Data.Message);
-                this.notifications.sends(data.OneSignalTransaction);
-                this._firebaseTransaction.doTransaction(data.FireBaseTransaction).catch(error => {
+                if (data) {
+                    this.events.publish('toast:create', data.Data.Message);
+                    this.notifications.sends(data.OneSignalTransaction);
+                    this._firebaseTransaction.doTransaction(data.FireBaseTransaction).catch(error => {
 
-                });
+                    });
 
-                //refresh
-                setTimeout(() => {
-                    this.getData(false);
-                });
-            }
-        });
-        flashModal.present();
-    }
+                    //refresh
+                    setTimeout(() => {
+                        this.getData(false);
+                    });
+                }
+            });
+            flashModal.present();
+        }
     }
 
     isGroupSelected() {
@@ -659,7 +663,6 @@ export class HomePage {
 
     getTabRowsCount(tab_key) {
         let selectedRowsCount: any = 0;
-
         if (this.data) {
             selectedRowsCount = _.size(this.data[tab_key]);
         }
@@ -692,56 +695,60 @@ export class HomePage {
     }
 
     reorderGroups() {
-        if (this.reorder) {
-            this.reorder = false;
+        if (this._network.type === 'none') {
+            this.events.publish('toast:create', 'You seems to be offline');
         } else {
-            this.reorder = true;
+            if (this.reorder) {
+                this.reorder = false;
+            } else {
+                this.reorder = true;
+            }
         }
     }
 
     openSortOptions() {
-        if(this._network.type === 'none'){
-            this.events.publish('toast:create', 'You seems to be offline'); 
+        if (this._network.type === 'none') {
+            this.events.publish('toast:create', 'You seems to be offline');
         } else {
-        //creating buttons
-        let buttons = [];
-        let sortingOptions = {
-            'CreationDate': 'Creation Date',
-            'DueDate': 'Due Date'
-        };
-        for (let key in sortingOptions) {
-            let label = sortingOptions[key];
-            let icon = null;
-            if (key === this.sort_by) {
-                icon = this.sort_order === 'ASC' ? 'ios-arrow-round-up-outline' : 'ios-arrow-round-down-outline';
-            }
-            buttons.push({
-                text: label,
-                icon: icon,
-                handler: () => {
-                    //if not selected initially, making it desc so it could be reversed later
-                    if (this.sort_by !== key) {
-                        this.sort_order = 'DESC';
-                    }
-                    this.sort_by = key;
-                    this.sort_order = this.sort_order === 'ASC' ? 'DESC' : 'ASC';
-                    this.doSorting();
+            //creating buttons
+            let buttons = [];
+            let sortingOptions = {
+                'CreationDate': 'Creation Date',
+                'DueDate': 'Due Date'
+            };
+            for (let key in sortingOptions) {
+                let label = sortingOptions[key];
+                let icon = null;
+                if (key === this.sort_by) {
+                    icon = this.sort_order === 'ASC' ? 'ios-arrow-round-up-outline' : 'ios-arrow-round-down-outline';
                 }
-            });
-        }
+                buttons.push({
+                    text: label,
+                    icon: icon,
+                    handler: () => {
+                        //if not selected initially, making it desc so it could be reversed later
+                        if (this.sort_by !== key) {
+                            this.sort_order = 'DESC';
+                        }
+                        this.sort_by = key;
+                        this.sort_order = this.sort_order === 'ASC' ? 'DESC' : 'ASC';
+                        this.doSorting();
+                    }
+                });
+            }
 
-        //cancel button
-        buttons.push({
-            text: 'Cancel',
-            role: 'cancel',
-        });
-        //creating action sheet
-        let sortActionSheet = this.actionSheetController.create({
-            title: 'Select sort options',
-            buttons: buttons
-        });
-        sortActionSheet.present();
-    }
+            //cancel button
+            buttons.push({
+                text: 'Cancel',
+                role: 'cancel',
+            });
+            //creating action sheet
+            let sortActionSheet = this.actionSheetController.create({
+                title: 'Select sort options',
+                buttons: buttons
+            });
+            sortActionSheet.present();
+        }
     }
 
     doSorting() {

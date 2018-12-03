@@ -32,7 +32,7 @@
 				<ion-icon item-end name="ios-options" color="pickup" (click)="openSortOptions()"></ion-icon>
 			</ion-item-divider>
 			<ion-list padding>
-				<ion-item no-padding *ngFor="let topic of topics; let i = index;" (click)="openTopic(topic, i)">
+				<ion-item no-padding *ngFor="let topic of topics trackBy:identify; let i = index;" (click)="openTopic(topic, i)">
 					<h2>
 						{{topic.Topic}}
 						<span float-right>

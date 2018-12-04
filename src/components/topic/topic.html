@@ -24,10 +24,13 @@
               <ion-col text-left class="pickup">
                 Created: {{topic.CreationDate_UTC | time }}
               </ion-col>
-              <ion-col text-right *ngIf="isExpired(topic.DueDate_UTC) !== null" [ngClass]="isExpired(topic.DueDate_UTC) ? 'danger' : 'secondary'">
+              <ion-col text-right *ngIf="isExpired(topic.DueDate_UTC) !== null && type !== 'CloseTopicList'" [ngClass]="isExpired(topic.DueDate_UTC) ? 'danger' : 'secondary'">
                 Due: {{topic.DueDate_UTC | time }}
-                <i class="reschedule-count" [ngClass]="'reschedule-count-' + topic.RescheduleCount"></i>
+                <i class="reschedule-count"  [ngClass]="'reschedule-count-' + topic.RescheduleCount"></i>
               </ion-col>
+              <ion-col *ngIf="type === 'CloseTopicList'" text-right [ngClass]="isExpired(topic.DueDate_UTC) ? 'danger' : 'secondary'">
+                  Closed: {{topic.CloseDatime_UTC | time }}
+                </ion-col>
             </ion-row>
             <ion-row>
               <ion-col text-left>
@@ -38,10 +41,10 @@
               </ion-col>
             </ion-row>
           </p>
-          <span class="last-message" *ngIf="topic.LastMessageDateTime">
+          <span class="last-message" *ngIf="topic.LastMessageDateTime && type !== 'CloseTopicList'">
             {{topic.LastMessageDateTime | time:true}}
           </span>
-          <ion-icon item-end [name]="topic.IsPriority ? 'ios-flag' : 'ios-flag-outline'" (click)="setPriority($event)" color="danger"
+          <ion-icon *ngIf="type !== 'CloseTopicList'" item-end [name]="topic.IsPriority ? 'ios-flag' : 'ios-flag-outline'" (click)="setPriority($event)" color="danger"
             class="priority"></ion-icon>
           <ion-icon name="ios-arrow-forward" item-end></ion-icon>
         </ion-item>

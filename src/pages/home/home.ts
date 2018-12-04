@@ -256,7 +256,6 @@ export class HomePage {
     registerDevice(isPullDown) {
         //make device regsiter call
         //if internet
-        this.connectToServer(1234, false);
         if (this._network.type === 'none') {
             this.deviceRegsiter = 0;
         } else if (this.platform.is('core')) {
@@ -338,7 +337,9 @@ export class HomePage {
     connectToFireBase() {
         //user setting
         this.user.getUser().then(user => {
-            if (this.data.Groups_Wise) {
+            console.log(this.data);
+            
+            if (this.data && this.data.Groups_Wise) {
                 let groupsTemp: any = this.data.Groups_Wise;
                 groupsTemp.forEach((group, index) => {
                     let ref = firebase.database().ref('Badge/' + user.id + '/Groups/' + group.GroupCode + '/Total');
@@ -626,8 +627,8 @@ export class HomePage {
                     return true;
                 }
             }
-            if ('Archive_Topic_Count' in this.data) {
-                if (this.data['Archive_Topic_Count'] > 0) {
+            if ('Archive_Topics_Wise_Count' in this.data) {
+                if (this.data['Archive_Topics_Wise_Count'] > 0) {
                     return true;
                 }
             }

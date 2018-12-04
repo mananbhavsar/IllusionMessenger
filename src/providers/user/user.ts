@@ -294,6 +294,16 @@ export class UserProvider {
         this.storage.remove('OfflineOfficeList');
         this.storage.remove('OfflineCaseStatus');
         this.storage.remove('OfflineQuery');
+        this.storage.remove('offline:calendar');
+        this.storage.remove('offline:manage-groups');
+        this.storage.remove('offline:tags');
+        this.storage.remove('offline:users');
+        this.storage.remove('offline:Gropus-Wise');
+        this.storage.remove('offline:due-topics');
+        this.storage.remove('offline:my-pending-request');
+        this.storage.remove('offline:pending-request');
+        this.storage.remove('offline:slips');
+        this.storage.remove('GetTaskDetail:offline');
         this.storage.get('OfflineTickets').then((tickets: any) => {
             if (_.isEmpty(tickets)) {
                 tickets = {};

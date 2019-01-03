@@ -11,7 +11,7 @@ import { NotificationsProvider } from '../../providers/notifications/notificatio
   templateUrl: 'request-detail.html',
 })
 export class RequestDetailPage {
-  title: string = 'Request Detail';
+  title: string = 'Request Details';
   requestDetail : any;
   page : any;
   isApproved : boolean = false;

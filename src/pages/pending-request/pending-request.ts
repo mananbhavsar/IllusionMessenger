@@ -107,6 +107,7 @@ export class PendingRequestPage {
       this.searchInputBtn = false;
       this.pendingData = [];
       this.query = null;
+      this.pushedRequestID = [];
       this.initializeItems();
     } else if (this.searchInputBtn === false) {
       this.searchInputBtn = true;
@@ -137,6 +138,7 @@ export class PendingRequestPage {
       // if the value is an empty string don't filter the items
       this.query = val;
       this.page = 0;
+      this.pushedRequestID = [];
       this.getData().catch(error => {
       });
 

@@ -99,6 +99,7 @@ export class UsersPage {
 
   initializeItems() {
     this.page = 0;
+    this.pushedUsersID = [];
     this.getUsers().catch(error => {
     });
   }
@@ -122,11 +123,10 @@ export class UsersPage {
       this.query = val;
       this.page = 0;
       this.users = [];
+      this.pushedUsersID = [];
       this.getUsers().catch(error => {
       });
-
     } else {
-      this.users = [];
       this.query = null;
       this.initializeItems();
     }
@@ -230,8 +230,6 @@ export class UsersPage {
       paginator.enable(false);
     });
   }
-
-
 
   refresh(refresher) {
     this.users = [];

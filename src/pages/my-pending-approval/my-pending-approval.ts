@@ -110,6 +110,7 @@ export class MyPendingApprovalPage {
 
   initializeItems() {
     this.page = 0;
+    this.pushedRequestID = [];
     this.getData().catch(error => {
     });
   }
@@ -132,6 +133,7 @@ export class MyPendingApprovalPage {
       // if the value is an empty string don't filter the items
       this.query = val;
       this.page = 0;
+      this.pushedRequestID = [];
       this.getData().catch(error => {
       });
 

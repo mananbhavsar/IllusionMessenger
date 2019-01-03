@@ -25,6 +25,7 @@ import { UserProvider } from '../providers/user/user';
 import { GroupPage } from './../pages/group/group';
 import { Global } from './global';
 import { DailyShedulePage } from '../pages/topic/daily-shedule/daily-shedule';
+import { NotificationsPage } from '../pages/notifications/notifications';
 
 export const firebaseConfig = {
     apiKey: "AIzaSyAFDZ9UPTMiDTjT4qAG0d9uVeOdhL-2PBw",
@@ -82,6 +83,7 @@ export class MyApp {
     //     { title: 'Forms', translate_key: 'HomeScreen._forms_', name: 'FormsPage', component: FormsPage, icon: '' },  
     // ];
     accountPages: PageInterface[] = [
+        // { title: 'Notifications', translate_key: 'HomeScreen._Notifications_', name: 'NotificationsPage', component: NotificationsPage, icon: 'user' },
         { title: 'Account', translate_key: 'Common._Account_', name: 'AccountPage', component: AccountPage, icon: 'user' },
         { title: 'Logout', translate_key: 'Common._LogOut_', name: 'LogoutPage', component: LogoutPage, icon: 'log-out', logsOut: true }
     ];
@@ -168,9 +170,8 @@ export class MyApp {
             logoutConfirmation.present();
         } else if (page.name === 'HomePage') {
                 this.nav.setRoot(page.name, params);
-        } else {
             // Set the root of the nav with params if it's a tab index
-            if(page.name === 'OTPage' || page.name === 'LeaveApplicationPage' || page.name === 'AdvanceRequestPage'){
+        } else if(page.name === 'OTPage' || page.name === 'LeaveApplicationPage' || page.name === 'AdvanceRequestPage'){ 
                 if(this._network.type === 'none'){
                     this.events.publish('toast:create',this.offline_translate);
                 } else {
@@ -178,11 +179,6 @@ export class MyApp {
                 }
             } else {
                 this.nav.push(page.name, params);
-            }
-        }
-        if (page.logsOut === true) {
-            // Give the menu time to close before changing to logged out
-
         }
     }
 
@@ -280,7 +276,9 @@ export class MyApp {
                 content: content + '...'
             });
 
-            this.loading.present();
+            this.loading.present().then(() => {
+                this.loading.dismiss();
+             });
         });
 
         this.events.subscribe('loading:close', () => {
@@ -288,6 +286,7 @@ export class MyApp {
                 try {
                     this.loading.dismiss();
                 } catch (e) {
+        
                 }
             }
         });

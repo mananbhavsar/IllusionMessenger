@@ -1,7 +1,14 @@
 page-daily-shedule {
-    div {
-        &.btn-ok {
-            text-align: center;
+    ion-content {
+        &.content-md {
+            background-color: #f2f2f2;
+        }
+
+        div {
+            &.btn-ok {
+                text-align: center;
+            }
         }
     }
-    }
+
+}

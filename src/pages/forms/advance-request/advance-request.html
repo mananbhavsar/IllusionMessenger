@@ -4,29 +4,30 @@
 
 <ion-content padding>
   <form [formGroup]="advanceRequestForm">
-    <ion-list>
-      <!-- <ion-item>
-            <ion-label ion-text color="primary">
-            Date
+    <ion-list box-shadow>
+      <ion-row>
+        <ion-col>
+          <ion-item no-lines>
+            <ion-label ion-text color="light-gray" fixed>
+              Amount
             </ion-label>
-            <ion-datetime (ionChange)="getDate()" displayFormat="DD MMM YYYY" pickerFormat="DD MMM YYYY" formControlName="date" max="2050">
-            </ion-datetime>
-        </ion-item> -->
-      <ion-item>
-        <ion-label ion-text color="primary" floating>
-          Request Amount
-        </ion-label>
-        <ion-input required formControlName="amount" type="tel" name="amount"></ion-input>
-      </ion-item>
-      <div class="error-message-block" *ngIf="advanceRequestForm.controls.amount.errors && (advanceRequestForm.controls.amount.dirty || advanceRequestForm.controls.amount.touched)">
-        <span *ngIf="advanceRequestForm.controls.amount.errors.required">Amount is required</span>
-      </div>
-      <ion-item>
-        <ion-label ion-text color="primary" floating>
-          Remark
-        </ion-label>
-        <ion-textarea formControlName="remark" type="text" name="remark"></ion-textarea>
-      </ion-item>
+            <ion-input required formControlName="amount" type="tel" name="amount"></ion-input>
+          </ion-item>
+          <div class="error-message-block" *ngIf="advanceRequestForm.controls.amount.errors && (advanceRequestForm.controls.amount.dirty || advanceRequestForm.controls.amount.touched)">
+            <span *ngIf="advanceRequestForm.controls.amount.errors.required">Amount is required</span>
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-item class="remark" no-lines>
+            <ion-label ion-text color="light-gray" fixed>
+              Remark
+            </ion-label>
+            <ion-textarea formControlName="remark" type="text" name="remark"></ion-textarea>
+          </ion-item>
+        </ion-col>
+      </ion-row>
     </ion-list>
     <button ion-button block type="submit" (click)="submit()" [disabled]="!advanceRequestForm.valid">
       Submit

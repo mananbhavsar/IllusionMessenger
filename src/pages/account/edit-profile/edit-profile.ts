@@ -56,11 +56,19 @@ export class EditProfilePage {
   getData() {
     this.connection.doPost('Payroll/Get_Profile_Payroll').then((response : any) => {
       this.userProfile = response.Profile;
-      this.editProfileForm.setValue({
+      if(response.Profile[0].AdharNumber === 'NA'){
+        this.editProfileForm.patchValue({
+          aadhar_number: 0
+        });
+      } else {
+        this.editProfileForm.patchValue({
+          aadhar_number: Number(response.Profile[0].AdharNumber)
+        }); 
+      }
+      this.editProfileForm.patchValue({
         personal_email: response.Profile[0].PersonalEmail,
         official_email: response.Profile[0].OfficialEmail,
         mobile_number: response.Profile[0].MobileNo,
-        aadhar_number: Number(response.Profile[0].AdharNumber),
         emrgancy_number: response.Profile[0].EmergancyContactNumber
       });
       if(Number(response.Profile[0].AdharNumber)){

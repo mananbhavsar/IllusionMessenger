@@ -5,61 +5,87 @@
 
 <ion-content padding>
   <form [formGroup]="createUserForm">
-    <ion-list>
-      <ion-item>
-            <ion-label stacked>Enter user Code</ion-label>
+    <ion-list box-shadow>
+      <ion-row>
+        <ion-col>
+          <ion-item no-lines>
+            <!-- <ion-label fixed>Enter user Code</ion-label> -->
             <ion-input required placeholder="Enter user Code" type="text" formControlName="UserCode" maxLength="10"></ion-input>
-      </ion-item>
+          </ion-item>
           <div class="error-message-block" *ngIf="createUserForm.controls.UserCode.errors && (createUserForm.controls.UserCode.dirty || createUserForm.controls.UserCode.touched)">
             <span *ngIf="createUserForm.controls.UserCode.errors.required">Enter user Code</span>
             <span *ngIf="createUserForm.controls.UserCode.errors.maxlength">Max 10 Characters</span>
           </div>
-      <ion-item>
-        <ion-label stacked>Enter User Name</ion-label>
-        <ion-input required placeholder="Enter User Name" type="text" formControlName="User" maxLength="30"></ion-input>
-      </ion-item>
-      <div class="error-message-block" *ngIf="createUserForm.controls.User.errors && (createUserForm.controls.User.dirty || createUserForm.controls.User.touched)">
-        <span *ngIf="createUserForm.controls.User.errors.required">Name is required</span>
-        <span *ngIf="createUserForm.controls.User.errors.pattern">Name should be characters only</span>
-      </div>
-      <ion-item>
-        <ion-label stacked>Enter Email Id</ion-label>
-        <ion-input required placeholder="Enter Email" type="EmailID" formControlName="EmailID"></ion-input>
-      </ion-item>
-      <div class="error-message-block" *ngIf="createUserForm.controls.EmailID.errors && (createUserForm.controls.EmailID.dirty || createUserForm.controls.EmailID.touched)">
-        <span *ngIf="createUserForm.controls.EmailID.errors.required">Email is required</span>
-        <span *ngIf="createUserForm.controls.EmailID.errors.pattern">Invalid EmailID</span>
-      </div>
-      <ion-item>
-        <ion-label stacked>Enter Phone Number</ion-label>
-        <ion-input required placeholder="Enter phone number" type="tel" formControlName="PhoneNo" maxLength="10"></ion-input>
-      </ion-item>
-      <div class="error-message-block" *ngIf="createUserForm.controls.PhoneNo.errors && (createUserForm.controls.PhoneNo.dirty || createUserForm.controls.PhoneNo.touched)">
-        <span *ngIf="createUserForm.controls.PhoneNo.errors.required">Mobile Number is required</span>
-        <span *ngIf="createUserForm.controls.PhoneNo.errors.pattern">Enter Digits</span>
-        <span *ngIf="createUserForm.controls.PhoneNo.errors.minlength">Minimum Length is 10 digit</span>
-        <span *ngIf="createUserForm.controls.PhoneNo.errors.maxlength">Maximum Length is 10 digit</span>
-      </div>
-      <ion-item [hidden]="readonly">
-        <ion-label stacked>Enter Password</ion-label>
-        <ion-input required placeholder="Enter Password" [type]="type" formControlName="Password"></ion-input>
-        <button clear ion-button *ngIf="!showPassword" item-end>
-          <ion-icon (click)="passwordShow()" name="md-eye-off"></ion-icon>
-        </button>
-        <button clear *ngIf="showPassword" ion-button item-end>
-          <ion-icon (click)="passwordShow()" name="md-eye"></ion-icon>
-        </button>
-      </ion-item>
-      <div class="error-message-block" *ngIf="createUserForm.controls.Password.errors && (createUserForm.controls.Password.dirty || createUserForm.controls.Password.touched)">
-        <span *ngIf="createUserForm.controls.Password.errors.required">Password is required</span>
-        <span *ngIf="createUserForm.controls.Password.errors.minlength">Password should be minimum 8 characters</span>
-        <span *ngIf="createUserForm.controls.Password.errors.maxlength">Password should be maximum 15 characters</span>
-      </div>
-      <ion-item *ngIf="userBtn === 'Update'" (click)="userStatus()">
-        <ion-label>{{status}}</ion-label>
-        <button clear [ngClass]="{'active' : !IsDeactivate, 'deactive' : IsDeactivate}" ion-button item-end>
-            <ion-icon name="md-radio-button-on"></ion-icon>
-          </button>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col>
+          <ion-item no-lines>
+            <!-- <ion-label fixed>Enter User Name</ion-label> -->
+            <ion-input required placeholder="Enter User Name" type="text" formControlName="User" maxLength="30"></ion-input>
+          </ion-item>
+          <div class="error-message-block" *ngIf="createUserForm.controls.User.errors && (createUserForm.controls.User.dirty || createUserForm.controls.User.touched)">
+            <span *ngIf="createUserForm.controls.User.errors.required">Name is required</span>
+            <span *ngIf="createUserForm.controls.User.errors.pattern">Name should be characters only</span>
+          </div>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col>
+          <ion-item no-lines>
+            <!-- <ion-label fixed>Enter Email Id</ion-label> -->
+            <ion-input required placeholder="Enter Email" type="EmailID" formControlName="EmailID"></ion-input>
+          </ion-item>
+          <div class="error-message-block" *ngIf="createUserForm.controls.EmailID.errors && (createUserForm.controls.EmailID.dirty || createUserForm.controls.EmailID.touched)">
+            <span *ngIf="createUserForm.controls.EmailID.errors.required">Email is required</span>
+            <span *ngIf="createUserForm.controls.EmailID.errors.pattern">Invalid EmailID</span>
+          </div>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col>
+          <ion-item no-lines>
+            <!-- <ion-label fixed>Enter Phone Number</ion-label> -->
+            <ion-input required placeholder="Enter phone number" type="tel" formControlName="PhoneNo" maxLength="10"></ion-input>
+          </ion-item>
+          <div class="error-message-block" *ngIf="createUserForm.controls.PhoneNo.errors && (createUserForm.controls.PhoneNo.dirty || createUserForm.controls.PhoneNo.touched)">
+            <span *ngIf="createUserForm.controls.PhoneNo.errors.required">Mobile Number is required</span>
+            <span *ngIf="createUserForm.controls.PhoneNo.errors.pattern">Enter Digits</span>
+            <span *ngIf="createUserForm.controls.PhoneNo.errors.minlength">Minimum Length is 10 digit</span>
+            <span *ngIf="createUserForm.controls.PhoneNo.errors.maxlength">Maximum Length is 10 digit</span>
+          </div>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col>
+          <ion-item class="last-item" no-lines [hidden]="readonly">
+            <!-- <ion-label fixed>Enter Password</ion-label> -->
+            <ion-input required placeholder="Enter Password" [type]="type" formControlName="Password"></ion-input>
+            <button color="light-gray" clear ion-button *ngIf="!showPassword" item-end>
+              <ion-icon (click)="passwordShow()" name="md-eye-off"></ion-icon>
+            </button>
+            <button color="light-gray" clear *ngIf="showPassword" ion-button item-end>
+              <ion-icon (click)="passwordShow()" name="md-eye"></ion-icon>
+            </button>
+          </ion-item>
+          <div class="error-message-block" *ngIf="createUserForm.controls.Password.errors && (createUserForm.controls.Password.dirty || createUserForm.controls.Password.touched)">
+            <span *ngIf="createUserForm.controls.Password.errors.required">Password is required</span>
+            <span *ngIf="createUserForm.controls.Password.errors.minlength">Password should be minimum 8 characters</span>
+            <span *ngIf="createUserForm.controls.Password.errors.maxlength">Password should be maximum 15 characters</span>
+          </div>
+        </ion-col>
+      </ion-row>
+     
+      <ion-item no-lines *ngIf="userBtn === 'Update'" (click)="userStatus()">
+        <ion-label>Is Activated ?</ion-label>
+        <ion-checkbox (ionChange)="changeUserStatus($event)" [checked]="IsDeactivate"></ion-checkbox>
+        <!-- <button clear [ngClass]="{'active' : !IsDeactivate, 'deactive' : IsDeactivate}" ion-button item-end>
+          <ion-icon name="md-radio-button-on"></ion-icon>
+        </button> -->
       </ion-item>
       <div *ngIf="tagsSelected.length > 0">
         <ion-item no-lines>
@@ -68,17 +94,19 @@
           </ion-label>
         </ion-item>
         <ion-scroll scrollX="true" direction="x" class="scrollable-buttons">
-          <button type="button" small ion-button icon-right *ngFor="let tag of tagsSelected;let i=index;" [ngClass]="getTagColor(tag.TagID)">
+          <button (click)="tagClicked(tag)" type="button" small ion-button icon-right button-mini *ngFor="let tag of tagsSelected;let i=index;" [ngClass]="getTagColor(tag.TagID)">
             {{tag.Tag}}
-            <ion-icon name="md-checkmark" *ngIf="in_array(tagsSelected,tag.TagID)"></ion-icon>
+            <ion-icon name="md-close" *ngIf="in_array(tagsSelected,tag.TagID)"></ion-icon>
           </button>
         </ion-scroll>
       </div>
+    </ion-list>
+    <ion-list box-shadow>
       <ion-item no-lines>
         <ion-label class="select-tag">
           Available Tags
         </ion-label>
-        <button (click)="searchTag()" item-end ion-button outline small only-icon>
+        <button (click)="searchTag()" color="light-gray" item-end ion-button outline small only-icon>
           <ion-icon name="search"></ion-icon>
         </button>
       </ion-item>
@@ -86,14 +114,15 @@
         (ionCancel)="onCancel($event)">
       </ion-searchbar>
       <ion-scroll scrollX="true" direction="x" class="scrollable-buttons">
-        <button type="button" small ion-button icon-right *ngFor="let tag of tags;let i=index;" (click)="tagClicked(tag)" [ngClass]="getTagColor(tag.TagID)">
+        <button type="button" small ion-button icon-right *ngFor="let tag of tags;let i=index;" (click)="tagClicked(tag)"
+          [ngClass]="getTagColor(tag.TagID)">
           {{tag.Tag}}
           <ion-icon name="md-checkmark" *ngIf="in_array(tagsSelected,tag.TagID)"></ion-icon>
         </button>
       </ion-scroll>
-      <button (click)="createUser()" ion-button full *ngIf="userBtn === 'Create User'" [disabled]="!createUserForm.valid">{{userBtn}}</button>
-      <button (click)="updateUser()" ion-button full *ngIf="userBtn === 'Update'" [disabled]="!createUserForm.valid">{{userBtn}}</button>
     </ion-list>
+    <button box-shadow (click)="createUser()" ion-button full *ngIf="userBtn === 'Create User'" [disabled]="!createUserForm.valid">{{userBtn}}</button>
+    <button box-shadow (click)="updateUser()" ion-button full *ngIf="userBtn === 'Update'" [disabled]="!createUserForm.valid">{{userBtn}}</button>
   </form>
   <ion-infinite-scroll *ngIf="page !== -1" (ionInfinite)="paginate($event)">
     <ion-infinite-scroll-content></ion-infinite-scroll-content>

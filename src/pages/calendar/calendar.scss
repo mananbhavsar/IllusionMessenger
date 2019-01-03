@@ -1,191 +1,267 @@
 page-calendar {
-    ion-header{
-        ion-navbar{
-            ion-toolbar{
-            &.toolbar-background-md{
-                background : #561c1c;
-            }
+  ion-header {
+    ion-navbar {
+      ion-toolbar {
+        &.toolbar-background-md {
+          background: #561c1c;
         }
-        &.header-md::after{
-        height: 0;
-        }
+      }
     }
+  }
+
+  ion-content {
+    &.content-md {
+      background-color: #F2F2F2;
     }
-    ion-content{
+    .scroll-content{
+      padding-bottom: 45px;
+    }
+
     [col-1] {
-        -webkit-box-flex: 0;
-        -webkit-flex: 0 0 8.33333%;
-        -ms-flex: 0 0 8.33333%;
-        flex: 0 0 14.285714285714286%;
-        width: 14.285714285714286%;
-        max-width: 14.285714285714286%;
+      -webkit-box-flex: 0;
+      -webkit-flex: 0 0 8.33333%;
+      -ms-flex: 0 0 8.33333%;
+      flex: 0 0 14.285714285714286%;
+      width: 14.285714285714286%;
+      max-width: 14.285714285714286%;
+    }
+
+    .col {
+      text-align: -webkit-center;
+      padding: 5px;
+    }
+
+    .last-month,
+    .current-month,
+    .next-month {
+      color: #999999;
+      font-size: 90%;
+      border-bottom: 1px solid gainsboro;
+    }
+
+    .currentDate,
+    .otherDate {
+      padding: 5px;
+    }
+
+    .working-day {
+      // width: 27px;
+      padding: 5px;
+      font-size: 14px;
+      color: #4e4d4d;
+      font-weight: bold;
+      // border-radius: 50%;
+      // border: 1px solid #000;
+    }
+
+    .current-day{
+      font-size: 8px;
+      color: #9C88FF;
+      font-weight: bold;
+
+    }
+
+    .currentDate {
+      // width: 26px;
+      // background-color: #efa6a6;
+      color: #9C88FF;
+      padding: 5px;
+      font-size: 14px;
+      // border-radius: 50%;
+    }
+
+    .calendar-header {
+      background-color: #fff;
+      color: #000;
+      box-shadow: 0 1px 1px gainsboro;
+    }
+
+    .calendar-month {
+      background-color: #fff;
+      padding: 2px 0;
+      font-size: 18px;
+    }
+
+    .month {
+      color: #000;
+      font-weight: 600;
+    }
+
+    .event-bullet {
+      // margin-top: 5px;
+      // margin-left: 4px;
+      // color: #ef6060;
+      color: #7b7b7b;
+      font-weight: bold;
+      font-size: 8px;
+    }
+
+    .selected-date {
+      // width: 29px;
+      // padding: 5px;
+      color: #26c5e8;
+      border-radius: 50%;
+      // border: 2px solid #26c5e8;
+    }
+
+    .holiday {
+      // width: 27px;
+      // padding: 5px;
+      border-radius: 50%;
+      color: #ccc;
+      // background: #e2657f;
+      // color: #6f4747;
+      // border-color: #e2657f;
+    }
+
+    .absent-date {
+      // width: 26px;
+      // padding: 5px;
+      color : red;
+      // border-radius: 50%;
+      // background: red;
+      // color: white;
+      // border-color: red;
+    }
+
+    .holiday-event {
+      font-weight: bold;
+      font-size: 8px;
+      color: #ccc;
+    }
+
+    .timings {
+      color: #1f8da5;
+    }
+
+    .shift {
+      color: green;
+    }
+
+    .absent {
+      background-color: #f53d3d;
+    }
+
+    .unselected-date {
+      border: none;
+    }
+
+    .calendar-body {
+      .grid {
+        padding: 0;
+        margin: 11px 17px;
+        width: auto;
+        box-shadow: 0 1px 10px gainsboro;
       }
-      .col {
-        text-align: -webkit-center;
-        padding: 5px;
-        font-size: 0.8em;
+
+      .col:last-child {
+        border-right: none;
       }
-      .last-month, .next-month {
-        color: #999999;
-        font-size: 90%;
+
+      .calendar-weekday,
+      .calendar-date {
+        text-align: center;
+        margin: 0;
       }
-      .currentDate, .otherDate {
-        padding: 5px;
-      }
-      .working-day{
-        width: 27px;
-        padding: 5px;
-        border-radius: 50%;
-        border:  1px solid #000;
-      }
-      .currentDate {
-        width: 26px;
+
+      .calendar-weekday {
         font-weight: bold;
-        background-color: #efa6a6;
-        color: white;
-        border-radius: 50%;
+        border-bottom: solid 1px #e2dedd;
+        background: #f5f4f4;
+        font-size: 14px;
       }
-      .calendar-header {
-        background-color: #e4e0e0;
-        color: #424242;
+
+      [week-padding] {
+        padding: 7px;
       }
-      .event-bullet {
-        margin-top : 5px;
-        margin-left: 4px;
-        color: #ef6060;
-        font-weight: bold;
-        font-size: 0.7em;
+
+      .calendar-date {
+        // border-top: solid 1px #e2dedd;
+        // border-bottom: solid 1px #e2dedd;
+        background: #fff;
       }
-      .selected-date {
-        width: 29px;
-        padding: 5px;
-        border-radius: 50%;
-        border:  2px solid #26c5e8;
+    }
+
+    ion-list {
+      &.list-md {
+        margin-top: 2px;
+        margin-bottom: 2px;
       }
-      .holiday{
-        width: 27px;
-        padding: 5px;
-        border-radius: 50%;
-        background: #e2657f;
-        color: #6f4747;
-        border-color: #e2657f;
+
+      ion-item {
+        &.item-md {
+          padding-left: 0;
+        }
+
+        ion-icon {
+          color: #cf3d23;
+        }
+
+        ion-label {
+          &.label-md {
+            margin: auto;
+            ion-row {
+              ion-col {
+                &.col {
+                  height: auto;
+                  text-align: left;
+                }
+
+                &.title{
+                  font-weight: 600;
+                  padding: 5px 0 0 5px;
+                  font-size: 12px
+  
+              }
+              &.value{
+                padding: 0 0 5px 5px;
+                  font-size: 12px;
+                  color: color($colors,light-gray);
+              }
+              }
+            }
+          }
+        }
       }
-      .absent-date{
-        width: 26px;
-        padding: 5px;
-          border-radius: 50%;
-          background:red;
-          color:white;
-          border-color: red;
+
+      &.month-data {
+        border-top: 1px solid gainsboro;
+        margin-top: 0;
+        padding-bottom: 38px;
       }
-      .holiday-event{
-        margin-top : 5px;
-        font-weight: bold;
-        font-size: 0.7em;
-        color: #3eafe8;
-      }
-      .timings{
-        color: #1f8da5;
-      }
-      .shift{
-        color: green;
-      }
-      .absent{
-        background-color: #f53d3d;
-      }
-      .unselected-date {
-        border: none;
-      }
-      .calendar-body {
-        .grid {
+    }
+  }
+
+  ion-footer {
+    background: #fff;
+    padding: 5px;
+
+    ion-row {
+      ion-col {
+        &.col {
+          height: auto;
+          text-align: left;
           padding: 0;
         }
-        .col:last-child {
-          border-right: none;
-        }
-        .calendar-weekday, .calendar-date {
+
+        &.total-present-value {
           text-align: center;
-          margin: 0;
+          font-size: 1em;
+          color: color($colors,light-gray);
         }
-        .calendar-weekday {
-          font-weight: bold;
-          border-bottom: solid 1px #e2dedd;
-          background: #f5f4f4;
+
+        &.total-present-label {
+          text-align: center;
+          color: #000;
+          font-weight : 600;
         }
-        .calendar-date {
-          border-top: solid 1px #e2dedd;
-          border-bottom: solid 1px #e2dedd;
-          background: #f5f4f4;
+
+        &.total-absent-label {
+          text-align: center;
+          color: #000;;
         }
-      }
-      ion-list{
-          &.list-md{
-              margin-top: 2px;
-              margin-bottom: 2px;
-          }
-          ion-item{
-            &.item-md {
-             padding-left: 0;
-            }
-              ion-icon{
-                  color : #cf3d23;
-              }
-              ion-label{
-                &.label-md{
-                margin: auto;
-                font-size: 0.8em;
-              ion-row{
-                ion-col{
-                  &.col{
-                    height: auto;
-                    text-align: left;
-                  }
-                  &.total-hrs-label{
-                    color: red;
-                   }
-                   &.total-hr-value{
-                     color: red;
-                     font-weight: bold;
-                   }
-                }
-              }
-            }
-          }
-          }
-          &.month-data{
-            border-top: 1px solid gainsboro;
-            margin-top: 0;
-            padding-bottom: 38px;
-          }
       }
     }
-      ion-footer{
-        background: #fff;
-        padding: 5px;
-        ion-row{
-          ion-col{
-            &.col{
-              height: auto;
-              text-align: left;
-              padding: 0;
-            }
-            &.total-present-value{
-              text-align: center;
-              font-size: 1em;
-              color: red;
-            }
-            &.total-present-label{
-              text-align: center;
-              color: green;
-            }
-            &.total-absent-label{
-              text-align: center;
-              color: red;
-            }
-          }
-        }
-      }
-      ion-footer{
-        bottom: 5px !important;
-      }
+  }
+
 }

@@ -2,25 +2,27 @@ page-salary-slip {
     ion-grid{
         ion-row{
             ion-col{
-                border: 1px solid gray;
-                .col-lab{
-                 font-weight: 600;
-                }
                 &.col{
-                    text-align: center;
-                }
-                ion-icon{
-                    color: green;
-                }
-                span{
-                    &.download{
-                        font-style: italic;
-                        text-decoration: underline;
-                        margin: 0px 9px;
-                        color: green;
+                    padding: 5px 0px 0 5px;
+                    text-align: left;
+                    &.value{
+                        font-weight: 600;
+                        color: color($colors, dark);
+                    }
+                    &.sub-title{
+                        font-weight: 600;
+                        color: color($colors, light-gray);
                     }
                 }
-
+                button {
+                    &.button-md {
+                        margin: 0 6px 6px 0;
+                        height: 1.3em;
+                        font-size: 0.8em;
+                        padding: 10px;
+                        text-transform: capitalize;
+                    }
+                }
             }
         }
     }

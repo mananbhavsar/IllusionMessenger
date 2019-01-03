@@ -16,15 +16,15 @@
 <empty  *ngIf="tags.length === 0;else data_template"></empty>
   <ng-template #data_template>
     <ion-list>
-      <ion-item *ngFor="let tag of tags;let i=index;">
+      <ion-item box-shadow margin-bottom no-lines *ngFor="let tag of tags;let i=index;">
         <ion-label>
           {{tag.Tag}}
         </ion-label>
-        <button (click)="actionSheetOpen(tag,i)" clear icon-only item-end ion-button>
-          <ion-icon name="ios-trash-outline"></ion-icon>
+        <button (click)="actionSheetOpen(tag,i)" color="light-gray" clear icon-only item-end ion-button>
+          <ion-icon  name="trash"></ion-icon>
         </button>
-        <button (click)="updateTag(tag)" color="communication" item-end ion-button clear icon-only>
-          <ion-icon name="ios-create-outline"></ion-icon>
+        <button (click)="updateTag(tag)" color="light-gray" item-end ion-button clear icon-only>
+          <ion-icon name="create" ></ion-icon>
         </button>
       </ion-item>
     </ion-list>

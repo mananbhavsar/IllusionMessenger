@@ -4,8 +4,8 @@
     </button>
     <title *ngIf="!hideTitle" [title]="getTitle()" [subTitle]="subTitle" [badgeCount]="badgeCount"></title>
     <ion-buttons end *ngIf="buttons">
-        <button ion-button (click)="sendButtonClicked(button, $event)" clear icon-only color="light" *ngFor="let button of buttons">
-            <ion-icon [name]="button.icon"></ion-icon>
+        <button small ion-button (click)="sendButtonClicked(button, $event)" clear icon-only color="light" *ngFor="let button of buttons">
+            <ion-icon class="icons"[name]="button.icon"></ion-icon>
         </button>
     </ion-buttons>
 </ion-navbar>

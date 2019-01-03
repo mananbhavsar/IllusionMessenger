@@ -17,6 +17,8 @@ export class LoginPage {
     loginForm: FormGroup;
     submitted = false;
     global: any = {};
+    eye_icon : string = 'eye-off';
+    passwordtType : string = 'password';
     constructor(
         public navCtrl: NavController,
         public user: UserProvider,
@@ -40,5 +42,16 @@ export class LoginPage {
 
     doLogin() {
         this.user.login(this.loginForm.value.login_name, this.loginForm.value.password);
+    }
+
+    togglePassword(event){
+        event.preventDefault();  
+     if(this.passwordtType === 'password'){
+         this.passwordtType = 'text';
+         this.eye_icon = 'eye';
+     } else if(this.passwordtType === 'text'){
+        this.passwordtType = 'password';
+        this.eye_icon = 'eye-off';
+     }
     }
 }

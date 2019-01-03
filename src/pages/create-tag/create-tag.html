@@ -1,29 +1,34 @@
-
 <ion-header>
-		<modal-toolbar [title]="title" (dismiss)="dismiss($event)"></modal-toolbar>
+	<modal-toolbar [title]="title" (dismiss)="dismiss($event)"></modal-toolbar>
 </ion-header>
 
 
 <ion-content padding>
-  <form [formGroup]="createTagForm">
-		<ion-list>
-			<ion-item>
-				<ion-label stacked>Enter Tag Code</ion-label>
-				<ion-input required placeholder="Enter Tag Code" type="text" formControlName="TagCode" maxLength="10"></ion-input>			
-			</ion-item>
-				<div class="error-message-block" *ngIf="createTagForm.controls.TagCode.errors && (createTagForm.controls.TagCode.dirty || createTagForm.controls.TagCode.touched)">
-					<span *ngIf="createTagForm.controls.TagCode.errors.required">Tag Code is required</span>
-				</div>
-			<ion-item>
-				<ion-label stacked>Enter Tag</ion-label>
-				<ion-input required placeholder="Enter Tag" type="text" formControlName="Tag" maxLength="30"></ion-input>
-			</ion-item>
-			<div class="error-message-block" *ngIf="createTagForm.controls.Tag.errors && (createTagForm.controls.Tag.dirty || createTagForm.controls.Tag.touched)">
-				<span *ngIf="createTagForm.controls.Tag.errors.required">Tag is required</span>
-				<span *ngIf="createTagForm.controls.Tag.errors.maxlength">Max 30 Characters</span>
-			</div>
-			<button (click)="createTag()" *ngIf="tagButton === 'Create Tag'" ion-button full [disabled]="!createTagForm.valid">{{tagButton}}</button>
-			<button (click)="updateTag()" *ngIf="tagButton === 'Update'" ion-button full [disabled]="!createTagForm.valid">{{tagButton}}</button>
+	<form [formGroup]="createTagForm">
+		<ion-list box-shadow>
+			<ion-row>
+				<ion-col>
+					<ion-item no-lines>
+						<ion-input required placeholder="Enter Tag Code" type="text" formControlName="TagCode" maxLength="10"></ion-input>
+					</ion-item>
+					<div class="error-message-block" *ngIf="createTagForm.controls.TagCode.errors && (createTagForm.controls.TagCode.dirty || createTagForm.controls.TagCode.touched)">
+						<span *ngIf="createTagForm.controls.TagCode.errors.required">Tag Code is required</span>
+					</div>
+				</ion-col>
+			</ion-row>
+			<ion-row>
+				<ion-col>
+					<ion-item class="last-item" no-lines>
+						<ion-input required placeholder="Enter Tag" type="text" formControlName="Tag" maxLength="30"></ion-input>
+					</ion-item>
+					<div class="error-message-block" *ngIf="createTagForm.controls.Tag.errors && (createTagForm.controls.Tag.dirty || createTagForm.controls.Tag.touched)">
+						<span *ngIf="createTagForm.controls.Tag.errors.required">Tag is required</span>
+						<span *ngIf="createTagForm.controls.Tag.errors.maxlength">Max 30 Characters</span>
+					</div>
+				</ion-col>
+			</ion-row>
 		</ion-list>
+		<button box-shadow (click)="createTag()" *ngIf="tagButton === 'Create Tag'" ion-button full [disabled]="!createTagForm.valid">{{tagButton}}</button>
+		<button box-shadow (click)="updateTag()" *ngIf="tagButton === 'Update'" ion-button full [disabled]="!createTagForm.valid">{{tagButton}}</button>
 	</form>
 </ion-content>

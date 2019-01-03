@@ -127,6 +127,7 @@ export class DueTopicsPage {
       this.searchInputBtn = false;
       this.topics = [];
       this.query = null;
+      this.pushedTopicsID = [];
       this.initializeItems();
     } else if (this.searchInputBtn === false) {
       this.searchInputBtn = true;
@@ -158,6 +159,7 @@ export class DueTopicsPage {
       this.query = val;
       this.page = 0;
       this.topics = [];
+      this.pushedTopicsID = [];
       this.getData().catch(error => {
       });
 

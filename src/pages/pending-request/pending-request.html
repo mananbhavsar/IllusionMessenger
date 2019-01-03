@@ -1,54 +1,64 @@
 <ion-header>
-    <!-- [buttons]="[{icon : 'search',name : 'search'}]" -->
-  <header [title]="getTitle()"  (buttonClicked)="searchData($event)"></header>
+  <!-- [buttons]="[{icon : 'search',name : 'search'}]" -->
+  <header [title]="getTitle()" (buttonClicked)="searchData($event)"></header>
   <ion-toolbar ion-text color="primary" *ngIf="searchInputBtn">
-    <ion-searchbar [showCancelButton]="true" (ionInput)="getItems($event)" (ionClear)="onClear($event)"
-    (ionCancel)="onCancel($event)">
-  </ion-searchbar>
-</ion-toolbar>
+    <ion-searchbar [showCancelButton]="true" (ionInput)="getItems($event)" (ionClear)="onClear($event)" (ionCancel)="onCancel($event)">
+    </ion-searchbar>
+  </ion-toolbar>
 </ion-header>
 
 
 <ion-content [ngClass]="{extraTop: searchInputBtn}">
   <ion-refresher (ionRefresh)="refresh($event)">
-    <ion-refresher-content pullingIcon="arrow-round-down" pullingText="Pull to refresh" refreshingSpinner="crescent" refreshingText="Refreshing...">
+    <ion-refresher-content pullingIcon="arrow-round-down" pullingText="Pull to refresh" refreshingSpinner="crescent"
+      refreshingText="Refreshing...">
     </ion-refresher-content>
   </ion-refresher>
   <center-spinner *ngIf="!pendingData; else empty_template"></center-spinner>
   <ng-template #empty_template>
-  <empty  *ngIf="pendingData.length === 0;else data_template"></empty>
-  <ng-template #data_template>
-    <ion-grid>
-      <ion-row>
-        <ion-col class="col-lab" col-4>
-          Date (Type)
-        </ion-col>
-        <ion-col class="col-lab" col-3>
-          Employee
-        </ion-col>
-        <ion-col class="col-lab" col-3>
-          Status
-        </ion-col>
-        <ion-col class="col-lab" col-2>
-          View
-        </ion-col>
-      </ion-row>
-      <ion-row *ngFor="let request of pendingData">
-        <ion-col col-4>{{request.Date}} ({{request.RequestType}})</ion-col>
-        <ion-col col-3>{{request.EmployeeName}}</ion-col>
-        <ion-col col-3 [ngClass]="{'pending' : request.Status === 'Pending', 'rejected' : request.Status === 'Rejected', 'approve' : request.Status === 'Approved'}">
-          <ion-icon [ngClass]="{'approve' : request.Status === 'Approved'}" *ngIf="request.Status === 'Approved'" name="md-checkmark-circle"></ion-icon>
-          <ion-icon [ngClass]="{'pending' : request.Status === 'Pending'}" *ngIf="request.Status === 'Pending'" name="md-clock"></ion-icon>
-          <ion-icon [ngClass]="{'rejected' : request.Status === 'Rejected'}" *ngIf="request.Status === 'Rejected'" name="md-close-circle"></ion-icon>
-          <span>{{request.Status}}</span></ion-col>
-        <ion-col (click)="ViewDetail(request)" col-2>
-          <ion-icon name="ios-eye"></ion-icon>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-    <ion-infinite-scroll *ngIf="page !== -1" (ionInfinite)="paginate($event)">
-      <ion-infinite-scroll-content></ion-infinite-scroll-content>
-    </ion-infinite-scroll>
-  </ng-template>
+    <empty *ngIf="pendingData.length === 0;else data_template"></empty>
+    <ng-template #data_template>
+      <ion-list box-shadow *ngFor="let request of pendingData">
+        <ion-row>
+          <ion-col class="col-heading">
+            Date
+          </ion-col>
+          <ion-col class="col-heading">
+            Type
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="col-content">{{request.Date}}</ion-col>
+          <ion-col class="col-content">{{request.RequestType}}</ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="col-heading">
+            Employee
+          </ion-col>
+          <ion-col class="col-heading">
+            Status
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="col-content">{{request.EmployeeName}}</ion-col>
+          <ion-col class="col-content" [ngClass]="{'pending' : request.Status === 'Pending', 'rejected' : request.Status === 'Rejected', 'approve' : request.Status === 'Approved'}">
+            <!-- <ion-icon [ngClass]="{'approve' : request.Status === 'Approved'}" *ngIf="request.Status === 'Approved'"
+              name="md-checkmark-circle"></ion-icon>
+            <ion-icon [ngClass]="{'pending' : request.Status === 'Pending'}" *ngIf="request.Status === 'Pending'" name="md-clock"></ion-icon>
+            <ion-icon [ngClass]="{'rejected' : request.Status === 'Rejected'}" *ngIf="request.Status === 'Rejected'"
+              name="md-close-circle"></ion-icon> -->
+            {{request.Status}}
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col text-right> 
+              <button (click)="ViewDetail(request)" ion-button outline button-mini color="light-gray">View Details</button>         
+          </ion-col>
+        </ion-row>
+      </ion-list>
+      <ion-infinite-scroll *ngIf="page !== -1" (ionInfinite)="paginate($event)">
+        <ion-infinite-scroll-content></ion-infinite-scroll-content>
+      </ion-infinite-scroll>
+    </ng-template>
   </ng-template>
 </ion-content>

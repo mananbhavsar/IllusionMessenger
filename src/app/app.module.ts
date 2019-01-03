@@ -101,6 +101,7 @@ import { MyApp } from './app.component';
 import { GroupsPageModule } from '../pages/groups/groups.module';
 import { OTPageModule } from '../pages/forms/o-t/o-t.module';
 import { OfflineStorageProvider } from '../providers/offline-storage/offline-storage';
+import { NotificationsPageModule } from '../pages/notifications/notifications.module';
 
 @NgModule({
     declarations: [
@@ -168,6 +169,7 @@ import { OfflineStorageProvider } from '../providers/offline-storage/offline-sto
         PipesModule,
         CalendarPageModule,
         ManageGroupPageModule,
+        NotificationsPageModule,
         DailyShedulePageModule,
         RatingPageModule,
         SalarySlipPageModule,

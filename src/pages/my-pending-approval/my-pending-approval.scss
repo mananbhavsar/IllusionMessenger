@@ -1,45 +1,54 @@
 page-my-pending-approval {
-    ion-content{
+    ion-content {
         &.extraTop {
             .scroll-content {
                 margin-top: 136px !important;
             }
         }
-        ion-grid{
-            ion-row{
-                ion-col{
-                    border: 1px solid gray;
-                    &.col-lab{
-                     font-weight: 600;
+
+        ion-list {
+            ion-row {
+                ion-col {
+                    &.col-heading {
+                        font-weight: 600;
+                        color: color($colors, light-gray);
                     }
-                    &.col{
-                        text-align: center;
+
+                    &.col-content {
+                        font-weight: 600;
+                        color: color($colors, dark);
                     }
-                    ion-icon{
-                        font-size: 1.5em;
-                        color: darkred;
-                        &.pending{
+
+                    &.col {
+                        padding: 5px 0px 0 5px;
+                        text-align: left;
+                    }
+                    button{
+                        &.button-md{
+                        margin: 0 16px 6px 0;
+                        height: 1.3em;
+                        font-size: 0.8em;
+                        padding: 10px;
+                        text-transform: capitalize;
+                        }
+                    }
+                        &.pending {
                             color: #e6b40c;
                             font-size: 15px;
-                             }
-                             &.rejected{
-                             color : red; 
-                             font-size: 15px;
-                             }
-                             &.approve{
-                                 color : green;
-                                 font-size: 15px;
-                             }
-                    }
-                    &.pending{
-                   color: #e6b40c;
-                    }
-                    &.rejected{
-                    color : red; 
-                    }
-                    &.approve{
-                        color : green;
-                    }
+                            font-weight: 600;
+                        }
+
+                        &.rejected {
+                            color: red;
+                            font-size: 15px;
+                            font-weight: 600;
+                        }
+
+                        &.approve {
+                            color: green;
+                            font-size: 15px;
+                            font-weight: 600;
+                        }
                 }
             }
         }

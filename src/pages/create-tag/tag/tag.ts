@@ -125,6 +125,7 @@ export class TagPage {
       this.query = val;
       this.page = 0;
       this.tags = [];
+      this.pushedTagsID = [];
       this.getTags().catch(error => {
       });
 
@@ -192,6 +193,7 @@ export class TagPage {
       this.searchInputBtn = false;
       this.tags = [];
       this.query = null;
+      this.pushedTagsID = [];
       this.initializeItems();
     } else if (this.searchInputBtn === false) {
       this.searchInputBtn = true;

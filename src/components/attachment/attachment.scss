@@ -6,21 +6,21 @@ attachment {
         &.attachments {
             button {
                 &.button-md {
-                    height: 4em;
+                    width: 100%;
+            border-radius: 5px;
+                    text-transform: capitalize;
                     .button-inner {
                         flex-flow: column;
-                        ion-icon {
-                            font-size: 2.5em;
-                        }
                     }
                 }
             }
         }
         button.upload {
-            width: 157px;
-            height: 57px;
-            background: color($colors, primary);
+            width: 150px;
+            height: 30px;
+            border-radius: 5px;
             overflow: hidden;
+            text-transform: capitalize;
             margin: 20px;
             position: relative;
         }

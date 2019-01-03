@@ -1,12 +1,15 @@
 @function repeat($times, $character) {
     $result: "";
+
     @if $times==0 {
         @return '';
     }
+
     @else {
         @for $i from 1 through $times {
             $result: $result + $character;
         }
+
         @return $result;
     }
 }
@@ -24,6 +27,7 @@ Platform Wide styles
 $font-weight-regular: 400;
 $font-weight-bold: 500;
 $logo-padding: 3em;
+
 body {
     -webkit-font-smoothing: antialiased;
     font-family: 'Open Sans', sans-serif !important;
@@ -34,6 +38,7 @@ body {
         .text-input-md {
             margin-top: 4.5px !important;
         }
+
         &::last-child {
             .text-input-md {
                 margin-top: 5px !important;
@@ -42,8 +47,29 @@ body {
     }
 }
 
+.segment-button {
+    color: #999 !important;
+    padding: 0 !important;
+    &.activated, &.segment-activated {
+      border-bottom: 2px solid #E8343A !important;
+      color: #E8343A !important;
+      background: transparent !important;
+    }
+  }
+
+[border-radius] {
+    border-radius: 5px !important;
+}
+
+[box-shadow] {
+    -webkit-box-shadow: 0 0 10px #e6dfdf;
+    box-shadow: 0 0 10px #e6dfdf;
+    border-radius: 5px;
+}
+
 .item-md {
     min-height: auto;
+
     h2 {
         font-size: 1.2rem;
     }
@@ -55,6 +81,7 @@ ion-menu {
             .toolbar-background {
                 background: color($colors, primary);
             }
+
             .toolbar-title {
                 color: white;
             }
@@ -92,8 +119,10 @@ form {
             &:first-child {
                 border-top: 0 none;
             }
+
             &:last-child {
                 border-bottom: 0 none;
+
                 .item-inner {
                     border-bottom: 0.55px solid #c8c7cc;
                 }
@@ -110,6 +139,7 @@ ion-app.md {
     from {
         transform: rotate(0deg);
     }
+
     to {
         transform: rotate(360deg);
     }
@@ -158,9 +188,11 @@ ion-app.md {
     padding: 0;
     font-size: 0.9em;
     font-style: italic;
+
     span {
         display: block;
         width: 100%;
+
         &::before {
             content: '* ';
         }
@@ -187,12 +219,18 @@ ion-app.md {
     margin-bottom: 5px;
 }
 
+[margin-bottom] {
+    margin-bottom: 10px !important;
+}
+
 .group-header {
     padding: 3px;
     min-height: 25px;
+
     .toolbar-background {
         background: color($colors, primary);
     }
+
     ion-title {
         div {
             text-transform: uppercase;
@@ -224,6 +262,10 @@ ion-item-divider {
             content: repeat($i, '*');
         }
     }
+}
+
+.item.item-md .checkbox-md {
+    margin: 0 5px 0 0;
 }
 
 .badge-md {

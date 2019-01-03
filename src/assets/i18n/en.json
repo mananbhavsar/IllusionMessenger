@@ -24,6 +24,7 @@
         "_SalarySlip_" : "Salary Slip",
         "_dashboard_": "Dashboard",
         "_task_": "Task",
+        "_Notifications_" : "Notifications",
         "_group_": "Groups",
         "_calendar_": "Calendar",
         "_forms" : "Forms",
@@ -186,7 +187,6 @@
         "_Welcome_": "Welcome",
         "_ErrorOccurred_": "Error occurred! Try again",
         "_CheckInternetConnection_": "Please check your network connection",
-        "_ChangePassword_": "Change Password",
         "_EditProfile_": "Edit Profile",
         "_NotificationPreference_": "Notification Preference",
         "_ContactUs_": "Contact Us"

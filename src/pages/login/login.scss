@@ -6,21 +6,70 @@ page-login {
             margin-right: -2rem;
             margin-top: 1rem;
         }
+
         #login-box {
             width: 80%;
             margin: 0 auto;
+
             form {
                 width: 100%;
+
+                ion-row {
+                    &.name{
+                    border: 1px solid #bdb9b9;
+                    border-bottom: 0;
+                    border-radius: 7px 7px 0 0;
+                    }
+                    &.password{
+                        border: 1px solid #bdb9b9;
+                        border-radius: 0 0 7px 7px;  
+                        border-top: 1px solid #f7f2f2;   
+                    }
+                    ion-col {
+                        ion-icon {
+                            font-size: 2em;
+                            padding: 10px;
+                            color: #999;
+                        }
+
+                        ion-input {
+                            border-left: 1px solid #999;
+                            padding: 0 10px;
+                            margin-top: 10px;
+                            height: 30px;
+                            .text-input::-moz-placeholder {
+                               font-size: 20px;
+                              }
+                              
+                              .text-input:-ms-input-placeholder {
+                                font-size: 20px;
+                              }
+                              
+                              .text-input::-webkit-input-placeholder {
+                                text-indent: 0;
+                                font-size: 20px;
+                              }
+                              input{
+                              &.text-input-md{
+                                  margin: 8px;
+                              }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
+
     a {
         color: #303a46;
         text-decoration: none;
         margin-top: 1rem;
         display: block;
     }
+
     .inline-links {
+        font-size: 20px;
         a {
             display: inline-block;
         }

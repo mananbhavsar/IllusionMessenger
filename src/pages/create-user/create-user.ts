@@ -23,7 +23,6 @@ export class CreateUserPage {
   userTagsMap: any = {};
   tagsSelected: any = [];
   tagList: any = [];
-  status : any = 'Activated';
   IsDeactivate : boolean = false;
   readonly:boolean = false;
   usersTagList : any = [];
@@ -42,14 +41,15 @@ export class CreateUserPage {
       PhoneNo: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern('[0-9]*')]],
       Password: ['', [Validators.required, Validators.minLength(8)]],
     });
+  }
 
+  ionViewDidEnter(){
     if (!_.isEmpty(this.navParams.data.User)) {
       this.userBtn = 'Update';
       this.type = 'password';
       this.UserID = this.navParams.data.UserID;   
       this.usersTagList = this.navParams.data.TagList;
       if(this.navParams.data.IsDeactivate === 'true'){
-       this.status = 'Deactivated';
        this.IsDeactivate = true;
       }
       this.createUserForm.setValue({
@@ -76,15 +76,6 @@ export class CreateUserPage {
     }
   }
 
-  userStatus(){
-    if(this.IsDeactivate){
-      this.IsDeactivate = false;
-      this.status = 'Activated';
-    } else if(!this.IsDeactivate){
-      this.IsDeactivate = true;
-      this.status = 'Deactivated';
-    }
-  }
 
   in_array(array, tagID) {
     if (array && tagID) {
@@ -123,6 +114,10 @@ export class CreateUserPage {
         });
       }
     });
+  }
+
+  changeUserStatus(event){
+   this.IsDeactivate = event.checked;
   }
 
 

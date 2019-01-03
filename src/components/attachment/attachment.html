@@ -1,31 +1,25 @@
 <ion-row class="attachments" *ngIf="editable && (!isBrowser)">
-  <ion-col showWhen="android" col-4>
-    <button block ion-button color="primary" (click)="capture('file')">
-      <div>
-        <ion-icon name="ios-document"></ion-icon>
-        <label>
+  <ion-col showWhen="android" >
+    <button small ion-button icon-start color="responsible" (click)="capture('file')">
+       <div>
+          <ion-icon name="ios-document"></ion-icon>
           Choose File
-        </label>
-      </div>
+       </div>
     </button>
   </ion-col>
   <ion-col>
-    <button block ion-button color="primary" (click)="capture('image')">
-      <div>
-        <ion-icon name="ios-image"></ion-icon>
-        <label>
-          Gallery
-        </label>
-      </div>
+    <button small ion-button icon-start color="light-orange" (click)="capture('image')">
+  <div>
+      <ion-icon name="ios-image"></ion-icon>
+      Gallery
+  </div>
     </button>
   </ion-col>
-  <ion-col>
-    <button block ion-button color="primary" (click)="capture('camera')">
+  <ion-col padding-bottom>
+    <button small  ion-button icon-start color="primary" (click)="capture('camera')">
       <div>
-        <ion-icon name="ios-camera"></ion-icon>
-        <label>
-          Camera
-        </label>
+    <ion-icon name="ios-camera"></ion-icon>
+    Camera
       </div>
     </button>
   </ion-col>

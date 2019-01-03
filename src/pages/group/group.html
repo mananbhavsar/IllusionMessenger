@@ -1,57 +1,58 @@
 <ion-header>
-  <header [title]="getTitle()" [buttons]="[{icon : 'search',name : 'search'},{icon:'ios-more',name:'options'}]" (buttonClicked)="headerButtonClicked($event)"></header>
-  <ion-toolbar ion-text color="primary" *ngIf="searchInputBtn" >
-      <ion-searchbar [showCancelButton]="true" (ionInput)="getItems($event)" (ionClear)="onClear($event)"
-      (ionCancel)="onCancel($event)">
+  <header [title]="getTitle()" [buttons]="[{icon : 'search',name : 'search'},{icon:'ios-more',name:'options'}]"
+    (buttonClicked)="headerButtonClicked($event)"></header>
+  <ion-toolbar ion-text color="primary" *ngIf="searchInputBtn">
+    <ion-searchbar [showCancelButton]="true" (ionInput)="getItems($event)" (ionClear)="onClear($event)" (ionCancel)="onCancel($event)">
     </ion-searchbar>
   </ion-toolbar>
-  <internet-status></internet-status>
 </ion-header>
-<ion-content no-padding [ngClass]="{extraTop: searchInputBtn}">
+<ion-content padding [ngClass]="{extraTop: searchInputBtn}">
   <ion-refresher (ionRefresh)="refresh($event)" *ngIf="!searchInputBtn">
-    <ion-refresher-content pullingIcon="arrow-round-down" pullingText="Pull to refresh" refreshingSpinner="crescent" refreshingText="Refreshing...">
+    <ion-refresher-content pullingIcon="arrow-round-down" pullingText="Pull to refresh" refreshingSpinner="crescent"
+      refreshingText="Refreshing...">
     </ion-refresher-content>
   </ion-refresher>
   <center-spinner *ngIf="isEmpty(group);else empty_template">
   </center-spinner>
   <ng-template #empty_template>
     <empty *ngIf="group.length === 0;else data_template"></empty>
-      <ng-template #data_template>
-    <ion-grid *ngIf="group !== -1">
-      <flash-news [GroupID]="group_id" [flashNews]="group.FlashNews"></flash-news>
-      <ion-item-group *ngIf="group.SystemTopicList" class="magin-bottom-5">
-        <ion-item *ngFor="let topic of group.SystemTopicList;let i = index;" (click)="openGeneralTopic(topic, i, 'SystemTopicList')"
-          color="light">
-          <h2>
-            {{topic.Topic}}
-          </h2>
-          <ion-badge item-end *ngIf="getBadge(topic.TopicCode)">{{getBadge(topic.TopicCode)}}</ion-badge>
-          <ion-icon name="ios-arrow-forward" item-end></ion-icon>
-        </ion-item>
-      </ion-item-group>
-      <!-- <ion-item-group *ngIf="group.ActiveTopicList"> -->
-        <ion-item-divider color="light">
-          <!-- <ion-icon name="ios-folder-open"></ion-icon> -->
-          Active Topics
-          <ion-icon item-end name="ios-options" color="pickup" (click)="openSortOptions()"></ion-icon>
-        </ion-item-divider>
+    <ng-template #data_template>
+      <ion-grid *ngIf="group !== -1">
+        <flash-news [GroupID]="group_id" [flashNews]="group.FlashNews"></flash-news>
+        <ion-row *ngIf="group.SystemTopicList" class="magin-bottom-5">
+          <ion-col no-padding >
+            <ion-item no-lines class="system-topic" *ngFor="let topic of group.SystemTopicList;let i = index;" (click)="openGeneralTopic(topic, i, 'SystemTopicList')">
+              <h5 class="topic">
+                {{topic.Topic}}
+              </h5>
+              <ion-badge item-end *ngIf="getBadge(topic.TopicCode)">{{getBadge(topic.TopicCode)}}</ion-badge>
+              <ion-icon color="light-gray" name="ios-arrow-forward" item-end></ion-icon>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+        <!-- <ion-item-group *ngIf="group.ActiveTopicList"> -->
+        <ion-row>
+          <ion-col>
+            <!-- <ion-icon name="ios-folder-open"></ion-icon> -->
+            Active Topics
+            <ion-icon float-right name="ios-options" color="light-gray" (click)="openSortOptions()"></ion-icon>
+          </ion-col>
+        </ion-row>
 
         <p *ngIf="group.ActiveTopicList.length === 0" text-center>No Topics Found</p>
         <ng-container *ngIf="group.ActiveTopicList.length > 0">
           <topic [group_id]="group_id" type="ActiveTopicList" [topic]="topic" *ngFor="let topic of group.ActiveTopicList;let i = index;"
-          (clicked)="topicCliked($event)"></topic>
+            (clicked)="topicCliked($event)"></topic>
         </ng-container>
-        <ion-item color="light" text-center (click)="viewAllClosedTopics($event)">
-          <h2>
+        <button ion-button block border-radius outline text-center (click)="viewAllClosedTopics($event)">
             View All Archived&nbsp;&nbsp;
             <ion-badge small text-small *ngIf="group && group.ArchiveTopicCount">{{group.ArchiveTopicCount}}</ion-badge>
-          </h2>
-        </ion-item>
-      <!-- </ion-item-group> -->
-    </ion-grid>
-    <ion-infinite-scroll *ngIf="page !== -1" (ionInfinite)="paginate($event)">
+        </button>
+        <!-- </ion-item-group> -->
+      </ion-grid>
+      <ion-infinite-scroll *ngIf="page !== -1" (ionInfinite)="paginate($event)">
         <ion-infinite-scroll-content>Nothing to load</ion-infinite-scroll-content>
-    </ion-infinite-scroll>
-  </ng-template>
+      </ion-infinite-scroll>
+    </ng-template>
   </ng-template>
 </ion-content>

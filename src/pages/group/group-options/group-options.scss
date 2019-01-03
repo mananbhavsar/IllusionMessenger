@@ -1,38 +1,38 @@
 page-group-options {
     ion-content {
+        ion-list{
         ion-row {
+            .group-name{
+                font-weight: 600;
+                padding: 0 10px;
+
+            }
+            .group-title{
+                padding: 0 10px;
+                color: color($colors,light-gray);
+            }
             &.buttons-container {
                 ion-col {
                     button {
-                        height: 4em;
+                        border-radius: 5px;
+                        text-transform: capitalize;
                         div {
-                            ion-icon {
-                                display: block;
-                                font-size: 2em;
-                            }
                             label {}
                         }
                     }
                 }
             }
         }
-        ion-card {
+    }
             ion-list {
-                ion-list-header {
-                    &.list-header-md {
-                        margin-bottom: 2px;
-                        ion-label{
-                            margin: 4px 0;
-                        }
-                    }
-                }
                 ion-item {
                     &.item-md {
-                        border-bottom: 1px solid #ccc;
                         ion-label {
                             margin: 4px 0;
-                            h2 {
+                            font-weight: 600;
+                            h3 {
                                 font-size: 1.0em;
+                                color: color($colors,dark);
                             }
                             ion-badge {
                                 margin-right: 2px;
@@ -43,17 +43,16 @@ page-group-options {
                                 .activity {
                                     font-size: 10px;
                                     padding: 1px;
-                                    .activity-status {
-                                        font-weight: 600;
-                                    }
-                                    .activity-time {
-                                        font-style: italic;
-                                    }
+                                    // .activity-status {
+                                    //     font-weight: 600;
+                                    // }
+                                    // .activity-time {
+                                    //     font-style: italic;
+                                    // }
                                 }
                             }
                         }
                     }
-                }
             }
         }
     }

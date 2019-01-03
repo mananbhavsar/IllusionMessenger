@@ -102,10 +102,10 @@ export class SalarySlipPage {
   }
 
   pushItem(item) {
-    let index = this.pushedSalarySlipID.indexOf(item.TransactionNumber);
+    let index = this.pushedSalarySlipID.indexOf(item.MonthYear);
     if (index === -1) {//push
       this.salarySlipData.push(item);
-      this.pushedSalarySlipID.push(item.TransactionNumber);
+      this.pushedSalarySlipID.push(item.MonthYear);
     } else {
       this.salarySlipData[index] = item;
     }

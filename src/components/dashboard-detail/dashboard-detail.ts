@@ -20,24 +20,20 @@ export class DashboardDetailComponent {
       value: 1
     },
     Day_2: {
-      label: '2 Day',
+      label: '2 Days',
       value: 2
     },
     Day_3: {
-      label: '3 Day',
+      label: '3 Days',
       value: 3
     },
     Day_4Plus: {
-      label: '4+ Day',
+      label: '4+ Days',
       value: 4
     },
     Past_Day: {
       label: 'Past Due Days',
       value: -1
-    },
-    archive: {
-      label: 'Archive',
-      value: -2
     }
   };
 

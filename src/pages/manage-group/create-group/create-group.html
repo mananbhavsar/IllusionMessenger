@@ -5,23 +5,29 @@
 
 <ion-content padding>
 	<form [formGroup]="createGroupForm">
-		<ion-list>
-		   	<ion-item>
-				<ion-label stacked>Enter Group Code</ion-label>
-				<ion-input required placeholder="Enter Group Code" type="text" formControlName="GroupCode" maxLength="10"></ion-input>
-			</ion-item>
-				<div class="error-message-block" *ngIf="createGroupForm.controls.GroupCode.errors && (createGroupForm.controls.GroupCode.dirty || createGroupForm.controls.GroupCode.touched)">
-					<span *ngIf="createGroupForm.controls.GroupCode.errors.required">Group Code is required</span>
-				</div>
-			<ion-item>
-				<ion-label stacked>Enter Group Name</ion-label>
-				<ion-textarea required placeholder="Enter Group Name" type="text" formControlName="Group" maxLength="30"></ion-textarea>
-			</ion-item>
-			<div class="error-message-block" *ngIf="createGroupForm.controls.Group.errors && (createGroupForm.controls.Group.dirty || createGroupForm.controls.Group.touched)">
-				<span *ngIf="createGroupForm.controls.Group.errors.required">Group name is required</span>
-				<span *ngIf="createGroupForm.controls.Group.errors.maxlength">Max 30 Characters</span>
-				<span *ngIf="createGroupForm.controls.Group.errors.pattern">Name should be characters only</span>
-			</div>
+		<ion-list box-shadow>
+			<ion-row>
+				<ion-col>
+					<ion-item no-lines>
+						<ion-input required placeholder="Enter Group Code" type="text" formControlName="GroupCode" maxLength="10"></ion-input>
+					</ion-item>
+					<div class="error-message-block" *ngIf="createGroupForm.controls.GroupCode.errors && (createGroupForm.controls.GroupCode.dirty || createGroupForm.controls.GroupCode.touched)">
+						<span *ngIf="createGroupForm.controls.GroupCode.errors.required">Group Code is required</span>
+					</div>
+				</ion-col>
+			</ion-row>
+			<ion-row>
+				<ion-col>
+					<ion-item class="last-item" no-lines>
+						<ion-textarea required placeholder="Enter Group Name" type="text" formControlName="Group" maxLength="30"></ion-textarea>
+					</ion-item>
+					<div class="error-message-block" *ngIf="createGroupForm.controls.Group.errors && (createGroupForm.controls.Group.dirty || createGroupForm.controls.Group.touched)">
+						<span *ngIf="createGroupForm.controls.Group.errors.required">Group name is required</span>
+						<span *ngIf="createGroupForm.controls.Group.errors.maxlength">Max 30 Characters</span>
+						<span *ngIf="createGroupForm.controls.Group.errors.pattern">Name should be characters only</span>
+					</div>
+				</ion-col>
+			</ion-row>
 			<div *ngIf="userDetail.length > 0">
 				<ion-item no-lines>
 					<ion-label class="selected-user">
@@ -30,35 +36,42 @@
 				</ion-item>
 				<ion-item *ngFor="let user of userDetail; let i = index;">
 					<ion-label>{{user.User}}</ion-label>
-					<button ion-button item-end small color="casestatus" [ngClass]="{'outline-button' : !isAdminCheck(user.UserID)}" (click)="makeAdmin(user)">Admin</button>
-			        <button ion-button item-end small icon-only outline color="danger" (click)="userAction($event,user)"><ion-icon name="ios-trash-outline"></ion-icon></button>
+					<button ion-button item-end small color="casestatus" [ngClass]="{'outline-button' : !isAdminCheck(user.UserID)}"
+					 (click)="makeAdmin(user)">Admin</button>
+					<button ion-button item-end small icon-only clear (click)="userAction($event,user)">
+						<ion-icon color="light-gray" name="trash"></ion-icon>
+					</button>
 				</ion-item>
 			</div>
+		</ion-list>
+		<ion-list>
 			<ion-item no-lines>
 				<ion-label class="select-user">
 					Select Users
 				</ion-label>
-				<button (click)="searchUser()" item-end ion-button outline small only-icon>
+				<button (click)="searchUser()" color="light-gray" item-end ion-button outline small only-icon>
 					<ion-icon name="search"></ion-icon>
 				</button>
 			</ion-item>
-			<ion-searchbar [showCancelButton]="shouldShowCancel" *ngIf="searchInputBtn" (ionInput)="getItems($event)" (ionCancel)="onCancel($event)">
+			<ion-searchbar [showCancelButton]="shouldShowCancel" *ngIf="searchInputBtn" (ionInput)="getItems($event)"
+			 (ionCancel)="onCancel($event)">
 			</ion-searchbar>
 			<ion-item *ngFor="let user of groupDetail; let i = index;">
 				<ion-label>{{user.User}}</ion-label>
 				<ion-checkbox (ionChange)="userAction($event,user)" [checked]="in_array(userDetail,user.UserID)"></ion-checkbox>
-				<button ion-button item-end small color="casestatus" [ngClass]="{'outline-button' : !isAdminCheck(user.UserID)}" (click)="makeAdmin(user)">Admin</button>
+				<button ion-button item-end small color="casestatus" [ngClass]="{'outline-button' : !isAdminCheck(user.UserID)}"
+				 (click)="makeAdmin(user)">Admin</button>
 			</ion-item>
 			<ion-item-divider text-center [hidden]="page > 0">
 				Nothing more to show
-			  </ion-item-divider>
+			</ion-item-divider>
 		</ion-list>
 	</form>
 	<ion-infinite-scroll *ngIf="page !== -1" (ionInfinite)="paginate($event)">
 		<ion-infinite-scroll-content></ion-infinite-scroll-content>
-	  </ion-infinite-scroll>
+	</ion-infinite-scroll>
 </ion-content>
 <ion-footer class="hide-on-keyboard-open">
-	 <button (click)="createGroup()" *ngIf="groupBtn === 'Create Group'" ion-button full [disabled]="!createGroupForm.valid">{{groupBtn}}</button>
-		<button (click)="updateGroup()" *ngIf="groupBtn === 'Update'" ion-button full [disabled]="!createGroupForm.valid">{{groupBtn}}</button>
+	<button (click)="createGroup()" *ngIf="groupBtn === 'Create Group'" ion-button full [disabled]="!createGroupForm.valid">{{groupBtn}}</button>
+	<button (click)="updateGroup()" *ngIf="groupBtn === 'Update'" ion-button full [disabled]="!createGroupForm.valid">{{groupBtn}}</button>
 </ion-footer>

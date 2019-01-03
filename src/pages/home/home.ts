@@ -216,7 +216,7 @@ export class HomePage {
                         this.buttons = [];
                         this.data = response;
                         this.dataFetched = true;
-                        this.buttons.push({ icon: 'search', name: 'search' }, { icon: 'flash', name: 'flash' }, { icon: 'ios-options', name: 'sort' });
+                        this.buttons.push({ icon: 'flash', name: 'flash' }, { icon: 'ios-options', name: 'sort' },{ icon: 'search', name: 'search' },);
                         if (!_.isEmpty(this.data)) {
                             //flash
                             if (response.FlashNews) {
@@ -256,7 +256,7 @@ export class HomePage {
     registerDevice(isPullDown) {
         //make device regsiter call
         //if internet
-        this.connectToServer(1234, false);
+        // this.connectToServer(1234, false);
         if (this._network.type === 'none') {
             this.deviceRegsiter = 0;
         } else if (this.platform.is('core')) {
@@ -513,7 +513,7 @@ export class HomePage {
         }
     }
 
-    dashboardTabSearchHide() {
+    dashboardTabSearchHide(event) {
         if (this.selectedTab === 'stats' && this.searchInputBtn) {
             this.events.publish('toast:create', 'Search not available here');
             this.data = [];

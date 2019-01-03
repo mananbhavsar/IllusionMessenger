@@ -1,0 +1,23 @@
+page-notifications {
+ ion-content{
+    &.content-md {
+        background-color: #F2F2F2;
+    }
+    &.extraTop {
+        .scroll-content {
+            margin-top: 136px !important;
+        }
+    }
+     ion-list{
+         ion-item{
+            ion-label{
+                span{
+                    font-size: 0.8em;
+                    color: color($colors,light-gray);
+                    margin-left: 5px;
+                }
+            } 
+         }
+     }
+ }
+}

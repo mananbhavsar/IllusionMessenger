@@ -39,8 +39,11 @@ $colors: (
     danger:     #f53d3d,
     light:      #f4f4f4,
     dark:       #222,
+    light-gray : #999,
+    responsible : #9C88FF,
     // dashboard: #4ECDC4,
     pickup:    #2574A9,
+    light-orange: #F3A032, 
     casestatus:#87D37C,
     communication:#00B16A,
     leaf : #009688,
@@ -51,6 +54,9 @@ $colors: (
 //tags
 $i: 0;
 $refcolors: #55A46A, #9BD385, #D9EA79, #E4EE77, #F2E975, #F2D368, #F0AB55, #ED7943, #EA4E38, #E80D19;
+
+$segment-button-md-text-color-activated : Color($colors,primary);
+$segment-button-ios-text-color : Color($colors,primary);
 
 @each $c in $refcolors {
     .tag-#{$i} {

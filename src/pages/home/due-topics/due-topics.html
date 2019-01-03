@@ -6,7 +6,7 @@
     </ion-toolbar>
 </ion-header>
 
-<ion-content [ngClass]="{extraTop: searchInputBtn}">
+<ion-content padding [ngClass]="{extraTop: searchInputBtn}">
     <ion-refresher (ionRefresh)="refresh($event)" *ngIf="!searchInputBtn">
         <ion-refresher-content pullingIcon="arrow-round-down" pullingText="Pull to refresh" refreshingSpinner="crescent" refreshingText="Refreshing...">
         </ion-refresher-content>

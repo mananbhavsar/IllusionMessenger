@@ -1,33 +1,83 @@
 page-close-topic {
     ion-content {
+
         //extra top when search shown
         &.extraTop {
             .scroll-content {
                 margin-top: 136px !important;
             }
         }
+
+        &.content-md {
+            background-color: #F2F2F2;
+        }
+
+        ion-item-divider {
+            background-color: #fff;
+        }
+
         ion-grid {
-            ion-item {
-                ion-label {
-                    &.label-md {
-                        margin: 3px 3px 3px 0;
-                    }
-                    p {
-                        width: 100%;
-                        ion-row {
-                            ion-col {
-                                font-size: 11px;
-                                &.pickup {
-                                    color: color($colors, pickup);
+            ion-row {
+                ion-col {
+                    ion-item {
+                        &.item-md{
+                            padding: 3px 0 3px 16px;
+                        }
+                        ion-label {
+                            &.label-md {
+                                margin: 3px 3px 3px 0;
+                            }
+
+                            h5 {
+                                margin-top: 0;
+                                font-weight: 600;
+
+                                span {
+                                    &.topic-name {
+                                        width: 70%;
+                                        font-weight: 600;
+                                        display: inline-block;
+                                        text-overflow: ellipsis;
+                                        overflow: hidden;
+                                    }
+
+                                    &.icons {
+                                        margin-right: 40px;
+                                    }
                                 }
-                                &.secondary {
-                                    color: color($colors, secondary);
+                            }
+
+                            p {
+                                width: 100%;
+
+                                ion-row {
+                                    ion-col {
+                                        font-size: 11px;
+
+                                        &.pickup {
+                                            color: #969595;
+                                        }
+
+                                        &.secondary {
+                                            color: color($colors, secondary);
+                                        }
+
+                                        &.danger {
+                                            color: color($colors, danger);
+                                        }
+                                    }
                                 }
-                                &.danger {
-                                    color: color($colors, danger);
+                            }
+
+                            ion-badge {
+                                &.badge-md {
+                                    padding: 3px 6px;
+                                    font-size: 1.2rem;
+                                    background-color: #F3A032;
                                 }
                             }
                         }
+
                     }
                 }
             }

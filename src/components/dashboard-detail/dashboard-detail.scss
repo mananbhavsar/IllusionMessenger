@@ -1,4 +1,16 @@
 dashboard-detail {
+    @media screen and (min-width: 300px) {
+        .title {
+         width: 65%;
+         left: 1.7em;
+        }
+    }
+    @media screen and (min-width: 700px) {
+        .title {
+         width: 35%;
+         left: 1.4em;
+        }
+    }
     ion-row {
         ion-col {
             ion-label {
@@ -17,54 +29,50 @@ dashboard-detail {
                 display: flex;
                 margin-bottom: 1em;
                 .title {
-                    width: 30%;
+                    border-radius: 5px;
                     color: white;
-                    min-height: 50px;
+                    min-height: 35px;
                     display: flex;
                     align-items: center;
-                    border-radius: 3px;
                     justify-content: center;
-                    font-size: 0.8em;
-                    font-weight: 700;
+                    font-size: 1.2em;
+                    font-weight: 800;
                     position: absolute;
-                    top: 0.5em;
-                    left: 1em;
                     z-index: 1;
                     &.Day_1 {
-                        background-color: #FFA200;
+                        background-color: #F3A032;
                     }
                     &.Day_2 {
-                        background-color: #FDEB51;
+                        background-color: #F3A032;
                     }
                     &.Day_3 {
-                        background-color: #2BBD57;
+                        background-color: #F3A032;
                     }
                     &.Day_4Plus {
-                        background-color: #00C1DC;
+                        background-color: #F3A032;
                     }
                     &.Past_Day{
-                        background-color: #F08080;
+                        background-color: #F3A032;
                     }
                     &.Today{
-                        background-color: #cda1f7;
-                    }
-                    &.archive{
-                        background-color: #52f3d0;
+                        background-color: #F3A032;
                     }
                 }
                 .value {
-                    background: #f9f9f9;
+                    border-radius: 5px;
+                    background: #fff;
                     border: 1px solid #eee;
-                    border-radius: 2px;
-                    box-shadow: 1px 1px 1px #ccc;
+                    -webkit-box-shadow: 0 0 10px #e6dfdf;
+                    box-shadow: 0 0 10px #e6dfdf;
                     position: relative;
                     top: 0.5em;
-                    font-size: 2em;
+                    height: 0;
+                    font-size: 2.2em;
                     display: flex;
+                    font-weight: 500;
                     align-items: center;
-                    justify-content: flex-end;
-                    padding: 0.5em 1em;
-                    margin: 0.125em;
+                    justify-content: center;
+                    padding: 1.6em 1em 1em 1em;
                     width: 100%;
                 }
             }

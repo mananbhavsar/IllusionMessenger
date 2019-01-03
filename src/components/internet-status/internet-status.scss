@@ -2,13 +2,13 @@ internet-status {
     .device-register {
         text-align: center;
         span {
-            color: white;
+            color: black;
             display: block;
             &.gray {
                 background-color: gray;
             }
             &.secondary {
-                background-color: color($colors, secondary);
+                background-color: #D2E28B;
             }
             &.pickup {
                 background-color: color($colors, pickup);

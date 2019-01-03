@@ -1,5 +1,5 @@
 export var Global = {
-    APP_NAME: 'LaxmiTaskManager',
+    APP_NAME: 'Laxmi Task Manager',
     album: 'Laxmi Task Manager',
     tutorial: false,
     color: {
@@ -44,8 +44,8 @@ export var Global = {
         ios: 'https://itunes.apple.com/us/app/laxmi-task-manager/id1347861725?ls=1&mt=8'
     },
     // SERVER_URL: 'http://104.211.240.240/Labguru_Mobile/api/',
-    SERVER_URL: 'https://messengerapi.illusiondentallab.com/api/',
-    // SERVER_URL : 'https://mobileuat.illusiondentallab.com/api/',
+    // SERVER_URL: 'https://messengerapi.illusiondentallab.com/api/',
+    SERVER_URL : 'https://mobileuat.illusiondentallab.com/api/',
     CDN: 'https://d3nwpy9993ruf3.cloudfront.net/',
 
     getActiveComponentName(component) {

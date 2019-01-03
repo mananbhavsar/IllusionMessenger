@@ -126,6 +126,7 @@ export class ManageGroupPage {
   initializeItems() {
     this.page = 0;
     this.groups = [];
+    this.pushedGroupsID = [];
     this.getData().catch(error => {
     });
   }
@@ -148,6 +149,7 @@ export class ManageGroupPage {
       this.query = val;
       this.page = 0;
       this.groups = [];
+      this.pushedGroupsID = [];
       this.getData().catch(error => {
       });
     } else {

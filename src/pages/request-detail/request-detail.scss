@@ -5,18 +5,19 @@ page-request-detail {
         }
         ion-row{
             ion-col{
-                border: 1px solid gray;
                 &.col-lab{
                  font-weight: 600;
                 }
                 &.col{
-                    text-align: center;
+                    padding: 5px 0px 0 5px;
+                    text-align: left;
                     &.value{
-                        text-align: center;
+                        font-weight: 600;
+                        color: color($colors, dark);
                     }
                     &.sub-title{
-                        text-align: left;
                         font-weight: 600;
+                        color: color($colors, light-gray);
                     }
                 }
                 ion-icon{

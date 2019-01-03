@@ -64,7 +64,7 @@ export class CalendarPage {
       },false).then((response: any) => {
         this.formattedDate = moment(this.date, 'YYYY/MM/DD');
         this.today = this.formattedDate.format('D');
-        this.selectedMonth = this.formattedDate.format('MMM');
+        this.selectedMonth = this.formattedDate.format('MMMM');
         this.selectedYear = this.formattedDate.format('YYYY');
         this.daysInThisMonth = response.Calendar;
         this.storage.set('offline:calendar',this.daysInThisMonth);

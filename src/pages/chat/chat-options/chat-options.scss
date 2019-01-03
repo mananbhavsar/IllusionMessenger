@@ -6,12 +6,20 @@ page-chat-options {
             ion-list {
                 margin-bottom: 0;
                 ion-item {
+                    &.saved-media{
+                        -webkit-box-shadow: 0 0 10px #e6dfdf;
+                        box-shadow: 0 0 10px #e6dfdf;
+                        border-radius: 5px;
+                    }
                     .item-inner {
                         margin-left: 0 !important;
                     }
-                    ion-label {
-                        margin: 4px 0;
+                    &.participants{
+                        ion-label{
+                            margin: 4px 0;
+                        }
                     }
+              
                     &.close-topic {
                         ion-label {
                             color: color($colors, danger);
@@ -33,6 +41,10 @@ page-chat-options {
                     }
                     ion-datetime {
                         display: none;
+                    }
+                    .group{
+                        font-weight: 600;
+                        font-size: 12px;
                     }
                 }
             }
@@ -59,15 +71,18 @@ page-chat-options {
                     font-style: italic;
                     font-size: 0.8em;
                 }
+                .tags{
+                color: #F3A033;
+                }
                 .activity {
                     font-size: 10px;
                     padding: 1px;
-                    .activity-status {
-                        font-weight: 600;
-                    }
-                    .activity-time {
-                        font-style: italic;
-                    }
+                    // .activity-status {
+                    //     font-weight: 600;
+                    // }
+                    // .activity-time {
+                    //     font-style: italic;
+                    // }
                 }
             }
         }

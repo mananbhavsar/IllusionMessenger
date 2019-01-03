@@ -51,7 +51,7 @@ export class AccountPage {
         if (this.network.type === 'none') {
             this.events.publish('toast:error', this.not_availble_in_offline_translate);
         }
-        return this.network.type !== null;
+        return this.network.type !== 'none';
     }
 
     ionViewDidEnter() {

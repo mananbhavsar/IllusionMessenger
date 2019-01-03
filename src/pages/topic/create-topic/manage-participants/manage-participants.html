@@ -24,7 +24,7 @@
 			<ion-icon item-end name="ios-checkmark-circle-outline" *ngIf="!inSelectedParticipants(user.User[0].UserID);else selectedParticipant"></ion-icon>
 			<ng-template #selectedParticipant>
 				<button [hidden]="is_from_chat" item-end ion-button clear icon-only (click)="toggleAssign(user.User[0].UserID, $event)">
-					<ion-icon color="pickup" [name]="_assigned === user.User[0].UserID ? 'ios-star':'ios-star-outline'"></ion-icon>
+					<ion-icon color="responsible" [name]="_assigned === user.User[0].UserID ? 'ios-star':'ios-star-outline'"></ion-icon>
 				</button>
 				<ion-icon item-end name="ios-checkmark-circle" color="dashboard" item-end></ion-icon>
 			</ng-template>

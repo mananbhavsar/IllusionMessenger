@@ -125,6 +125,26 @@ export class CreateTopicPage {
     })
   }
 
+  getTags(participant) {
+    let tags = [];
+
+    let tagNames = participant.Tag.split(',');
+    let tagIds = participant.TagID.split(',');
+
+    tagNames.forEach((tag, index) => {
+      tags.push({
+        TagID: tagIds[index],
+        Tag: tag,
+      })
+    });
+
+    return tags;
+  }
+
+  getTagColor(id) {
+    return 'tag-' + (id % 10);
+  }
+
   removeParticipant(userID) {
     if (this.selectedParticipantIDs.indexOf(userID) > -1) {
       this.selectedParticipantIDs.splice(this.selectedParticipantIDs.indexOf(userID), 1);

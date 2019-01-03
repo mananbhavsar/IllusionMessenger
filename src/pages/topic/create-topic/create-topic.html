@@ -1,37 +1,76 @@
 <ion-header>
-  <modal-toolbar [title]="getTitle()" [subTitle]="getSubTitle()" (dismiss)="dismiss($event)"></modal-toolbar>
+  <modal-toolbar [title]="getTitle()" (dismiss)="dismiss($event)"></modal-toolbar>
 </ion-header>
 <ion-content padding>
   <ion-grid>
     <form [formGroup]="createForm">
-      <ion-list>
-        <ion-item>
-          <ion-label>Make Private</ion-label>
-          <ion-toggle formControlName="private" value="true" checked="true" color="secondary" mode="ios"></ion-toggle>
-          <p>This will make topic visible to selected users</p>
-        </ion-item>
-        <ion-item>
-          <ion-label floating>Topic Name</ion-label>
-          <ion-input formControlName="name" type="text" maxLength="60" placeholder="Topic Name"></ion-input>
-        </ion-item>
-        <div text-right class="italic-small-grey">
-            ({{createForm.get('name').value.length}}/60)
-          </div>
-        <div class="error-message-block" *ngIf="createForm.controls.name.errors && (createForm.controls.name.dirty || createForm.controls.name.touched)">
-            <span *ngIf="createForm.controls.name.errors.maxlength">max 60 character only</span>        
-          <span *ngIf="createForm.controls.name.errors.required">Name is required</span>
-        </div>
-        <ion-item>
-          <ion-label>Due Date</ion-label>
-          <ion-datetime displayFormat="DD MMM YYYY, h A" pickerFormat="DD MMM YYYY, HH" formControlName="due_date" max="2050" #dueDate
-            hourValues="09,10,11,12,13,14,15,16,17,18,19,20,21"></ion-datetime>
-        </ion-item>
-        <div class="error-message-block" *ngIf="createForm.controls.due_date.errors && (createForm.controls.due_date.dirty || createForm.controls.due_date.touched)">
-          <span *ngIf="createForm.controls.due_date.errors?.InvalidDatetime">{{getErrorMessage()}}</span>
-        </div>
+      <ion-list box-shadow>
+        <ion-row>
+          <ion-col class="group-title">
+            Group Name
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col class="group-name">
+            {{getSubTitle()}}
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-item no-lines>
+              <ion-label>Make Private</ion-label>
+              <ion-toggle formControlName="private" value="true" checked="true" color="secondary" mode="md"></ion-toggle>
+              <p>This will make topic visible to selected users</p>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-item no-lines>
+              <ion-input formControlName="name" type="text" maxLength="60" placeholder="Topic Name"></ion-input>
+            </ion-item>
+            <div text-right class="italic-small-grey">
+              {{createForm.get('name').value.length}}/60
+            </div>
+            <div class="error-message-block" *ngIf="createForm.controls.name.errors && (createForm.controls.name.dirty || createForm.controls.name.touched)">
+              <span *ngIf="createForm.controls.name.errors.maxlength">max 60 character only</span>
+              <span *ngIf="createForm.controls.name.errors.required">Name is required</span>
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <ion-item no-lines>
+              <ion-label>Due Date</ion-label>
+              <ion-datetime displayFormat="DD MMM YYYY, h A" pickerFormat="DD MMM YYYY, HH" formControlName="due_date"
+                max="2050" #dueDate hourValues="09,10,11,12,13,14,15,16,17,18,19,20,21"></ion-datetime>
+            </ion-item>
+            <div class="error-message-block" *ngIf="createForm.controls.due_date.errors && (createForm.controls.due_date.dirty || createForm.controls.due_date.touched)">
+              <span *ngIf="createForm.controls.due_date.errors?.InvalidDatetime">{{getErrorMessage()}}</span>
+            </div>
+          </ion-col>
+        </ion-row>
         <ng-container *ngIf="createForm.get('private').value;else publicAssignTo">
           <ion-item no-lines>
-            <button ion-button block (click)="addParticipants()">Add Participants</button>
+            <ion-label text-left><span *ngIf="selectedParticipantIDs.length > 0">{{participantsCount}}</span>
+              Participant<span>{{participantsCount > 1 ? 's' : ''}}</span></ion-label>
+            <button (click)="addParticipants()" item-end ion-button outline button-mini color="light-gray">Add
+              Participants</button>
+          </ion-item>
+          <ion-item *ngFor="let userID of selectedParticipantIDs" [hidden]="isMe(userID)" class="participants">
+            <h3>
+              {{participantsName[userID]}}
+            </h3>
+            <ion-row *ngIf="userID && userID.Tag">
+              <ion-badge border-radius *ngFor="let tag of getTags(userID)" [ngClass]="getTagColor(tag.TagID)">{{tag.Tag}}</ion-badge>
+            </ion-row>
+            <ion-icon item-end color="responsible" *ngIf="this.createForm.get('assigned').value === userID" name="ios-star"></ion-icon>
+            <ion-icon item-end color="light-gray" name="trash" (click)="removeParticipant(userID)"></ion-icon>
+          </ion-item>
+        </ng-container>
+        <!-- <ng-container>
+          <ion-item no-lines>
+            <button border-radius ion-button block (click)="addParticipants()">Add Participants</button>
           </ion-item>
           <div>
             <ion-list *ngIf="selectedParticipantIDs.length">
@@ -41,19 +80,24 @@
               <ion-note color="communication">{{participantsCount}} participants</ion-note>              
               <ion-item *ngFor="let userID of selectedParticipantIDs" [hidden]="isMe(userID)">
                 {{participantsName[userID]}}
-                <ion-icon item-end color="pickup" *ngIf="this.createForm.get('assigned').value === userID" name="ios-star"></ion-icon>
+                <ion-icon item-end color="responsible" *ngIf="this.createForm.get('assigned').value === userID" name="ios-star"></ion-icon>
                 <ion-icon item-end color="danger" name="ios-trash" (click)="removeParticipant(userID)"></ion-icon>
               </ion-item>
             </ion-list>
           </div>
-        </ng-container>
+        </ng-container> -->
         <ng-template #publicAssignTo>
-          <ion-item>
-            <ion-label>Assign To</ion-label>
-            <ion-select formControlName="assigned" placeholder="Select">
-              <ion-option [hidden]="isMe(user.User[0].UserID)" *ngFor="let user of participants | orderBy:'User[0].User'" [value]="user.User[0].UserID">{{user.User[0].User}}</ion-option>
-            </ion-select>
-          </ion-item>
+          <ion-row>
+            <ion-col>
+              <ion-item class="last-item" no-lines>
+                <ion-label>Assign To</ion-label>
+                <ion-select formControlName="assigned" placeholder="Select">
+                  <ion-option [hidden]="isMe(user.User[0].UserID)" *ngFor="let user of participants | orderBy:'User[0].User'"
+                    [value]="user.User[0].UserID">{{user.User[0].User}}</ion-option>
+                </ion-select>
+              </ion-item>
+            </ion-col>
+          </ion-row>
         </ng-template>
       </ion-list>
     </form>
@@ -61,6 +105,6 @@
 </ion-content>
 <ion-footer>
   <ion-toolbar>
-    <button (click)="submitForm()" ion-button block [disabled]="!createForm.valid || (createForm.get('private').value && selectedParticipantIDs.length === 0)">Save</button>
+    <button border-radius (click)="submitForm()" ion-button block [disabled]="!createForm.valid || (createForm.get('private').value && selectedParticipantIDs.length === 0)">Save</button>
   </ion-toolbar>
 </ion-footer>

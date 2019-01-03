@@ -1,3 +1,23 @@
 page-o-t {
-
+    ion-col{
+        &.col{
+        padding: 12px 12px 0 12px;
+        }
+        ion-item{
+            &.item-md{
+             background-color: #f3f0f0;
+             height: 2.3em;
+             border-radius: 5px;
+            }
+            ion-input{
+                input{
+                    text-align: end;
+                }
+            }
+            &.remark{
+              min-height: 85px;
+              margin-bottom: 13px !important;
+            }
+        }
+    }
 }

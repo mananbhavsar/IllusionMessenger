@@ -1,10 +1,23 @@
 page-group {
 	ion-content {
+		&.content-md{
+			background-color: #F2F2F2;
+			}
 		&.extraTop {
             .scroll-content {
                 margin-top: 136px !important;
             }
-        }
+		}
+		.system-topic{
+			-webkit-box-shadow: 0 0 10px #e6dfdf;
+			box-shadow: 0 0 10px #e6dfdf;
+            border-radius: 5px;
+		}
+		h5{
+			&.topic{
+			font-weight: 600;
+			}	
+		}
 		ion-grid {
 			ion-item-divider {
 				ion-label {
@@ -13,6 +26,18 @@ page-group {
 						font-size: 2em;
 					}
 				}
+			}
+		}
+		ion-badge{
+			&.badge-md{
+			padding: 3px 6px;
+			font-size: 1.2rem;
+			background-color: #F3A032;
+			}
+		}
+		ion-checkbox{
+			&.checkbox-md{
+				margin: 0;
 			}
 		}
 	}

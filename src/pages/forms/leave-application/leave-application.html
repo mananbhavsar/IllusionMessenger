@@ -4,57 +4,83 @@
 
 <ion-content padding>
   <form [formGroup]="leaveApplicationForm">
-    <ion-list>
-      <ion-item>
-        <ion-label ion-text color="primary">
-          From Date
-        </ion-label>
-        <ion-datetime (ionChange)="getTotalLeaves($event)" displayFormat="DD MMM YYYY" pickerFormat="DD MMM YYYY" formControlName="from_date"
-          max="2050">
-        </ion-datetime>
-      </ion-item>
-      <div *ngIf="error.isError" class="error-message-block">
-        {{ error.errorMessage }}
-     </div>
-      <ion-item>
-        <ion-label ion-text color="primary">
-          To Date
-        </ion-label>
-        <ion-datetime (ionChange)="getTotalLeaves($event)" displayFormat="DD MMM YYYY" pickerFormat="DD MMM YYYY" formControlName="to_date"
-          max="2050">
-        </ion-datetime>
-      </ion-item>
-      <ion-item>
-        <ion-label ion-text color="primary">
-          Reporting Date
-        </ion-label>
-        <ion-datetime (ionChange)="getTotalLeaves($event)" displayFormat="DD MMM YYYY" pickerFormat="DD MMM YYYY" formControlName="reporting_date"
-          max="2050">
-        </ion-datetime>
-      </ion-item>
-      <ion-item>
-        <ion-label ion-text color="primary" floating>
-          No of leaves
-        </ion-label>
-        <ion-input [readonly]="IsReadOnly" (input)="getLeaves()" required formControlName="leaves" type="number" name="leaves"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label>Type</ion-label>
-        <ion-select formControlName="leaveType">
-          <ion-option required *ngFor="let type of typeList" [hidden]="type.Description === ''" [value]="type.TypeOfLeaveID" (ionSelect)="getType($event)">{{type.Description}}</ion-option>
-        </ion-select>
-      </ion-item>
-      <div class="error-message-block" *ngIf="leaveApplicationForm.controls.leaveType.errors && (leaveApplicationForm.controls.leaveType.dirty || leaveApplicationForm.controls.leaveType.touched)">
-        <span *ngIf="leaveApplicationForm.controls.leaveType.errors.required">Select leave type</span>
-      </div>
-      <ion-item>
-        <ion-label ion-text color="primary" floating>
-          Remark
-        </ion-label>
-        <ion-textarea formControlName="remark" type="text" name="remark"></ion-textarea>
-      </ion-item>
+    <ion-list box-shadow>
+      <ion-row>
+        <ion-col>
+          <ion-item no-lines>
+            <ion-label ion-text color="light-gray">
+              From Date
+            </ion-label>
+            <ion-datetime (ionChange)="getTotalLeaves($event)" displayFormat="DD MMM YYYY" pickerFormat="DD MMM YYYY"
+              formControlName="from_date" max="2050">
+            </ion-datetime>
+          </ion-item>
+          <div *ngIf="error.isError" class="error-message-block">
+            {{ error.errorMessage }}
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-item no-lines>
+            <ion-label ion-text color="light-gray">
+              To Date
+            </ion-label>
+            <ion-datetime (ionChange)="getTotalLeaves($event)" displayFormat="DD MMM YYYY" pickerFormat="DD MMM YYYY"
+              formControlName="to_date" max="2050">
+            </ion-datetime>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-item no-lines>
+            <ion-label ion-text color="light-gray">
+              Reporting Date
+            </ion-label>
+            <ion-datetime (ionChange)="getTotalLeaves($event)" displayFormat="DD MMM YYYY" pickerFormat="DD MMM YYYY"
+              formControlName="reporting_date" max="2050">
+            </ion-datetime>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-item no-lines>
+            <ion-label ion-text color="light-gray" fixed>
+              No of leaves
+            </ion-label>
+            <ion-input [readonly]="IsReadOnly" (input)="getLeaves()" required formControlName="leaves" type="number"
+              name="leaves"></ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <ion-item no-lines>
+            <ion-label>Type</ion-label>
+            <ion-select formControlName="leaveType">
+              <ion-option required *ngFor="let type of typeList" [hidden]="type.Description === ''" [value]="type.TypeOfLeaveID"
+                (ionSelect)="getType($event)">{{type.Description}}</ion-option>
+            </ion-select>
+          </ion-item>
+          <div class="error-message-block" *ngIf="leaveApplicationForm.controls.leaveType.errors && (leaveApplicationForm.controls.leaveType.dirty || leaveApplicationForm.controls.leaveType.touched)">
+            <span *ngIf="leaveApplicationForm.controls.leaveType.errors.required">Select leave type</span>
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col last-child-padding>
+          <ion-item class="remark" no-lines>
+            <ion-label ion-text color="light-gray" fixed>
+              Remark
+            </ion-label>
+            <ion-textarea formControlName="remark" type="text" name="remark"></ion-textarea>
+          </ion-item>
+        </ion-col>
+      </ion-row>
     </ion-list>
-    <button ion-button block type="submit" (click)="submit()" [disabled]="!leaveApplicationForm.valid">
+    <button box-shadow ion-button block type="submit" (click)="submit()" [disabled]="!leaveApplicationForm.valid">
       Submit
     </button>
   </form>

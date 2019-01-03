@@ -1,34 +1,39 @@
 <ion-content class="login">
     <ion-grid class="slide_header">
-
         <logo></logo>
         <ion-row>
             <div id="login-box">
-                <form [formGroup]="loginForm" (ngSubmit)="doLogin()">
-                    <ion-list>
-                        <ion-item>
-                            <ion-label ion-text color="primary" floating>
-                                {{'LoginPage._login_name_' | translate}}
-                            </ion-label>
-                            <ion-input formControlName="login_name" autofocus required type="text" [placeholder]="'LoginPage._login_name_' | translate"
+                <form [formGroup]="loginForm">
+                    <ion-row class="name">
+                        <ion-col no-padding col-2>
+                            <ion-icon name="person"></ion-icon>
+                        </ion-col>
+                        <ion-col no-padding col-10>
+                            <ion-input formControlName="login_name"  required type="text" [placeholder]="'LoginPage._login_name_' | translate"
                                 name="login_name"></ion-input>
-                        </ion-item>
-                        <ion-item>
-                            <ion-label ion-text color="primary" floating>
-                                {{'LoginPage._password_' | translate}}
-                            </ion-label>
-                            <ion-input required formControlName="password" type="password" [placeholder]="'LoginPage._password_' | translate" name="password"></ion-input>
-                        </ion-item>
-                    </ion-list>
-                    <button ion-button block type="submit" [disabled]="!loginForm.valid">
+                        </ion-col>
+                    </ion-row>
+                    <ion-row class="password">
+                        <ion-col no-padding col-2>
+                            <ion-icon name="lock"></ion-icon>
+                        </ion-col>
+                        <ion-col no-padding col-8>
+                            <ion-input required formControlName="password" [type]="passwordtType" [placeholder]="'LoginPage._password_' | translate"
+                                name="password"></ion-input>
+                        </ion-col>
+                        <ion-col text-right no-padding col-2>
+                            <button no-padding color="gray" ion-button clear ion-only (click)="togglePassword($event)">
+                                <ion-icon [name]="eye_icon"></ion-icon>
+                            </button>
+                        </ion-col>
+                    </ion-row>
+                    <button border-radius (click)="doLogin()" margin-top ion-button block type="submit" [disabled]="!loginForm.valid">
                         {{'LoginPage._log_in' | translate}}
                     </button>
                 </form>
             </div>
-
         </ion-row>
-
-        <ion-row>
+        <ion-row margin>
             <ion-col text-center class="inline-links">
                 <a class="display-inline" (click)="onForgotPassword()">
                     {{'LoginPage._Forgot_Password' | translate}}
@@ -36,6 +41,4 @@
             </ion-col>
         </ion-row>
     </ion-grid>
-
-
 </ion-content>

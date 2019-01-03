@@ -19,10 +19,26 @@ page-create-group {
                 }
                 ion-label{
                     &.select-user{
-                        color: color($colors,primary);
+                        color: color($colors,dark);
+                        font-weight: 600;
                     }
                     &.selected-user{
-                        color: #339c0a;
+                        color: color($colors,light-gray);
+                    }
+            }
+        }
+            ion-col{
+                &.col{
+                padding: 12px 12px 0 12px;
+                }
+                ion-item{
+                    &.item-md{
+                     background-color: #f3f0f0;
+                     height: 2.3em;
+                     border-radius: 5px;
+                    }
+                    &.last-item{
+                      margin-bottom: 13px !important;
                     }
                 }
             }

@@ -1,93 +1,167 @@
 page-home {
-    div{
-        &.message{
+    ion-content {
+        &.content-md {
+            background-color: #F2F2F2;
+        }
+    }
+
+    div {
+        &.message {
             margin: 200px 40px;
             font-size: 15px;
             text-align: center;
             color: red;
         }
     }
+
     .device-register {
         text-align: center;
+
         span {
             color: white;
             display: block;
+
             &.gray {
                 background-color: gray;
+                color: black;
             }
+
             &.secondary {
-                background-color: color($colors, secondary);
+                background-color: #D2E28B;
+                color: black;
             }
+
             &.pickup {
                 background-color: color($colors, pickup);
+                color: black;
             }
         }
     }
+
     ion-item-divider {
         button:nth-child(1) {
             &.button-md {
                 float: left;
             }
         }
+
         button:nth-child(2) {
             &.button-md {
                 float: right;
             }
         }
     }
+
     ion-segment {
-        ion-segment-button {}
-    }
-    ion-list {
-        ion-item-divider {
-            &.item-md {
-                padding: 0 5px;
-                ion-label {
-                    h2 {
-                        font-weight: 600;
-                        .total-rows-count {
-                            color: color($colors, 'payments');
-                        }
-                    }
-                    ion-badge {
-                        float: right;
-                        margin-right: 1em;
-                    }
-                }
+        background-color: #fff;
+        box-shadow: 0 4px 6px -6px #d2cbcb;
+
+        ion-segment-button {
+            ion-icon{
+                font-size: 1.5em !important;
             }
         }
+
+        span {
+            position: absolute;
+            margin: 0 0 0 6px;
+            font-size: 12px;
+        }
+
+    }
+
+    ion-list {
+        h6 {
+            font-weight: 600;
+
+            .total-rows-count {
+                color: color($colors, dark);
+            }
+
+            .reorder-group {
+                border-color: #ccc;
+                color: #5e5d5d;
+                margin: 0 3px 14px 0.2rem;
+                height: 2.2em;
+                font-size: 1rem;
+                padding: 0 0.4em;
+            }
+
+        }
+
         ion-item {
+
+            &.group-item {
+                margin-bottom: 10px;
+                box-shadow: 1px 1px #e6dfdf;
+                border-radius: 5px;
+                padding: 5px 0 5px 16px;
+            }
+
             ion-label {
                 &.label-md {
                     margin: 0;
                 }
-                h2 {}
+
+                h2 {
+                    font-weight: 600;
+                }
+
                 ion-row {
                     ion-col {
                         &.col {
                             font-size: 11px;
                             padding: 0;
                         }
+
+                        &.group-name {
+                            font-size: 15px;
+                            font-weight: 600;
+                            color: #000000;
+
+                            span {
+                                &.responsibletopics {
+                                    color: color($colors, responsible);
+                                    font-size: 1em;
+
+                                    ion-icon {
+                                        color: color($colors, responsible);
+                                        font-size: 1em !important;
+                                    }
+                                }
+                            }
+                        }
+
                         &.activetopics {
                             color: color($colors, secondary);
-                            font-style: italic;
+                            margin-right: 10px;
+                            font-size: 1em;
                         }
-                        &.responsibletopics {
-                            color: color($colors, pickup);
-                            font-style: italic;
-                        }
+
                         &.overdue {
                             color: color($colors, danger);
-                            font-style: italic;
+                            margin-right: 10px;
+                            font-size: 1em;
+                        }
+
+                        ion-badge {
+                            &.badge-md {
+                                padding: 3px 6px;
+                                font-size: 1.2rem;
+                                margin-right: 5px;
+                                background-color: #F3A032;
+                            }
                         }
                     }
                 }
+
             }
         }
     }
+
     ion-footer {
         text-align: center;
-        background-color: white;
+        background-color: #F2F2F2;
     }
 
 }

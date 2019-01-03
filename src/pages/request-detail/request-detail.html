@@ -4,144 +4,164 @@
 
 
 <ion-content padding>
-    <ion-grid>
-        <ion-row *ngIf="requestDetail.RequestType">
-            <ion-col class="sub-title">
+    <ion-grid padding-bottom box-shadow>
+        <ion-row>
+            <ion-col *ngIf="requestDetail.RequestType" class="sub-title">
                 Request Type
             </ion-col>
-            <ion-col>
-                {{requestDetail.RequestType}}
-            </ion-col>
-        </ion-row>
-        <ion-row *ngIf="requestDetail.EmployeeName">
-                <ion-col class="sub-title">
-                    Employee
-                </ion-col>
-                <ion-col class="value">
-                    {{requestDetail.EmployeeName}}
-                </ion-col>
-        </ion-row>
-    </ion-grid>
-    <ion-grid>
-        <ion-row *ngIf="requestDetail.Date">
-            <ion-col class="sub-title">
+            <ion-col *ngIf="requestDetail.Date" class="sub-title">
                 Date
             </ion-col>
-            <ion-col class="value">
+        </ion-row>
+        <ion-row>
+            <ion-col *ngIf="requestDetail.RequestType"  class="value">
+                {{requestDetail.RequestType}}
+            </ion-col>
+            <ion-col *ngIf="requestDetail.Date" class="value">
                 {{requestDetail.Date}}
             </ion-col>
         </ion-row>
-        <ion-row *ngIf="requestDetail.Department">
-            <ion-col class="sub-title">
-                Department
-            </ion-col>
-            <ion-col class="value">
-                {{requestDetail.Department}}
-            </ion-col>
-        </ion-row>
         <div *ngIf="requestDetail.RequestType === 'OT'">
-            <ion-row *ngIf="requestDetail.NormalTime">
-                <ion-col class="sub-title">
+            <ion-row>
+                <ion-col *ngIf="requestDetail.NormalTime" class="sub-title">
                     Total Unit (Normal Time)
                 </ion-col>
-                <ion-col class="value">
-                    {{requestDetail.NormalTime}}
-                </ion-col>
-            </ion-row>
-            <ion-row *ngIf="requestDetail.OverTime">
-                <ion-col class="sub-title">
+                <ion-col *ngIf="requestDetail.OverTime" class="sub-title">
                     Total Unit (Over Time)
                 </ion-col>
-                <ion-col class="value">
+            </ion-row>
+            <ion-row>
+                <ion-col *ngIf="requestDetail.NormalTime" class="value">
+                    {{requestDetail.NormalTime}}
+                </ion-col>
+                <ion-col *ngIf="requestDetail.OverTime" class="value">
                     {{requestDetail.OverTime}}
                 </ion-col>
             </ion-row>
-            <ion-row *ngIf="requestDetail.TimeIn">
-                <ion-col class="sub-title">
+            <ion-row>
+                <ion-col *ngIf="requestDetail.TimeIn" class="sub-title">
                     Time In
                 </ion-col>
-                <ion-col class="value">
-                    {{requestDetail.TimeIn}}
-                </ion-col>
-            </ion-row>
-            <ion-row *ngIf="requestDetail.TimeOut">
-                <ion-col class="sub-title">
+                <ion-col *ngIf="requestDetail.TimeOut" class="sub-title">
                     Time Out
                 </ion-col>
-                <ion-col class="value">
+            </ion-row>
+            <ion-row>
+                <ion-col *ngIf="requestDetail.TimeIn" class="value">
+                    {{requestDetail.TimeIn}}
+                </ion-col>
+                <ion-col *ngIf="requestDetail.TimeOut" class="value">
                     {{requestDetail.TimeOut}}
                 </ion-col>
             </ion-row>
-            <ion-row *ngIf="requestDetail.ExtraHrs">
-                <ion-col class="sub-title">
+            <ion-row>
+                <ion-col *ngIf="requestDetail.ExtraHrs" class="sub-title">
                     Extra Hrs
                 </ion-col>
-                <ion-col class="value">
-                    {{requestDetail.ExtraHrs}}
-                </ion-col>
-            </ion-row>
-            <ion-row *ngIf="requestDetail.TotalTime">
-                <ion-col class="sub-title">
+                <ion-col *ngIf="requestDetail.TotalTime" class="sub-title">
                     Total Time
                 </ion-col>
-                <ion-col class="value">
+            </ion-row>
+            <ion-row>
+                <ion-col *ngIf="requestDetail.ExtraHrs" class="value">
+                    {{requestDetail.ExtraHrs}}
+                </ion-col>
+                <ion-col *ngIf="requestDetail.TotalTime" class="value">
                     {{requestDetail.TotalTime}}
                 </ion-col>
             </ion-row>
-            <ion-row *ngIf="requestDetail.OTHrs">
-                <ion-col class="sub-title">
+            <ion-row>
+                <ion-col *ngIf="requestDetail.OTHrs" class="sub-title">
                     Over Time Hr
                 </ion-col>
-                <ion-col class="value">
+                <ion-col *ngIf="requestDetail.Department" class="sub-title">
+                    Department
+                </ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col *ngIf="requestDetail.OTHrs" class="value">
                     {{requestDetail.OTHrs}}
+                </ion-col>
+                <ion-col *ngIf="requestDetail.Department" class="value">
+                    {{requestDetail.Department}}
+                </ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col *ngIf="requestDetail.EmployeeName" class="sub-title">
+                    Employee
+                </ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col *ngIf="requestDetail.EmployeeName" class="value">
+                    {{requestDetail.EmployeeName}}
                 </ion-col>
             </ion-row>
         </div>
         <div *ngIf="requestDetail.RequestType === 'Leave Application'">
-            <ion-row *ngIf="requestDetail.FromDate">
-                <ion-col class="sub-title">
+            <ion-row>
+                <ion-col *ngIf="requestDetail.FromDate" class="sub-title">
                     From Date
                 </ion-col>
-                <ion-col class="value">
-                    {{requestDetail.FromDate | date}}
-                </ion-col>
-            </ion-row>
-            <ion-row *ngIf="requestDetail.ToDate">
-                <ion-col class="sub-title">
+                <ion-col *ngIf="requestDetail.ToDate" class="sub-title">
                     To Date
                 </ion-col>
-                <ion-col class="value">
+
+            </ion-row>
+            <ion-row>
+                <ion-col *ngIf="requestDetail.FromDate" class="value">
+                    {{requestDetail.FromDate | date}}
+                </ion-col>
+                <ion-col *ngIf="requestDetail.ToDate" class="value">
                     {{requestDetail.ToDate | date}}
                 </ion-col>
             </ion-row>
-            <ion-row *ngIf="requestDetail.ReportingDate">
-                <ion-col class="sub-title">
+            <ion-row>
+                <ion-col *ngIf="requestDetail.ReportingDate" class="sub-title">
                     Reporting Date
                 </ion-col>
-                <ion-col class="value">
-                    {{requestDetail.ReportingDate | date}}
-                </ion-col>
-            </ion-row>
-            <ion-row *ngIf="requestDetail.TotalLeave">
-                <ion-col class="sub-title">
+                <ion-col *ngIf="requestDetail.TotalLeave" class="sub-title">
                     Total Leaves
                 </ion-col>
-                <ion-col class="value">
+
+            </ion-row>
+            <ion-row>
+                <ion-col *ngIf="requestDetail.ReportingDate" class="value">
+                    {{requestDetail.ReportingDate | date}}
+                </ion-col>
+                <ion-col *ngIf="requestDetail.TotalLeave" class="value">
                     {{requestDetail.TotalLeave}}
+                </ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col *ngIf="requestDetail.Department" class="sub-title">
+                    Department
+                </ion-col>
+                <ion-col *ngIf="requestDetail.EmployeeName" class="sub-title">
+                    Employee
+                </ion-col>
+            </ion-row>
+            <ion-row>
+                <ion-col *ngIf="requestDetail.Department" class="value">
+                    {{requestDetail.Department}}
+                </ion-col>
+                <ion-col *ngIf="requestDetail.EmployeeName" class="value">
+                    {{requestDetail.EmployeeName}}
+                </ion-col>
+            </ion-row>
+        </div>
+        <div>
+            <ion-row *ngIf="requestDetail.Remark">
+                <ion-col class="sub-title">
+                    Remark
+                </ion-col>
+                <ion-col text-wrap class="value">
+                        {{requestDetail.Remark}}
                 </ion-col>
             </ion-row>
         </div>
     </ion-grid>
-    <ion-grid *ngIf="requestDetail.Remark">
-            <ion-row>
-                    <ion-col text-wrap>
-                       <b>Remark :</b>
-                        {{requestDetail.Remark}}
-                    </ion-col>
-                </ion-row>
-    </ion-grid>
     <div class="action-btn" *ngIf="requestDetail && page === 'pendingRequest'">
-        <button color="secondary" (click)="takeActionOnRequest('Approve')" ion-button>Approve</button>
-        <button ion-button (click)="takeActionOnRequest('Reject')">Reject</button>
+        <button box-shadow color="secondary" (click)="takeActionOnRequest('Approve')" ion-button>Approve</button>
+        <button box-shadow ion-button (click)="takeActionOnRequest('Reject')">Reject</button>
     </div>
 </ion-content>

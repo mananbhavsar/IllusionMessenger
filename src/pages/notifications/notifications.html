@@ -1,0 +1,50 @@
+<ion-header>
+  <!-- [buttons]="[{icon : 'search',name : 'search'}]" -->
+  <header [title]="getTitle()" [buttons]="[{name : 'search', icon : 'search'}]" (buttonClicked)="SearchNotification()"></header>
+  <ion-toolbar ion-text color="primary" *ngIf="searchInputBtn">
+    <ion-searchbar [showCancelButton]="true" (ionInput)="getItems($event)" (ionClear)="onClear($event)" (ionCancel)="onCancel($event)">
+    </ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+<ion-content [ngClass]="{extraTop: searchInputBtn}" padding>
+    <ion-list>
+        <ion-item margin-bottom box-shadow no-lines>
+          <ion-label text-wrap>
+            Latest new for you 10% discount is here only on zomato.
+            <span>4 min ago</span>
+          </ion-label>
+        </ion-item>
+        <ion-item margin-bottom box-shadow no-lines>
+            <ion-label text-wrap>
+              Latest new for you 10% discount is here only on zomato.
+              <span>4 min ago</span>
+            </ion-label>
+          </ion-item>
+          <ion-item margin-bottom box-shadow no-lines>
+              <ion-label text-wrap>
+                Latest new for you 10% discount is here only on zomato.
+                <span>4 min ago</span>
+              </ion-label>
+            </ion-item>
+
+      </ion-list>
+  <!-- <center-spinner *ngIf="!notifications; else empty_template"></center-spinner>
+  <ng-template #empty_template>
+    <empty *ngIf="notifications.length === 0;else data_template"></empty>
+    <ng-template #data_template>
+      <ion-list box-shadow>
+        <ion-item no-lines *ngFor="let notification of notifications; let i = index">
+          <ion-label>
+            {{notification.Title}}
+          </ion-label>
+        </ion-item>
+      </ion-list>
+      <ion-infinite-scroll *ngIf="page !== -1" (ionInfinite)="paginate($event)">
+          <ion-infinite-scroll-content></ion-infinite-scroll-content>
+        </ion-infinite-scroll>
+      </ng-template>
+      <ion-item-divider text-center [hidden]="page > 0">
+        Nothing more to show
+      </ion-item-divider>
+    </ng-template> -->
+</ion-content>

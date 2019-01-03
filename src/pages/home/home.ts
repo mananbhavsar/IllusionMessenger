@@ -256,7 +256,7 @@ export class HomePage {
     registerDevice(isPullDown) {
         //make device regsiter call
         //if internet
-        // this.connectToServer(1234, false);
+        this.connectToServer(1234, false);
         if (this._network.type === 'none') {
             this.deviceRegsiter = 0;
         } else if (this.platform.is('core')) {

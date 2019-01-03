@@ -154,9 +154,11 @@
                 <ion-col class="sub-title">
                     Remark
                 </ion-col>
+            </ion-row>
+            <ion-row *ngIf="requestDetail.Remark">
                 <ion-col text-wrap class="value">
-                        {{requestDetail.Remark}}
-                </ion-col>
+                    {{requestDetail.Remark}}
+            </ion-col>
             </ion-row>
         </div>
     </ion-grid>

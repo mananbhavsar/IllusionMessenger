@@ -277,8 +277,8 @@ export class MyApp {
             });
 
             this.loading.present().then(() => {
-                this.loading.dismiss();
-             });
+
+            });
         });
 
         this.events.subscribe('loading:close', () => {
@@ -286,7 +286,7 @@ export class MyApp {
                 try {
                     this.loading.dismiss();
                 } catch (e) {
-        
+                    this.loading.dismiss();
                 }
             }
         });

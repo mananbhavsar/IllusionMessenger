@@ -59,14 +59,13 @@ export class GroupPage {
       this.group = data;
       }
    this.getGroupDetails();
-
    });
   }
 
   getGroupDetails() {
     return new Promise((resolve, reject) => {
       if (this.page === -1) {
-        reject();
+        reject(false);
       } else {
         this.connection.doPost('Chat/GetGroupDetail', {
           GroupID: this.group_id,

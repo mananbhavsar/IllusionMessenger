@@ -5,7 +5,6 @@
       (ionCancel)="onCancel($event)">
     </ion-searchbar>
   </ion-toolbar>
-  <internet-status></internet-status>
 </ion-header>
 <ion-content no-padding [ngClass]="{extraTop: searchInputBtn}">
   <ion-refresher (ionRefresh)="refresh($event)" *ngIf="!searchInputBtn">

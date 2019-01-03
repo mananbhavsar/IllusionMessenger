@@ -167,12 +167,12 @@ export class MyApp {
             });
             logoutConfirmation.present();
         } else if (page.name === 'HomePage') {
-                this.nav.setRoot(page.name, params);
+            this.nav.setRoot(page.name, params);
         } else {
             // Set the root of the nav with params if it's a tab index
-            if(page.name === 'OTPage' || page.name === 'LeaveApplicationPage' || page.name === 'AdvanceRequestPage'){
-                if(this._network.type === 'none'){
-                    this.events.publish('toast:create',this.offline_translate);
+            if (page.name === 'OTPage' || page.name === 'LeaveApplicationPage' || page.name === 'AdvanceRequestPage') {
+                if (this._network.type === 'none') {
+                    this.events.publish('toast:create', this.offline_translate);
                 } else {
                     this.nav.push(page.name, params);
                 }
@@ -265,14 +265,14 @@ export class MyApp {
     }
 
     listenToGobalEvents() {
-        if(!this.platform.is('core')){
-        this.doTranslate();
+        if (!this.platform.is('core')) {
+            this.doTranslate();
         }
-            this.events.subscribe('menu:created', (menu: any) => {
-                setTimeout(() => {
-                    this.loggedInPages = menu;
-                });
+        this.events.subscribe('menu:created', (menu: any) => {
+            setTimeout(() => {
+                this.loggedInPages = menu;
             });
+        });
 
         this.events.subscribe('loading:create', (content) => {
             content = content || this.loading_translate;
@@ -288,6 +288,9 @@ export class MyApp {
                 try {
                     this.loading.dismiss();
                 } catch (e) {
+                    this.loading.present().then(() => {
+                        this.loading.dismiss();
+                    });
                 }
             }
         });

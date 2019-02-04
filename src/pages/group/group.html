@@ -12,7 +12,7 @@
       refreshingText="Refreshing...">
     </ion-refresher-content>
   </ion-refresher>
-  <center-spinner *ngIf="isEmpty(group);else empty_template">
+  <center-spinner *ngIf="!group;else empty_template">
   </center-spinner>
   <ng-template #empty_template>
     <empty *ngIf="group.length === 0;else data_template"></empty>

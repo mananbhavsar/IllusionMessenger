@@ -18,7 +18,7 @@
                 {{requestDetail.RequestType}}
             </ion-col>
             <ion-col *ngIf="requestDetail.Date" class="value">
-                {{requestDetail.Date}}
+                {{requestDetail.Date | date}}
             </ion-col>
         </ion-row>
         <div *ngIf="requestDetail.RequestType === 'OT'">
@@ -154,15 +154,22 @@
                 <ion-col class="sub-title">
                     Remark
                 </ion-col>
+                <ion-col class="sub-title">
+                    Status
+                  </ion-col>
             </ion-row>
             <ion-row *ngIf="requestDetail.Remark">
                 <ion-col text-wrap class="value">
                     {{requestDetail.Remark}}
             </ion-col>
+          <ion-col  
+          [ngClass]="{'pending' : requestDetail.Status === 'Pending', 'rejected' : requestDetail.Status === 'Rejected', 'approve' : requestDetail.Status === 'Approved'}">
+          {{requestDetail.Status}} 
+        </ion-col>
             </ion-row>
         </div>
     </ion-grid>
-    <div class="action-btn" *ngIf="requestDetail && page === 'pendingRequest'">
+    <div class="action-btn" padding *ngIf="requestDetail && page === 'pendingRequest'">
         <button box-shadow color="secondary" (click)="takeActionOnRequest('Approve')" ion-button>Approve</button>
         <button box-shadow ion-button (click)="takeActionOnRequest('Reject')">Reject</button>
     </div>

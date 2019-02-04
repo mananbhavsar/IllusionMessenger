@@ -354,11 +354,11 @@ export class ChatBubbleComponent {
         if (momentTime.isSame(today, 'd')) {// today
           return momentTime.format('hh:mm a');
         } else if (momentTime.isBetween(moment().subtract(7, 'days').startOf('day'), today)) { //within a week
-          return momentTime.format('ddd D, hh:mm a');
+          return momentTime.format('ddd D YYYY hh:mm a');
         } else if (momentTime.isBetween(moment().startOf('month'), today)) { //within a month
-          return momentTime.format('ddd D, hh:mm a');
+          return momentTime.format('ddd D YYYY hh:mm a');
         } else {
-          return momentTime.format('ddd, D MMM hh:mm a');
+          return momentTime.format('ddd, D MMM YYYY hh:mm a');
         }
       } else {
       }

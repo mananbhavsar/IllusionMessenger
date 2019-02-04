@@ -19,7 +19,7 @@ export class TimePipe implements PipeTransform {
       if (aging) {
         //convert to moment
         if (!moment.isMoment(date)) {
-          date = moment(date, 'Do MMM, hh:mm A');
+          date = moment(date, 'Do MMM YYYY hh:mm A');
         }
         //check if today
         if (date.isSame(moment(), 'd')) {
@@ -29,14 +29,14 @@ export class TimePipe implements PipeTransform {
         if (date.isSame(moment().subtract(1, 'days').startOf('day'), 'd')) {
           return 'YESTERDAY';
         }
-        return date.locale('en').format('Do MMM');
+        return date.locale('en').format('Do MMM YYYY');
       }
 
       //time ago
       if (timeAgo) {
         //convert to moment
         if (!moment.isMoment(date)) {
-          date = moment(date, 'Do MMM, hh:mm A');
+          date = moment(date, 'Do MMM YYYY hh:mm A');
         }
         return date.from(moment());
 

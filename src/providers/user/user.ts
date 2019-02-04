@@ -13,7 +13,6 @@ import { TranslateServiceProvider } from '../translate-service/translate-service
 
 
 
-
 @Injectable()
 export class UserProvider {
     _user: any = {};

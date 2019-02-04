@@ -140,6 +140,7 @@ export class HomePage {
         }
     }
 
+
     //keep it enter only
     ionViewDidEnter() {
         //checking if logged in
@@ -642,8 +643,11 @@ export class HomePage {
         if (field in this.data) {
             selectedBadgeCount = this.data[field];
         }
-        if (selectedBadgeCount > 100) {
-            selectedBadgeCount = '100+';
+        if (selectedBadgeCount > 99) {
+            selectedBadgeCount = '99+';
+        }
+        if(selectedBadgeCount === 0){
+            return '';
         }
         return selectedBadgeCount;
     }

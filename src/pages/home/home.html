@@ -31,8 +31,7 @@
         <ion-searchbar [showCancelButton]="true" *ngIf="searchInputBtn && selectedTab !== 'stats'" (ionInput)="getItems($event)"
             (ionClear)="onClear($event)" (ionCancel)="onCancel($event)">
         </ion-searchbar>
-        <ion-segment [(ngModel)]="selectedTab" margin-bottom (ionChange)="dashboardTabSearchHide($event)"
-            mode="md">
+        <ion-segment [(ngModel)]="selectedTab" margin-bottom (ionChange)="dashboardTabSearchHide($event)" mode="md">
             <ion-segment-button [value]="tab.icon" *ngFor="let tab of tabs">
                 <ion-icon [name]="tab.icon"></ion-icon>
                 <span *ngIf="tab.icon !== 'stats'">
@@ -87,7 +86,9 @@
                                         <ion-col text-right>
                                             <ion-badge *ngIf="getBadge(group.GroupCode)">{{badges[group.GroupCode]}}</ion-badge>
                                         </ion-col>
-                                        <ion-col text-end class="activetopics" *ngIf="group.ActiveTopics > 0">
+                                    </ion-row>
+                                    <ion-row>
+                                        <ion-col text-start class="activetopics" *ngIf="group.ActiveTopics > 0">
                                             {{group.ActiveTopics}} {{'due' +
                                             (group.ActiveTopics > 1 ? 's' :
                                             '')}}

@@ -16,7 +16,7 @@ export class DateProvider {
       if (!moment.isMoment(date)) {
         date = moment(date);
       }
-      return date.locale('en').format('DD MMM, hh:mm A');
+      return date.locale('en').format('DD MMM YYYY, hh:mm A');
     }
     return date;
   }

@@ -3,6 +3,7 @@ import { VideoPlayer } from '@ionic-native/video-player';
 import { Events, IonicPage, NavController, NavParams, Platform } from 'ionic-angular';
 import { Global } from '../../app/global';
 import { FileOpsProvider } from '../../providers/file-ops/file-ops';
+import { Network } from '@ionic-native/network';
 
 
 
@@ -18,7 +19,6 @@ export class HelpPage {
 
   progress: number = 0;
 
-
   private url = 'https://documents.illusiondentallab.com/Tutorial/Update.mp4';
   constructor(
     public navCtrl: NavController,
@@ -26,7 +26,8 @@ export class HelpPage {
     private fileOps: FileOpsProvider,
     private videoPlayer: VideoPlayer,
     private platform : Platform,
-    private events: Events
+    private events: Events,
+    public network : Network
   ) {
     this.global = Global;
     this.fileOps.getDataDirectory().then((path: string) => {
@@ -44,6 +45,9 @@ export class HelpPage {
   }
 
   openVideo() {
+    if (this.network.type === 'none') {
+      this.events.publish('toast:error', 'You seems to be offline');
+    } else {
     if (this.platform.is('core')) {
      window.open(this.url,'_blank');
     } else {
@@ -51,6 +55,7 @@ export class HelpPage {
         this.events.publish('toast:create', error);
       });
     }
+  }
   }
 
   // openVideo1() {

@@ -52,8 +52,9 @@ export class GroupPage {
   }
 
   ionViewWillEnter(){
+    this.group = [];
     this._offlineStorage.get('offline:Groups-Wise', this.group, this.group_id).then((data :any) => {
-      if(!data){
+      if(_.isEmpty(data)){
       this.group = [];
       } else {
       this.group = data;

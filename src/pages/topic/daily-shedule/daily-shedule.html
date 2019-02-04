@@ -10,8 +10,8 @@
   <empty *ngIf="!topics"></empty>
   <ng-container *ngIf="topics">
     <topic [group_id]="topic.GroupID" type="ActiveTopicList" [topic]="topic" *ngFor="let topic of topics;"></topic>
-    <div class="btn-ok">
-      <button ion-button full (click)="dueTopicsSeen()">Ok</button>
-    </div>
   </ng-container>
+  <div class="btn-ok">
+    <button ion-button full (click)="dueTopicsSeen()">Ok</button>
+  </div>
 </ion-content>

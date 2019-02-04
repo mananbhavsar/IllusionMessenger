@@ -45,7 +45,7 @@ export class GroupOptionsPage {
     return new Promise((resolve, reject) => {
       this.connection.doPost('Chat/GetGroupUserDetail', {
         GroupID: this.group_id
-      }).then((response: any) => {
+      },false).then((response: any) => {
         this.userlist = response;
         resolve(true);
       }).catch(error => {

@@ -6,6 +6,9 @@ import { ForwardTopicPage } from '../../pages/topic/forward-topic/forward-topic'
 import { ConnectionProvider } from '../../providers/connection/connection';
 import { DateProvider } from '../../providers/date/date';
 import { ReadMessageProvider } from '../../providers/read-message/read-message';
+import { OfflineStorageProvider } from '../../providers/offline-storage/offline-storage';
+import { Storage } from '@ionic/storage';
+import * as _ from 'underscore';
 
 @Component({
   selector: 'topic',
@@ -20,8 +23,10 @@ export class TopicComponent {
   @Output() selected = new EventEmitter();
   @Input() isChecked: boolean = false;
   selectedTopics: any = [];
-
+  badgeCountPath: any = [];
+  pushedTopicID: any = [];
   badgeCount: number = 0;
+  badgePath: any = [];
   constructor(
     private navCtrl: NavController,
     private zone: NgZone,
@@ -29,10 +34,25 @@ export class TopicComponent {
     private _date: DateProvider,
     public events: Events,
     public read: ReadMessageProvider,
-    public modal : ModalController,
+    public modal: ModalController,
+    private storage: Storage,
+    public offlineStorage: OfflineStorageProvider
   ) {
 
   }
+  // ngBeforeViewInit(){
+  //   this.badgeCountPath = [];
+  //   this.storage.get('offline:badgeCount').then((paths: any) => {
+  //     console.log(paths);
+
+  //     if (_.isEmpty(paths)) {
+  //       paths = [];
+  //     }
+  //     paths.forEach(path => {
+  //       this.pushItem(path);
+  //     });
+  //   });
+  // }
 
   ngOnChanges() {
     if (this.topic) {
@@ -44,11 +64,43 @@ export class TopicComponent {
       topicRef.on('value', snapshot => {
         this.badgeCount = snapshot.val();
       });
+      let badgePath = { 'path': path, 'Count': this.badgeCount };
+      this.pushItem(badgePath);
+      this.saveOfflineData().then(status => {
+      }).catch(error => {
+      });
     }
   }
 
+  pushItem(item) {
+    let topicID = '';
+    if (item) {
+      topicID = item.path.substring(item.path.lastIndexOf('/') + 1);
+    }
+    let index = this.pushedTopicID.indexOf(topicID);
+    if (index === -1) {//push
+      this.badgeCountPath.push(item);
+      this.pushedTopicID.push(topicID);
+    } else {
+      this.badgeCountPath[index] = item;
+    }
+  }
+
+  saveOfflineData() {
+    return new Promise((resolve, reject) => {
+      this.storage.get('offline:badgeCount').then(path => {
+        path = this.badgeCountPath;
+        this.storage.set('offline:badgeCount', path).then(status => {
+          resolve(status);
+        }).catch(error => {
+          reject(error);
+        });
+      })
+    });
+  }
+
   openTopic(event) {
-    event.preventDefault();    
+    event.preventDefault();
     this.zone.run(() => {
       this.clicked.emit({
         topic: this.topic,
@@ -71,8 +123,8 @@ export class TopicComponent {
 
   readSelected(topic) {
     this.read.read(null, topic.TopicCode).then((response: any) => {
-        this.events.publish('loading:close');
-        this.events.publish('read:message',response);
+      this.events.publish('loading:close');
+      this.events.publish('read:message', response);
     });
   }
 
@@ -98,7 +150,7 @@ export class TopicComponent {
   }
 
   forwardToGroup(topic) {
-    let modal = this.modal.create(ForwardTopicPage,topic);
+    let modal = this.modal.create(ForwardTopicPage, topic);
     modal.present();
   }
 

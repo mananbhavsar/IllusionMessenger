@@ -182,6 +182,10 @@ export class HomePage {
             }
             this.hasInternet = this._network.type !== 'none';
             if (this._network.type === 'none') {
+                this.storage.get('lastconnectedtime:offline').then((time:any) => {
+                this.connectedTime = time;
+                this.deviceRegsiter = 2;
+                });
                 this.storage.get('GetTaskDetail:offline').then((data: any) => {
                     if (data) {
                         this.data = data;
@@ -300,6 +304,7 @@ export class HomePage {
             if (response.Data && response.Data.LastActivity) {
                 this.deviceRegsiter = 2; //connected
                 this.connectedTime = response.Data.LastActivity;
+                this.storage.set('lastconnectedtime:offline',this.connectedTime);
             } else {
                 this.deviceRegsiter = 0;
             }

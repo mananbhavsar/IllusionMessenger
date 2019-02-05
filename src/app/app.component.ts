@@ -379,6 +379,9 @@ export class MyApp {
             if ((time - this.lastOfflineMessageShown) < 1000) {
                 return;
             }
+            this.storage.get('menulist:offline').then((menu : any) => {
+                this.events.publish('menu:created',menu);
+              });
             this.lastOfflineMessageShown = time;
             //sending to offline page only if not in offline 
             var currentPage = Global.getActiveComponentName(this.nav.getActive());

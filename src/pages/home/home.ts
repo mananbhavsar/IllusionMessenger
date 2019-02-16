@@ -261,9 +261,12 @@ export class HomePage {
     registerDevice(isPullDown) {
         //make device regsiter call
         //if internet
-        this.connectToServer(1234, false);
+        // this.connectToServer('1224',false);
         if (this._network.type === 'none') {
-            this.deviceRegsiter = 0;
+            this.storage.get('lastconnectedtime:offline').then((time:any) => {
+                this.connectedTime = time;
+                this.deviceRegsiter = 2;
+                });
         } else if (this.platform.is('core')) {
             if (this.connection.getPushID()) {
                 this.deviceRegsiter = 1;

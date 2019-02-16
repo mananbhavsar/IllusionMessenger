@@ -874,8 +874,10 @@ export class ChatPage {
         TopicCode: this.topicCode,
         GroupCode: this.groupCode,
       }).then((data: any) => {
+        this.events.publish('loading:close');
         resolve(data);
       }).catch((error) => {
+        this.events.publish('loading:close');
         reject(false);
       });
     });

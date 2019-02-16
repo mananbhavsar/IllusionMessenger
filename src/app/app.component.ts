@@ -298,10 +298,10 @@ export class MyApp {
 
         this.events.subscribe('alert:basic', (title, subTitle, buttons) => {
             try {
-                if (typeof title === 'undefined' || title.trim() === '') {
+                if (title === null || typeof title === 'undefined' || title.trim() === '') {
                     return;
                 }
-                if (typeof subTitle === 'undefined' || subTitle.trim() === '') {
+                if (subTitle === null || typeof subTitle === 'undefined' || subTitle.trim() === '') {
                     return;
                 }
             } catch (e) {
@@ -319,7 +319,7 @@ export class MyApp {
 
         this.events.subscribe('toast:create', (message, cssClass, position: string = 'top') => {
             cssClass = cssClass || null;
-            if (message.trim() === '') {
+            if (message === null || message.trim() === '') {
                 return;
             }
             let toast = this.toast.create({

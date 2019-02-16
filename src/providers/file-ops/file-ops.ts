@@ -175,10 +175,10 @@ export class FileOpsProvider {
     if (directory === null) {
       directory = this.directory;
     }
-    if (file) {
+    if (file) {      
       //checking if still http
       if (file.indexOf('https') === 0) {
-        let fileName = this.getFileName(file);
+        let fileName = this.getFileName(file);        
         return normalizeURL(directory + fileName);
       }
       return normalizeURL(file);

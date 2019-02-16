@@ -94,6 +94,7 @@ export class UserProvider {
                 this.LoadFirebaseData = true;
                 //removing from Storage
                 this.storage.remove('User').then(response => {
+                    let wasLoggedIn = !_.isEmpty(this._user);
                     this.HAS_LOGGED_IN = false;
                     this._user = null;
 
@@ -103,7 +104,12 @@ export class UserProvider {
                     this.removeOfflineData();
 
                     this.events.publish('badge:set', 0);
-                    this.events.publish('user:logout', this.bye_bye_translate);
+                    //logout message
+                    let logoutMessage = null;
+                    if (wasLoggedIn) {
+                        logoutMessage = this.bye_bye_translate;
+                    }
+                    this.events.publish('user:logout', logoutMessage);
 
                     resolve('Logged out');
                 }).catch(error => {
@@ -164,7 +170,7 @@ export class UserProvider {
             if (!_.isEmpty(this.connection.user)) {
                 //firebase data
                 let firebaseDataNeeded = this.LoadFirebaseData;
-                if(isPullDown){
+                if (isPullDown) {
                     firebaseDataNeeded = isPullDown;
                 }
                 //setting in connection
@@ -180,7 +186,7 @@ export class UserProvider {
                     //LogOutForcefully
                     if (response.MenuList) {
                         this.events.publish('menu:created', response.MenuList);
-                        this.storage.set('menulist:offline',response.MenuList);
+                        this.storage.set('menulist:offline', response.MenuList);
                     }
                     if (response.Data.LogOutForcefully) {
                         if (response.Data.Message) {
@@ -238,7 +244,7 @@ export class UserProvider {
         }
         firebase.database().ref('VersionOptions/' + OSName).on('value', snapshot => {
             let allowAlertClose = snapshot.val();
-            if (allowAlertClose) {
+            if (typeof allowAlertClose !== 'undefined') {
                 firebase.database().ref('Version/' + OSName).on('value', snapshot => {
                     let AppVersion = snapshot.val();
                     if (AppVersion && this.global.AppVersion !== AppVersion) {
@@ -263,12 +269,12 @@ export class UserProvider {
                                 });
                             }
                             let message = 'There is a new version available, kindly update your application now. <br/><br/>Note: if <b>open</b> button is present instead of <b>update</b>,';
-                            if(OSName)
-                            if (OSName === 'android') {
-                                message += ' go to <b>menu</b> of Play Store, naviagte to <b>My apps & games.</b>';
-                            } else {
-                                message += ' go to <b>updates tab</b> of App Store, <b>pull down refresh.</b>';
-                            }
+                            if (OSName)
+                                if (OSName === 'android') {
+                                    message += ' go to <b>menu</b> of Play Store, naviagte to <b>My apps & games.</b>';
+                                } else {
+                                    message += ' go to <b>updates tab</b> of App Store, <b>pull down refresh.</b>';
+                                }
 
                             let alert = this.alertCtrl.create({
                                 // enableBackdropDismiss: allowAlertClose,
@@ -303,7 +309,7 @@ export class UserProvider {
         this.storage.remove('offline:pending-request');
         this.storage.remove('offline:salary-slips');
         this.storage.remove('offline:pending-request');
-        
+
         this.storage.get('OfflineTickets').then((tickets: any) => {
             if (_.isEmpty(tickets)) {
                 tickets = {};

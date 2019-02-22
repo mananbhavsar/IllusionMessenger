@@ -40,19 +40,6 @@ export class TopicComponent {
   ) {
 
   }
-  // ngBeforeViewInit(){
-  //   this.badgeCountPath = [];
-  //   this.storage.get('offline:badgeCount').then((paths: any) => {
-  //     console.log(paths);
-
-  //     if (_.isEmpty(paths)) {
-  //       paths = [];
-  //     }
-  //     paths.forEach(path => {
-  //       this.pushItem(path);
-  //     });
-  //   });
-  // }
 
   ngOnChanges() {
     if (this.topic) {

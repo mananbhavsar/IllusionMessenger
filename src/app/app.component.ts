@@ -272,13 +272,14 @@ export class MyApp {
 
         this.events.subscribe('loading:create', (content) => {
             content = content || this.loading_translate;
+            if(content){
             this.loading = this.loadingCtrl.create({
                 content: content + '...'
             });
 
             this.loading.present().then(() => {
-
             });
+        }
         });
 
         this.events.subscribe('loading:close', () => {

@@ -197,10 +197,6 @@
   version "4.9.0"
   resolved "https://registry.yarnpkg.com/@ionic-native/android-permissions/-/android-permissions-4.9.0.tgz#55a232ef5d4bebae025543822dba8ce313916b92"
 
-"@ionic-native/app-version@^4.3.1":
-  version "4.9.0"
-  resolved "https://registry.yarnpkg.com/@ionic-native/app-version/-/app-version-4.9.0.tgz#3fee5eafd5e613c0857fdefe7a717fa1d6f976e2"
-
 "@ionic-native/badge@^4.5.3":
   version "4.9.0"
   resolved "https://registry.yarnpkg.com/@ionic-native/badge/-/badge-4.9.0.tgz#a1636e743011355ff8dc3d7c00b5dd0b42b5f8be"
@@ -1710,10 +1706,6 @@ cordova-plugin-add-swift-support@^1.7.2:
 cordova-plugin-android-permissions@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/cordova-plugin-android-permissions/-/cordova-plugin-android-permissions-1.0.0.tgz#9e7c116be668eb7dfa41491b13d8d47da9548149"
-
-cordova-plugin-app-version@^0.1.9:
-  version "0.1.9"
-  resolved "https://registry.yarnpkg.com/cordova-plugin-app-version/-/cordova-plugin-app-version-0.1.9.tgz#9db0607863337a710489302e5f50a904f1449bdb"
 
 cordova-plugin-badge@^0.8.7:
   version "0.8.7"

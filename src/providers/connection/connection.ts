@@ -99,8 +99,10 @@ export class ConnectionProvider {
                 if (loader === true) {
                     loader = this.loading_translate;
                 }
+                if(loader){
                 this.events.publish('loading:create', loader);
             }
+        }
             //creating request
             let urlSearchParams = this.getURLSearchParams(params);
             this.http.post(this.URL + url, urlSearchParams).timeout(60000).map((response: Response) => response.json()).subscribe((data) => {

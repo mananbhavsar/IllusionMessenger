@@ -173,7 +173,7 @@ export class ChatBubbleComponent {
   }
 
   openFile() {
-    if (this.network.type === 'none') {
+    if (this.network.type === 'none' && !this.message.downloaded) {
       this.events.publish('toast:error', this.not_available_offline_translate);
       return;
     }
@@ -218,11 +218,11 @@ export class ChatBubbleComponent {
     modalCtrl.present();
   }
 
+  
   openImage() {
     this.element = this._elementRef.nativeElement.querySelector('#message-image-' + this.message.key);
     let image = this._imageViewerController.create(this.element);
     image.present();
-
   }
 
   openAudio() {
@@ -240,6 +240,7 @@ export class ChatBubbleComponent {
   }
 
   openVideo() {
+    
     if (this.isBrowser) {
       window.open(this.message.URL, '_blank');
     } else if (this.isCordova) {

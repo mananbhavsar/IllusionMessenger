@@ -8,6 +8,7 @@ import { DateProvider } from './../../../providers/date/date';
 import { ChatPage } from './../../chat/chat';
 import { Storage } from '@ionic/storage';
 import { OfflineStorageProvider } from '../../../providers/offline-storage/offline-storage';
+import { Network } from '@ionic-native/network';
 
 @IonicPage()
 @Component({
@@ -40,6 +41,7 @@ export class CloseTopicPage {
     private viewController: ViewController,
     private _date: DateProvider,
     public storage: Storage,
+    public _network: Network,
     public _offlineStorage: OfflineStorageProvider,
     private actionSheetController: ActionSheetController,
   ) {
@@ -182,7 +184,8 @@ export class CloseTopicPage {
     }
     this.navCtrl.push(ChatPage, {
       topicID: topic.TopicID,
-      groupID: this.group_id
+      groupID: this.group_id,
+      Topic: topic
     });
   }
 

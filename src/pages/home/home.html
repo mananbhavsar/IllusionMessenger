@@ -84,7 +84,13 @@
                                             </span>
                                         </ion-col>
                                         <ion-col text-right>
-                                            <ion-badge *ngIf="getBadge(group.GroupCode)">{{badges[group.GroupCode]}}</ion-badge>
+                                        <ng-container *ngIf="getBadge(group.GroupCode) && _network.type !== 'none'">
+                                            <ion-badge>{{badges[group.GroupCode]}}</ion-badge>
+                                          </ng-container>
+                                          <ng-container *ngIf="group.Count && _network.type === 'none'">
+                                            <ion-badge>{{group.Count}}</ion-badge>
+                                          </ng-container>
+                                            <!-- <ion-badge *ngIf="getBadge(group.GroupCode)">{{badges[group.GroupCode]}}</ion-badge> -->
                                         </ion-col>
                                     </ion-row>
                                     <ion-row>

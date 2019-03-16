@@ -7,7 +7,7 @@ import { NotificationsProvider } from './../../../providers/notifications/notifi
 import { CreateTopicPage } from './../../topic/create-topic/create-topic';
 import { OfflineStorageProvider } from '../../../providers/offline-storage/offline-storage';
 import { Network } from '@ionic-native/network';
-
+import * as _ from 'underscore';
 @IonicPage()
 @Component({
   selector: 'page-group-options',
@@ -37,8 +37,16 @@ export class GroupOptionsPage {
     this.group_name = this.navParams.data.group_name;
   }
 
-  ionViewDidLoad() {
-    this.getParticipants();
+  ionViewWillEnter(){
+    this.userlist = [];
+    this._offlineStorage.get('offline:Groups-Wise', this.userlist, this.group_id, this.group_id).then((data :any) => {
+      if(_.isEmpty(data)){
+      this.userlist = [];
+      } else {
+      this.userlist = data;
+      }
+   this.getParticipants();
+   });
   }
 
   getParticipants() {
@@ -47,6 +55,7 @@ export class GroupOptionsPage {
         GroupID: this.group_id
       },false).then((response: any) => {
         this.userlist = response;
+        this._offlineStorage.set('offline:Groups-Wise',this.userlist, this.group_id,this.group_id);
         resolve(true);
       }).catch(error => {
         reject(error);

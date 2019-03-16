@@ -57,13 +57,13 @@
 					</div>
 				</ion-col>
 			</ion-row>
-			<ion-row>
+			<ion-row *ngIf="network.type !== 'none'">
 				<ion-col no-padding>
 					<button *ngIf="amIResponsible && data.StatusID !== 2 && data.IsRequestedClosure === 'false'" ion-button (click)="closureRequest()"
 					 outline button-mini color="light-gray">Request for closure</button>
 				</ion-col>
 			</ion-row>
-			<ion-row [hidden]="closeButton" *ngIf="data.StatusID === 1 && amIAdmin">
+			<ion-row [hidden]="closeButton" *ngIf="network.type !== 'none' && data.StatusID === 1 && amIAdmin">
 				<ion-col no-padding>
 					<button *ngIf="data.RescheduleCount < 10" ion-button (click)="rescheduleTopic()" outline button-mini color="light-gray">Reschedule</button>
 					<ion-item class="height-0" *ngIf="data.RescheduleCount < 10">
@@ -95,7 +95,7 @@
 					<ion-col no-padding>
 						<ion-item no-lines>
 							<ion-label text-left>{{groupMemberCount}} Participants</ion-label>
-							<button (click)="addParticipants()" *ngIf="amIAdmin" item-end ion-button outline button-mini color="light-gray">Add
+							<button (click)="addParticipants()" *ngIf="network.type !== 'none' && amIAdmin" item-end ion-button outline button-mini color="light-gray">Add
 								Participants</button>
 						</ion-item>
 					</ion-col>
@@ -116,7 +116,7 @@
 									Last
 									<span class="activity-status">{{participant.LoginStatus}}</span>
 									at
-									<span class="activity-time">{{participant.LastActivityDateTime | date:'dd/MM/yyyy hh:ss:mm'}}</span>
+									<span class="activity-time">{{participant.LastActivityDateTime | time}}</span>
 								</ion-col>
 							</ion-row>
 						</p>
@@ -133,7 +133,7 @@
 		</ion-row>
 	</ion-list>
 	<div box-shadow margin-top *ngIf="data.StatusID !== 2">
-		<ion-row>
+		<ion-row *ngIf="network.type !== 'none'">
 			<ion-col no-padding [hidden]="closeButton">
 				<ion-item no-lines (click)="openReminder($event)" class="close-topic">
 					<ion-label>Set Reminder</ion-label>

@@ -38,7 +38,12 @@
 								<span class="topic-name">{{topic.Topic}}</span>
 								<span float-right>
 									<ion-icon name="ios-star" color="responsible" *ngIf="topic.IsResponsible"></ion-icon>
-									<ion-badge *ngIf="getBadge(topic.TopicCode)">{{getBadge(topic.TopicCode)}}</ion-badge>
+									<ng-container *ngIf="getBadge(topic.TopicCode) && _network.type !== 'none'">
+										<ion-badge>{{getBadge(topic.TopicCode)}}</ion-badge>
+									  </ng-container>
+									  <ng-container *ngIf="topic.Count && _network.type === 'none'">
+										<ion-badge>{{topic.Count}}</ion-badge>
+									  </ng-container>
 								</span>
 							</h5>
 							<p>

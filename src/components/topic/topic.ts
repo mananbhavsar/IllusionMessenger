@@ -9,6 +9,7 @@ import { ReadMessageProvider } from '../../providers/read-message/read-message';
 import { OfflineStorageProvider } from '../../providers/offline-storage/offline-storage';
 import { Storage } from '@ionic/storage';
 import * as _ from 'underscore';
+import { Network } from '@ionic-native/network';
 
 @Component({
   selector: 'topic',
@@ -23,7 +24,7 @@ export class TopicComponent {
   @Output() selected = new EventEmitter();
   @Input() isChecked: boolean = false;
   selectedTopics: any = [];
-  badgeCountPath: any = [];
+  badgeCountTopicCode: any = [];
   pushedTopicID: any = [];
   badgeCount: number = 0;
   badgePath: any = [];
@@ -36,48 +37,34 @@ export class TopicComponent {
     public read: ReadMessageProvider,
     public modal: ModalController,
     private storage: Storage,
-    public offlineStorage: OfflineStorageProvider
+    public offlineStorage: OfflineStorageProvider,
+    public network: Network
   ) {
 
   }
 
   ngOnChanges() {
     if (this.topic) {
-      let path = 'Badge/' + this.connection.user.id + '/Groups/' + this.topic.GroupCode + '/Topics/' + this.topic.TopicCode;
-      let topicRef = firebase.database().ref(path);
-      if (this.badgeCount) {
-        topicRef.off('value');
+      if (this.network.type === 'none') {
+       this.badgeCount = this.topic.Count;
+      } else {
+        let path = 'Badge/' + this.connection.user.id + '/Groups/' + this.topic.GroupCode + '/Topics/' + this.topic.TopicCode;
+        let topicRef = firebase.database().ref(path);
+        if (this.badgeCount) {
+          topicRef.off('value');
+        }
+        topicRef.on('value', snapshot => {
+          this.badgeCount = snapshot.val();
+        });
       }
-      topicRef.on('value', snapshot => {
-        this.badgeCount = snapshot.val();
-      });
-      let badgePath = { 'path': path, 'Count': this.badgeCount };
-      this.pushItem(badgePath);
-      this.saveOfflineData().then(status => {
-      }).catch(error => {
-      });
-    }
-  }
-
-  pushItem(item) {
-    let topicID = '';
-    if (item) {
-      topicID = item.path.substring(item.path.lastIndexOf('/') + 1);
-    }
-    let index = this.pushedTopicID.indexOf(topicID);
-    if (index === -1) {//push
-      this.badgeCountPath.push(item);
-      this.pushedTopicID.push(topicID);
-    } else {
-      this.badgeCountPath[index] = item;
     }
   }
 
   saveOfflineData() {
     return new Promise((resolve, reject) => {
-      this.storage.get('offline:badgeCount').then(path => {
-        path = this.badgeCountPath;
-        this.storage.set('offline:badgeCount', path).then(status => {
+      this.storage.get('offline:badgeCount').then(topicCode => {
+        topicCode = this.badgeCountTopicCode;
+        this.storage.set('offline:badgeCount', topicCode).then(status => {
           resolve(status);
         }).catch(error => {
           reject(error);
@@ -97,6 +84,7 @@ export class TopicComponent {
     this.navCtrl.push('ChatPage', {
       topicID: this.topic.TopicID,
       groupID: this.group_id,
+      Topic: this.topic
     });
   }
 

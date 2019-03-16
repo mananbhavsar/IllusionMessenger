@@ -29,6 +29,7 @@ platforms/
 plugins/
 www/
 $RECYCLE.BIN/
+/prepare
 /node_modules
 /node_modules/
 #google-services.json

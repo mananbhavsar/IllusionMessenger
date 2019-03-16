@@ -175,6 +175,7 @@ export class GroupPage {
       this.navCtrl.push(ChatPage, {
         topicID: topic.TopicID,
         groupID: this.group_id,
+        Topic: topic
       });
     }
   }
@@ -268,7 +269,6 @@ export class GroupPage {
 
 
   openGroupOptions(event) {
-    if (this.network.type !== 'none') {
     let groupOptionsModal = this.modalController.create(GroupOptionsPage, {
       group_id: this.group_id,
       group_name: this.title,
@@ -288,9 +288,6 @@ export class GroupPage {
       }
     });
     groupOptionsModal.present();
-  } else {
-    this.events.publish('toast:create', 'You seems to be offline');
-  }
   }
 
   openSortOptions() {

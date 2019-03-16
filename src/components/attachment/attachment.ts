@@ -146,7 +146,7 @@ export class AttachmentComponent {
       this._fileOps.getDataDirectory().then(path => {
         let identifier = UUID.UUID();
         let flashPath = path + 'Flash' + '/';
-        this._fileOps.openRemoteFile(file, flashPath, identifier).then(status => {
+        this._fileOps.openRemoteFile(file, flashPath, identifier, false).then(status => {
         }).catch(error => {
         });
       });

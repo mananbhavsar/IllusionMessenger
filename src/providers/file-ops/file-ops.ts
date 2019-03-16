@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AndroidPermissions } from '@ionic-native/android-permissions';
 import { Camera, CameraOptions } from '@ionic-native/camera';
-import { File, FileEntry } from '@ionic-native/file';
+import { File, FileEntry, Entry } from '@ionic-native/file';
 import { FileChooser } from '@ionic-native/file-chooser';
 import { FileOpener } from '@ionic-native/file-opener';
 import { FilePath } from '@ionic-native/file-path';
@@ -55,7 +55,7 @@ export class FileOpsProvider {
     private transfer: FileTransfer,
     private platform: Platform,
     private events: Events,
-    public camera : Camera,
+    public camera: Camera,
     private fileOpener: FileOpener,
     private fileChooser: FileChooser,
     private filePath: FilePath,
@@ -158,12 +158,19 @@ export class FileOpsProvider {
     });
   }
 
-  openFile(file, directory, doNative: boolean = true) {
+  openFile(file, directory, doNative: boolean = true,isNormalizeURL : boolean = true) {
     return new Promise((resolve, reject) => {
+      let nativeURL = null;
       if (doNative) {
-        file = this.getNativeURL(file, directory);
+        nativeURL = this.getNativeURL(file, directory,isNormalizeURL);
       }
-      this.fileOpener.open(decodeURIComponent(file), mime.lookup(file)).then(status => {
+
+      if(this.platform.is('android')){
+        nativeURL = decodeURIComponent(nativeURL);
+      }
+
+      this.fileOpener.open(nativeURL, mime.lookup(nativeURL)).then(status => {
+
         resolve(status);
       }).catch(error => {
         reject(error);
@@ -171,15 +178,20 @@ export class FileOpsProvider {
     });
   };
 
-  getNativeURL(file, directory = null) {
+  getNativeURL(file, directory = null,isNormalizeURL : boolean = true) {
     if (directory === null) {
       directory = this.directory;
     }
-    if (file) {      
+    if (file) {
       //checking if still http
       if (file.indexOf('https') === 0) {
-        let fileName = this.getFileName(file);        
-        return normalizeURL(directory + fileName);
+        let fileName = this.getFileName(file);
+        if(this.platform.is('android')){
+          return normalizeURL(directory + fileName);
+        }
+        if(!isNormalizeURL){
+        return directory + fileName;
+        }
       }
       return normalizeURL(file);
     }
@@ -325,8 +337,10 @@ export class FileOpsProvider {
       file += '?';
     }
     file = file.substring(0, file.lastIndexOf('?'));
-
-    return file.substring(file.lastIndexOf('/') + 1);
+    //split name and extension
+    //decodeURIComponent name
+    //lowercase ext
+    return file.substring(file.lastIndexOf('/') + 1).toLowerCase();
   }
 
   getFileNameWithoutExtension(file) {
@@ -368,21 +382,21 @@ export class FileOpsProvider {
     });
   }
 
-  openRemoteFile(file, directory = null, identifier) {
+  openRemoteFile(file, directory = null, identifier,isNormalizeURL : boolean = true) {
     return new Promise((resolve, reject) => {
       //check if directory null
       if (directory === null) {
         directory = this.directory;
       }
       this.isFileDownloaded(file, directory).then(status => {
-          this.openFile(file, directory, identifier).then(status => {
+        this.openFile(file, directory, identifier, isNormalizeURL).then(status => {
           resolve(status);
         }).catch(error => {
           reject(error);
         });
       }).catch(error => {
         this.downloadFile(file, directory, identifier).then(status => {
-          this.openFile(file, directory, identifier).then(status => {
+          this.openFile(file, directory, identifier,isNormalizeURL).then(status => {
             resolve(status);
           }).catch(error => {
             reject(error);

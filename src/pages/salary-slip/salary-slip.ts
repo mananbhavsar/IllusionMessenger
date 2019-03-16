@@ -58,10 +58,10 @@ export class SalarySlipPage {
       if (this.platform.is('core')) {
         window.open(file, '_blank');
       } else {
-        this._fileOps.getDataDirectory().then(path => {
+        this._fileOps.getDataDirectory().then((path : any) => {
           let identifier = UUID.UUID();
-          let filePath = path + 'Salary Slips' + '/';
-          this._fileOps.openRemoteFile(file, filePath, identifier).then(status => {
+          let filePath = path + 'SalarySlips' + '/';
+          this._fileOps.openRemoteFile(file, filePath, identifier, false).then(status => {
           }).catch(error => {
           });
         });

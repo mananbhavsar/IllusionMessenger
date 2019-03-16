@@ -201,7 +201,10 @@ export class ChatPage {
 
     this.topicID = this.navParams.data.topicID;
     this.groupID = this.navParams.data.groupID;
-
+    this.topicCode = this.navParams.data.Topic.TopicCode;
+    this.group_name = this.navParams.data.Topic.Group;
+     
+    this.subSubTitle = 'Created By ' + this.navParams.data.Topic.CreatedBy + ' on ' + this._date.format(this._date.get(this.navParams.data.Topic.CreationDate_UTC))
     this._fileOps.getDataDirectory().then(path => {
       this.dataDirectory = path;
     }).catch(error => {
@@ -613,8 +616,7 @@ export class ChatPage {
       this.initData().then(status => {
         this.listenToEvents();
       }).catch(error => {
-
-        this.navCtrl.pop();
+        // this.navCtrl.pop();
       });
     } else {
       this.events.subscribe('user:ready', User => {
@@ -692,6 +694,7 @@ export class ChatPage {
         });
       } else {
         this.storage.get('OfflineTopics').then(topicCodes => {
+
           if (_.isEmpty(topicCodes)) {
             topicCodes = {};
           }
@@ -701,7 +704,7 @@ export class ChatPage {
             return;
           }
           this.data = topicCodes[this.topicCode];
-
+          this.headerButtons = [{ icon: 'ios-more', name: 'more-option' }];
           this.setTitle();
           this.setUsers().then(chatUsersList => {
             this.initOffline();
@@ -834,33 +837,33 @@ export class ChatPage {
 
   handleImageFiles(file) {
     return new Promise((resolve, reject) => {
-    let input = file.target;
-    let dataURL: string;
-    let fileSize: number = input.files[0].size;
-    let fileName = this._fileOps.getFileNameWithoutExtension(input.files[0].name);
-    let fileExtension = this._fileOps.getFileExtension(input.files[0].name);
-    if(fileSize >= 3000000){
-      this.events.publish('alert:basic','File upload error','File size should not exceed more than 3MB');
-    } else {
-    let reader = new FileReader();
-    let context = this;
-    reader.onload = function () {
-      dataURL = (<any>reader).result.replace(/^data:image\/\w+;base64,/, "");
-      context.uploadFileFromBrowser(fileName, fileExtension, dataURL)
-        .then((data: any) => {
-          if (data.Data.indexOf('https') === 0) {
-            context.sendToFirebase('', 'Image', data.Data);
-            resolve(true);
-          } else {
-            context.events.publish('alert:basic', data.Data);
-          }
-        }).catch((error) => {
-          reject(false);
-        });
-    }
-    reader.readAsDataURL(input.files[0]);
-  }
-  });
+      let input = file.target;
+      let dataURL: string;
+      let fileSize: number = input.files[0].size;
+      let fileName = this._fileOps.getFileNameWithoutExtension(input.files[0].name);
+      let fileExtension = this._fileOps.getFileExtension(input.files[0].name);
+      if (fileSize >= 3000000) {
+        this.events.publish('alert:basic', 'File upload error', 'File size should not exceed more than 3MB');
+      } else {
+        let reader = new FileReader();
+        let context = this;
+        reader.onload = function () {
+          dataURL = (<any>reader).result.replace(/^data:image\/\w+;base64,/, "");
+          context.uploadFileFromBrowser(fileName, fileExtension, dataURL)
+            .then((data: any) => {
+              if (data.Data.indexOf('https') === 0) {
+                context.sendToFirebase('', 'Image', data.Data);
+                resolve(true);
+              } else {
+                context.events.publish('alert:basic', data.Data);
+              }
+            }).catch((error) => {
+              reject(false);
+            });
+        }
+        reader.readAsDataURL(input.files[0]);
+      }
+    });
   }
 
 
@@ -1116,67 +1119,47 @@ export class ChatPage {
 
 
   getOptions(element, message) {
-    if (this.data.StatusID === 2) {
+    if (!this.hasInternet) {
       return;
     } else {
-      if (this.messageKey) {
+      if (this.data.StatusID === 2) {
         return;
       } else {
-        this.messageKey = this.getElementMessageKey(element.target);
-        let selectedElement = document.getElementById('message-' + this.messageKey);
-        selectedElement.classList.toggle("selected");
-        if (this.getChildElement(element, '.text')) {
-          this.selectedMessageElement = this.getChildElement(element, '.text');
-        } else
-          if (this.getChildElement(element, '.video')) {
-            this.selectedMessageElement = this.getChildElement(element, '.video');
+        if (this.messageKey) {
+          return;
+        } else {
+          this.messageKey = this.getElementMessageKey(element.target);
+          let selectedElement = document.getElementById('message-' + this.messageKey);
+          selectedElement.classList.toggle("selected");
+          if (this.getChildElement(element, '.text')) {
+            this.selectedMessageElement = this.getChildElement(element, '.text');
           } else
-            if (this.getChildElement(element, '.picture')) {
-              this.selectedMessageElement = this.getChildElement(element, '.picture');
+            if (this.getChildElement(element, '.video')) {
+              this.selectedMessageElement = this.getChildElement(element, '.video');
             } else
-              if (this.getChildElement(element, '.audio')) {
-                this.selectedMessageElement = this.getChildElement(element, '.audio');
-              }
-        if (!this.selectedMessageElement) {
-          selectedElement.classList.remove("selected");
-          this.messageKey = null;
-        }
-        this.headerButtons = [];
-        if (this.common.hasClass(this.selectedMessageElement, 'text')) {
-          this.headerButtons.push(
-            {
-              icon: 'ios-undo',
-              name: 'ios-undo',
-              value: this.selectedMessageElement
-            },
-            {
-              icon: 'ios-copy',
-              name: 'ios-copy',
-              value: this.selectedMessageElement
-            },
-            {
-              icon: 'ios-redo',
-              name: 'ios-redo',
-            },
-            {
-              icon: 'ios-information-circle-outline',
-              name: 'ios-information-circle-outline',
-              value: message
-            },
-            {
-              icon: 'ios-more',
-              name: 'more-option'
-            });
-        } else
-          if (this.common.hasClass(this.selectedMessageElement, 'video') ||
-            this.common.hasClass(this.selectedMessageElement, 'audio') ||
-            this.common.hasClass(this.selectedMessageElement, 'picture')) {
+              if (this.getChildElement(element, '.picture')) {
+                this.selectedMessageElement = this.getChildElement(element, '.picture');
+              } else
+                if (this.getChildElement(element, '.audio')) {
+                  this.selectedMessageElement = this.getChildElement(element, '.audio');
+                }
+          if (!this.selectedMessageElement) {
+            selectedElement.classList.remove("selected");
+            this.messageKey = null;
+          }
+          this.headerButtons = [];
+          if (this.common.hasClass(this.selectedMessageElement, 'text')) {
             this.headerButtons.push(
-              // {
-              //   icon: 'ios-undo',
-              //   name: 'ios-undo',
-              //   value: this.selectedMessageElement
-              // },
+              {
+                icon: 'ios-undo',
+                name: 'ios-undo',
+                value: this.selectedMessageElement
+              },
+              {
+                icon: 'ios-copy',
+                name: 'ios-copy',
+                value: this.selectedMessageElement
+              },
               {
                 icon: 'ios-redo',
                 name: 'ios-redo',
@@ -1190,15 +1173,39 @@ export class ChatPage {
                 icon: 'ios-more',
                 name: 'more-option'
               });
-          } else {
-            this.headerButtons.push(
-              {
-                icon: 'ios-more',
-                name: 'more-option'
-              });
+          } else
+            if (this.common.hasClass(this.selectedMessageElement, 'video') ||
+              this.common.hasClass(this.selectedMessageElement, 'audio') ||
+              this.common.hasClass(this.selectedMessageElement, 'picture')) {
+              this.headerButtons.push(
+                // {
+                //   icon: 'ios-undo',
+                //   name: 'ios-undo',
+                //   value: this.selectedMessageElement
+                // },
+                {
+                  icon: 'ios-redo',
+                  name: 'ios-redo',
+                },
+                {
+                  icon: 'ios-information-circle-outline',
+                  name: 'ios-information-circle-outline',
+                  value: message
+                },
+                {
+                  icon: 'ios-more',
+                  name: 'more-option'
+                });
+            } else {
+              this.headerButtons.push(
+                {
+                  icon: 'ios-more',
+                  name: 'more-option'
+                });
+            }
+          if (this.common.hasClass(this.selectedMessageElement, 'contact')) {
+            return false;
           }
-        if (this.common.hasClass(this.selectedMessageElement, 'contact')) {
-          return false;
         }
       }
     }
@@ -1947,6 +1954,9 @@ export class ChatPage {
         //offline messages
         this.offlineMessages.unshift(item);
       }
+      this.messages.sort((first, second) => {
+        return first.CreateAt - second.CreateAt;
+      });
     }
     return index;
   }

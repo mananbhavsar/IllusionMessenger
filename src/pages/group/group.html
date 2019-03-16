@@ -20,12 +20,17 @@
       <ion-grid *ngIf="group !== -1">
         <flash-news [GroupID]="group_id" [flashNews]="group.FlashNews"></flash-news>
         <ion-row *ngIf="group.SystemTopicList" class="magin-bottom-5">
-          <ion-col no-padding >
+          <ion-col no-padding>
             <ion-item no-lines class="system-topic" *ngFor="let topic of group.SystemTopicList;let i = index;" (click)="openGeneralTopic(topic, i, 'SystemTopicList')">
               <h5 class="topic">
                 {{topic.Topic}}
               </h5>
-              <ion-badge item-end *ngIf="getBadge(topic.TopicCode)">{{getBadge(topic.TopicCode)}}</ion-badge>
+              <ng-container *ngIf="getBadge(topic.TopicCode) && network.type !== 'none'">
+                <ion-badge item-end>{{getBadge(topic.TopicCode)}}</ion-badge>
+              </ng-container>
+              <ng-container *ngIf="topic.Count && network.type === 'none'">
+                <ion-badge item-end>{{topic.Count}}</ion-badge>
+              </ng-container>
               <ion-icon color="light-gray" name="ios-arrow-forward" item-end></ion-icon>
             </ion-item>
           </ion-col>
@@ -45,8 +50,8 @@
             (clicked)="topicCliked($event)"></topic>
         </ng-container>
         <button ion-button block border-radius outline text-center (click)="viewAllClosedTopics($event)">
-            View All Archived&nbsp;&nbsp;
-            <ion-badge small text-small *ngIf="group && group.ArchiveTopicCount">{{group.ArchiveTopicCount}}</ion-badge>
+          View All Archived&nbsp;&nbsp;
+          <ion-badge small text-small *ngIf="group && group.ArchiveTopicCount">{{group.ArchiveTopicCount}}</ion-badge>
         </button>
         <!-- </ion-item-group> -->
       </ion-grid>

@@ -1462,7 +1462,7 @@ export class ChatPage {
         let animate = 300;
         this.contentResize();
         if (this.content && typeof this.content.scrollToBottom === 'function' && this.content._scroll) {
-          //const wait = this.content.isScrolling ? 150 : null;
+          const wait = this.content.isScrolling ? 150 : null;
           setTimeout(() => {
             try {
               this.content.scrollToBottom(animate).then(value => {

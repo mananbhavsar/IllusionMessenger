@@ -188,12 +188,12 @@ export class UserProvider {
                         this.events.publish('menu:created', response.MenuList);
                         this.storage.set('menulist:offline', response.MenuList);
                     }
-                    if (response.Data.LogOutForcefully) {
-                        if (response.Data.Message) {
-                            this.events.publish('alert:basic', 'Logged Out!', response.Data.Message);
-                        }
+                    if (response.Data.LogOutForcefully && !_.isEmpty(push_id)) {
+                        // if (response.Data.Message) {
+                        //     this.events.publish('alert:basic', 'Logged Out!', response.Data.Message);
+                        // }
                         this.logout();
-                        reject(false);
+                        reject(true);
                     } else if (response.Data.Status === 0) {
                         this._firebaseTransaction.doTransaction(response.FireBaseTransaction).catch(error => { });
                         reject(response.Data);
@@ -277,7 +277,7 @@ export class UserProvider {
                                 }
 
                             let alert = this.alertCtrl.create({
-                                // enableBackdropDismiss: allowAlertClose,
+                                enableBackdropDismiss: allowAlertClose,
                                 title: 'Version Update Available',
                                 message: message,
                                 buttons: buttons

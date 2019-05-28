@@ -126,7 +126,6 @@ export class MyApp {
             this._statusBar.overlaysWebView(false); // let status bar overlay webview
             this._statusBar.backgroundColorByHexString(Global.color.primary);
             splashScreen.hide();
-
             this.enableMenu(false);
             this.listenToGobalEvents();
             this.listenToLoginEvents();
@@ -262,7 +261,7 @@ export class MyApp {
 
     listenToGobalEvents() {
         if(!this.platform.is('core')){
-        this.doTranslate();
+        // this.doTranslate();
         }
             this.events.subscribe('menu:created', (menu: any) => {
                 setTimeout(() => {
@@ -298,6 +297,7 @@ export class MyApp {
         });
 
         this.events.subscribe('alert:basic', (title, subTitle, buttons) => {
+            // this.doTranslate();
             try {
                 if (title === null || typeof title === 'undefined' || title.trim() === '') {
                     return;

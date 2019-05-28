@@ -64,7 +64,7 @@ export class ChatOptionsPage {
     public storage: Storage,
     private viewController: ViewController,
     private _date: DateProvider,
-    private callNumber: CallNumber,
+    public callNumber: CallNumber,
     public network: Network
   ) {
     this.data = this.navParams.data.data;
@@ -183,15 +183,16 @@ export class ChatOptionsPage {
     }
   }
 
-  callParticipant(event, number) {
+  callParticipant(event, participant) {
     event.preventDefault();
     event.stopPropagation();
-    if (number) {
+    if (participant.ContactNo) {
       if (this.platform.is('mobileweb') || this.platform.is('core')) {
-        number = "tel:" + number;
-        window.location.href = number;
+        participant.ContactNo = "tel:" + participant.ContactNo;
+        window.location.href = participant.ContactNo;
       } else if (this.platform.is('cordova')) {
-        this.callNumber.callNumber(number, true);
+        // this.callNumber.callNumber(participant.ContactNo, true);
+        window.open("tel:" + participant.ContactNo, '_system');
       }
     }
     return false;
@@ -388,7 +389,9 @@ export class ChatOptionsPage {
     this.viewController.dismiss(data);
   }
 
-  userOptionsClicked(participant, index) {
+  userOptionsClicked(event,participant, index) {
+    event.preventDefault();
+    event.stopPropagation();
     if (this.network.type !== 'none') {
       //only if I'm admin
       if (this.amIAdmin && this.statusID === 1) {

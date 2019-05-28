@@ -128,7 +128,7 @@ export class HomePage {
             this.getData(true).catch(error => { });
         });
 
-        this.events.subscribe('dashboard:close', (dashboard) => {
+        this.events.subscribe('dashboard:close', (dashboard) => {      
             this.setTitle();
         });
 
@@ -147,7 +147,6 @@ export class HomePage {
         if (!_.isEmpty(this.connection.user)) {
             this.initData(false).catch(error => { });
         } else {
-            //waiting for login
             this.events.subscribe('user:ready', (status) => {
                 if (status) {
                     this.initData(false).catch(error => { });
@@ -260,8 +259,7 @@ export class HomePage {
 
     registerDevice(isPullDown) {
         //make device regsiter call
-        //if internet
-        // this.connectToServer('1224',false);
+        this.connectToServer('1234',false);
         if (this._network.type === 'none') {
             this.storage.get('lastconnectedtime:offline').then((time:any) => {
                 this.connectedTime = time;
@@ -444,7 +442,7 @@ export class HomePage {
 
     useLang(lang) {
         this.translate.use(lang);
-        this.user.registerPushID('123456');
+        // this.user.registerPushID('123456');
     }
 
     openGroup(GroupID, Group) {

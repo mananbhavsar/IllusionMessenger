@@ -101,7 +101,7 @@
 					</ion-col>
 				</ion-row>
 				<ion-item-sliding [hidden]="!participant" *ngFor="let participant of data.User;let i = index;trackBy:trackByUserID"
-				 (click)="userOptionsClicked(participant, i)">
+				 (click)="userOptionsClicked($event,participant, i)">
 					<ion-item class="participants">
 						<h3 *ngIf="participant">
 							{{participant.User}}
@@ -123,8 +123,8 @@
 						<ion-icon item-end name="ios-star" color="responsible" *ngIf="participant && participant.IsResponsible"></ion-icon>
 						<button ion-button item-end small outline color="casestatus" *ngIf="participant && participant.IsAdmin">Admin</button>
 					</ion-item>
-					<ion-item-options *ngIf="participant.ContactNo !== '0'" side="right">
-						<button ion-button icon-only color="communication" (click)="callParticipant($event,participant.ContactNo)">
+					<ion-item-options *ngIf="participant.ContactNo !== '0' && !(isYou(participant.UserID))" side="right">
+						<button ion-button icon-only color="communication" (click)="callParticipant($event,participant)">
 							<ion-icon name="call"></ion-icon>
 						</button>
 					</ion-item-options>

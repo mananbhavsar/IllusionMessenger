@@ -28,7 +28,7 @@
               <ng-container *ngIf="getBadge(topic.TopicCode) && network.type !== 'none'">
                 <ion-badge item-end>{{getBadge(topic.TopicCode)}}</ion-badge>
               </ng-container>
-              <ng-container *ngIf="topic.Count && network.type === 'none'">
+              <ng-container *ngIf="topic.Count && network.type !== 'none'">
                 <ion-badge item-end>{{topic.Count}}</ion-badge>
               </ng-container>
               <ion-icon color="light-gray" name="ios-arrow-forward" item-end></ion-icon>

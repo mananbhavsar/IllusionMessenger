@@ -11,3 +11,6 @@
 4: dependencies {
         compile "me.leolin:ShortcutBadger:1.1.21@aar"
     }
+   
+   //for gradlew error
+    chmod +x  gradlew path

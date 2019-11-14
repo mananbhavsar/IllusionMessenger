@@ -8,7 +8,6 @@ import { DateProvider } from '../../providers/date/date';
 import { ReadMessageProvider } from '../../providers/read-message/read-message';
 import { OfflineStorageProvider } from '../../providers/offline-storage/offline-storage';
 import { Storage } from '@ionic/storage';
-import * as _ from 'underscore';
 import { Network } from '@ionic-native/network';
 
 @Component({

@@ -18,7 +18,7 @@ export class AddFlashPage {
   group_name: string = 'loading';
   attachments: Array<any> = [];
   hourAddition: number = 2;
-  isBrowser: boolean;
+  isBrowser: boolean = false;
   flashNews_Attachment: any = [];
 
   constructor(
@@ -34,7 +34,6 @@ export class AddFlashPage {
   ) {
     this.group_id = this.navParams.data.group_id;
     this.group_name = this.navParams.data.group_name;
-
     this.isBrowser = this.platform.is('core');
 
     this.addFlashForm = this.formBuilder.group({
@@ -42,8 +41,8 @@ export class AddFlashPage {
       start_date: [moment().format()],
       end_date: [moment().add(this.hourAddition, 'hours').format()],
     }, {
-        validator: DateValidator.isBefore
-      });
+      validator: DateValidator.isBefore
+    });
   }
 
   addFlash() {

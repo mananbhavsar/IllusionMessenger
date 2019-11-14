@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, ViewController, Events } from 'ionic-angular';
 import { ConnectionProvider } from '../../providers/connection/connection';
-import { Platform } from 'ionic-angular/platform/platform';
+import { Platform } from 'ionic-angular';
 import { NotificationsProvider } from '../../providers/notifications/notifications';
 
 

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, ModalController, Events, ActionSheetController, NavController, NavParams, ItemGroup } from 'ionic-angular';
+import { IonicPage, ModalController, Events, ActionSheetController, NavController, NavParams } from 'ionic-angular';
 import { ConnectionProvider } from '../../providers/connection/connection';
 import { CreateGroupPage } from './create-group/create-group';
 import { Network } from '@ionic-native/network';
@@ -37,6 +37,7 @@ export class ManageGroupPage {
       if (_.isEmpty(groups)) {
         groups = [];
       }
+      this.page = 0;
       groups.forEach(group => {
         this.pushItem(group);
       });

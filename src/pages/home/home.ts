@@ -128,7 +128,7 @@ export class HomePage {
             this.getData(true).catch(error => { });
         });
 
-        this.events.subscribe('dashboard:close', (dashboard) => {      
+        this.events.subscribe('dashboard:close', (dashboard) => {
             this.setTitle();
         });
 
@@ -181,9 +181,9 @@ export class HomePage {
             }
             this.hasInternet = this._network.type !== 'none';
             if (this._network.type === 'none') {
-                this.storage.get('lastconnectedtime:offline').then((time:any) => {
-                this.connectedTime = time;
-                this.deviceRegsiter = 2;
+                this.storage.get('lastconnectedtime:offline').then((time: any) => {
+                    this.connectedTime = time;
+                    this.deviceRegsiter = 2;
                 });
                 this.storage.get('GetTaskDetail:offline').then((data: any) => {
                     if (data) {
@@ -220,7 +220,7 @@ export class HomePage {
                         this.buttons = [];
                         this.data = response;
                         this.dataFetched = true;
-                        this.buttons.push({ icon: 'flash', name: 'flash' }, { icon: 'ios-options', name: 'sort' },{ icon: 'search', name: 'search' },);
+                        this.buttons.push({ icon: 'flash', name: 'flash' }, { icon: 'ios-options', name: 'sort' }, { icon: 'search', name: 'search' });
                         if (!_.isEmpty(this.data)) {
                             //flash
                             if (response.FlashNews) {
@@ -259,12 +259,11 @@ export class HomePage {
 
     registerDevice(isPullDown) {
         //make device regsiter call
-        this.connectToServer('1234',false);
         if (this._network.type === 'none') {
-            this.storage.get('lastconnectedtime:offline').then((time:any) => {
+            this.storage.get('lastconnectedtime:offline').then((time: any) => {
                 this.connectedTime = time;
                 this.deviceRegsiter = 2;
-                });
+            });
         } else if (this.platform.is('core')) {
             if (this.connection.getPushID()) {
                 this.deviceRegsiter = 1;
@@ -305,7 +304,7 @@ export class HomePage {
             if (response.Data && response.Data.LastActivity) {
                 this.deviceRegsiter = 2; //connected
                 this.connectedTime = response.Data.LastActivity;
-                this.storage.set('lastconnectedtime:offline',this.connectedTime);
+                this.storage.set('lastconnectedtime:offline', this.connectedTime);
             } else {
                 this.deviceRegsiter = 0;
             }
@@ -652,7 +651,7 @@ export class HomePage {
         if (selectedBadgeCount > 99) {
             selectedBadgeCount = '99+';
         }
-        if(selectedBadgeCount === 0){
+        if (selectedBadgeCount === 0) {
             return '';
         }
         return selectedBadgeCount;

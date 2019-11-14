@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AndroidPermissions } from '@ionic-native/android-permissions';
 import { Camera, CameraOptions } from '@ionic-native/camera';
-import { File, FileEntry, Entry } from '@ionic-native/file';
+import { File, FileEntry } from '@ionic-native/file';
 import { FileChooser } from '@ionic-native/file-chooser';
 import { FileOpener } from '@ionic-native/file-opener';
 import { FilePath } from '@ionic-native/file-path';
@@ -164,19 +164,17 @@ export class FileOpsProvider {
       if (doNative) {
         nativeURL = this.getNativeURL(file, directory,isNormalizeURL);
       }
-
       if(this.platform.is('android')){
         nativeURL = decodeURIComponent(nativeURL);
       }
-
       this.fileOpener.open(nativeURL, mime.lookup(nativeURL)).then(status => {
-
         resolve(status);
       }).catch(error => {
         reject(error);
       });
     });
   };
+
 
   getNativeURL(file, directory = null,isNormalizeURL : boolean = true) {
     if (directory === null) {

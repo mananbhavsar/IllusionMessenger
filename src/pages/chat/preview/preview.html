@@ -1,0 +1,23 @@
+<ion-header no-border>
+  <modal-toolbar [title]="'ChatScreen._Preview_' | translate" (dismiss)="dismiss($event)"></modal-toolbar>
+</ion-header>
+
+<ion-content text-center padding>
+  <ng-container [ngSwitch]="previewData.FileType">
+    <div text-center *ngSwitchCase="'Image'" class="picture">
+      <img id="img" class="image-crop" (click)="openImage()" [src]="previewData.nativeURL" width="250" height="250" />
+    </div>
+    <button *ngIf="previewData.FileType === 'Image'" (click)="cropImg($event,previewData.nativeURL)" ion-button outline
+      icon-only>
+      <ion-icon name="crop"></ion-icon>
+    </button>
+    <div (click)="playAudio()" text-center *ngSwitchCase="'Audio'" class="media-view">
+      <img src="assets/img/audio.png" width="200" height="200">
+    </div>
+    <div (click)="playVideo()" text-center *ngSwitchCase="'Video'" class="media-view">
+      <img src="assets/img/video.png" width="200" height="200">
+    </div>
+  </ng-container>
+  <ion-input required placeholder="Enter message here" type="text" [(ngModel)]="message"></ion-input>
+  <button block ion-button (click)="Upload()">Send</button>
+</ion-content>

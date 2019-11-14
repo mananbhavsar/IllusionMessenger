@@ -1,4 +1,4 @@
-import { Component, enableProdMode, ViewChild } from '@angular/core';
+import { Component, enableProdMode, ViewChild, Renderer2 } from '@angular/core';
 import { Badge } from '@ionic-native/badge';
 import { Globalization } from '@ionic-native/globalization';
 import { Keyboard } from '@ionic-native/keyboard';
@@ -25,7 +25,8 @@ import { UserProvider } from '../providers/user/user';
 import { GroupPage } from './../pages/group/group';
 import { Global } from './global';
 import { DailyShedulePage } from '../pages/topic/daily-shedule/daily-shedule';
-import { NotificationsPage } from '../pages/notifications/notifications';
+import { AndroidPermissions } from '@ionic-native/android-permissions';
+import { FileOpsProvider } from '../providers/file-ops/file-ops';
 
 export const firebaseConfig = {
     apiKey: "AIzaSyAFDZ9UPTMiDTjT4qAG0d9uVeOdhL-2PBw",
@@ -95,7 +96,7 @@ export class MyApp {
     //mubass
     error_translate: string = 'Error occurred! Try again';
     offline_translate: string = 'You seems to be offline';
-    online_translate: string = 'Hola, you are online now';
+    online_translate: string = 'hello, you are online now';
     welcome_translate: string = 'Welcome';
     ok_translate: string = 'Ok';
     loading_translate: string = 'loading';
@@ -120,6 +121,9 @@ export class MyApp {
         private _oneSignal: OneSignal,
         private translate: TranslateServiceProvider,
         private globalization: Globalization,
+        private renderer2: Renderer2,
+        private fileOps: FileOpsProvider,
+        private androidPermissions: AndroidPermissions
     ) {
         this.translate.setDefaultLang('en');
         platform.ready().then(() => {
@@ -129,14 +133,32 @@ export class MyApp {
             this.enableMenu(false);
             this.listenToGobalEvents();
             this.listenToLoginEvents();
-            this._keyboard.hideFormAccessoryBar(false);
-            // this._keyboard.disableScroll(false);
-
+            this._keyboard.disableScroll(false);
+            this._keyboard.hideKeyboardAccessoryBar(true);
             setTimeout(() => {
                 this.initPreLoginPlugins();
             }, 500);
+            this.fileOps.getDataDirectory().then((response) => {
+                this.androidPermissions.requestPermissions(
+                    [
+                        this.androidPermissions.PERMISSION.READ_MEDIA_VIDEO,
+                    ]
+                );
+            });
         });
         firebase.initializeApp(firebaseConfig);
+    }
+
+    scollKeyboard() {
+        let html = document.getElementsByTagName('html').item(0);
+
+        this._keyboard.onKeyboardHide().subscribe(() => {
+            this.renderer2.setStyle(html, 'height', '101vh')
+        });
+
+        this._keyboard.onKeyboardShow().subscribe(() => {
+            this.renderer2.setStyle(html, 'height', 'auto')
+        });
     }
 
     enableMenu(loggedIn: boolean) {
@@ -168,16 +190,16 @@ export class MyApp {
             });
             logoutConfirmation.present();
         } else if (page.name === 'HomePage') {
-                this.nav.setRoot(page.name, params);
+            this.nav.setRoot(page.name, params);
             // Set the root of the nav with params if it's a tab index
-        } else if(page.name === 'OTPage' || page.name === 'LeaveApplicationPage' || page.name === 'AdvanceRequestPage'){ 
-                if(this._network.type === 'none'){
-                    this.events.publish('toast:create',this.offline_translate);
-                } else {
-                    this.nav.push(page.name, params);
-                }
+        } else if (page.name === 'OTPage' || page.name === 'LeaveApplicationPage' || page.name === 'AdvanceRequestPage') {
+            if (this._network.type === 'none') {
+                this.events.publish('toast:create', this.offline_translate);
             } else {
                 this.nav.push(page.name, params);
+            }
+        } else {
+            this.nav.push(page.name, params);
         }
     }
 
@@ -260,25 +282,25 @@ export class MyApp {
     }
 
     listenToGobalEvents() {
-        if(!this.platform.is('core')){
-        // this.doTranslate();
+        if (!this.platform.is('core')) {
+            // this.doTranslate();
         }
-            this.events.subscribe('menu:created', (menu: any) => {
-                setTimeout(() => {
-                    this.loggedInPages = menu;
-                });
+        this.events.subscribe('menu:created', (menu: any) => {
+            setTimeout(() => {
+                this.loggedInPages = menu;
             });
+        });
 
         this.events.subscribe('loading:create', (content) => {
             content = content || this.loading_translate;
-            if(content){
-            this.loading = this.loadingCtrl.create({
-                content: content + '...'
-            });
+            if (content) {
+                this.loading = this.loadingCtrl.create({
+                    content: content + '...'
+                });
 
-            this.loading.present().then(() => {
-            });
-        }
+                this.loading.present().then(() => {
+                });
+            }
         });
 
         this.events.subscribe('loading:close', () => {
@@ -380,9 +402,9 @@ export class MyApp {
             if ((time - this.lastOfflineMessageShown) < 1000) {
                 return;
             }
-            this.storage.get('menulist:offline').then((menu : any) => {
-                this.events.publish('menu:created',menu);
-              });
+            this.storage.get('menulist:offline').then((menu: any) => {
+                this.events.publish('menu:created', menu);
+            });
             this.lastOfflineMessageShown = time;
             //sending to offline page only if not in offline 
             var currentPage = Global.getActiveComponentName(this.nav.getActive());
@@ -396,7 +418,7 @@ export class MyApp {
             //sending to home page only in offline page
             //var currentPage = Global.getActiveComponentName(this.nav.getActive());
             //if (currentPage === 'OfflinePage') {
-            this.events.publish('toast:create', this.online_translate);
+            // this.events.publish('toast:create', this.online_translate);
             //this.nav.setRoot(WelcomePage, true);
             //}
         });
@@ -495,7 +517,7 @@ export class MyApp {
         }
     }
 
-    processNotification(notification, directOpenPage) {
+    processNotification(notification, directOpenPage) {      
         let payload = 'payload' in notification ? notification.payload : notification.notification.payload;
         //showing notification  alert if not chatting else giving control to Caht module to handle it
         let currentPage = Global.getActiveComponentName(this.nav.getActive());

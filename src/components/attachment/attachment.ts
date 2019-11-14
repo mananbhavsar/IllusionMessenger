@@ -13,7 +13,7 @@ export class AttachmentComponent {
   @Input() editable: boolean = false;
   @Output() captured = new EventEmitter();
   @Output() removed = new EventEmitter();
-  @Input() isBrowser: boolean;
+  @Input() isBrowser: boolean = false;
   progresses: any = {};
   constructor(
     private _fileOps: FileOpsProvider,

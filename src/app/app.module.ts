@@ -5,6 +5,7 @@ import { AndroidPermissions } from '@ionic-native/android-permissions';
 import { Badge } from '@ionic-native/badge';
 import { CallNumber } from '@ionic-native/call-number';
 import { Camera } from '@ionic-native/camera';
+import { VideoEditor } from '@ionic-native/video-editor';
 import { Clipboard } from '@ionic-native/clipboard';
 import { Contacts } from '@ionic-native/contacts';
 import { Device } from '@ionic-native/device';
@@ -30,7 +31,6 @@ import { StreamingMedia } from '@ionic-native/streaming-media';
 import { UniqueDeviceID } from '@ionic-native/unique-device-id';
 import { Vibration } from '@ionic-native/vibration';
 import { VideoCapturePlus } from '@ionic-native/video-capture-plus';
-import { VideoEditor } from '@ionic-native/video-editor';
 import { VideoPlayer } from '@ionic-native/video-player';
 import { IonicStorageModule } from '@ionic/storage';
 import { MomentModule } from 'angular2-moment';
@@ -84,6 +84,7 @@ import { TutorialPageModule } from '../pages/tutorial/tutorial.module';
 import { SalarySlipPageModule } from '../pages/salary-slip/salary-slip.module';
 import { WelcomePageModule } from '../pages/welcome/welcome.module';
 import { PipesModule } from "../pipes/pipes.module";
+import { Crop } from '@ionic-native/crop';
 import { CommonProvider } from "../providers/common/common";
 import { ConnectionProvider } from '../providers/connection/connection';
 import { DateProvider } from '../providers/date/date';
@@ -102,6 +103,7 @@ import { GroupsPageModule } from '../pages/groups/groups.module';
 import { OTPageModule } from '../pages/forms/o-t/o-t.module';
 import { OfflineStorageProvider } from '../providers/offline-storage/offline-storage';
 import { NotificationsPageModule } from '../pages/notifications/notifications.module';
+import { PreviewPageModule } from '../pages/chat/preview/preview.module';
 
 @NgModule({
     declarations: [
@@ -115,7 +117,15 @@ import { NotificationsPageModule } from '../pages/notifications/notifications.mo
         BrowserModule,
         IonicModule.forRoot(MyApp, {
             mode: 'md',
-            tabsHideOnSubPages: true,
+            animate: true,
+            animation: 'md-transition',
+            platforms: {
+                ios: {
+                    scrollAssist: false,
+                    autoFocusAssist: false,
+                    scrollPadding: false,
+                }
+            }
         }),
         HttpModule,
         IonicStorageModule.forRoot({
@@ -130,6 +140,7 @@ import { NotificationsPageModule } from '../pages/notifications/notifications.mo
         CreateUserPageModule,
         FormsPageModule,
         OTPageModule,
+        PreviewPageModule,
         AdvanceRequestPageModule,
         LeaveApplicationPageModule,
         AccountPageModule,
@@ -193,6 +204,7 @@ import { NotificationsPageModule } from '../pages/notifications/notifications.mo
         Keyboard,
         SplashScreen,
         Diagnostic,
+        Crop,
         Clipboard,
         SQLite,
         CallNumber,

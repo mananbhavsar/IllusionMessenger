@@ -99,7 +99,7 @@
               {{'ChatScreen._Close_' | translate}}
             </button>
             <button ion-button small [hidden]="!recordingInProgress" (click)="stopRecording()">
-              {{'ChatScreen._Send_' | translate}}
+              {{'ChatScreen._Finish_' | translate}}
             </button>
           </ion-col>
         </ion-row>
@@ -119,8 +119,7 @@
     <ion-col *ngIf="replytoImg">
       <img class="reply-img" [src]="replytoImg" alt="">
     </ion-col>
-    <ion-col *ngIf="replytoText" col-11>
-      {{replytoText}}
+    <ion-col *ngIf="replytoText" [innerHTML]="replytoText | keepHtml" col-11>
     </ion-col>
     <ion-col col-1 class="close-icon">
       <ion-icon (click)="closeReply($event)" name="close"></ion-icon>

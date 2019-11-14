@@ -4,6 +4,7 @@ import { Events, IonicPage, NavController, NavParams, Platform } from 'ionic-ang
 import { Global } from '../../app/global';
 import { FileOpsProvider } from '../../providers/file-ops/file-ops';
 import { Network } from '@ionic-native/network';
+import { StreamingMedia, StreamingVideoOptions } from '@ionic-native/streaming-media';
 
 
 
@@ -25,9 +26,10 @@ export class HelpPage {
     public navParams: NavParams,
     private fileOps: FileOpsProvider,
     private videoPlayer: VideoPlayer,
-    private platform : Platform,
+    private platform: Platform,
     private events: Events,
-    public network : Network
+    public network: Network,
+    public streamingMedia : StreamingMedia,
   ) {
     this.global = Global;
     this.fileOps.getDataDirectory().then((path: string) => {
@@ -48,25 +50,23 @@ export class HelpPage {
     if (this.network.type === 'none') {
       this.events.publish('toast:error', 'You seems to be offline');
     } else {
-    if (this.platform.is('core')) {
-     window.open(this.url,'_blank');
-    } else {
-      this.videoPlayer.play(this.url).catch(error => {
-        this.events.publish('toast:create', error);
-      });
+      if (this.platform.is('core')) {
+        window.open(this.url, '_blank');
+      } else if (this.platform.is('android')) {
+        this.videoPlayer.play(this.url).catch(error => {
+          this.events.publish('toast:create', error);
+        });
+      } else if (this.platform.is('ios')) {
+        let options: StreamingVideoOptions = {
+          successCallback: () => { console.log('Video played') },
+          errorCallback: (e) => { console.log('Error streaming') },
+          shouldAutoClose: true,
+          controls: true
+        };
+
+        this.streamingMedia.playVideo(this.url, options);
+      }
     }
   }
-  }
-
-  // openVideo1() {
-  //   let options: StreamingVideoOptions = {
-  //     successCallback: () => { console.log('Video played') },
-  //     errorCallback: (e) => { console.log('Error streaming') },
-  //     shouldAutoClose: true,
-  //     controls: true
-  //   };
-
-  //   this.streamingMedia.playVideo(this.url, options);
-  // }
 
 }

@@ -7,7 +7,7 @@
   <ion-searchbar [showCancelButton]="true" *ngIf="searchInputBtn" (ionInput)="getItems($event)" (ionClear)="onClear($event)"
     (ionCancel)="onCancel($event)">
   </ion-searchbar>
-  <!-- <empty *ngIf="topicList.length === 0 else data_template"></empty> -->
+  <empty *ngIf="topicList.length === 0 else data_template"></empty>
   <ion-list>
     <ion-item (click)="selectTopic(topic)" *ngFor="let topic of topicList">
       <ion-label>

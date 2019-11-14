@@ -30,6 +30,8 @@ import { LogoutPage } from '../logout/logout';
 import { DateProvider } from './../../providers/date/date';
 import { ChatOptionsPage } from "./chat-options/chat-options";
 import { SavedMediaPage } from "./chat-options/saved-media/saved-media";
+import { PreviewPage } from './preview/preview';
+import { Crop } from '@ionic-native/crop';
 
 @IonicPage()
 @Component({
@@ -110,6 +112,7 @@ export class ChatPage {
   lastcalled: boolean = false;
   readyForPagination: boolean = false;
   sendClickKeepKeyboardOpened: boolean = false;
+
   //camera
   private cameraOptions: CameraOptions = {
     quality: 80,
@@ -125,6 +128,7 @@ export class ChatPage {
     correctOrientation: true,
     targetHeight: 1024,
     targetWidth: 1024,
+    saveToPhotoAlbum: false,
     sourceType: this.camera.PictureSourceType.SAVEDPHOTOALBUM,
     destinationType: this.camera.DestinationType.FILE_URI,
     encodingType: this.camera.EncodingType.JPEG,
@@ -170,6 +174,7 @@ export class ChatPage {
     public platform: Platform,
     public connection: ConnectionProvider,
     public events: Events,
+    public crop: Crop,
     public storage: Storage,
     public camera: Camera,
     private transfer: FileTransfer,
@@ -185,7 +190,7 @@ export class ChatPage {
     private videoCapturePlus: VideoCapturePlus,
     private modal: ModalController,
     private common: CommonProvider,
-    private contacts: Contacts,
+    public contactsList: Contacts,
     public http: Http,
     public clipboard: Clipboard,
     private translate: TranslateServiceProvider,
@@ -203,12 +208,9 @@ export class ChatPage {
     this.groupID = this.navParams.data.groupID;
     this.topicCode = this.navParams.data.Topic.TopicCode;
     this.group_name = this.navParams.data.Topic.Group;
-     
+
     this.subSubTitle = 'Created By ' + this.navParams.data.Topic.CreatedBy + ' on ' + this._date.format(this._date.get(this.navParams.data.Topic.CreationDate_UTC))
-    this._fileOps.getDataDirectory().then(path => {
-      this.dataDirectory = path;
-    }).catch(error => {
-    });
+
 
     this.keyboard.onKeyboardShow().subscribe((data) => {
       this.scrollBottom('keyboard show').catch(error => { });
@@ -266,7 +268,7 @@ export class ChatPage {
     this.chattingRef = firebase.database().ref(this.basePath + 'Chatting');
 
     //keyboard disable
-    // this.keyboard.disableScroll(true);
+    this.keyboard.disableScroll(true);
 
     //listening to Close Topic
     firebase.database().ref(this.topicClosePath).on('value', snapshot => {
@@ -603,9 +605,11 @@ export class ChatPage {
 
   }
 
-  ionViewDidEnter() {
-    //hiding keyboard accessory bar
-    this.keyboard.hideFormAccessoryBar(true);
+  ionViewDidLoad() {
+    this._fileOps.getDataDirectory().then(path => {
+      this.dataDirectory = path;
+    }).catch(error => {
+    });
     //translate
     this.doTranslate();
     //checking if user logged in
@@ -621,7 +625,7 @@ export class ChatPage {
     } else {
       this.events.subscribe('user:ready', User => {
         if (!_.isEmpty(User)) {
-          this.ionViewDidEnter();
+          this.ionViewDidLoad();
         } else {
           this.events.publish('toast:create', 'Kindly login to access Query');
           this.navCtrl.setRoot(LogoutPage);
@@ -645,7 +649,6 @@ export class ChatPage {
   }
 
   ionViewWillLeave() {
-    this.keyboard.hideFormAccessoryBar(false);
     this.doLeaving(true);
     this.clearTypingStringInterval();
   }
@@ -848,18 +851,29 @@ export class ChatPage {
         let reader = new FileReader();
         let context = this;
         reader.onload = function () {
-          dataURL = (<any>reader).result.replace(/^data:image\/\w+;base64,/, "");
-          context.uploadFileFromBrowser(fileName, fileExtension, dataURL)
-            .then((data: any) => {
-              if (data.Data.indexOf('https') === 0) {
-                context.sendToFirebase('', 'Image', data.Data);
-                resolve(true);
-              } else {
-                context.events.publish('alert:basic', data.Data);
-              }
-            }).catch((error) => {
-              reject(false);
-            });
+          let modal = context.modal.create(PreviewPage, {
+            nativeURL: (<any>reader).result,
+            FileType: 'Image',
+            MimeType: input.files[0].type
+          });
+          modal.present();
+          modal.onDidDismiss((selectedimage: any) => {
+            if (!_.isEmpty(selectedimage)) {
+              dataURL = selectedimage.nativeURL.replace(/^data:image\/\w+;base64,/, "");
+              context.uploadFileFromBrowser(fileName, fileExtension, dataURL)
+                .then((data: any) => {
+                  if (data.Data.indexOf('https') === 0) {
+                    context.sendToFirebase(selectedimage.Text, 'Image', data.Data);
+                    resolve(true);
+                  } else {
+                    context.events.publish('alert:basic', data.Data);
+                  }
+                }).catch((error) => {
+                  reject(false);
+                });
+            }
+          });
+
         }
         reader.readAsDataURL(input.files[0]);
       }
@@ -887,6 +901,11 @@ export class ChatPage {
   }
 
   openUploadOptions() {
+    if (this.keyboardOpen) {
+      this.keyboardOpen = false;
+      this.sendClickKeepKeyboardOpened = false;
+      this.keyboard.close();
+    }
     const actionSheet = this.actionSheetCtrl.create({
       title: null,
       cssClass: 'text-left',
@@ -941,10 +960,12 @@ export class ChatPage {
   }
 
   attachContact() {
-    this.contacts.pickContact().then((data: any) => {
-      this.contacts = data._objectInstance;
-      this.sendToFirebase('', 'Contact', null, this.topicID, this.topicCode, null, null, this.contacts);
+    this.contactsList.pickContact().then((data: any) => {
+      this.sendToFirebase('', 'Contact', null, this.topicID, this.topicCode, null, null, data._objectInstance);
     }).then((error: any) => {
+    }).catch((error) => {
+      this.events.publish('toast:error', 'Canceled');
+
     });
   }
 
@@ -1223,6 +1244,7 @@ export class ChatPage {
     this.removeHeaderButtons();
   }
   checkMessageType(type) {
+    
     //identify message type
     switch (type) {
       case 'text':
@@ -1404,7 +1426,7 @@ export class ChatPage {
     if (this.keyboardOpen) {
       this.keyboardOpen = false;
       this.setTyping(false);
-      this.keyboard.hide();
+      this.keyboard.close();
     }
   }
 
@@ -1462,7 +1484,7 @@ export class ChatPage {
         let animate = 300;
         this.contentResize();
         if (this.content && typeof this.content.scrollToBottom === 'function' && this.content._scroll) {
-          const wait = this.content.isScrolling ? 150 : null;
+          // const wait = this.content.isScrolling ? 150 : null;
           setTimeout(() => {
             try {
               this.content.scrollToBottom(animate).then(value => {
@@ -1492,26 +1514,44 @@ export class ChatPage {
   }
 
   captureImage(type: string = 'camera') {
+    if (this.keyboardOpen) {
+      this.keyboardOpen = false;
+      this.sendClickKeepKeyboardOpened = false;
+      this.keyboard.close();
+    }
     let options = this.cameraOptions;
     if (type === 'gallery') {
       options = this.galleryOptions;
     }
-    this.camera.getPicture(options).then(url => {
+    this.camera.getPicture(options).then((url: string) => {
       let mimeType = mime.lookup(url);
+      let imageURL: string = url;
+      if (url.indexOf('?') > -1) {
+        mimeType = mime.lookup(url.substring(0, url.lastIndexOf('?')));
+      } else {
+        mimeType = mime.lookup(url);
+      }
+      // if (type === 'gallery' && mimeType.indexOf('image') > -1 && this.platform.is('android')) {
+      //   imageURL = 'file://' + url;
+      // } else {
+      //   imageURL = url;
+      // }
       //checking if video of image
-      if (mimeType.indexOf('image') > -1) {//image
-        let normalizedURL = normalizeURL(url);
-        this.uploadFile(normalizedURL).then((data: string) => {
-          if (data.indexOf('https') !== -1) {
+      if (mimeType.indexOf('image') > -1) {
+        let SelectedFile = { 'url': normalizeURL(imageURL), 'FileType': 'Image', 'MimeType': mimeType };
+        this.uploadFile(SelectedFile).then((data: any) => {
+          if (data.file.indexOf('https') !== -1) {
             //sending to Firebase
-            this.sendToFirebase('', 'Image', data);
+            this.sendToFirebase(data.text, 'Image', data.file);
           }
         }).catch(error => {
           this.events.publish('toast:error', error);
         });
-
-      } else if (mimeType.indexOf('video') > -1) {
-        this.uploadVideo(url);
+      }
+      else if (mimeType.indexOf('video') > -1) {
+        this.uploadVideo(imageURL);
+      } else {
+        this.events.publish('toast:error', 'Kindly select valid file');
       }
     }).catch(error => {
       this.events.publish('toast:error', error);
@@ -1552,7 +1592,6 @@ export class ChatPage {
 
   stopRecording() {
     this.vibration.vibrate(this.vibrateDuration);
-
     //stop from Media
     this.recordMediaFile.stopRecord();
     this.recordMediaFile.release();
@@ -1570,12 +1609,14 @@ export class ChatPage {
     let file = (this.dataDirectory + this.recordFileName);
     this.file.checkFile(this.dataDirectory, this.recordFileName).then(status => {
       if (status) {
-        this.uploadFile(file).then(data => {
+        let mimeType = mime.lookup(file);
+        let SelectedFile = { 'url': file, 'FileType': 'Audio', 'MimeType': mimeType };
+        this.uploadFile(SelectedFile).then((data: any) => {
           //deleting file
           this.file.removeFile(this.dataDirectory, this.recordFileName);
 
           //sending to Firebase
-          this.sendToFirebase('', 'Audio', data);
+          this.sendToFirebase(data.text, 'Audio', data.file);
         }).catch(error => {
           //deleting file
           this.file.removeFile(this.dataDirectory, this.recordFileName).catch(error => {
@@ -1601,7 +1642,7 @@ export class ChatPage {
     const options: VideoCapturePlusOptions = {
       limit: 1,
       highquality: false,
-      duration: duration,
+      duration: duration
     }
 
     this.videoCapturePlus.captureVideo(options).then((mediafile: MediaFile[]) => {
@@ -1617,10 +1658,12 @@ export class ChatPage {
 
   uploadVideo(url) {
     url = normalizeURL(url);
-    this.uploadFile(url).then((data: string) => {
-      if (data.indexOf('https') !== -1) {
+    let mimeType = mime.lookup(url);
+    let SelectedFile = { 'url': url, 'FileType': 'Video', 'MimeType': mimeType };
+    this.uploadFile(SelectedFile).then((data: any) => {
+      if (data.file.indexOf('https') !== -1) {
         //sending to Firebase
-        this.sendToFirebase('', 'Video', data);
+        this.sendToFirebase(data.text, 'Video', data.file);
       }
     }).catch(error => {
       this.events.publish('toast:error', error);
@@ -1630,29 +1673,47 @@ export class ChatPage {
   uploadFile(file) {
     return new Promise((resolve, reject) => {
       if (file) {
-        this.progressPercent = 0;
-        const fileTransfer: FileTransferObject = this.transfer.create();
-        let options = this.setFileOptions(file);
-
-        fileTransfer.upload(file, this.connection.URL + 'Chat/InsertChat_Attachement', options)
-          .then((data) => {
-
+        let modal = this.modal.create(PreviewPage, {
+          nativeURL: file.url,
+          FileType: file.FileType,
+          MimeType: file.MimeType
+        });
+        if (this.keyboardOpen) {
+          this.sendClickKeepKeyboardOpened = false;
+          this.keyboard.close();
+        }
+        modal.present();
+        modal.onDidDismiss((selectedFile: any) => {
+          if (!_.isEmpty(selectedFile)) {
             this.progressPercent = 0;
-            //getting URL from XML
-            if (data.response.indexOf('http') === -1) {
-              reject(data);
-            } else if (data.response.indexOf('>') > -1) {
-              resolve(data.response.substring(data.response.indexOf('>') + 1, data.response.lastIndexOf('<')));
-            } else {
-              resolve(JSON.parse(data.response));
-            }
-          }, (err) => {
-            this.progressPercent = 0;
-            reject(err);
-          });
-        fileTransfer.onProgress((progress) => {
-          if (progress.lengthComputable) {
-            this.progressPercent = parseFloat((progress.loaded * 100 / progress.total).toFixed(2));
+            const fileTransfer: FileTransferObject = this.transfer.create();
+            let options = this.setFileOptions(selectedFile.nativeURL);
+            fileTransfer.upload(selectedFile.nativeURL, this.connection.URL + 'Chat/InsertChat_Attachement', options)
+              .then((data) => {
+                let previewResponse: any = {};
+                previewResponse['text'] = selectedFile.Text;
+                this.progressPercent = 0;
+                //getting URL from XML
+                if (data.response.indexOf('http') === -1) {
+                  previewResponse['file'] = data;
+                  reject(previewResponse);
+                } else if (data.response.indexOf('>') > -1) {
+                  previewResponse['file'] = data.response.substring(data.response.indexOf('>') + 1, data.response.lastIndexOf('<'));
+                  resolve(previewResponse);
+                } else {
+                  previewResponse['file'] = JSON.parse(data.response);
+                  resolve(previewResponse);
+                }
+              }, (err) => {
+                this.progressPercent = 0;
+                this.events.publish('toast:error', 'Kindly select valid file');
+                reject(err);
+              });
+            fileTransfer.onProgress((progress) => {
+              if (progress.lengthComputable) {
+                this.progressPercent = parseFloat((progress.loaded * 100 / progress.total).toFixed(2));
+              }
+            });
           }
         });
       } else {
@@ -1720,8 +1781,7 @@ export class ChatPage {
           contents.fr = '🎤 ' + contents.fr;
         }
       }
-
-      this._notifications.send(user.DeviceID, user.title, contents, user.Badge, 'ChatPage', this.topicCode, message.URL).catch(error => { });
+      this._notifications.send(user.DeviceID, user.title, contents, user.Badge, 'ChatPage', { 'topicID': this.topicID, 'groupID': this.groupID, 'Topic': { 'TopicCode': this.topicCode, 'Group': this.group_name } }, message.URL).catch(error => { });
     });
   }
 
@@ -1775,9 +1835,6 @@ export class ChatPage {
     });
   }
 
-  openFile(file) {
-
-  }
 
   doLeaving(messageNull) {
     if (this.chattingInterval) {
@@ -1824,7 +1881,7 @@ export class ChatPage {
     }
 
     this.events.unsubscribe('user:ready');
-    // this.keyboard.disableScroll(false);
+    this.keyboard.disableScroll(false);
   }
 
   getLiveChatUsers(userChattingNow, nowTime) {
@@ -2157,7 +2214,7 @@ export class ChatPage {
       }
     }
     if (typingUsers.length) {
-      this.userTypingString = typingUsers.join(', ') + ' typing';
+      this.userTypingString = typingUsers.join(', ') + ' typing...';
     } else {
       this.userTypingString = null;
     }

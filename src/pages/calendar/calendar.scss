@@ -14,7 +14,8 @@ page-calendar {
       background-color: #F2F2F2;
     }
     .scroll-content{
-      padding-bottom: 45px;
+      margin-bottom: 56px;
+    
     }
 
     [col-1] {
@@ -56,7 +57,7 @@ page-calendar {
 
     .current-day{
       font-size: 8px;
-      color: #9C88FF;
+      color: green;
       font-weight: bold;
 
     }
@@ -64,7 +65,7 @@ page-calendar {
     .currentDate {
       // width: 26px;
       // background-color: #efa6a6;
-      color: #9C88FF;
+      color: green;
       padding: 5px;
       font-size: 14px;
       // border-radius: 50%;
@@ -128,6 +129,12 @@ page-calendar {
       font-weight: bold;
       font-size: 8px;
       color: #ccc;
+    }
+
+    .absent_event{
+      font-weight: bold;
+      font-size: 8px;
+      color: red;
     }
 
     .timings {
@@ -254,6 +261,7 @@ page-calendar {
           text-align: center;
           color: #000;
           font-weight : 600;
+          padding: 10px;
         }
 
         &.total-absent-label {

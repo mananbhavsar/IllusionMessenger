@@ -34,6 +34,7 @@ export class SalarySlipPage {
       if (_.isEmpty(slips)) {
         slips = [];
       }
+      this.page = 0;
       slips.forEach(slip => {
         this.pushItem(slip);
       });

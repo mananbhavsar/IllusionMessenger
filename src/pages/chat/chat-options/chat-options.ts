@@ -184,7 +184,9 @@ export class ChatOptionsPage {
   }
 
   callParticipant(event, participant) {
+    if (event.cancelable) {
     event.preventDefault();
+    }
     event.stopPropagation();
     if (participant.ContactNo) {
       if (this.platform.is('mobileweb') || this.platform.is('core')) {

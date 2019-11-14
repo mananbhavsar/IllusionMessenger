@@ -28,7 +28,9 @@ export class GroupPage {
   group: Array<any> = null;
   badges: any = {};
   page: number = 0;
+  systemGroup: any = [];
   query: string;
+  activeTopicList: any = [];
   searchInputBtn: boolean = false;
 
   //sort option
@@ -41,26 +43,28 @@ export class GroupPage {
     private _date: DateProvider,
     private modalController: ModalController,
     public flashNewsProvider: FlashNewsProvider,
-    public _offlineStorage : OfflineStorageProvider,
+    public _offlineStorage: OfflineStorageProvider,
     private actionSheetController: ActionSheetController,
-    public common : CommonProvider,
-    public network : Network,
-    public events : Events,
+    public common: CommonProvider,
+    public network: Network,
+    public events: Events,
   ) {
     this.group_id = this.navParams.data.GroupID;
     this.setTitle();
   }
 
-  ionViewWillEnter(){
+  ionViewWillEnter() {
     this.group = [];
-    this._offlineStorage.get('offline:Groups-Wise', this.group, this.group_id).then((data :any) => {
-      if(_.isEmpty(data)){
-      this.group = [];
+    this.activeTopicList = [];
+    this._offlineStorage.get('offline:Groups-Wise', this.group, this.group_id).then((data: any) => {
+      if (_.isEmpty(data)) {
+        this.group = [];
       } else {
-      this.group = data;
+        this.group = data;
       }
-   this.getGroupDetails();
-   });
+      this.page = 0;
+      this.getGroupDetails();
+    });
   }
 
   getGroupDetails() {
@@ -79,19 +83,22 @@ export class GroupPage {
           //flash
           if (response.FlashNews) {
             response.FlashNews.forEach((news, key) => {
-              this.flashNewsProvider.openUnreadFlashNews(news,this.group_id);
+              this.flashNewsProvider.openUnreadFlashNews(news, this.group_id);
             });
           }
           this.group = response;
-          if (this.group) {
-          this._offlineStorage.set('offline:Groups-Wise',this.group, this.group_id);
+          if (this.systemGroup.length == 0) {
+            this.systemGroup = response.SystemTopicList;
+          } if (this.group) {
+            this._offlineStorage.set('offline:Groups-Wise', this.group, this.group_id);
             response.ActiveTopicList.forEach(list => {
-              this.group.push(list);
+              this.activeTopicList.push(list);
             });
             this.setForBadge();
             this.page++;
             resolve(true);
           } else {
+            this.activeTopicList = [];
             this.page = -1;
             resolve(false);
           }
@@ -122,6 +129,7 @@ export class GroupPage {
   refresh(refresher) {
     this.page = 0;
     this.group = null;
+    this.activeTopicList = [];
     this.getGroupDetails().then(status => {
       // this.common.registerDevice(true);
       refresher.complete();
@@ -226,6 +234,7 @@ export class GroupPage {
     if (this.searchInputBtn) {
       this.searchInputBtn = false;
       this.group = [];
+      this.activeTopicList = [];
       this.query = null;
       this.initializeItems();
     } else if (this.searchInputBtn === false) {
@@ -235,17 +244,14 @@ export class GroupPage {
 
   initializeItems() {
     this.page = 0;
+    this.activeTopicList = [];
     this.getGroupDetails().catch(error => {
     });
   }
 
-  onCancel(event) {
-    this.query = null;
-    this.initializeItems();
-  }
-
   onClear(event) {
     this.query = null;
+    this.activeTopicList = [];
     this.initializeItems();
   }
 
@@ -257,11 +263,13 @@ export class GroupPage {
       // if the value is an empty string don't filter the items
       this.query = val;
       this.page = 0;
+      this.activeTopicList = [];
       this.getGroupDetails().catch(error => {
       });
 
     } else {
       this.query = null;
+      this.activeTopicList = [];
       this.initializeItems();
     }
   }

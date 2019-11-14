@@ -35,6 +35,7 @@ export class UsersPage {
       if (_.isEmpty(users)) {
         users = [];
       }
+      this.page = 0;
       users.forEach(user => {
         this.pushItem(user);
       });

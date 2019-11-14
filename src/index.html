@@ -8,10 +8,12 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="msapplication-tap-highlight" content="no">
     <!-- <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async></script> -->
-    <link rel="icon" type="image/x-icon" href="assets/img/logo.png">
+    <link rel="icon" type="image/x-icon" href="assets/img/logo.jpg">
     <link rel="manifest" href="manifest.json">
     <!-- <script src="/OneSignalSDKUpdaterWorker.js"></script> -->
     <!-- <script src="/OneSignalSDKWorker.js"></script> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.5/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.5/cropper.min.js"></script>
     <meta name="theme-color" content="#E8343A">
 
     <!-- cordova.js required for cordova apps -->
@@ -19,7 +21,6 @@
 
     <script>
         // var OneSignal = window.OneSignal || [];
-
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('service-worker.js')
                 .then(() => {})

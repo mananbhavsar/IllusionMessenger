@@ -118,11 +118,13 @@
     "ChatScreen": {
         "_ImpressionNo_": "Nombre d’impression",
         "_Send_": "Envoyer",
+        "_Finish_" : "Finish",
         "_Record_": "Record",
         "_Camera_": "Caméra",
         "_Camera_AND_VIDEO_": "Caméra",
         "_Images_": "Images",
         "_Videos_": "Vidéos",
+        "_Preview_" : "Preview",
         "_CameraAndVideo_": "Bibliothèque photo et vidéo",
         "_Audios_": "Audios",
         "_SavedMedia_": "Médias enregistrés",

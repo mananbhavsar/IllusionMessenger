@@ -98,10 +98,8 @@ export class ChatBubbleComponent {
 
       this.fileOps.getDataDirectory().then((path: string) => {
         this.dataDirectory = path;
-
         this.downloadDirectory = this.dataDirectory + this.topicCode + '/';
         this.fileOps.createDirectoryIfNotExist(this.dataDirectory, this.topicCode);
-
         this.processFile();
       }).catch(error => {
       });
@@ -239,8 +237,7 @@ export class ChatBubbleComponent {
     }
   }
 
-  openVideo() {
-    
+  openVideo() {  
     if (this.isBrowser) {
       window.open(this.message.URL, '_blank');
     } else if (this.isCordova) {
@@ -267,7 +264,7 @@ export class ChatBubbleComponent {
         }).catch(error => {
           this.message.downloading = true;
           this.fileOps.downloadFile(file, this.downloadDirectory).then((entry: any) => {
-            this.message.nativeURL = this.fileOps.getNativeURL(file, this.downloadDirectory).replace(/^file:\/\//, '');;
+            this.message.nativeURL = this.fileOps.getNativeURL(file, this.downloadDirectory);
             this.message.downloading = false;
             this.message.downloaded = true;
 
@@ -295,8 +292,7 @@ export class ChatBubbleComponent {
           if (status) {
             this.message['downloaded'] = true;
             this.message['downloading'] = false;
-            this.message.nativeURL = this.fileOps.getNativeURL(file, this.downloadDirectory).replace(/^file:\/\//, '');
-
+            this.message.nativeURL = this.fileOps.getNativeURL(file, this.downloadDirectory);
             this.subscribeToFileDelete(file);
           }
         }).catch(error => {

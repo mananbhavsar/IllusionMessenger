@@ -29,6 +29,7 @@ export class NotificationsPage {
       if (_.isEmpty(notifications)) {
         notifications = [];
       }
+      this.page = 0;
       notifications.forEach(group => {
         this.pushItem(group);
       });

@@ -35,6 +35,7 @@ export class TagPage {
       if (_.isEmpty(tags)) {
         tags = [];
       }
+      this.page = 0;
       tags.forEach(tag => {
         this.pushItem(tag);
       });

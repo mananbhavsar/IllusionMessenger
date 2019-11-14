@@ -117,10 +117,12 @@
     "ChatScreen": {
         "_ImpressionNo_": "Impression No",
         "_Send_": "Send",
+        "_Finish_" : "Finish",
         "_Record_": "Record",
         "_Camera_": "Camera",
         "_Images_": "Images",
         "_Videos_": "Videos",
+        "_Preview_" : "Preview",
         "_CameraAndVideo_": "Photo & Video Library",
         "_Audios_": "Audios",
         "_Close_": "Close",

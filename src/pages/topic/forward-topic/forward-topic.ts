@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage,Events, NavController, NavParams, ViewController } from 'ionic-angular';
+import { IonicPage, Events, NavController, NavParams, ViewController } from 'ionic-angular';
 import { ConnectionProvider } from '../../../providers/connection/connection';
 
 @IonicPage()
@@ -13,28 +13,15 @@ export class ForwardTopicPage {
   SelectedGroup: any = [];
   query: string;
   page: number = 0;
-  topicID : any = {};
+  topicID: any = {};
+  message: String;
   searchInputBtn: boolean = false;
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public connection: ConnectionProvider,
     public viewCtrl: ViewController,
-    public events : Events) {
-     this.topicID = this.navParams.data.TopicID;    
-    this.groups.push(
-      {
-        Group: 'gdvg',
-        GroupID: 1
-      },
-      {
-        Group: 'hfghhf',
-        GroupID: 2
-      },
-      {
-        Group: 'hfghfg',
-        GroupID: 3
-      },
-    )
+    public events: Events) {
+    this.topicID = this.navParams.data.TopicID;
   }
 
   getGroupList() {
@@ -56,6 +43,8 @@ export class ForwardTopicPage {
             resolve(true);
           } else {
             this.page = -1;
+            this.groups = [];
+            this.message = 'No topics found in this group';
             resolve(false);
           }
         }).catch((error) => {
@@ -136,12 +125,12 @@ export class ForwardTopicPage {
     }
   }
 
-  forward(){
-    this.connection.doPost('Chat/',{
-     GroupID : this.SelectedGroup.GroupID,
-     TopicID : this.topicID
-    }).then((response : any) => { 
-     this.events.publish('toast:create',response.Data.Message);
+  forward() {
+    this.connection.doPost('Chat/', {
+      GroupID: this.SelectedGroup.GroupID,
+      TopicID: this.topicID
+    }).then((response: any) => {
+      this.events.publish('toast:create', response.Data.Message);
     }).catch((error) => {
 
     });

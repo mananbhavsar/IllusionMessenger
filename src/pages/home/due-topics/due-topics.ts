@@ -17,14 +17,14 @@ export class DueTopicsPage {
   day: number = 0;
   page: number = 0;
   headerbuttonsOption: any = [];
-  pushedTopicsID : Array<any> = [];
+  pushedTopicsID: Array<any> = [];
   query: string = null;
   searchInputBtn: boolean = false;
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public viewCntl: ViewController,
-    public _offlineStorage : OfflineStorageProvider,
-    public storage : Storage,
+    public _offlineStorage: OfflineStorageProvider,
+    public storage: Storage,
     public connection: ConnectionProvider) {
     this.day = this.navParams.data.Day;
   }
@@ -33,16 +33,17 @@ export class DueTopicsPage {
   ionViewWillEnter() {
     this.topics = [];
     this.setTitle();
-    this._offlineStorage.get('offline:due-topics', this.topics, this.day).then((data : any) => {
-      if(!data){
-      this.topics = [];
+    this._offlineStorage.get('offline:due-topics', this.topics, this.day).then((data: any) => {
+      if (!data) {
+        this.topics = [];
       } else {
+        this.page = 0;
         data.forEach(group => {
           this.pushItem(group);
         });
       }
-   });
-   this.getData();
+    });
+    this.getData();
 
   }
 
@@ -79,16 +80,17 @@ export class DueTopicsPage {
           PageNumber: this.page,
           Query: this.query
         }, false).then((response: any) => {
-          if (!_.isEmpty(response)) {
-              response.TopicList.forEach(item => {
-                if(this.topics.indexOf(item.TopicID) === -1){
+          if (!_.isEmpty(response.TopicList)) {
+            response.TopicList.forEach(item => {
+              if (this.topics.indexOf(item.TopicID) === -1) {
                 this.pushItem(item);
-                }
-              });
-              this.page++;
-          this._offlineStorage.set('offline:due-topics',this.topics,this.day);
-          resolve(true);
+              }
+            });
+            this.page++;
+            this._offlineStorage.set('offline:due-topics', this.topics, this.day);
+            resolve(true);
           } else {
+            this._offlineStorage.set('offline:due-topics', [], this.day);
             this.page = -1;
             resolve(false);
           }

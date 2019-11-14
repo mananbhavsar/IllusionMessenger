@@ -33,6 +33,7 @@ export class PendingRequestPage {
       if (_.isEmpty(requests)) {
         requests = [];
       }
+      this.page = 0;
       requests.forEach(request => {
         this.pushItem(request);
       });

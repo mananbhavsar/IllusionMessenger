@@ -4,21 +4,24 @@ import { FilterPipe } from './filter/filter';
 import { ObjectFilterPipe } from './object-filter/object-filter';
 import { TimePipe } from './time/time';
 import { TranslatePipe } from './translate/translate';
+import { EscapeHtmlPipe } from '../pipes/keepHtml/keepHtml';
 @NgModule({
 	declarations: [
 		KeysPipe,
 		FilterPipe,
 		ObjectFilterPipe,
 		TimePipe,
-    TranslatePipe
+		EscapeHtmlPipe,
+		TranslatePipe
 	],
 	imports: [],
 	exports: [
 		KeysPipe,
 		FilterPipe,
+		EscapeHtmlPipe,
 		ObjectFilterPipe,
 		TimePipe,
-    TranslatePipe
+		TranslatePipe
 	]
 })
 export class PipesModule { }

@@ -23,9 +23,9 @@ export class CreateUserPage {
   userTagsMap: any = {};
   tagsSelected: any = [];
   tagList: any = [];
-  IsDeactivate : boolean = false;
-  readonly:boolean = false;
-  usersTagList : any = [];
+  IsDeactivate: boolean = false;
+  readonly: boolean = false;
+  usersTagList: any = [];
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public formBuilder: FormBuilder,
@@ -37,20 +37,28 @@ export class CreateUserPage {
     this.createUserForm = this.formBuilder.group({
       User: ['', [Validators.required, Validators.pattern('[A-Za-z ]*')]],
       UserCode: ['', [Validators.required, Validators.maxLength(10)]],
-      EmailID: ['', [Validators.required, Validators.pattern(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)]],
+      EmailID: ['', [Validators.required]],
       PhoneNo: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern('[0-9]*')]],
-      Password: ['', [Validators.required, Validators.minLength(8)]],
+      Password: this.validatePassword(),
     });
   }
 
-  ionViewDidEnter(){
+  validatePassword() {
+    if (this.readonly) {
+      return ['', [Validators.required, Validators.minLength(8)]]
+    } else {
+      return [''];
+    }
+  }
+
+  ionViewDidEnter() {
     if (!_.isEmpty(this.navParams.data.User)) {
       this.userBtn = 'Update';
       this.type = 'password';
-      this.UserID = this.navParams.data.UserID;   
+      this.UserID = this.navParams.data.UserID;
       this.usersTagList = this.navParams.data.TagList;
-      if(this.navParams.data.IsDeactivate === 'true'){
-       this.IsDeactivate = true;
+      if (this.navParams.data.IsDeactivate === 'true') {
+        this.IsDeactivate = true;
       }
       this.createUserForm.setValue({
         User: this.navParams.data.User,
@@ -59,9 +67,9 @@ export class CreateUserPage {
         PhoneNo: this.navParams.data.PhoneNo || '',
         Password: this.navParams.data.Password || '',
       });
-      for(let i = 0; i < this.usersTagList.length; i++){
+      for (let i = 0; i < this.usersTagList.length; i++) {
         this.tagsSelected.push(this.usersTagList[i]);
-      }      
+      }
       this.readonly = true;
     }
   }
@@ -116,8 +124,8 @@ export class CreateUserPage {
     });
   }
 
-  changeUserStatus(event){
-   this.IsDeactivate = event.checked;
+  changeUserStatus(event) {
+    this.IsDeactivate = event.checked;
   }
 
 
@@ -214,7 +222,7 @@ export class CreateUserPage {
         EmailID: this.createUserForm.get('EmailID').value,
         PhoneNo: this.createUserForm.get('PhoneNo').value,
         TagID: this.tagsSelected.map(id => id.TagID),
-        IsDeactivate : this.IsDeactivate
+        IsDeactivate: this.IsDeactivate
       }).then((response: any) => {
         resolve(true);
         this.createUserForm.reset();

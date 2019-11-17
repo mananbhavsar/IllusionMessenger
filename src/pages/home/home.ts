@@ -135,7 +135,9 @@ export class HomePage {
         //online offline
         if (this.platform.is('cordova')) {
             this._network.onchange().subscribe(() => {
+                if (!_.isEmpty(this.connection.user)) {
                 this.registerDevice(false);
+                }
             });
         }
     }

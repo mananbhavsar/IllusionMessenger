@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { IonicPage, ModalController, Events, ActionSheetController, NavController, NavParams } from 'ionic-angular';
-import { CreateUserPage } from '../create-user';
-import { ConnectionProvider } from '../../../providers/connection/connection';
-import { Network } from '@ionic-native/network';
+import { Network} from '@ionic-native/network/ngx';
 import { Storage } from '@ionic/storage';
+import { ActionSheetController, Events, IonicPage, ModalController, NavController, NavParams } from 'ionic-angular';
 import * as _ from 'underscore';
+import { ConnectionProvider } from '../../../providers/connection/connection';
+import { CreateUserPage } from '../create-user';
 
 @IonicPage()
 @Component({
@@ -14,7 +14,7 @@ import * as _ from 'underscore';
 export class UsersPage {
   title: string = 'Users';
   users: Array<any> = null;
-  pushedUsersID : Array<any> = [];
+  pushedUsersID: Array<any> = [];
   page: number = 0;
   query: string;
   searchInputBtn: boolean = false;
@@ -45,31 +45,31 @@ export class UsersPage {
 
   getUsers() {
     return new Promise((resolve, reject) => {
-        if (this.page === -1) {
-          reject();
-        } else {
-          this.connection.doPost('Chat/GetUserList', {
-            Query: this.query,
-            PageNumber: this.page,
-            RowsPerPage: 20
-          }, false).then((response: any) => {
-            if (response.UserList.length > 0) {
-              response.UserList.forEach(list => {
-                this.pushItem(list);
-              });
-              this.page++;
-              this.saveOfflineData().then(status => {
-                resolve(status);
-              });
-            } else {
-              this.page = -1;
-              resolve(false);
-            }
-          }).catch((error) => {
+      if (this.page === -1) {
+        reject();
+      } else {
+        this.connection.doPost('Chat/GetUserList', {
+          Query: this.query,
+          PageNumber: this.page,
+          RowsPerPage: 20
+        }, false).then((response: any) => {
+          if (response.UserList.length > 0) {
+            response.UserList.forEach(list => {
+              this.pushItem(list);
+            });
+            this.page++;
+            this.saveOfflineData().then(status => {
+              resolve(status);
+            });
+          } else {
             this.page = -1;
-            reject();
-          });
-        }
+            resolve(false);
+          }
+        }).catch((error) => {
+          this.page = -1;
+          reject();
+        });
+      }
     });
 
   }

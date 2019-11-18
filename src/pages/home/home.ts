@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
-import { Network } from '@ionic-native/network';
-import { OneSignal } from '@ionic-native/onesignal';
+import { Network} from '@ionic-native/network/ngx';
+import { OneSignal} from '@ionic-native/onesignal/ngx';
+import { Storage } from '@ionic/storage';
 import * as firebase from 'firebase';
 import { ActionSheetController, Events, IonicPage, ModalController, NavController, Platform, reorderArray } from 'ionic-angular';
 import * as _ from 'underscore';
-import { Storage } from '@ionic/storage';
 import { Global } from '../../app/global';
 import { ConnectionProvider } from '../../providers/connection/connection';
 import { FlashNewsProvider } from '../../providers/flash-news/flash-news';
+import { OfflineStorageProvider } from '../../providers/offline-storage/offline-storage';
 import { ReadMessageProvider } from '../../providers/read-message/read-message';
 import { TranslateServiceProvider } from '../../providers/translate-service/translate-service';
 import { UserProvider } from '../../providers/user/user';
@@ -19,7 +20,6 @@ import { FirebaseTransactionProvider } from './../../providers/firebase-transact
 import { NotificationsProvider } from './../../providers/notifications/notifications';
 import { AddFlashPage } from './../group/add-flash/add-flash';
 import { CreateTopicPage } from './../topic/create-topic/create-topic';
-import { OfflineStorageProvider } from '../../providers/offline-storage/offline-storage';
 
 @IonicPage()
 @Component({
@@ -134,7 +134,7 @@ export class HomePage {
 
         //online offline
         if (this.platform.is('cordova')) {
-            this._network.onchange().subscribe(() => {
+            this._network.onChange().subscribe(() => {
                 this.registerDevice(false);
             });
         }

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, MenuController } from 'ionic-angular';
-
+import { IonicPage, MenuController, NavController } from 'ionic-angular';
 import { WelcomePage } from '../welcome/welcome';
+
 /**
  * Generated class for the TutorialPage page.
  *

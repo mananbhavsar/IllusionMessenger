@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController,ViewController, NavParams } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
 import { ConnectionProvider } from '../../../providers/connection/connection';
 
 
@@ -11,13 +11,13 @@ import { ConnectionProvider } from '../../../providers/connection/connection';
 })
 export class RatingPage {
   ratingForm: FormGroup;
-  ratingData : any = {};
-  title : string = 'Rating';
+  ratingData: any = {};
+  title: string = 'Rating';
   constructor(public navCtrl: NavController,
-     public navParams: NavParams,
-    public formBuilder : FormBuilder,
-    public connection : ConnectionProvider,
-    public viewCtrl : ViewController) {
+    public navParams: NavParams,
+    public formBuilder: FormBuilder,
+    public connection: ConnectionProvider,
+    public viewCtrl: ViewController) {
     this.ratingForm = this.formBuilder.group({
       Comment: ['', [Validators.required]],
     });
@@ -27,12 +27,12 @@ export class RatingPage {
     this.ratingData.Rate = value;
   }
 
-  submitForm(){
+  submitForm() {
     this.ratingData.Comment = this.ratingForm.get('Comment').value;
     this.viewCtrl.dismiss(this.ratingData);
   }
 
-  dismiss(event){
+  dismiss(event) {
     this.viewCtrl.dismiss();
   }
 

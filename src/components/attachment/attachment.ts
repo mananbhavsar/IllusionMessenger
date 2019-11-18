@@ -36,31 +36,31 @@ export class AttachmentComponent {
       reader.onload = function () {
         switch (fileExtension) {
           case 'pdf':
-            dataURL = reader.result.replace('data:application/pdf;base64,', "");
+            dataURL = (reader.result as string).replace('data:application/pdf;base64,', "");
             break;
           case 'doc':
-            dataURL = reader.result.replace('data:application/msword;base64,', "");
+            dataURL = (reader.result as string).replace('data:application/msword;base64,', "");
             break;
           case 'docx':
-            dataURL = reader.result.replace('data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,', "");
+            dataURL = (reader.result as string).replace('data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,', "");
             break;
           case 'ppt':
-            dataURL = reader.result.replace('data:application/vnd.ms-powerpoint;base64,', "");
+            dataURL = (reader.result as string).replace('data:application/vnd.ms-powerpoint;base64,', "");
             break;
           case 'pptx':
-            dataURL = reader.result.replace('data:application/vnd.openxmlformats-officedocument.presentationml.presentation;base64,', "");
+            dataURL = (reader.result as string).replace('data:application/vnd.openxmlformats-officedocument.presentationml.presentation;base64,', "");
             break;
           case 'xls':
-            dataURL = reader.result.replace('data:application/vnd.ms-excel;base64,', "");
+            dataURL = (reader.result as string).replace('data:application/vnd.ms-excel;base64,', "");
             break;
           case 'xlsx':
-            dataURL = reader.result.replace('data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,', "");
+            dataURL = (reader.result as string).replace('data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,', "");
             break;
           case 'txt':
-            dataURL = reader.result.replace('data:text/plain;base64,', "");
+            dataURL = (reader.result as string).replace('data:text/plain;base64,', "");
             break;
           default:
-            dataURL = reader.result.replace(/^data:image\/\w+;base64,/, "");
+            dataURL = (reader.result as string).replace(/^data:image\/\w+;base64,/, "");
         }
         context.uploadFileFromBrowser(fileName, fileExtension, dataURL)
           .then((data: any) => {

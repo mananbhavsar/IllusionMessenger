@@ -19,7 +19,7 @@ export class TopicPage {
   }
 
   ionViewDidLoad() {
-    
+
   }
 
 }

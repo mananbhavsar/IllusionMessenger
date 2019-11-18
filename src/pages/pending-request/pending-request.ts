@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ModalController } from 'ionic-angular';
-import { ConnectionProvider } from '../../providers/connection/connection';
-import * as _ from 'underscore';
-import { RequestDetailPage } from '../request-detail/request-detail';
-import { Network } from '@ionic-native/network';
+import { Network} from '@ionic-native/network/ngx';
 import { Storage } from '@ionic/storage';
+import { IonicPage, ModalController, NavController, NavParams } from 'ionic-angular';
+import * as _ from 'underscore';
+import { ConnectionProvider } from '../../providers/connection/connection';
+import { RequestDetailPage } from '../request-detail/request-detail';
 @IonicPage()
 @Component({
   selector: 'page-pending-request',

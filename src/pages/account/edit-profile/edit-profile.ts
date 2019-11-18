@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
-import { IonicPage, Events, NavController, NavParams, ViewController } from 'ionic-angular';
-
-import { UserProvider } from '../../../providers/user/user';
-import { ConnectionProvider } from '../../../providers/connection/connection';
-
-import { Validators, FormBuilder, FormGroup } from '@angular/forms';
-
-import { Network } from '@ionic-native/network';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Network} from '@ionic-native/network/ngx';
 import { Storage } from '@ionic/storage';
-
+import { Events, IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
 import { Global } from '../../../app/global';
+import { ConnectionProvider } from '../../../providers/connection/connection';
+import { UserProvider } from '../../../providers/user/user';
+
+
+
+
 
 @IonicPage()
 @Component({

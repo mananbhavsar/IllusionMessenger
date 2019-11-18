@@ -1,18 +1,18 @@
 import { Component, ViewChild } from '@angular/core';
+import { Network} from '@ionic-native/network/ngx';
 import * as firebase from 'firebase';
-import { ActionSheetController, IonicPage, ModalController, NavController, NavParams, Slides, Events } from 'ionic-angular';
+import { ActionSheetController, Events, IonicPage, ModalController, NavController, NavParams, Slides } from 'ionic-angular';
 import * as moment from "moment";
 import * as _ from 'underscore';
+import { CommonProvider } from '../../providers/common/common';
+import { FlashNewsProvider } from '../../providers/flash-news/flash-news';
+import { OfflineStorageProvider } from '../../providers/offline-storage/offline-storage';
 import { ConnectionProvider } from './../../providers/connection/connection';
 import { DateProvider } from './../../providers/date/date';
 import { ChatPage } from './../chat/chat';
 import { GroupOptionsPage } from './../group/group-options/group-options';
 import { CloseTopicPage } from './../topic/close-topic/close-topic';
 import { CreateTopicPage } from './../topic/create-topic/create-topic';
-import { FlashNewsProvider } from '../../providers/flash-news/flash-news';
-import { CommonProvider } from '../../providers/common/common';
-import { OfflineStorageProvider } from '../../providers/offline-storage/offline-storage';
-import { Network } from '@ionic-native/network';
 
 
 @IonicPage()

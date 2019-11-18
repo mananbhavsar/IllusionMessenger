@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { IonicPage, Events, Platform, ViewController, ActionSheetController, NavController, NavParams } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ConnectionProvider } from '../../../providers/connection/connection';
+import { ActionSheetController, Events, IonicPage, NavController, NavParams, Platform, ViewController } from 'ionic-angular';
 import * as _ from 'underscore';
+import { ConnectionProvider } from '../../../providers/connection/connection';
 import { FirebaseTransactionProvider } from '../../../providers/firebase-transaction/firebase-transaction';
 
 @IonicPage()
@@ -30,13 +30,13 @@ export class CreateGroupPage {
     public connection: ConnectionProvider,
     public viewCntl: ViewController,
     public events: Events,
-    public platform : Platform,
+    public platform: Platform,
     public actionSheetCtrl: ActionSheetController,
     public _firebaseTransaction: FirebaseTransactionProvider) {
     this.createGroupForm = this.formBuilder.group({
       Group: ['', [Validators.required, Validators.maxLength(30)]],
       GroupCode: ['', [Validators.required, Validators.maxLength(10)]],
-    
+
     });
     if (!_.isEmpty(this.navParams.data.Group)) {
       this.groupBtn = 'Update';
@@ -75,7 +75,7 @@ export class CreateGroupPage {
     }
   }
 
-  isAdminCheck(UserID) { 
+  isAdminCheck(UserID) {
     if (this.in_array(this.userDetail, UserID)) {
       return this.userDetail.some((item) => {
         if (item.UserID === UserID) {
@@ -218,16 +218,16 @@ export class CreateGroupPage {
 
   createGroup() {
     return new Promise((resolve, reject) => {
-      if(!this.createGroupForm.valid){
-        this.events.publish('toast:error','Fill valid fields in form');
-      return;
+      if (!this.createGroupForm.valid) {
+        this.events.publish('toast:error', 'Fill valid fields in form');
+        return;
       }
       this.connection.doPost('Chat/CreateGroup', {
         Group: this.createGroupForm.get('Group').value,
         GroupCode: this.createGroupForm.get('GroupCode').value,
         UserID: this.userDetail.map(userId => userId.UserID),
         IsAdmin: this.userDetail.map(IsAdmin => IsAdmin.IsAdmin),
-        IsWeb : this.platform.is('core')
+        IsWeb: this.platform.is('core')
       }).then((response: any) => {
         if (response.FireBaseTransaction) {
           this._firebaseTransaction.doTransaction(response.FireBaseTransaction).then(status => { }).catch(error => { });
@@ -243,8 +243,8 @@ export class CreateGroupPage {
 
   updateGroup() {
     return new Promise((resolve, reject) => {
-      if(!this.createGroupForm.valid){
-        this.events.publish('toast:error','Fill valid fields in form');
+      if (!this.createGroupForm.valid) {
+        this.events.publish('toast:error', 'Fill valid fields in form');
         return;
       }
       this.connection.doPost('Chat/UpdateGroup', {
@@ -263,14 +263,14 @@ export class CreateGroupPage {
     });
   }
 
-  takeAction(event){
-    switch(event.name){
-      case 'Add' :
-      this.createGroup();
-      break;
-      case 'Update' :
-      this.updateGroup();
-      break;
+  takeAction(event) {
+    switch (event.name) {
+      case 'Add':
+        this.createGroup();
+        break;
+      case 'Update':
+        this.updateGroup();
+        break;
     }
   }
 

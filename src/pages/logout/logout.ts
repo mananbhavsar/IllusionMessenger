@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Network } from '@ionic-native/network';
+import { Network} from '@ionic-native/network/ngx';
 import { Storage } from '@ionic/storage';
 import { Events, IonicPage, NavController, NavParams } from 'ionic-angular';
 import { TranslateServiceProvider } from '../../providers/translate-service/translate-service';
@@ -66,7 +66,7 @@ export class LogoutPage {
             this.user.logout().then(response => {
                 this.loggedOut = true;
                 this.clearTimeout();
-                this.navCtrl.setRoot('LoginPage');                
+                this.navCtrl.setRoot('LoginPage');
             }).catch(error => {
                 this.clearTimeout();
                 this.navCtrl.setRoot('LoginPage');

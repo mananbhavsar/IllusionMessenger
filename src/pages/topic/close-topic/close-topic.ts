@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
+import { Network} from '@ionic-native/network/ngx';
+import { Storage } from '@ionic/storage';
 import * as firebase from 'firebase';
 import { ActionSheetController, IonicPage, ModalController, NavController, NavParams, ViewController } from 'ionic-angular';
 import * as moment from "moment";
 import * as _ from 'underscore';
 import { ConnectionProvider } from '../../../providers/connection/connection';
+import { OfflineStorageProvider } from '../../../providers/offline-storage/offline-storage';
 import { DateProvider } from './../../../providers/date/date';
 import { ChatPage } from './../../chat/chat';
-import { Storage } from '@ionic/storage';
-import { OfflineStorageProvider } from '../../../providers/offline-storage/offline-storage';
-import { Network } from '@ionic-native/network';
 
 @IonicPage()
 @Component({
@@ -104,7 +104,7 @@ export class CloseTopicPage {
               this._offlineStorage.set('offline:Groups-Wise', response.ClosedTopicList, this.group_id, this.group_id).then((data) => {
               });
               data.forEach(list => {
-               this.pushItem(list);
+                this.pushItem(list);
               });
               this.page++;
               resolve(status);

@@ -1,7 +1,7 @@
 import { Component, ElementRef, Input } from '@angular/core';
-import { FileEntry } from '@ionic-native/file';
-import { Network } from '@ionic-native/network';
-import { StreamingMedia } from '@ionic-native/streaming-media';
+import { FileEntry } from '@ionic-native/file/ngx';
+import { Network} from '@ionic-native/network/ngx';
+import { StreamingMedia} from '@ionic-native/streaming-media/ngx';
 import * as firebase from 'firebase';
 import { Events, ModalController, NavController, normalizeURL, Platform } from 'ionic-angular';
 import { ImageViewerController } from 'ionic-img-viewer';
@@ -183,7 +183,7 @@ export class ChatBubbleComponent {
       this.openContact();
     }
     let file: string = this.message.URL;
-    
+
     //if already downloading
     if (this.message.downloading) {
       return;
@@ -216,7 +216,7 @@ export class ChatBubbleComponent {
     modalCtrl.present();
   }
 
-  
+
   openImage() {
     this.element = this._elementRef.nativeElement.querySelector('#message-image-' + this.message.key);
     let image = this._imageViewerController.create(this.element);
@@ -237,7 +237,7 @@ export class ChatBubbleComponent {
     }
   }
 
-  openVideo() {  
+  openVideo() {
     if (this.isBrowser) {
       window.open(this.message.URL, '_blank');
     } else if (this.isCordova) {

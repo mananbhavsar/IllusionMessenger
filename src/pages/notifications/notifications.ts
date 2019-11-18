@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import { ConnectionProvider } from '../../providers/connection/connection';
 import { Storage } from '@ionic/storage';
+import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import * as _ from 'underscore';
+import { ConnectionProvider } from '../../providers/connection/connection';
 
 @IonicPage()
 @Component({
@@ -11,16 +11,16 @@ import * as _ from 'underscore';
 })
 export class NotificationsPage {
   searchInputBtn: boolean = false;
-  notifications : Array<any> = null;
-  query : any = null;
-  page : number = 0;
-  title : string = 'Loading';
-  pushedNotificationID : any = [];
-  constructor(public navCtrl: NavController, 
+  notifications: Array<any> = null;
+  query: any = null;
+  page: number = 0;
+  title: string = 'Loading';
+  pushedNotificationID: any = [];
+  constructor(public navCtrl: NavController,
     public navParams: NavParams,
-    public connection : ConnectionProvider,
-    public storage : Storage) {
-      this.setTitle();
+    public connection: ConnectionProvider,
+    public storage: Storage) {
+    this.setTitle();
   }
 
   ionViewWillEnter() {
@@ -37,7 +37,7 @@ export class NotificationsPage {
     this.getData();
   }
 
-  getData(){
+  getData() {
     return new Promise((resolve, reject) => {
       if (this.page === -1) {
         reject();
@@ -109,21 +109,21 @@ export class NotificationsPage {
   refresh(refresher) {
     this.notifications = [];
     this.page = 0;
-    return new Promise((resolve,reject) => {
-    this.storage.get('offline:notifications').then((notifications: any) => {
-      if (_.isEmpty(notifications)) {
-        notifications = [];
-      }
-      notifications.forEach(notification => {
-        this.pushItem(notification);
+    return new Promise((resolve, reject) => {
+      this.storage.get('offline:notifications').then((notifications: any) => {
+        if (_.isEmpty(notifications)) {
+          notifications = [];
+        }
+        notifications.forEach(notification => {
+          this.pushItem(notification);
+        });
       });
+      this.getData().then((data) => {
+        refresher.complete();
+      }).catch((error) => {
+        refresher.complete();
+      })
     });
-    this.getData().then((data) => {
-      refresher.complete();
-    }).catch((error) => {
-      refresher.complete();
-    })
-  });
   }
 
   setTitle() {
@@ -149,7 +149,7 @@ export class NotificationsPage {
       this.searchInputBtn = true;
     }
   }
- 
+
   initializeItems() {
     this.page = 0;
     this.notifications = [];

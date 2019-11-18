@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, Events } from 'ionic-angular';
-import { Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { ViewController } from 'ionic-angular';
-
-
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Events, IonicPage, NavController, ViewController } from 'ionic-angular';
 import { ConnectionProvider } from '../../providers/connection/connection';
+
+
 @IonicPage()
 @Component({
   selector: 'page-contact-us',

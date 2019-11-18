@@ -19,9 +19,9 @@ export class ObjectFilterPipe implements PipeTransform {
     value = value.trim();
     if (_.isEmpty(objects)) return keys;
     let resultKeys = [];
-    for(let key in objects){
+    for (let key in objects) {
       let item = objects[key];
-      if(item[field].toLowerCase().indexOf(value.toLowerCase()) !== -1){
+      if (item[field].toLowerCase().indexOf(value.toLowerCase()) !== -1) {
         resultKeys.push(key);
       }
     }

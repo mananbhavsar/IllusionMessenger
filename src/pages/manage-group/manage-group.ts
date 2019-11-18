@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { IonicPage, ModalController, Events, ActionSheetController, NavController, NavParams } from 'ionic-angular';
+import { Network} from '@ionic-native/network/ngx';
+import { Storage } from '@ionic/storage';
+import { ActionSheetController, Events, IonicPage, ModalController, NavController, NavParams } from 'ionic-angular';
+import * as _ from 'underscore';
 import { ConnectionProvider } from '../../providers/connection/connection';
 import { CreateGroupPage } from './create-group/create-group';
-import { Network } from '@ionic-native/network';
-import { Storage } from '@ionic/storage';
-import * as _ from 'underscore';
 
 @IonicPage()
 @Component({
@@ -229,21 +229,21 @@ export class ManageGroupPage {
   refresh(refresher) {
     this.groups = [];
     this.page = 0;
-    return new Promise((resolve,reject) => {
-    this.storage.get('offline:manage-groups').then((groups: any) => {
-      if (_.isEmpty(groups)) {
-        groups = [];
-      }
-      groups.forEach(group => {
-        this.pushItem(group);
+    return new Promise((resolve, reject) => {
+      this.storage.get('offline:manage-groups').then((groups: any) => {
+        if (_.isEmpty(groups)) {
+          groups = [];
+        }
+        groups.forEach(group => {
+          this.pushItem(group);
+        });
       });
+      this.getData().then((data) => {
+        refresher.complete();
+      }).catch((error) => {
+        refresher.complete();
+      })
     });
-    this.getData().then((data) => {
-      refresher.complete();
-    }).catch((error) => {
-      refresher.complete();
-    })
-  });
   }
 
   addGroup() {

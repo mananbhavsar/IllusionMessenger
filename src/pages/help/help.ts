@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { VideoPlayer } from '@ionic-native/video-player';
+import { Network} from '@ionic-native/network/ngx';
+import { StreamingMedia, StreamingVideoOptions } from '@ionic-native/streaming-media/ngx';
+import { VideoPlayer} from '@ionic-native/video-player/ngx';
 import { Events, IonicPage, NavController, NavParams, Platform } from 'ionic-angular';
 import { Global } from '../../app/global';
 import { FileOpsProvider } from '../../providers/file-ops/file-ops';
-import { Network } from '@ionic-native/network';
-import { StreamingMedia, StreamingVideoOptions } from '@ionic-native/streaming-media';
 
 
 
@@ -29,7 +29,7 @@ export class HelpPage {
     private platform: Platform,
     private events: Events,
     public network: Network,
-    public streamingMedia : StreamingMedia,
+    public streamingMedia: StreamingMedia,
   ) {
     this.global = Global;
     this.fileOps.getDataDirectory().then((path: string) => {

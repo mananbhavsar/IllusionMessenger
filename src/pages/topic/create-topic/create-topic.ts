@@ -39,7 +39,7 @@ export class CreateTopicPage {
 
   selectedParticipant: Array<string> = [];
   participantsName: any = {};
-  participantsCount : number = 0;
+  participantsCount: number = 0;
   global: any = {};
 
   createForm: FormGroup;
@@ -76,8 +76,8 @@ export class CreateTopicPage {
       participants: [''],
       due_date: new FormControl(moment().local().add(this.hourAddition, 'hours').format())
     }, {
-        validator: DateValidator.isBefore
-      });
+      validator: DateValidator.isBefore
+    });
   }
 
   ionViewDidLoad() {
@@ -259,7 +259,7 @@ export class CreateTopicPage {
     modal.onDidDismiss(data => {
       this.setTitle();
       if (data) {
-    this.participantsCount = data.selectedParticipantIDs.length;
+        this.participantsCount = data.selectedParticipantIDs.length;
         this.selectedParticipantIDs = data.selectedParticipantIDs;
         this.createForm.patchValue({
           assigned: data.assigned

@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
-import { ConnectionProvider } from '../../../providers/connection/connection';
-import * as _ from 'underscore';
 import { Storage } from '@ionic/storage';
+import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
+import * as _ from 'underscore';
+import { ConnectionProvider } from '../../../providers/connection/connection';
 import { OfflineStorageProvider } from '../../../providers/offline-storage/offline-storage';
 
 

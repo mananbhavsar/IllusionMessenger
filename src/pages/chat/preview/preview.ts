@@ -1,10 +1,10 @@
 import { Component, ElementRef } from '@angular/core';
-import { IonicPage, Platform, normalizeURL, ViewController, NavController, NavParams, Events } from 'ionic-angular';
-import { StreamingMedia } from '@ionic-native/streaming-media';
-import { ImageViewerController } from 'ionic-img-viewer';
-import { Crop } from '@ionic-native/crop';
-import * as _ from 'underscore';
+import { Crop} from '@ionic-native/crop/ngx';
+import { StreamingMedia} from '@ionic-native/streaming-media/ngx';
 import Cropper from 'cropperjs';
+import { Events, IonicPage, NavController, NavParams, normalizeURL, Platform, ViewController } from 'ionic-angular';
+import { ImageViewerController } from 'ionic-img-viewer';
+import * as _ from 'underscore';
 
 
 @IonicPage()

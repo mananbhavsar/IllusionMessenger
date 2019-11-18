@@ -4,18 +4,18 @@ import { Component, EventEmitter, Output } from '@angular/core';
   templateUrl: 'call-fab.html'
 })
 export class CallFabComponent {
- @Output() clicked = new EventEmitter();
+  @Output() clicked = new EventEmitter();
 
   constructor(
   ) {
 
   }
 
-  openPage(event){
-   this.clicked.emit({
-     name : event
-   })
+  openPage(event) {
+    this.clicked.emit({
+      name: event
+    })
   }
-  
+
 
 }

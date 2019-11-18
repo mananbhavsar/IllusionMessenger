@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, Events, Platform } from 'ionic-angular';
-import { Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { ConnectionProvider } from '../../../providers/connection/connection';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Network} from '@ionic-native/network/ngx';
+import { Events, IonicPage, NavController, NavParams, Platform } from 'ionic-angular';
 import * as moment from 'moment';
-import { DateProvider } from '../../../providers/date/date';
 import * as _ from 'underscore';
-import { UserProvider } from '../../../providers/user/user';
+import { ConnectionProvider } from '../../../providers/connection/connection';
+import { DateProvider } from '../../../providers/date/date';
 import { NotificationsProvider } from '../../../providers/notifications/notifications';
-import { Network } from '@ionic-native/network';
+import { UserProvider } from '../../../providers/user/user';
 
 @IonicPage()
 @Component({
@@ -29,7 +29,7 @@ export class OTPage {
     public date: DateProvider,
     public notifications: NotificationsProvider,
     public platform: Platform,
-    public _network : Network,
+    public _network: Network,
     public event: Events) {
     this.overtTimeForm = this.formBuilder.group({
       date: ['', Validators.required],

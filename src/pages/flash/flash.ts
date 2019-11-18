@@ -28,7 +28,7 @@ export class FlashPage {
     public _flashNews: FlashNewsProvider,
     public events: Events,
     public _elementRef: ElementRef,
-    public _fileOps : FileOpsProvider) {
+    public _fileOps: FileOpsProvider) {
 
     this.news = this.navParams.data.news;
     this.groupId = this.navParams.data.id;
@@ -42,7 +42,7 @@ export class FlashPage {
     this.connection.doPost('Chat/GetFlashNews_Attachement', {
       GroupID: this.groupId,
       FlashID: this.news.FlashID
-    },false).then((response: any) => {
+    }, false).then((response: any) => {
       this.attachments = response.FlashNews_AttachementList;
     }).catch((error) => { });
   }

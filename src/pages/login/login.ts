@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, Events, ModalController } from 'ionic-angular';
-import { Validators, FormBuilder, FormGroup } from '@angular/forms';
-
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Events, IonicPage, ModalController, NavController } from 'ionic-angular';
+import { Global } from '../../app/global';
+import { UserProvider } from '../../providers/user/user';
 import { ForgotPasswordPage } from '../forgot-password/forgot-password';
 
-import { UserProvider } from '../../providers/user/user';
 
-import { Global } from '../../app/global';
+
 
 @IonicPage()
 @Component({
@@ -17,8 +17,8 @@ export class LoginPage {
     loginForm: FormGroup;
     submitted = false;
     global: any = {};
-    eye_icon : string = 'eye-off';
-    passwordtType : string = 'password';
+    eye_icon: string = 'eye-off';
+    passwordtType: string = 'password';
     constructor(
         public navCtrl: NavController,
         public user: UserProvider,
@@ -44,14 +44,14 @@ export class LoginPage {
         this.user.login(this.loginForm.value.login_name, this.loginForm.value.password);
     }
 
-    togglePassword(event){
-        event.preventDefault();  
-     if(this.passwordtType === 'password'){
-         this.passwordtType = 'text';
-         this.eye_icon = 'eye';
-     } else if(this.passwordtType === 'text'){
-        this.passwordtType = 'password';
-        this.eye_icon = 'eye-off';
-     }
+    togglePassword(event) {
+        event.preventDefault();
+        if (this.passwordtType === 'password') {
+            this.passwordtType = 'text';
+            this.eye_icon = 'eye';
+        } else if (this.passwordtType === 'text') {
+            this.passwordtType = 'password';
+            this.eye_icon = 'eye-off';
+        }
     }
 }

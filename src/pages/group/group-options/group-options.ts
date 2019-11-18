@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
+import { Network} from '@ionic-native/network/ngx';
 import { Events, IonicPage, ModalController, NavController, NavParams, ViewController } from 'ionic-angular';
+import * as _ from 'underscore';
+import { OfflineStorageProvider } from '../../../providers/offline-storage/offline-storage';
 import { AddFlashPage } from '../add-flash/add-flash';
 import { ConnectionProvider } from './../../../providers/connection/connection';
 import { FirebaseTransactionProvider } from './../../../providers/firebase-transaction/firebase-transaction';
 import { NotificationsProvider } from './../../../providers/notifications/notifications';
 import { CreateTopicPage } from './../../topic/create-topic/create-topic';
-import { OfflineStorageProvider } from '../../../providers/offline-storage/offline-storage';
-import { Network } from '@ionic-native/network';
-import * as _ from 'underscore';
 @IonicPage()
 @Component({
   selector: 'page-group-options',
@@ -37,25 +37,25 @@ export class GroupOptionsPage {
     this.group_name = this.navParams.data.group_name;
   }
 
-  ionViewWillEnter(){
+  ionViewWillEnter() {
     this.userlist = [];
-    this._offlineStorage.get('offline:Groups-Wise', this.userlist, this.group_id, this.group_id).then((data :any) => {
-      if(_.isEmpty(data)){
-      this.userlist = [];
+    this._offlineStorage.get('offline:Groups-Wise', this.userlist, this.group_id, this.group_id).then((data: any) => {
+      if (_.isEmpty(data)) {
+        this.userlist = [];
       } else {
-      this.userlist = data;
+        this.userlist = data;
       }
-   this.getParticipants();
-   });
+      this.getParticipants();
+    });
   }
 
   getParticipants() {
     return new Promise((resolve, reject) => {
       this.connection.doPost('Chat/GetGroupUserDetail', {
         GroupID: this.group_id
-      },false).then((response: any) => {
+      }, false).then((response: any) => {
         this.userlist = response;
-        this._offlineStorage.set('offline:Groups-Wise',this.userlist, this.group_id,this.group_id);
+        this._offlineStorage.set('offline:Groups-Wise', this.userlist, this.group_id, this.group_id);
         resolve(true);
       }).catch(error => {
         reject(error);

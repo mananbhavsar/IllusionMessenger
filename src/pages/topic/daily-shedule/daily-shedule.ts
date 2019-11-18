@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { IonicPage, ViewController, NavController, NavParams } from 'ionic-angular';
-import { HomePage } from '../../home/home';
-import { ConnectionProvider } from '../../../providers/connection/connection';
-import * as moment from "moment";
 import * as firebase from 'firebase';
+import { IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
+import * as moment from "moment";
 import * as _ from 'underscore';
+import { ConnectionProvider } from '../../../providers/connection/connection';
+import { HomePage } from '../../home/home';
 
 @IonicPage()
 @Component({
@@ -34,7 +34,7 @@ export class DailyShedulePage {
     return new Promise((resolve, reject) => {
       this.connectionProvider.doPost('Chat/MyTaskDueToday', {
 
-      },false).then((response: any) => {
+      }, false).then((response: any) => {
         if (!_.isEmpty(response.TopicList)) {
           this.topics = response.TopicList;
         }

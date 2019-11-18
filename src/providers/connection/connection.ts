@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Headers, Http, Response, URLSearchParams } from '@angular/http';
-import { Device } from '@ionic-native/device';
-import { Network } from '@ionic-native/network';
-import { UniqueDeviceID } from '@ionic-native/unique-device-id';
+import { Device} from '@ionic-native/device/ngx';
+import { Network} from '@ionic-native/network/ngx';
+import { UniqueDeviceID} from '@ionic-native/unique-device-id/ngx';
 import { Storage } from '@ionic/storage';
 import * as firebase from 'firebase';
 import { Events, Platform } from 'ionic-angular';
@@ -55,7 +55,7 @@ export class ConnectionProvider {
                     .then((uuid: any) => {
                         this.uuid = uuid;
                     })
-                    .catch((error: any) => {});
+                    .catch((error: any) => { });
             }
             this.doTranslate();
 
@@ -99,10 +99,10 @@ export class ConnectionProvider {
                 if (loader === true) {
                     loader = this.loading_translate;
                 }
-                if(loader){
-                this.events.publish('loading:create', loader);
+                if (loader) {
+                    this.events.publish('loading:create', loader);
+                }
             }
-        }
             //creating request
             let urlSearchParams = this.getURLSearchParams(params);
             this.http.post(this.URL + url, urlSearchParams).timeout(60000).map((response: Response) => response.json()).subscribe((data) => {
@@ -162,15 +162,15 @@ export class ConnectionProvider {
         if (this.platform.is('core')) {
             urlSearchParams.append('Device', navigator.platform);
             urlSearchParams.append('Manufacturer', navigator.appCodeName);
-            urlSearchParams.append('UniqueID','');
+            urlSearchParams.append('UniqueID', '');
 
         } else if (this.platform.is('cordova')) {
-        //device specific info
-        urlSearchParams.append('UniqueID', this.uuid);
-        urlSearchParams.append('Device', this.device.platform);
-        urlSearchParams.append('OSVersion', this.device.version);
-        urlSearchParams.append('Manufacturer', this.device.manufacturer);
-        urlSearchParams.append('AppVersion', Global.AppVersion);
+            //device specific info
+            urlSearchParams.append('UniqueID', this.uuid);
+            urlSearchParams.append('Device', this.device.platform);
+            urlSearchParams.append('OSVersion', this.device.version);
+            urlSearchParams.append('Manufacturer', this.device.manufacturer);
+            urlSearchParams.append('AppVersion', Global.AppVersion);
         }
         //adding user info
         if (this.user || !_.isEmpty(this.user)) {
@@ -185,7 +185,7 @@ export class ConnectionProvider {
 
     }
 
-    
+
 
     addUserInfo(urlSearchParams: URLSearchParams): URLSearchParams {
         urlSearchParams.append('LoginUserID', this.user.LoginUserID);

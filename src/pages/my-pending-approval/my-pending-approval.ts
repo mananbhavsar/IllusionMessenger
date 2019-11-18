@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ModalController } from 'ionic-angular';
-import { RequestDetailPage } from '../request-detail/request-detail';
-import { ConnectionProvider } from '../../providers/connection/connection';
-import * as _ from 'underscore';
-import { Network } from '@ionic-native/network';
+import { Network} from '@ionic-native/network/ngx';
 import { Storage } from '@ionic/storage';
+import { IonicPage, ModalController, NavController, NavParams } from 'ionic-angular';
+import * as _ from 'underscore';
+import { ConnectionProvider } from '../../providers/connection/connection';
+import { RequestDetailPage } from '../request-detail/request-detail';
 
 @IonicPage()
 @Component({
@@ -43,34 +43,34 @@ export class MyPendingApprovalPage {
 
   getData() {
     return new Promise((resolve, reject) => {
-        if (this.page === -1) {
-          reject();
-        } else {
-          this.connection.doPost('Payroll/' + this.myPendingUrl, {
-            PageNumber: this.page,
-            RowsPerPage: 100,
-            CompanyID: this.connection.user.CompanyID,
-            // Query: this.query
-          }, false).then((response: any) => {
-            if (!_.isEmpty(response)) {
-              response.MyPendingAproval.forEach(item => {
-                this.pushItem(item);
-              });
-              this.page++;
-              this.saveOfflineData().then(status => {
-                resolve(status);
-              }).catch(error => {
-                reject(error);
-              });
-            } else {
-              this.page = -1;
-              resolve(false);
-            }
-          }).catch((error) => {
+      if (this.page === -1) {
+        reject();
+      } else {
+        this.connection.doPost('Payroll/' + this.myPendingUrl, {
+          PageNumber: this.page,
+          RowsPerPage: 100,
+          CompanyID: this.connection.user.CompanyID,
+          // Query: this.query
+        }, false).then((response: any) => {
+          if (!_.isEmpty(response)) {
+            response.MyPendingAproval.forEach(item => {
+              this.pushItem(item);
+            });
+            this.page++;
+            this.saveOfflineData().then(status => {
+              resolve(status);
+            }).catch(error => {
+              reject(error);
+            });
+          } else {
             this.page = -1;
             resolve(false);
-            reject();
-          });
+          }
+        }).catch((error) => {
+          this.page = -1;
+          resolve(false);
+          reject();
+        });
       }
     });
   }

@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { IonicPage, Events, ActionSheetController, ModalController, NavController, NavParams } from 'ionic-angular';
+import { Network} from '@ionic-native/network/ngx';
+import { Storage } from '@ionic/storage';
+import { ActionSheetController, Events, IonicPage, ModalController, NavController, NavParams } from 'ionic-angular';
+import * as _ from 'underscore';
 import { ConnectionProvider } from '../../../providers/connection/connection';
 import { CreateTagPage } from '../create-tag';
-import { Network } from '@ionic-native/network';
-import { Storage } from '@ionic/storage';
-import * as _ from 'underscore';
 
 @IonicPage()
 @Component({
@@ -46,35 +46,35 @@ export class TagPage {
 
   getTags() {
     return new Promise((resolve, reject) => {
-        if (this.page === -1) {
-          reject();
-        } else {
-          this.connection.doPost('Chat/GetTagList', {
-            Query: this.query,
-            PageNumber: this.page,
-            RowsPerPage: 20
-          }, false).then((response: any) => {
-            if (response.TagList.length > 0) {
-              response.TagList.forEach(list => {
-                this.pushItem(list);
-              });
-              this.page++;
-              this.saveOfflineData().then(status => {
-                resolve(status);
-              }).catch(error => {
-                reject(error);
-              });
-            } else {
-              this.page = -1;
-              resolve(false);
-            }
-          }).catch((error) => {
-            this.searchInputBtn = true;
+      if (this.page === -1) {
+        reject();
+      } else {
+        this.connection.doPost('Chat/GetTagList', {
+          Query: this.query,
+          PageNumber: this.page,
+          RowsPerPage: 20
+        }, false).then((response: any) => {
+          if (response.TagList.length > 0) {
+            response.TagList.forEach(list => {
+              this.pushItem(list);
+            });
+            this.page++;
+            this.saveOfflineData().then(status => {
+              resolve(status);
+            }).catch(error => {
+              reject(error);
+            });
+          } else {
             this.page = -1;
-            this.events.publish('toast:create', error);
-            reject();
-          });
-        }
+            resolve(false);
+          }
+        }).catch((error) => {
+          this.searchInputBtn = true;
+          this.page = -1;
+          this.events.publish('toast:create', error);
+          reject();
+        });
+      }
     });
   }
 

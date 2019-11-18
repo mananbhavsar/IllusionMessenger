@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Contact, ContactField, ContactName, Contacts } from '@ionic-native/contacts';
+import { Contact, ContactField, ContactName, Contacts } from '@ionic-native/contacts/ngx';
 import { Events, IonicPage, NavController, NavParams, Platform, ViewController } from 'ionic-angular';
 
 @IonicPage()
@@ -60,7 +60,7 @@ export class ContactDetailPage {
       this.viewCtrl.dismiss(contact);
       this.events.publish('toast:create', 'Contact Saved Successfully');
     }).catch(error => {
-      
+
     });
   }
 
@@ -71,7 +71,7 @@ export class ContactDetailPage {
   setTitle() {
     this.title = null;
     setTimeout(() => {
-     this.title = 'View Contact';
+      this.title = 'View Contact';
     });
   }
 

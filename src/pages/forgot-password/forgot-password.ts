@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, Events } from 'ionic-angular';
-import { Validators, FormBuilder, FormGroup } from '@angular/forms';
-
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Events, IonicPage, NavController } from 'ionic-angular';
+import { ConnectionProvider } from '../../providers/connection/connection';
 import { LoginPage } from "../login/login";
 
-import { ConnectionProvider } from '../../providers/connection/connection';
+
 @IonicPage()
 @Component({
   selector: 'page-forgot-password',
@@ -32,12 +32,12 @@ export class ForgotPasswordPage {
     }, 'resetting password').then(response => {
       this.events.publish('alert:basic', 'Password sent!', response);
       this.navCtrl.push(LoginPage);
-    }).catch(error=>{
+    }).catch(error => {
       this.events.publish('toast:create', error);
     });
   }
 
-  goBack(){
+  goBack() {
     this.navCtrl.pop();
   }
 

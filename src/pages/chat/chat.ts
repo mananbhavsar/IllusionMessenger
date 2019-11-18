@@ -1,15 +1,15 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { Http } from '@angular/http';
-import { Camera, CameraOptions } from '@ionic-native/camera';
-import { Clipboard } from '@ionic-native/clipboard';
-import { Contacts } from '@ionic-native/contacts';
-import { File } from '@ionic-native/file';
-import { FileTransfer, FileTransferObject, FileUploadOptions } from '@ionic-native/file-transfer';
-import { Keyboard } from '@ionic-native/keyboard';
-import { Media, MediaObject } from '@ionic-native/media';
-import { Network } from '@ionic-native/network';
-import { Vibration } from '@ionic-native/vibration';
-import { MediaFile, VideoCapturePlus, VideoCapturePlusOptions } from '@ionic-native/video-capture-plus';
+import { CameraOptions, Camera} from '@ionic-native/camera/ngx';
+import { Clipboard} from '@ionic-native/clipboard/ngx';
+import { Contacts } from '@ionic-native/contacts/ngx';
+import { Crop} from '@ionic-native/crop/ngx';
+import { FileTransferObject, FileTransfer, FileUploadOptions } from '@ionic-native/file-transfer/ngx';
+import { Keyboard} from '@ionic-native/keyboard/ngx';
+import { MediaObject, Media} from '@ionic-native/media/ngx';
+import { Network} from '@ionic-native/network/ngx';
+import { Vibration} from '@ionic-native/vibration/ngx';
+import { MediaFile, VideoCapturePlusOptions, VideoCapturePlus} from '@ionic-native/video-capture-plus/ngx';
 import { Storage } from '@ionic/storage';
 import * as firebase from 'firebase';
 import { ActionSheetController, Content, Events, IonicPage, ModalController, NavController, NavParams, normalizeURL, Platform, ToastController } from 'ionic-angular';
@@ -31,7 +31,7 @@ import { DateProvider } from './../../providers/date/date';
 import { ChatOptionsPage } from "./chat-options/chat-options";
 import { SavedMediaPage } from "./chat-options/saved-media/saved-media";
 import { PreviewPage } from './preview/preview';
-import { Crop } from '@ionic-native/crop';
+import { File} from '@ionic-native/file/ngx';
 
 @IonicPage()
 @Component({
@@ -80,7 +80,7 @@ export class ChatPage {
   newMessagesRef: firebase.database.Query;
   messages: Array<any> = [];
   offlineMessages: Array<any> = [];
-  messagesKeys: Array<any> = []; //this will keep track of keys vs index in original array of messages
+  messagesKeys: Array<any> = []; //this will keep track of keys vs index in  array of messages
   messagesLoaded: boolean = false;
   message: string = '';
   messageLimit: number = 20;
@@ -904,7 +904,7 @@ export class ChatPage {
     if (this.keyboardOpen) {
       this.keyboardOpen = false;
       this.sendClickKeepKeyboardOpened = false;
-      this.keyboard.close();
+      this.keyboard.hide();
     }
     const actionSheet = this.actionSheetCtrl.create({
       title: null,
@@ -1094,7 +1094,7 @@ export class ChatPage {
     return new Promise((resolve, reject) => {
       if (type === 'Text') {
         let translation = {};
-        //adding mine which is original
+        //adding mine which is 
         translation[this.myLanguage] = message;
         translation['en'] = message;
         resolve(translation);
@@ -1426,7 +1426,7 @@ export class ChatPage {
     if (this.keyboardOpen) {
       this.keyboardOpen = false;
       this.setTyping(false);
-      this.keyboard.close();
+      this.keyboard.hide();
     }
   }
 
@@ -1517,7 +1517,7 @@ export class ChatPage {
     if (this.keyboardOpen) {
       this.keyboardOpen = false;
       this.sendClickKeepKeyboardOpened = false;
-      this.keyboard.close();
+      this.keyboard.hide();
     }
     let options = this.cameraOptions;
     if (type === 'gallery') {
@@ -1680,7 +1680,7 @@ export class ChatPage {
         });
         if (this.keyboardOpen) {
           this.sendClickKeepKeyboardOpened = false;
-          this.keyboard.close();
+          this.keyboard.hide();
         }
         modal.present();
         modal.onDidDismiss((selectedFile: any) => {

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Network } from '@ionic-native/network';
+import { Network} from '@ionic-native/network/ngx';
 import { Storage } from '@ionic/storage';
 import { Events } from 'ionic-angular';
 import * as _ from 'underscore';
@@ -16,7 +16,7 @@ export class OfflineStorageProvider {
   }
 
   set(key, value, subKey = null, subSubKey = null, id = null) {
-    
+
     return new Promise((resolve, reject) => {
       this.storage.get(key).then((data) => {
         //checking data is present
@@ -34,7 +34,7 @@ export class OfflineStorageProvider {
               child: {}
             };
           }
-          
+
           data.child[subKey].child[subSubKey].child[id].data = value;
         } else if (subSubKey) {
 

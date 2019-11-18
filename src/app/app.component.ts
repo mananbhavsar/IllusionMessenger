@@ -1,11 +1,4 @@
-import { Component, enableProdMode, ViewChild, Renderer2 } from '@angular/core';
-import { Badge } from '@ionic-native/badge';
-import { Globalization } from '@ionic-native/globalization';
-import { Keyboard } from '@ionic-native/keyboard';
-import { Network } from '@ionic-native/network';
-import { OneSignal } from '@ionic-native/onesignal';
-import { SplashScreen } from '@ionic-native/splash-screen';
-import { StatusBar } from '@ionic-native/status-bar';
+import { Component, enableProdMode, Renderer2, ViewChild } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import * as firebase from 'firebase';
 import { AlertController, Events, LoadingController, MenuController, ModalController, Nav, Platform, ToastController } from 'ionic-angular';
@@ -18,15 +11,22 @@ import { HelpPage } from '../pages/help/help';
 import { HomePage } from '../pages/home/home';
 import { LoginPage } from '../pages/login/login';
 import { LogoutPage } from '../pages/logout/logout';
+import { DailyShedulePage } from '../pages/topic/daily-shedule/daily-shedule';
 import { TutorialPage } from '../pages/tutorial/tutorial';
 import { WelcomePage } from '../pages/welcome/welcome';
+import { FileOpsProvider } from '../providers/file-ops/file-ops';
 import { TranslateServiceProvider } from '../providers/translate-service/translate-service';
 import { UserProvider } from '../providers/user/user';
 import { GroupPage } from './../pages/group/group';
 import { Global } from './global';
-import { DailyShedulePage } from '../pages/topic/daily-shedule/daily-shedule';
-import { AndroidPermissions } from '@ionic-native/android-permissions';
-import { FileOpsProvider } from '../providers/file-ops/file-ops';
+import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { SplashScreen } from '@ionic-native/splash-screen/ngx';
+import { Network } from '@ionic-native/network/ngx';
+import { Keyboard } from '@ionic-native/keyboard/ngx';
+import { Badge } from '@ionic-native/badge/ngx';
+import { OneSignal } from '@ionic-native/onesignal/ngx';
+import { Globalization } from '@ionic-native/globalization/ngx';
+import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 
 export const firebaseConfig = {
     apiKey: "AIzaSyAFDZ9UPTMiDTjT4qAG0d9uVeOdhL-2PBw",
@@ -134,7 +134,7 @@ export class MyApp {
             this.listenToGobalEvents();
             this.listenToLoginEvents();
             this._keyboard.disableScroll(false);
-            this._keyboard.hideKeyboardAccessoryBar(true);
+            this._keyboard.hideFormAccessoryBar(false);
             setTimeout(() => {
                 this.initPreLoginPlugins();
             }, 500);

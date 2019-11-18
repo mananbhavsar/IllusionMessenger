@@ -1,15 +1,15 @@
 import { Component } from '@angular/core';
-import { IonicPage,reorderArray, NavController, NavParams, ModalController, Events } from 'ionic-angular';
-import { ConnectionProvider } from '../../providers/connection/connection';
-import { GroupPage } from '../group/group';
-import { AddFlashPage } from '../group/add-flash/add-flash';
-import { NotificationsProvider } from '../../providers/notifications/notifications';
-import { FirebaseTransactionProvider } from '../../providers/firebase-transaction/firebase-transaction';
-import { CommonProvider } from '../../providers/common/common';
-import { UserProvider } from '../../providers/user/user';
 import firebase from 'firebase';
+import { Events, IonicPage, ModalController, NavController, NavParams, reorderArray } from 'ionic-angular';
+import { CommonProvider } from '../../providers/common/common';
+import { ConnectionProvider } from '../../providers/connection/connection';
+import { FirebaseTransactionProvider } from '../../providers/firebase-transaction/firebase-transaction';
 import { FlashNewsProvider } from '../../providers/flash-news/flash-news';
+import { NotificationsProvider } from '../../providers/notifications/notifications';
 import { ReadMessageProvider } from '../../providers/read-message/read-message';
+import { UserProvider } from '../../providers/user/user';
+import { AddFlashPage } from '../group/add-flash/add-flash';
+import { GroupPage } from '../group/group';
 
 @IonicPage()
 @Component({
@@ -23,27 +23,27 @@ export class GroupsPage {
   situationID = 2;
   badges: any = {};
   query: string = null;
-  readOptions : boolean = false;
+  readOptions: boolean = false;
   searchInputBtn: boolean = false;
-  reorder : boolean = false;
-  sort_by : string = '';
-  sort_order : string = '';
+  reorder: boolean = false;
+  sort_by: string = '';
+  sort_order: string = '';
   readAllSelected: boolean;
-  hideRefresher : boolean = false;
+  hideRefresher: boolean = false;
   selectedGroup: any = [];
-  data : any;
-  flashNews : any;
+  data: any;
+  flashNews: any;
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
     public connection: ConnectionProvider,
     public modalController: ModalController,
     public events: Events,
-    public user : UserProvider,
+    public user: UserProvider,
     public notifications: NotificationsProvider,
     public _firebaseTransaction: FirebaseTransactionProvider,
-    public common : CommonProvider,
-    public flashNewsProvider : FlashNewsProvider,
-    public read : ReadMessageProvider
+    public common: CommonProvider,
+    public flashNewsProvider: FlashNewsProvider,
+    public read: ReadMessageProvider
   ) {
     this.setTitle();
     this.getData();
@@ -54,99 +54,99 @@ export class GroupsPage {
       if (this.page === -1) {
         reject();
       } else {
-      this.connection.doPost('Chat/GetTaskDetail', {
-        PageNumber: this.page,
-        SituationID: this.situationID,
-        RowsPerPage: 100,
-        Query: this.query,
-        OrderBy: '',
-        Order: '',
-      }, false).then((response: any) => {
-        this.data = response;
-        if (response.Groups_Wise.length > 0) {
-          response.Groups_Wise.forEach(list => {
-            this.groups.push(list);
-          });
-          if (response.FlashNews) {
-            this.flashNews = response.FlashNews;
-            this.flashNews.forEach((news, key) => {
-                this.flashNewsProvider.openUnreadFlashNews(news);
+        this.connection.doPost('Chat/GetTaskDetail', {
+          PageNumber: this.page,
+          SituationID: this.situationID,
+          RowsPerPage: 100,
+          Query: this.query,
+          OrderBy: '',
+          Order: '',
+        }, false).then((response: any) => {
+          this.data = response;
+          if (response.Groups_Wise.length > 0) {
+            response.Groups_Wise.forEach(list => {
+              this.groups.push(list);
             });
-        }
-          this.connectToFireBase();
-          this.page++;
-          resolve(true);
-        } else {
+            if (response.FlashNews) {
+              this.flashNews = response.FlashNews;
+              this.flashNews.forEach((news, key) => {
+                this.flashNewsProvider.openUnreadFlashNews(news);
+              });
+            }
+            this.connectToFireBase();
+            this.page++;
+            resolve(true);
+          } else {
+            this.page = -1;
+            resolve(false);
+          }
+        }).catch((error) => {
           this.page = -1;
           resolve(false);
-        }
-      }).catch((error) => {
-        this.page = -1;
-        resolve(false);
-      });
-    }
+        });
+      }
     });
   }
 
 
   readSelected() {
     this.read.read(this.selectedGroup, null).then((response) => {
-        if (response) {
-            this.selectedGroup = [];
-            this.groups = [];
-            this.readAllSelected = true;
-            this.readOptions = false;
-        this.getData();
-        }
-    });
-}
-
-
-readAll() {
-    this.read.read(null, null, true).then((response: any) => {
+      if (response) {
         this.selectedGroup = [];
         this.groups = [];
         this.readAllSelected = true;
         this.readOptions = false;
         this.getData();
+      }
+    });
+  }
+
+
+  readAll() {
+    this.read.read(null, null, true).then((response: any) => {
+      this.selectedGroup = [];
+      this.groups = [];
+      this.readAllSelected = true;
+      this.readOptions = false;
+      this.getData();
     }).catch((error) => {
     });
-}
+  }
 
   getUnreadCount() {
     let field = 'Groups_Wise' + '_Count';
     if (this.data) {
-        if (field in this.data) {
-            if (this.data[field] > 0) {
-                return true;
-            }
-            return false;
+      if (field in this.data) {
+        if (this.data[field] > 0) {
+          return true;
         }
+        return false;
+      }
     }
     return false;
-}
+  }
 
   connectToFireBase() {
     //user setting
     this.user.getUser().then(user => {
-        if (this.groups) {
-            let groupsTemp: any = this.groups;
-            groupsTemp.forEach((group, index) => {
-                let ref = firebase.database().ref('Badge/' + user.id + '/Groups/' + group.GroupCode + '/Total');
-                ref.off('value');
-                ref.on('value', (snapshot) => {
-                    let total = snapshot.val();
-                    if (total) {
-                        this.badges[group.GroupCode] = total;
-                    } else {
-                        this.badges[group.GroupCode] = 0;
-                    }
-                });
-            });
+      if (this.groups) {
+        let groupsTemp: any = this.groups;
+        groupsTemp.forEach((group, index) => {
+          let ref = firebase.database().ref('Badge/' + user.id + '/Groups/' + group.GroupCode + '/Total');
+          ref.off('value');
+          ref.on('value', (snapshot) => {
+            let total = snapshot.val();
+            if (total) {
+              this.badges[group.GroupCode] = total;
+            } else {
+              this.badges[group.GroupCode] = 0;
+            }
+          });
+        });
 
-        }
+      }
     });
-}
+  }
 
 
   addFlash() {
@@ -190,7 +190,7 @@ readAll() {
     this.navCtrl.push(GroupPage, { GroupID, Group });
   }
 
-  
+
 
   getBadge(groupCode) {
     if (groupCode in this.badges) {
@@ -215,20 +215,20 @@ readAll() {
 
 
   openSortOptions() {
-    this.common.openSortOption().then((response : any) => {
-      if(response){
+    this.common.openSortOption().then((response: any) => {
+      if (response) {
         this.sort_by = response.sort_by;
         this.sort_order = response.sort_order;
         this.doSorting();
-    }
+      }
     });
-}
+  }
 
-doSorting() {
+  doSorting() {
     this.page = 0;
     this.groups = [];
     this.getData();
-}
+  }
 
   searchData() {
     if (this.searchInputBtn) {
@@ -259,13 +259,13 @@ doSorting() {
 
   openReadOptions() {
     if (this.readOptions) {
-        this.readOptions = false;
-        this.selectedGroup = [];
-        this.readAllSelected = true;
+      this.readOptions = false;
+      this.selectedGroup = [];
+      this.readAllSelected = true;
     } else {
-        this.readOptions = true;
+      this.readOptions = true;
     }
-}
+  }
 
   getItems(event) {
     // set val to the value of the ev target
@@ -287,55 +287,55 @@ doSorting() {
   readMessage(ev, group) {
     group.IsRead = ev.checked;
     if (ev.checked) {
-        if (this.selectedGroup.indexOf(this.selectedGroup.GroupCode) === -1) {
-            this.selectedGroup.push({
-                checked: group.IsRead,
-                GroupCode: group.GroupCode,
-            });
-            this.readAllSelected = false;
-        }
+      if (this.selectedGroup.indexOf(this.selectedGroup.GroupCode) === -1) {
+        this.selectedGroup.push({
+          checked: group.IsRead,
+          GroupCode: group.GroupCode,
+        });
+        this.readAllSelected = false;
+      }
     } else {
-        this.selectedGroup.splice(this.selectedGroup.indexOf(this.selectedGroup.GroupCode), 1);
+      this.selectedGroup.splice(this.selectedGroup.indexOf(this.selectedGroup.GroupCode), 1);
     }
 
     if (this.selectedGroup.length === 0) {
-        this.readAllSelected = true;
+      this.readAllSelected = true;
     }
-}
+  }
 
-reorderItems(indexes) {
+  reorderItems(indexes) {
     this.groups = reorderArray(this.groups, indexes);
     let group_reorder = [];
     let groupIds = [];
 
     this.groups.forEach((group, index) => {
-        if (groupIds.indexOf(group.GroupID) === -1) {
-            group_reorder.push({ 'OrderIndex': index, 'GroupID': group.GroupID });
-            groupIds.push(group.GroupID);
-        }
+      if (groupIds.indexOf(group.GroupID) === -1) {
+        group_reorder.push({ 'OrderIndex': index, 'GroupID': group.GroupID });
+        groupIds.push(group.GroupID);
+      }
 
     });
 
     this.connection.doPost('chat/MyGroupOrder', {
-        OrderIndex: group_reorder.map(order => order.OrderIndex),
-        GroupID: group_reorder.map(groupId => groupId.GroupID)
+      OrderIndex: group_reorder.map(order => order.OrderIndex),
+      GroupID: group_reorder.map(groupId => groupId.GroupID)
     }, false).then((response: any) => {
-        if (response) {
+      if (response) {
 
-        }
+      }
     }).catch((error) => {
     });
 
-}
+  }
 
-reorderGroups() {
+  reorderGroups() {
     if (this.reorder) {
-        this.reorder = false;
+      this.reorder = false;
     } else {
-        this.reorder = true;
-        this.hideRefresher = false;
+      this.reorder = true;
+      this.hideRefresher = false;
     }
-}
+  }
 
 
   setTitle() {

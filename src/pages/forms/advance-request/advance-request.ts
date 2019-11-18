@@ -1,13 +1,12 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, Events } from 'ionic-angular';
-import { Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { ConnectionProvider } from '../../../providers/connection/connection';
-import * as _ from 'underscore';
-import { DateProvider } from '../../../providers/date/date';
-import { Platform } from 'ionic-angular';
-import { NotificationsProvider } from '../../../providers/notifications/notifications';
-import { Network } from '@ionic-native/network';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Network} from '@ionic-native/network/ngx';
 import { Storage } from '@ionic/storage';
+import { Events, IonicPage, NavController, NavParams, Platform } from 'ionic-angular';
+import * as _ from 'underscore';
+import { ConnectionProvider } from '../../../providers/connection/connection';
+import { DateProvider } from '../../../providers/date/date';
+import { NotificationsProvider } from '../../../providers/notifications/notifications';
 @IonicPage()
 @Component({
   selector: 'page-advance-request',

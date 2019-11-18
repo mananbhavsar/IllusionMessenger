@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController,Events,  ViewController,  NavParams } from 'ionic-angular';
+import { Events, IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
 import { ConnectionProvider } from '../../../providers/connection/connection';
 
 @IonicPage()
@@ -19,7 +19,7 @@ export class ForwardMessagePage {
   groupId: number;
   constructor(public navCtrl: NavController,
     public navParams: NavParams,
-    public events : Events,
+    public events: Events,
     public connection: ConnectionProvider,
     public viewCntl: ViewController) {
     this.getTopics();

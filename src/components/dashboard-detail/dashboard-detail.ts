@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Network } from '@ionic-native/network';
+import { Network} from '@ionic-native/network/ngx';
 import { Events, ModalController } from 'ionic-angular';
 
 @Component({
@@ -40,7 +40,8 @@ export class DashboardDetailComponent {
   constructor(
     public modal: ModalController,
     public event: Events,
-    public network: Network) {
+    public network: Network,
+  ) {
 
   }
 
@@ -52,7 +53,7 @@ export class DashboardDetailComponent {
       });
       modal.present();
     } else {
-      this.event.publish('toast:create','You seems to be offline');
+      this.event.publish('toast:create', 'You seems to be offline');
     }
   }
 

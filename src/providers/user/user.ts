@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Badge } from '@ionic-native/badge';
+import { Badge} from '@ionic-native/badge/ngx';
 import { Storage } from '@ionic/storage';
 import * as firebase from 'firebase';
 import { AlertController, Events, Platform } from 'ionic-angular';

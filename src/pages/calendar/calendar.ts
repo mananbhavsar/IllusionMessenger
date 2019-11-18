@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, Events } from 'ionic-angular';
-import moment from 'moment';
-import { ConnectionProvider } from '../../providers/connection/connection';
-import { Network } from '@ionic-native/network';
+import { Network} from '@ionic-native/network/ngx';
 import { Storage } from '@ionic/storage';
+import { Events, IonicPage, NavController } from 'ionic-angular';
+import moment from 'moment';
 import * as _ from 'underscore';
+import { ConnectionProvider } from '../../providers/connection/connection';
 
 @IonicPage()
 @Component({

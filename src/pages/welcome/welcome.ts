@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, Events } from 'ionic-angular';
-import { TutorialPage } from '../tutorial/tutorial';
-import { LoginPage } from '../login/login';
-import { HomePage } from  '../home/home';
-
-import { UserProvider } from '../../providers/user/user';
+import { Events, IonicPage, NavController, NavParams } from 'ionic-angular';
 import { Global } from '../../app/global';
+import { UserProvider } from '../../providers/user/user';
+import { HomePage } from '../home/home';
+import { LoginPage } from '../login/login';
+import { TutorialPage } from '../tutorial/tutorial';
+
 
 
 @IonicPage()
@@ -28,7 +28,7 @@ export class WelcomePage {
         //checking if logged already
         this.user.hasLoggedIn().then((user) => {
             if (user) {
-                if(this.sendToHomeFlag){
+                if (this.sendToHomeFlag) {
                     this.navCtrl.setRoot(HomePage);
                 }
             } else {
@@ -49,7 +49,7 @@ export class WelcomePage {
                 }
             }
 
-        }).catch((error) => {});
+        }).catch((error) => { });
     }
 
 }

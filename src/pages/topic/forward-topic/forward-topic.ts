@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, Events, NavController, NavParams, ViewController } from 'ionic-angular';
+import { Events, IonicPage, NavController, NavParams, ViewController } from 'ionic-angular';
 import { ConnectionProvider } from '../../../providers/connection/connection';
 
 @IonicPage()

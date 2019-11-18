@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
-import { UserProvider } from '../../providers/user/user';
-import { Platform } from 'ionic-angular';
-import { Network } from '@ionic-native/network';
+import { Network} from '@ionic-native/network/ngx';
+import { OneSignal} from '@ionic-native/onesignal/ngx';
+import { Events, Platform } from 'ionic-angular';
 import { ConnectionProvider } from '../../providers/connection/connection';
-import { Events } from 'ionic-angular';
-import { OneSignal } from '@ionic-native/onesignal';
+import { UserProvider } from '../../providers/user/user';
 
 @Component({
   selector: 'internet-status',

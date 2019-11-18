@@ -1,14 +1,14 @@
 import { Component, EventEmitter, Input, NgZone, Output } from '@angular/core';
+import { Network} from '@ionic-native/network/ngx';
+import { Storage } from '@ionic/storage';
 import * as firebase from 'firebase';
 import { Events, ModalController, NavController } from 'ionic-angular';
 import * as moment from "moment";
 import { ForwardTopicPage } from '../../pages/topic/forward-topic/forward-topic';
 import { ConnectionProvider } from '../../providers/connection/connection';
 import { DateProvider } from '../../providers/date/date';
-import { ReadMessageProvider } from '../../providers/read-message/read-message';
 import { OfflineStorageProvider } from '../../providers/offline-storage/offline-storage';
-import { Storage } from '@ionic/storage';
-import { Network } from '@ionic-native/network';
+import { ReadMessageProvider } from '../../providers/read-message/read-message';
 
 @Component({
   selector: 'topic',
@@ -45,7 +45,7 @@ export class TopicComponent {
   ngOnChanges() {
     if (this.topic) {
       if (this.network.type === 'none') {
-       this.badgeCount = this.topic.Count;
+        this.badgeCount = this.topic.Count;
       } else {
         let path = 'Badge/' + this.connection.user.id + '/Groups/' + this.topic.GroupCode + '/Topics/' + this.topic.TopicCode;
         let topicRef = firebase.database().ref(path);

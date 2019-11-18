@@ -1,5 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
-import { CallNumber } from '@ionic-native/call-number';
+import { CallNumber} from '@ionic-native/call-number/ngx';
+import { Network} from '@ionic-native/network/ngx';
 import { Storage } from '@ionic/storage';
 import { ActionSheetController, DateTime, Events, IonicPage, ModalController, NavController, NavParams, Platform, ViewController } from 'ionic-angular';
 import * as moment from 'moment';
@@ -9,10 +10,9 @@ import { FirebaseTransactionProvider } from '../../../providers/firebase-transac
 import { NotificationsProvider } from "../../../providers/notifications/notifications";
 import { UserProvider } from '../../../providers/user/user';
 import { ManageParticipantsPage } from '../../topic/create-topic/manage-participants/manage-participants';
+import { RatingPage } from '../rating/rating';
 import { DateProvider } from './../../../providers/date/date';
 import { SavedMediaPage } from "./saved-media/saved-media";
-import { RatingPage } from '../rating/rating';
-import { Network } from '@ionic-native/network';
 
 
 
@@ -185,7 +185,7 @@ export class ChatOptionsPage {
 
   callParticipant(event, participant) {
     if (event.cancelable) {
-    event.preventDefault();
+      event.preventDefault();
     }
     event.stopPropagation();
     if (participant.ContactNo) {
@@ -391,7 +391,7 @@ export class ChatOptionsPage {
     this.viewController.dismiss(data);
   }
 
-  userOptionsClicked(event,participant, index) {
+  userOptionsClicked(event, participant, index) {
     event.preventDefault();
     event.stopPropagation();
     if (this.network.type !== 'none') {

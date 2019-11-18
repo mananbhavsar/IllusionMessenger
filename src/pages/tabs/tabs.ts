@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, Events } from 'ionic-angular';
-import { HomePage } from '../home/home';
+import { Events, IonicPage, NavController, NavParams } from 'ionic-angular';
 import { CalendarPage } from '../calendar/calendar';
 // import { DashboardPage } from '../dashboard/dashboard';
 import { GroupsPage } from '../groups/groups';
+import { HomePage } from '../home/home';
 
 @IonicPage()
 @Component({
@@ -11,31 +11,31 @@ import { GroupsPage } from '../groups/groups';
   templateUrl: 'tabs.html',
 })
 export class TabsPage {
-  selectedIndex : number = 0;
+  selectedIndex: number = 0;
   taskRoot = HomePage;
   groupRoot = GroupsPage;
   CalendarRoot = CalendarPage;
-  tabsRoot : any = [];
+  tabsRoot: any = [];
   constructor(public navCtrl: NavController,
-     public navParams: NavParams,
-     public events : Events) {  
+    public navParams: NavParams,
+    public events: Events) {
     this.selectedIndex = this.navParams.data || 0;
   }
 
-  getTabs(){
+  getTabs() {
     this.events.subscribe('menu:created', (menu: any) => {
       setTimeout(() => {
         menu.forEach(rootPage => {
-          switch(rootPage.name){
-            case 'DashboardPage' :
-            case 'HomePage' :
-            case 'GroupsPage' :
-            case 'CalendarPage' :
-            this.tabsRoot.push(rootPage);
-            break;
+          switch (rootPage.name) {
+            case 'DashboardPage':
+            case 'HomePage':
+            case 'GroupsPage':
+            case 'CalendarPage':
+              this.tabsRoot.push(rootPage);
+              break;
           }
         });
       });
-  });
+    });
   }
 }

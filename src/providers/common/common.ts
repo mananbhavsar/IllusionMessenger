@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Platform, ActionSheetController, Events } from 'ionic-angular';
+import { Network} from '@ionic-native/network/ngx';
+import { OneSignal} from '@ionic-native/onesignal/ngx';
+import { ActionSheetController, Events, Platform } from 'ionic-angular';
 import { ConnectionProvider } from '../connection/connection';
-import { Network } from '@ionic-native/network';
-import { OneSignal } from '@ionic-native/onesignal';
 import { UserProvider } from '../user/user';
 
 @Injectable()

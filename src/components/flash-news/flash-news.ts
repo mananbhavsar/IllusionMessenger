@@ -22,7 +22,7 @@ export class FlashNewsComponent {
     private _date: DateProvider,
     public modalCntl: ModalController
   ) {
-    
+
   }
 
   ngAfterViewInit() {

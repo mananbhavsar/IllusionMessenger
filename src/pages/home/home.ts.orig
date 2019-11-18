@@ -1,6 +1,4 @@
 import { Component } from '@angular/core';
-import { Network } from '@ionic-native/network';
-import { OneSignal } from '@ionic-native/onesignal';
 import { Network} from '@ionic-native/network/ngx';
 import { OneSignal} from '@ionic-native/onesignal/ngx';
 import { Storage } from '@ionic/storage';
@@ -136,8 +134,12 @@ export class HomePage {
 
         //online offline
         if (this.platform.is('cordova')) {
+<<<<<<< HEAD
             this._network.onChange().subscribe(() => {
+=======
+            this._network.onchange().subscribe(() => {
                 if (!_.isEmpty(this.connection.user)) {
+>>>>>>> 593026bbe1e456bff2f342fd590848e7b7393958
                 this.registerDevice(false);
                 }
             });

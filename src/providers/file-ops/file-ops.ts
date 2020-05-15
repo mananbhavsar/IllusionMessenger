@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { AndroidPermissions} from '@ionic-native/android-permissions/ngx';
-import { CameraOptions, Camera} from '@ionic-native/camera/ngx';
-import { FileEntry, File} from '@ionic-native/file/ngx';
-import { FileChooser} from '@ionic-native/file-chooser/ngx';
-import { FileOpener} from '@ionic-native/file-opener/ngx';
-import { FilePath} from '@ionic-native/file-path/ngx';
-import { FileTransferObject, FileTransfer, FileUploadOptions } from '@ionic-native/file-transfer/ngx';
+import { AndroidPermissions } from '@ionic-native/android-permissions';
+import { Camera, CameraOptions } from '@ionic-native/camera';
+import { File, FileEntry } from '@ionic-native/file';
+import { FileChooser } from '@ionic-native/file-chooser';
+import { FileOpener } from '@ionic-native/file-opener';
+import { FilePath } from '@ionic-native/file-path';
+import { FileTransfer, FileTransferObject, FileUploadOptions } from '@ionic-native/file-transfer';
 import { Events, normalizeURL, Platform } from 'ionic-angular';
 import * as mime from 'mime-types';
 import { Global } from '../../app/global';
@@ -170,6 +170,7 @@ export class FileOpsProvider {
       this.fileOpener.open(nativeURL, mime.lookup(nativeURL)).then(status => {
         resolve(status);
       }).catch(error => {
+        console.log(error);
         reject(error);
       });
     });
@@ -365,13 +366,17 @@ export class FileOpsProvider {
 
   captureAndUpload(type, identifier: string = null, params: any = {}) {
     return new Promise((resolve, reject) => {
-      this.capture(type).then(uri => {
-        this.uploadFile(uri, identifier, params).then(uploadedURL => {
-          let url = uploadedURL;
-          resolve(url);
-        }).catch(error => {
-          this.events.publish('toast:error', error);
-          reject(error);
+      this.capture(type).then((uri: string) => {
+        this.file.resolveLocalFilesystemUrl(uri).then((file) => {
+          // file.getMetadata((metadata) => {
+          //   if (metadata.size <= 26214400) {
+          this.uploadFile(uri, identifier, params).then(uploadedURL => {
+            let url = uploadedURL;
+            resolve(url);
+          }).catch(error => {
+            this.events.publish('toast:error', error);
+            reject(error);
+          });
         });
       }).catch(error => {
         this.events.publish('toast:error', error);

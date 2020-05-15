@@ -5,7 +5,6 @@ import * as _ from 'underscore';
 import { ConnectionProvider } from '../../../providers/connection/connection';
 import { OfflineStorageProvider } from '../../../providers/offline-storage/offline-storage';
 
-
 @IonicPage()
 @Component({
   selector: 'page-due-topics',
@@ -26,15 +25,15 @@ export class DueTopicsPage {
     public _offlineStorage: OfflineStorageProvider,
     public storage: Storage,
     public connection: ConnectionProvider) {
-    this.day = this.navParams.data.Day;
   }
 
 
   ionViewWillEnter() {
+    this.day = this.navParams.data.Day;
     this.topics = [];
     this.setTitle();
     this._offlineStorage.get('offline:due-topics', this.topics, this.day).then((data: any) => {
-      if (!data) {
+      if (_.isEmpty(data)) {
         this.topics = [];
       } else {
         this.page = 0;
@@ -42,8 +41,9 @@ export class DueTopicsPage {
           this.pushItem(group);
         });
       }
+    }).then(() => {
+      this.getData();
     });
-    this.getData();
 
   }
 
@@ -80,16 +80,21 @@ export class DueTopicsPage {
           PageNumber: this.page,
           Query: this.query
         }, false).then((response: any) => {
-          if (!_.isEmpty(response.TopicList)) {
-            response.TopicList.forEach(item => {
-              if (this.topics.indexOf(item.TopicID) === -1) {
-                this.pushItem(item);
-              }
-            });
-            this.page++;
+          if (response.TopicList.length > 0) {
+            if (this.page == 0) {
+              this.topics = response.TopicList;
+            } else {
+              response.TopicList.forEach(item => {
+                if (this.topics.indexOf(item.TopicID) === -1) {
+                  this.pushItem(item);
+                }
+              });
+              this.page++;
+            }
             this._offlineStorage.set('offline:due-topics', this.topics, this.day);
             resolve(true);
           } else {
+            this.topics = [];
             this._offlineStorage.set('offline:due-topics', [], this.day);
             this.page = -1;
             resolve(false);
@@ -104,6 +109,7 @@ export class DueTopicsPage {
   refresh(refresher) {
     this.topics = [];
     this.page = 0;
+    this.day = this.navParams.data.Day;
     this.getData().then(status => {
       this.query = null;
       refresher.complete();

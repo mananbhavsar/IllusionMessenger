@@ -43,8 +43,8 @@ page-chat {
         color: red;
     }
     .reply-to {
-        position: fixed;
-        bottom: 45px;
+        position: absolute;
+        bottom: calc(100% - 0px);
         color: #fff;
         background-color: #2f3c3b;
         width: 100%;

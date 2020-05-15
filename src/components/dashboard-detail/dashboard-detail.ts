@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Network} from '@ionic-native/network/ngx';
-import { Events, ModalController } from 'ionic-angular';
+import { Network } from '@ionic-native/network';
+import { Events, ModalController, NavController } from 'ionic-angular';
 
 @Component({
   selector: 'dashboard-detail',
@@ -41,17 +41,18 @@ export class DashboardDetailComponent {
     public modal: ModalController,
     public event: Events,
     public network: Network,
+    public navCntrl: NavController,
   ) {
 
   }
 
+  ionViewDidLeave(){
+    this.event.publish('dashboard:close');
+  }
+
   openTopics(event, day) {
     if (this.network.type !== 'none') {
-      let modal = this.modal.create('DueTopicsPage', { Day: this.days[day].value });
-      modal.onDidDismiss((data) => {
-        this.event.publish('dashboard:close');
-      });
-      modal.present();
+      this.navCntrl.push('DueTopicsPage', { Day: this.days[day].value });
     } else {
       this.event.publish('toast:create', 'You seems to be offline');
     }

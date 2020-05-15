@@ -1,38 +1,37 @@
 import { CUSTOM_ELEMENTS_SCHEMA, ErrorHandler, NgModule } from '@angular/core';
 import { HttpModule } from '@angular/http';
 import { BrowserModule } from '@angular/platform-browser';
-import { AndroidPermissions} from '@ionic-native/android-permissions/ngx';
-import { Badge} from '@ionic-native/badge/ngx';
-import { CallNumber} from '@ionic-native/call-number/ngx';
-import { Camera} from '@ionic-native/camera/ngx';
-import { Clipboard} from '@ionic-native/clipboard/ngx';
-import { Contacts } from '@ionic-native/contacts/ngx';
-import { Crop} from '@ionic-native/crop/ngx';
-import { Device} from '@ionic-native/device/ngx';
-import { Diagnostic} from '@ionic-native/diagnostic/ngx';
-import { File} from '@ionic-native/file/ngx';
-import { FileChooser} from '@ionic-native/file-chooser/ngx';
-import { FileOpener} from '@ionic-native/file-opener/ngx';
-import { FilePath} from '@ionic-native/file-path/ngx';
-import { FileTransfer} from '@ionic-native/file-transfer/ngx';
-import { Globalization} from '@ionic-native/globalization/ngx';
-import { InAppBrowser} from '@ionic-native/in-app-browser/ngx';
-import { Keyboard} from '@ionic-native/keyboard/ngx';
-import { Media} from '@ionic-native/media/ngx';
-import { MediaCapture} from '@ionic-native/media-capture/ngx';
-import { Network} from '@ionic-native/network/ngx';
-import { OneSignal} from '@ionic-native/onesignal/ngx';
-import { PhotoLibrary} from '@ionic-native/photo-library/ngx';
-import { PhotoViewer} from '@ionic-native/photo-viewer/ngx';
-import { SplashScreen} from '@ionic-native/splash-screen/ngx';
-import { SQLite} from '@ionic-native/sqlite/ngx';
-import { StatusBar} from '@ionic-native/status-bar/ngx';
-import { StreamingMedia} from '@ionic-native/streaming-media/ngx';
-import { UniqueDeviceID} from '@ionic-native/unique-device-id/ngx';
-import { Vibration} from '@ionic-native/vibration/ngx';
-import { VideoCapturePlus} from '@ionic-native/video-capture-plus/ngx';
-import { VideoEditor} from '@ionic-native/video-editor/ngx';
-import { VideoPlayer} from '@ionic-native/video-player/ngx';
+import { AndroidPermissions } from '@ionic-native/android-permissions';
+import { Badge } from '@ionic-native/badge';
+import { CallNumber } from '@ionic-native/call-number';
+import { Camera } from '@ionic-native/camera';
+import { Clipboard } from '@ionic-native/clipboard';
+import { Contacts } from '@ionic-native/contacts';
+import { Crop } from '@ionic-native/crop';
+import { Device } from '@ionic-native/device';
+import { File } from '@ionic-native/file';
+import { FileChooser } from '@ionic-native/file-chooser';
+import { FileOpener } from '@ionic-native/file-opener';
+import { FilePath } from '@ionic-native/file-path';
+import { FileTransfer } from '@ionic-native/file-transfer';
+import { Globalization } from '@ionic-native/globalization';
+import { InAppBrowser } from '@ionic-native/in-app-browser';
+import { Keyboard } from '@ionic-native/keyboard';
+import { Media } from '@ionic-native/media';
+import { MediaCapture } from '@ionic-native/media-capture';
+import { Network } from '@ionic-native/network';
+import { OneSignal } from '@ionic-native/onesignal';
+import { PhotoLibrary } from '@ionic-native/photo-library';
+import { PhotoViewer } from '@ionic-native/photo-viewer';
+import { SplashScreen } from '@ionic-native/splash-screen';
+import { SQLite } from '@ionic-native/sqlite';
+import { StatusBar } from '@ionic-native/status-bar';
+import { StreamingMedia } from '@ionic-native/streaming-media';
+import { UniqueDeviceID } from '@ionic-native/unique-device-id';
+import { Vibration } from '@ionic-native/vibration';
+import { VideoCapturePlus } from '@ionic-native/video-capture-plus';
+import { VideoEditor } from '@ionic-native/video-editor';
+import { VideoPlayer } from '@ionic-native/video-player';
 import { IonicStorageModule } from '@ionic/storage';
 import { MomentModule } from 'angular2-moment';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
@@ -124,7 +123,7 @@ import { MyApp } from './app.component';
                     scrollAssist: false,
                     autoFocusAssist: false,
                     scrollPadding: false,
-                }
+                },
             }
         }),
         HttpModule,
@@ -203,7 +202,6 @@ import { MyApp } from './app.component';
         Network,
         Keyboard,
         SplashScreen,
-        Diagnostic,
         Crop,
         Clipboard,
         SQLite,

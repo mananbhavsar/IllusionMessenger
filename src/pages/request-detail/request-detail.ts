@@ -25,7 +25,7 @@ export class RequestDetailPage {
     this.page = this.navParams.data.page;
     this.requestDetail = this.navParams.data.detail;
   }
-
+  // on click of approve and reject
   takeActionOnRequest(requestType) {
     return new Promise((resolve, reject) => {
       if (requestType === 'Approve') {

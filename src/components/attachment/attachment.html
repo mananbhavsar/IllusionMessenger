@@ -37,18 +37,20 @@
 </div>
 <div class="attachment-container" *ngIf="attachments">
   <div class="attachment-thumb" *ngFor="let attachment of attachments;let i = index;">
+    <ion-row>
     <ion-icon name="ios-trash" (click)="removeAttachment(i)" color="danger" *ngIf="editable"></ion-icon>
-      <img *ngIf="attachment.FileExtension === 'pdf'" src="assets/img/pdf.png" (click)="openAttachment(attachment.VirtualPath)" width="90"
+      <img *ngIf="attachment.FileExtension === 'pdf'" src="assets/img/pdf.png" (click)="openAttachment(attachment)" width="90"
         height="90">
       <img *ngIf="attachment.FileExtension === 'png' || attachment.FileExtension === 'jpeg' || attachment.FileExtension === 'jpg'"
-        [src]="attachment.VirtualPath" width="90" height="90" (click)="openAttachment(attachment.VirtualPath)" />
-      <img *ngIf="attachment.FileExtension === 'doc' || attachment.FileExtension === 'docx'" src="assets/img/doc_icon.png" (click)="openAttachment(url.VirtualPath)"
+        [src]="attachment.VirtualPath" width="90" height="90" (click)="openAttachment(attachment)" />
+      <img *ngIf="attachment.FileExtension === 'doc' || attachment.FileExtension === 'docx'" src="assets/img/doc_icon.png" (click)="openAttachment(attachment)"
         width="90" height="90">
-      <img *ngIf="attachment.FileExtension === 'xls' || attachment.FileExtension === 'xlsx'" src="assets/img/xls.jpg" (click)="openAttachment(url.VirtualPath)"
+      <img *ngIf="attachment.FileExtension === 'xls' || attachment.FileExtension === 'xlsx'" src="assets/img/xls.jpg" (click)="openAttachment(attachment)"
         width="90" height="90">
-      <img *ngIf="attachment.FileExtension === 'ppt' || attachment.FileExtension === 'pptx'" src="assets/img/ppt.png" (click)="openAttachment(url.VirtualPath)"
+      <img *ngIf="attachment.FileExtension === 'ppt' || attachment.FileExtension === 'pptx'" src="assets/img/ppt.png" (click)="openAttachment(attachment)"
         width="90" height="90">
-      <img *ngIf="attachment.FileExtension === 'txt'" src="assets/img/txt.png" (click)="openImage(url.VirtualPath)" width="90"
+      <img *ngIf="attachment.FileExtension === 'txt'" src="assets/img/txt.png" (click)="openAttachment(url)" width="90"
         height="90">
+      </ion-row>
   </div>
 </div>

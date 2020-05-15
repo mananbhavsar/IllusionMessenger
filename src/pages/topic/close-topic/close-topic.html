@@ -12,38 +12,45 @@
 		</ion-buttons>
 	</ion-navbar>
 	<ion-toolbar ion-text color="primary" *ngIf="showSearch">
-		<ion-searchbar placeholder="Enter Name" (ionInput)="getItems($event)" (ionCancel)="onCancel($event)" (ionClear)="onClear($event)"></ion-searchbar>
+		<ion-searchbar placeholder="Enter Name" (ionInput)="getItems($event)" (ionCancel)="onCancel($event)"
+			(ionClear)="onClear($event)"></ion-searchbar>
 	</ion-toolbar>
 </ion-header>
 
 <ion-content padding [ngClass]="{extraTop: showSearch}">
 	<ion-refresher (ionRefresh)="refresh($event)" *ngIf="showSearch === false">
 		<ion-refresher-content pullingIcon="arrow-round-down" pullingText="Pull to refresh" refreshingSpinner="crescent"
-		 refreshingText="Refreshing...">
+			refreshingText="Refreshing...">
 		</ion-refresher-content>
 	</ion-refresher>
 	<center-spinner *ngIf="!topics; else empty_template"></center-spinner>
 	<ng-template #empty_template>
 		<empty *ngIf="topics.length === 0;else data_template"></empty>
 		<ng-template #data_template>
+
 			<ion-grid *ngIf="topics" no-padding>
-				<ion-item-divider no-lines>
-					Closed Topics
-					<ion-icon item-end name="ios-options" color="light-gray" (click)="openSortOptions()"></ion-icon>
-				</ion-item-divider>
-				<ion-row>
-					<ion-col box-shadow>
-						<ion-item *ngFor="let topic of topics trackBy:identify; let i = index;" (click)="openTopic(topic, i)">
+				<ion-row padding-bottom>
+					<ion-col>
+						<!-- <ion-icon name="ios-folder-open"></ion-icon> -->
+						Closed Topics
+						<ion-icon float-right name="ios-options" color="light-gray" (click)="openSortOptions()">
+						</ion-icon>
+					</ion-col>
+				</ion-row>
+				<ion-row  padding-bottom *ngFor="let topic of topics;trackBy:identify;let i = index;">
+					<ion-col *ngIf="topic" box-shadow>
+						<ion-item no-lines (click)="openTopic(topic, i)">
 							<h5>
 								<span class="topic-name">{{topic.Topic}}</span>
 								<span float-right>
-									<ion-icon name="ios-star" color="responsible" *ngIf="topic.IsResponsible"></ion-icon>
+									<ion-icon name="ios-star" color="responsible" *ngIf="topic && topic.IsResponsible">
+									</ion-icon>
 									<ng-container *ngIf="getBadge(topic.TopicCode) && _network.type !== 'none'">
 										<ion-badge>{{getBadge(topic.TopicCode)}}</ion-badge>
-									  </ng-container>
-									  <ng-container *ngIf="topic.Count && _network.type === 'none'">
+									</ng-container>
+									<ng-container *ngIf="topic.Count && _network.type === 'none'">
 										<ion-badge>{{topic.Count}}</ion-badge>
-									  </ng-container>
+									</ng-container>
 								</span>
 							</h5>
 							<p>
@@ -53,7 +60,8 @@
 									</ion-col>
 								</ion-row>
 								<ion-row>
-									<ion-col no-padding text-left [ngClass]="isExpired(topic.DueDate_UTC) ? 'danger' : 'secondary'">
+									<ion-col no-padding text-left
+										[ngClass]="isExpired(topic.DueDate_UTC) ? 'danger' : 'secondary'">
 										Closed: {{topic.CloseDatime_UTC | time }}
 									</ion-col>
 								</ion-row>

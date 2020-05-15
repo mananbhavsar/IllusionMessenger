@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Network} from '@ionic-native/network/ngx';
+import { Network } from '@ionic-native/network';
 import { Events, IonicPage, ModalController, NavController, NavParams, ViewController } from 'ionic-angular';
 import * as _ from 'underscore';
 import { OfflineStorageProvider } from '../../../providers/offline-storage/offline-storage';

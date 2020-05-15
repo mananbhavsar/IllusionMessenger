@@ -1,15 +1,16 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { Http } from '@angular/http';
-import { CameraOptions, Camera} from '@ionic-native/camera/ngx';
-import { Clipboard} from '@ionic-native/clipboard/ngx';
-import { Contacts } from '@ionic-native/contacts/ngx';
-import { Crop} from '@ionic-native/crop/ngx';
-import { FileTransferObject, FileTransfer, FileUploadOptions } from '@ionic-native/file-transfer/ngx';
-import { Keyboard} from '@ionic-native/keyboard/ngx';
-import { MediaObject, Media} from '@ionic-native/media/ngx';
-import { Network} from '@ionic-native/network/ngx';
-import { Vibration} from '@ionic-native/vibration/ngx';
-import { MediaFile, VideoCapturePlusOptions, VideoCapturePlus} from '@ionic-native/video-capture-plus/ngx';
+import { Camera, CameraOptions } from '@ionic-native/camera';
+import { Clipboard } from '@ionic-native/clipboard';
+import { Contacts } from '@ionic-native/contacts';
+import { Crop } from '@ionic-native/crop';
+import { File } from '@ionic-native/file';
+import { FileTransfer, FileTransferObject, FileUploadOptions } from '@ionic-native/file-transfer';
+import { Keyboard } from '@ionic-native/keyboard';
+import { Media, MediaObject } from '@ionic-native/media';
+import { Network } from '@ionic-native/network';
+import { Vibration } from '@ionic-native/vibration';
+import { MediaFile, VideoCapturePlus, VideoCapturePlusOptions } from '@ionic-native/video-capture-plus';
 import { Storage } from '@ionic/storage';
 import * as firebase from 'firebase';
 import { ActionSheetController, Content, Events, IonicPage, ModalController, NavController, NavParams, normalizeURL, Platform, ToastController } from 'ionic-angular';
@@ -31,7 +32,6 @@ import { DateProvider } from './../../providers/date/date';
 import { ChatOptionsPage } from "./chat-options/chat-options";
 import { SavedMediaPage } from "./chat-options/saved-media/saved-media";
 import { PreviewPage } from './preview/preview';
-import { File} from '@ionic-native/file/ngx';
 
 @IonicPage()
 @Component({
@@ -255,9 +255,6 @@ export class ChatPage {
 
 
   setFirebaseRef() {
-
-
-
     //actual chat ref
     this.messagesRef = firebase.database().ref(this.basePath + 'Chat');
 
@@ -268,7 +265,7 @@ export class ChatPage {
     this.chattingRef = firebase.database().ref(this.basePath + 'Chatting');
 
     //keyboard disable
-    this.keyboard.disableScroll(true);
+    // this.keyboard.disableScroll(true);
 
     //listening to Close Topic
     firebase.database().ref(this.topicClosePath).on('value', snapshot => {
@@ -605,7 +602,8 @@ export class ChatPage {
 
   }
 
-  ionViewDidLoad() {
+  ionViewDidEnter() {
+    this.keyboard.hideKeyboardAccessoryBar(true);
     this._fileOps.getDataDirectory().then(path => {
       this.dataDirectory = path;
     }).catch(error => {
@@ -625,7 +623,7 @@ export class ChatPage {
     } else {
       this.events.subscribe('user:ready', User => {
         if (!_.isEmpty(User)) {
-          this.ionViewDidLoad();
+          this.ionViewDidEnter();
         } else {
           this.events.publish('toast:create', 'Kindly login to access Query');
           this.navCtrl.setRoot(LogoutPage);
@@ -649,6 +647,7 @@ export class ChatPage {
   }
 
   ionViewWillLeave() {
+    this.keyboard.hideKeyboardAccessoryBar(true);
     this.doLeaving(true);
     this.clearTypingStringInterval();
   }
@@ -845,8 +844,8 @@ export class ChatPage {
       let fileSize: number = input.files[0].size;
       let fileName = this._fileOps.getFileNameWithoutExtension(input.files[0].name);
       let fileExtension = this._fileOps.getFileExtension(input.files[0].name);
-      if (fileSize >= 3000000) {
-        this.events.publish('alert:basic', 'File upload error', 'File size should not exceed more than 3MB');
+      if (fileSize >= 10000000) {
+        this.events.publish('alert:basic', 'File upload error', 'File size should not exceed more than 10MB');
       } else {
         let reader = new FileReader();
         let context = this;
@@ -904,7 +903,7 @@ export class ChatPage {
     if (this.keyboardOpen) {
       this.keyboardOpen = false;
       this.sendClickKeepKeyboardOpened = false;
-      this.keyboard.hide();
+      this.keyboard.close();
     }
     const actionSheet = this.actionSheetCtrl.create({
       title: null,
@@ -958,7 +957,7 @@ export class ChatPage {
 
     actionSheet.present();
   }
-
+  // send contact in chat
   attachContact() {
     this.contactsList.pickContact().then((data: any) => {
       this.sendToFirebase('', 'Contact', null, this.topicID, this.topicCode, null, null, data._objectInstance);
@@ -1103,7 +1102,7 @@ export class ChatPage {
       }
     });
   }
-
+  // on blur focus on keyboard
   onBlur(event) {
     if (this.platform.is('core')) {
 
@@ -1111,14 +1110,14 @@ export class ChatPage {
       event.target.focus();
     }
   }
-
+  // get message key of selected message
   getElementMessageKey(element) {
     if (this.common.hasClass(element, 'message-wrapper')) {
       return element.id.replace('message-', '');
     }
     return this.getElementMessageKey(element.parentElement);
   }
-
+  // get type of selected messege
   getChildElement(element, className) {
     let selectedmessage: any;
     switch (className) {
@@ -1138,7 +1137,7 @@ export class ChatPage {
     return selectedmessage;
   }
 
-
+  // get options for selected message like copy, forward, reply
   getOptions(element, message) {
     if (!this.hasInternet) {
       return;
@@ -1164,12 +1163,14 @@ export class ChatPage {
                 if (this.getChildElement(element, '.audio')) {
                   this.selectedMessageElement = this.getChildElement(element, '.audio');
                 }
+          // for display message is selected
           if (!this.selectedMessageElement) {
             selectedElement.classList.remove("selected");
             this.messageKey = null;
           }
+
           this.headerButtons = [];
-          if (this.common.hasClass(this.selectedMessageElement, 'text')) {
+          if (this.common.hasClass(this.selectedMessageElement, 'text')) { // if text add all options
             this.headerButtons.push(
               {
                 icon: 'ios-undo',
@@ -1197,7 +1198,7 @@ export class ChatPage {
           } else
             if (this.common.hasClass(this.selectedMessageElement, 'video') ||
               this.common.hasClass(this.selectedMessageElement, 'audio') ||
-              this.common.hasClass(this.selectedMessageElement, 'picture')) {
+              this.common.hasClass(this.selectedMessageElement, 'picture')) { // fi video,audio, image then add forward, info and more buttons
               this.headerButtons.push(
                 // {
                 //   icon: 'ios-undo',
@@ -1218,12 +1219,14 @@ export class ChatPage {
                   name: 'more-option'
                 });
             } else {
+              // default option
               this.headerButtons.push(
                 {
                   icon: 'ios-more',
                   name: 'more-option'
                 });
             }
+          // no option for contact
           if (this.common.hasClass(this.selectedMessageElement, 'contact')) {
             return false;
           }
@@ -1231,7 +1234,7 @@ export class ChatPage {
       }
     }
   }
-
+  // to cancel selected message
   deselectOptions(event) {
     event.preventDefault();
     if (this.messageKey) {
@@ -1243,8 +1246,9 @@ export class ChatPage {
     this.hideWhenReply = false;
     this.removeHeaderButtons();
   }
+  // check message type
   checkMessageType(type) {
-    
+
     //identify message type
     switch (type) {
       case 'text':
@@ -1255,7 +1259,7 @@ export class ChatPage {
         return this.selectedMessageElement.getAttribute('data-url');
     }
   }
-
+  // forward message 
   forwardMessage() {
     if (this.selectedMessageElement) {
       let message = '';
@@ -1299,7 +1303,7 @@ export class ChatPage {
       modal.present();
     }
   }
-
+  // remove options manually
   removeHeaderButtons() {
     if (this.headerButtons.length === 3) {
       this.headerButtons.splice(0, 2);
@@ -1308,7 +1312,7 @@ export class ChatPage {
       this.headerButtons.splice(0, 4);
     }
   }
-
+  /// get selected element as reply 
   getElementToReply(element) {
     if (element) {
       this.removeHeaderButtons();
@@ -1334,7 +1338,7 @@ export class ChatPage {
       this.hideWhenReply = true;
     }
   }
-
+  // if want ot cancel reply on message
   closeReply(event) {
     let selectedElement = document.getElementById('message-' + this.messageKey);
     selectedElement.classList.remove("selected");
@@ -1343,6 +1347,7 @@ export class ChatPage {
     this.messageKey = null;
   }
 
+  // copy selected message
   copyText(element) {
     if (element) {
       let selectedElement = document.getElementById('message-' + this.messageKey);
@@ -1358,7 +1363,7 @@ export class ChatPage {
       }
     }
   }
-
+  // on click copy, copy that message to clipboard
   copyToClipboard(element) {
     let input = document.createElement('input');
     document.body.appendChild(input);
@@ -1368,7 +1373,7 @@ export class ChatPage {
     document.execCommand('copy', false);
     input.remove();
   }
-
+  // on key up press
   keyup(event) {
     //on browser if entered pressed, send text message
     if (this.isBrowser) {
@@ -1379,16 +1384,20 @@ export class ChatPage {
           return;
       }
     }
+    // get list of users present in chat after user enter @
     if (this.message.trim().length > 0) {
       if (this.message[this.message.length - 1]) {
         this.showUsers = true;
+        // show all users
         if (this.message && this.message.lastIndexOf('@') > -1 && this.message.charAt(this.message.lastIndexOf('@')) === '@') {
           this.userList = this.users;
+          // show specific user
           if (this.message.charAt(this.message.lastIndexOf('@') + 1) !== ' ' && this.message.lastIndexOf('@') + 1 !== this.message.lastIndexOf('')) {
             this.userList = this.users.filter((item) => {
               if (this.message[this.message.length - 1] === ' ') {
                 return false;
               }
+              // only matching character user
               return (item.User.toLowerCase().includes(this.message.substring(this.message.lastIndexOf('@') + 1).toLowerCase()));
             })
           }
@@ -1405,28 +1414,29 @@ export class ChatPage {
     // set typing for all
     this.setTyping(true);
   }
-
+  // selected user
   selectedUser(user) {
     this.message = this.message.substring(0, this.message.lastIndexOf('@') + 1) + user.User;
     this.showUsers = false;
 
   }
 
+   // set user is typing
   keyboardKey(event) {
     this.setTyping(true);
   }
 
-
+  // on keyboard click
   onFocus(event) {
     this.keyboardOpen = true;
     this.setTyping(true);
   }
-
+// close keyboard after message sent
   closeKeyboard(event) {
     if (this.keyboardOpen) {
       this.keyboardOpen = false;
       this.setTyping(false);
-      this.keyboard.hide();
+      this.keyboard.close();
     }
   }
 
@@ -1517,42 +1527,57 @@ export class ChatPage {
     if (this.keyboardOpen) {
       this.keyboardOpen = false;
       this.sendClickKeepKeyboardOpened = false;
-      this.keyboard.hide();
+      this.keyboard.close();
     }
     let options = this.cameraOptions;
     if (type === 'gallery') {
       options = this.galleryOptions;
     }
     this.camera.getPicture(options).then((url: string) => {
-      let mimeType = mime.lookup(url);
-      let imageURL: string = url;
-      if (url.indexOf('?') > -1) {
-        mimeType = mime.lookup(url.substring(0, url.lastIndexOf('?')));
-      } else {
-        mimeType = mime.lookup(url);
+      let fileURL: string = url;
+      if (this.platform.is('android') && !url.includes('file://')) {
+        fileURL = 'file://' + url;
       }
-      // if (type === 'gallery' && mimeType.indexOf('image') > -1 && this.platform.is('android')) {
-      //   imageURL = 'file://' + url;
-      // } else {
-      //   imageURL = url;
-      // }
-      //checking if video of image
-      if (mimeType.indexOf('image') > -1) {
-        let SelectedFile = { 'url': normalizeURL(imageURL), 'FileType': 'Image', 'MimeType': mimeType };
-        this.uploadFile(SelectedFile).then((data: any) => {
-          if (data.file.indexOf('https') !== -1) {
-            //sending to Firebase
-            this.sendToFirebase(data.text, 'Image', data.file);
+      this.file.resolveLocalFilesystemUrl(fileURL).then((file) => {
+        file.getMetadata((metadata) => {
+          if (metadata.size <= 26214400) {
+            let mimeType = mime.lookup(url);
+            let imageURL: string = url;
+            if (url.indexOf('?') > -1) {
+              mimeType = mime.lookup(url.substring(0, url.lastIndexOf('?')));
+            } else {
+              mimeType = mime.lookup(url);
+            }
+            // if (type === 'gallery' && mimeType.indexOf('image') > -1 && this.platform.is('android')) {
+            //   imageURL = 'file://' + url;
+            // } else {
+            //   imageURL = url;
+            // }
+            //checking if video of image
+            if (mimeType.indexOf('image') > -1) {
+              let SelectedFile = { 'url': normalizeURL(imageURL), 'FileType': 'Image', 'MimeType': mimeType };
+              this.uploadFile(SelectedFile).then((data: any) => {
+                if (data.file.indexOf('https') !== -1) {
+                  //sending to Firebase
+                  this.sendToFirebase(data.text, 'Image', data.file);
+                }
+              }).catch(error => {
+                this.events.publish('toast:error', error);
+              });
+            }
+            else if (mimeType.indexOf('video') > -1) {
+              this.uploadVideo(imageURL);
+            } else {
+              this.events.publish('toast:error', 'Kindly select valid file');
+            }
+          } else {
+            this.events.publish('toast:error', 'File size should not exceed more than 25MB');
           }
-        }).catch(error => {
-          this.events.publish('toast:error', error);
         });
-      }
-      else if (mimeType.indexOf('video') > -1) {
-        this.uploadVideo(imageURL);
-      } else {
-        this.events.publish('toast:error', 'Kindly select valid file');
-      }
+      }).catch((error) => {
+
+      });
+
     }).catch(error => {
       this.events.publish('toast:error', error);
     });
@@ -1608,6 +1633,12 @@ export class ChatPage {
     //process
     let file = (this.dataDirectory + this.recordFileName);
     this.file.checkFile(this.dataDirectory, this.recordFileName).then(status => {
+      this.file.resolveLocalFilesystemUrl(file).then((url) => {
+        url.getMetadata((metadata) => {
+          if (metadata.size <= 26214400) {
+          }
+        });
+      });
       if (status) {
         let mimeType = mime.lookup(file);
         let SelectedFile = { 'url': file, 'FileType': 'Audio', 'MimeType': mimeType };
@@ -1644,7 +1675,6 @@ export class ChatPage {
       highquality: false,
       duration: duration
     }
-
     this.videoCapturePlus.captureVideo(options).then((mediafile: MediaFile[]) => {
       if (mediafile.length > 0) {
         let url = mediafile[0].fullPath;
@@ -1654,6 +1684,7 @@ export class ChatPage {
       this.events.publish('toast:error', error.message);
     }).catch(error => {
     });
+
   }
 
   uploadVideo(url) {
@@ -1672,6 +1703,7 @@ export class ChatPage {
 
   uploadFile(file) {
     return new Promise((resolve, reject) => {
+      // before file uplaoding show preview to user
       if (file) {
         let modal = this.modal.create(PreviewPage, {
           nativeURL: file.url,
@@ -1680,10 +1712,11 @@ export class ChatPage {
         });
         if (this.keyboardOpen) {
           this.sendClickKeepKeyboardOpened = false;
-          this.keyboard.hide();
+          this.keyboard.close();
         }
         modal.present();
         modal.onDidDismiss((selectedFile: any) => {
+        // on button upload 
           if (!_.isEmpty(selectedFile)) {
             this.progressPercent = 0;
             const fileTransfer: FileTransferObject = this.transfer.create();
@@ -1881,7 +1914,7 @@ export class ChatPage {
     }
 
     this.events.unsubscribe('user:ready');
-    this.keyboard.disableScroll(false);
+    // this.keyboard.disableScroll(false);
   }
 
   getLiveChatUsers(userChattingNow, nowTime) {
@@ -2180,7 +2213,7 @@ export class ChatPage {
         break;
     }
   }
-
+// on click reply throw to that specific message
   goToElement(id) {
     return new Promise((resolve, reject) => {
       setTimeout(() => {

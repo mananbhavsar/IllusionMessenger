@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { CallNumber} from '@ionic-native/call-number/ngx';
+import { CallNumber } from '@ionic-native/call-number';
 import { Events, ModalController, NavController, ViewController } from 'ionic-angular';
 import { Global } from '../../app/global';
 import { ContactUsPage } from '../../pages/contact-us/contact-us';

@@ -1,8 +1,8 @@
 import { Component, ElementRef } from '@angular/core';
-import { File} from '@ionic-native/file/ngx';
-import { PhotoLibrary} from '@ionic-native/photo-library/ngx';
-import { StreamingMedia} from '@ionic-native/streaming-media/ngx';
-import { VideoEditor} from '@ionic-native/video-editor/ngx';
+import { File } from '@ionic-native/file';
+import { PhotoLibrary } from '@ionic-native/photo-library';
+import { StreamingMedia } from '@ionic-native/streaming-media';
+import { VideoEditor } from '@ionic-native/video-editor';
 import { UUID } from 'angular2-uuid';
 import { ActionSheetController, Events, IonicPage, NavController, NavParams, normalizeURL, ViewController } from 'ionic-angular';
 import { ImageViewerController } from 'ionic-img-viewer';

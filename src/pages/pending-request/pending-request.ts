@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Network} from '@ionic-native/network/ngx';
+import { Network } from '@ionic-native/network';
 import { Storage } from '@ionic/storage';
 import { IonicPage, ModalController, NavController, NavParams } from 'ionic-angular';
 import * as _ from 'underscore';
@@ -40,7 +40,7 @@ export class PendingRequestPage {
     });
     this.getData();
   }
-
+  // get all pending request of user which is sent
   getData() {
     return new Promise((resolve, reject) => {
       if (this.page === -1) {
@@ -179,7 +179,7 @@ export class PendingRequestPage {
       paginator.enable(false);
     });
   }
-
+  // open details of single request
   ViewDetail(data) {
     let modal = this.modalCtrl.create(RequestDetailPage, { detail: data, page: 'pendingRequest' });
     modal.present();

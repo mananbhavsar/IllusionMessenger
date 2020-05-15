@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Contact, ContactField, ContactName, Contacts } from '@ionic-native/contacts/ngx';
+import { Contact, ContactField, ContactName, Contacts } from '@ionic-native/contacts';
 import { Events, IonicPage, NavController, NavParams, Platform, ViewController } from 'ionic-angular';
 
 @IonicPage()
@@ -26,7 +26,7 @@ export class ContactDetailPage {
   ionViewWillEnter() {
 
   }
-
+  // save contact in mobile
   saveContact() {
     //create instance
     let contact: Contact = this.contacts.create();

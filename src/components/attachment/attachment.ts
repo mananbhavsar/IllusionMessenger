@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { UUID } from 'angular2-uuid';
 import { Events, Platform } from 'ionic-angular';
+import * as _ from 'underscore';
 import { ConnectionProvider } from '../../providers/connection/connection';
 import { FileOpsProvider } from '../../providers/file-ops/file-ops';
 
@@ -140,16 +141,19 @@ export class AttachmentComponent {
   }
 
   openAttachment(file) {
-    if (this.platform.is('core')) {
-      window.open(file, '_blank');
-    } else {
-      this._fileOps.getDataDirectory().then(path => {
-        let identifier = UUID.UUID();
-        let flashPath = path + 'Flash' + '/';
-        this._fileOps.openRemoteFile(file, flashPath, identifier, false).then(status => {
-        }).catch(error => {
+    if (!_.isEmpty(file)) {
+      if (this.platform.is('core')) {
+        window.open(file.VirtualPath, '_blank');
+      } else {
+        this._fileOps.getDataDirectory().then(path => {
+          let identifier = UUID.UUID();
+          let flashPath = path + 'Flash' + '/';
+          this._fileOps.openRemoteFile(file.VirtualPath, flashPath, identifier, false).then(status => {
+          }).catch(error => {
+            this.events.publish('toast:error', error);
+          });
         });
-      });
+      }
     }
   }
 }

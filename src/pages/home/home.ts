@@ -1,8 +1,6 @@
 import { Component } from '@angular/core';
 import { Network } from '@ionic-native/network';
 import { OneSignal } from '@ionic-native/onesignal';
-import { Network} from '@ionic-native/network/ngx';
-import { OneSignal} from '@ionic-native/onesignal/ngx';
 import { Storage } from '@ionic/storage';
 import * as firebase from 'firebase';
 import { ActionSheetController, Events, IonicPage, ModalController, NavController, Platform, reorderArray } from 'ionic-angular';
@@ -119,13 +117,13 @@ export class HomePage {
         this.events.subscribe('platform:onResumed', () => {
             this.getData(false).catch(error => { });
         });
-
+        // check message status
         this.events.subscribe('read:message', (response: any) => {
             if (response) {
                 this.getData(false);
             }
         });
-
+        // check priority for topic
         this.events.subscribe('priority:set', (data) => {
             this.getData(true).catch(error => { });
         });
@@ -136,9 +134,9 @@ export class HomePage {
 
         //online offline
         if (this.platform.is('cordova')) {
-            this._network.onChange().subscribe(() => {
+            this._network.onchange().subscribe(() => {
                 if (!_.isEmpty(this.connection.user)) {
-                this.registerDevice(false);
+                    this.registerDevice(false);
                 }
             });
         }
@@ -224,6 +222,7 @@ export class HomePage {
                         this.buttons = [];
                         this.data = response;
                         this.dataFetched = true;
+                        // set button for flash conditionally
                         this.buttons.push({ icon: 'flash', name: 'flash' }, { icon: 'ios-options', name: 'sort' }, { icon: 'search', name: 'search' });
                         if (!_.isEmpty(this.data)) {
                             //flash
@@ -385,6 +384,7 @@ export class HomePage {
         }
     }
 
+    // for read all functionally 
     checkedTopic(event) {
         if (event.checked) {
             if (this.selectedTopic.indexOf(event.TopicCode) === -1) {
@@ -400,7 +400,7 @@ export class HomePage {
             this.readAllSelected = true;
         }
     }
-
+    // check topic is selected for read message
     readSelected() {
         this.read.read(this.selectedGroup, this.selectedTopic).then((response) => {
             if (response) {
@@ -412,7 +412,7 @@ export class HomePage {
         });
     }
 
-
+    // read all messages functionality
     readAll() {
         this.read.read(null, null, true).then((response: any) => {
             this.selectedTopic = [];
@@ -423,7 +423,7 @@ export class HomePage {
         }).catch((error) => {
         });
     }
-
+    // read single message
     readMessage(ev, group) {
         group.IsRead = ev.checked;
         if (ev.checked) {
@@ -645,7 +645,7 @@ export class HomePage {
         return false;
 
     }
-
+    // get count for each tab badge selection
     getTabBadgeCount(key) {
         let selectedBadgeCount: any = 0;
         let field = key + '_Count';
@@ -660,7 +660,7 @@ export class HomePage {
         }
         return selectedBadgeCount;
     }
-
+    // get count for each row
     getSelectedTabRowsCount() {
         let selectedRowsCount: any = 'NA';
 
@@ -681,7 +681,7 @@ export class HomePage {
         }
         return selectedRowsCount;
     }
-
+    // reordering groups
     reorderItems(indexes) {
         this.data.Groups_Wise = reorderArray(this.data.Groups_Wise, indexes);
         let group_reorder = [];
@@ -718,7 +718,7 @@ export class HomePage {
             }
         }
     }
-
+   // sorting data
     openSortOptions() {
         if (this._network.type === 'none') {
             this.events.publish('toast:create', 'You seems to be offline');

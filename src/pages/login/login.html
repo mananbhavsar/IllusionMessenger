@@ -3,14 +3,14 @@
         <logo></logo>
         <ion-row>
             <div id="login-box">
-                <form [formGroup]="loginForm">
+                <form [keyboardAttach]="content" [formGroup]="loginForm">
                     <ion-row class="name">
                         <ion-col no-padding col-2>
                             <ion-icon name="person"></ion-icon>
                         </ion-col>
                         <ion-col no-padding col-10>
-                            <ion-input formControlName="login_name"  required type="text" [placeholder]="'LoginPage._login_name_' | translate"
-                                name="login_name"></ion-input>
+                            <ion-input formControlName="login_name" required type="text"
+                                [placeholder]="'LoginPage._login_name_' | translate" name="login_name"></ion-input>
                         </ion-col>
                     </ion-row>
                     <ion-row class="password">
@@ -18,8 +18,8 @@
                             <ion-icon name="lock"></ion-icon>
                         </ion-col>
                         <ion-col no-padding col-8>
-                            <ion-input required formControlName="password" [type]="passwordtType" [placeholder]="'LoginPage._password_' | translate"
-                                name="password"></ion-input>
+                            <ion-input clearOnEdit="false" required formControlName="password" [type]="passwordtType"
+                                [placeholder]="'LoginPage._password_' | translate" name="password"></ion-input>
                         </ion-col>
                         <ion-col text-right no-padding col-2>
                             <button no-padding color="gray" ion-button clear ion-only (click)="togglePassword($event)">
@@ -27,7 +27,8 @@
                             </button>
                         </ion-col>
                     </ion-row>
-                    <button border-radius (click)="doLogin()" margin-top ion-button block type="submit" [disabled]="!loginForm.valid">
+                    <button border-radius (click)="doLogin()" margin-top ion-button block type="submit"
+                        [disabled]="!loginForm.valid">
                         {{'LoginPage._log_in' | translate}}
                     </button>
                 </form>

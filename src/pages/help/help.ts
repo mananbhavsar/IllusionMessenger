@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { Network} from '@ionic-native/network/ngx';
-import { StreamingMedia, StreamingVideoOptions } from '@ionic-native/streaming-media/ngx';
-import { VideoPlayer} from '@ionic-native/video-player/ngx';
+import { Network } from '@ionic-native/network';
+import { StreamingMedia, StreamingVideoOptions } from '@ionic-native/streaming-media';
+import { VideoPlayer } from '@ionic-native/video-player';
 import { Events, IonicPage, NavController, NavParams, Platform } from 'ionic-angular';
 import { Global } from '../../app/global';
 import { FileOpsProvider } from '../../providers/file-ops/file-ops';

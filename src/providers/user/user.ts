@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Badge} from '@ionic-native/badge/ngx';
+import { Badge } from '@ionic-native/badge';
+import { OneSignal } from '@ionic-native/onesignal';
 import { Storage } from '@ionic/storage';
 import * as firebase from 'firebase';
 import { AlertController, Events, Platform } from 'ionic-angular';
@@ -37,6 +38,7 @@ export class UserProvider {
         public platform: Platform,
         public alertCtrl: AlertController,
         private badge: Badge,
+        public onesingal : OneSignal,
         private translate: TranslateServiceProvider,
     ) {
         this.global = Global;
@@ -100,6 +102,7 @@ export class UserProvider {
 
                     //clear badge
                     this.badge.clear();
+                    this.onesingal.clearOneSignalNotifications();
 
                     this.removeOfflineData();
 

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { Network} from '@ionic-native/network/ngx';
-import { OneSignal} from '@ionic-native/onesignal/ngx';
+import { Network } from '@ionic-native/network';
+import { OneSignal } from '@ionic-native/onesignal';
 import { Events, Platform } from 'ionic-angular';
 import { ConnectionProvider } from '../../providers/connection/connection';
 import { UserProvider } from '../../providers/user/user';

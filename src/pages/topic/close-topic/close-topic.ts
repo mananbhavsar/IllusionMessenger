@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Network} from '@ionic-native/network/ngx';
+import { Network } from '@ionic-native/network';
 import { Storage } from '@ionic/storage';
 import * as firebase from 'firebase';
 import { ActionSheetController, IonicPage, ModalController, NavController, NavParams, ViewController } from 'ionic-angular';
@@ -51,7 +51,7 @@ export class CloseTopicPage {
 
   }
 
-  ionViewWillEnter() {
+  ionViewDidEnter() {
     this.topics = [];
     this._offlineStorage.get('offline:Groups-Wise', this.topics, this.group_id, this.group_id).then((data: any) => {
       if (_.isEmpty(data)) {
@@ -99,16 +99,22 @@ export class CloseTopicPage {
             Order: this.sort_order,
             Query: this.query
           }, false).then((response: any) => {
-            let data = response.ClosedTopicList;
-            if (data.length > 0) {
-              this._offlineStorage.set('offline:Groups-Wise', response.ClosedTopicList, this.group_id, this.group_id).then((data) => {
-              });
-              data.forEach(list => {
-                this.pushItem(list);
-              });
+
+            if (response.ClosedTopicList.length > 0) {
+              if (this.page == 0) {
+                this.topics = response.ClosedTopicList;
+              } else {
+                response.ClosedTopicList.forEach(list => {
+                  this.pushItem(list);
+                });
+              }
               this.page++;
               resolve(status);
+              this._offlineStorage.set('offline:Groups-Wise', response.ClosedTopicList, this.group_id, this.group_id).then((data) => {
+              });
             } else {
+              this._offlineStorage.set('offline:Groups-Wise', [], this.group_id, this.group_id).then((data) => {
+              });
               this.page = -1;
               resolve(false);
             }

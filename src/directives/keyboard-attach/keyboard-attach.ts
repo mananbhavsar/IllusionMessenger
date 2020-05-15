@@ -1,5 +1,5 @@
 import { Directive, ElementRef, Input, OnDestroy, OnInit } from '@angular/core';
-import { Keyboard} from '@ionic-native/keyboard/ngx';
+import { Keyboard } from '@ionic-native/keyboard';
 import { Content, Platform } from 'ionic-angular';
 import { timer } from 'rxjs/observable/timer';
 

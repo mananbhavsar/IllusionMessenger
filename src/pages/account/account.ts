@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Network} from '@ionic-native/network/ngx';
+import { Network } from '@ionic-native/network';
 import { Events, IonicPage, ModalController, NavController, ViewController } from 'ionic-angular';
 import { Global } from '../../app/global';
 import { ConnectionProvider } from '../../providers/connection/connection';

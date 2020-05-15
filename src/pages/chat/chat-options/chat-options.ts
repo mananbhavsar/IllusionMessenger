@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
-import { CallNumber} from '@ionic-native/call-number/ngx';
-import { Network} from '@ionic-native/network/ngx';
+import { CallNumber } from '@ionic-native/call-number';
+import { Network } from '@ionic-native/network';
 import { Storage } from '@ionic/storage';
 import { ActionSheetController, DateTime, Events, IonicPage, ModalController, NavController, NavParams, Platform, ViewController } from 'ionic-angular';
 import * as moment from 'moment';

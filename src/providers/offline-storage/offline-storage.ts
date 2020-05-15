@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Network} from '@ionic-native/network/ngx';
+import { Network } from '@ionic-native/network';
 import { Storage } from '@ionic/storage';
 import { Events } from 'ionic-angular';
 import * as _ from 'underscore';
@@ -26,6 +26,7 @@ export class OfflineStorageProvider {
             child: {}
           };
         }
+        // for first key object
         if (id) {
           if (!(id in data.child[subKey].child[subSubKey].child)) {
 
@@ -36,6 +37,7 @@ export class OfflineStorageProvider {
           }
 
           data.child[subKey].child[subSubKey].child[id].data = value;
+          // for second key objet
         } else if (subSubKey) {
 
           if (!(subSubKey in data.child[subKey].child)) {
@@ -46,7 +48,7 @@ export class OfflineStorageProvider {
             };
           }
           data.child[subKey].child[subSubKey].data = value;
-
+   // for third key object
         } else if (subKey) {   //checking data to subkey
           if (!(subKey in data.child)) {
             data.child[subKey] = {
@@ -80,6 +82,7 @@ export class OfflineStorageProvider {
         } else {
           value = data.data;
         }
+        // get first data
         if (subData) {
           if (subData in data.child) {
             value = data.child[subData].data;
@@ -87,6 +90,7 @@ export class OfflineStorageProvider {
             value = null;
           }
         }
+        // get second object data
         if (subData && subSubData) {
           if (subData in data.child) {
             if (subSubData in data.child[subData].child) {
@@ -96,7 +100,7 @@ export class OfflineStorageProvider {
             }
           }
         }
-
+// get third object data
         if (subData && subSubData && id) {
           if (subData in data.child) {
             if (subSubData in data.child[subData].child) {

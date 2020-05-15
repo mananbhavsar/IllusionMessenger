@@ -4,10 +4,11 @@
 
 <ion-content padding>
   <ion-refresher (ionRefresh)="refresh($event)">
-    <ion-refresher-content pullingIcon="arrow-round-down" pullingText="Pull to refresh" refreshingSpinner="crescent" refreshingText="Refreshing...">
+    <ion-refresher-content pullingIcon="arrow-round-down" pullingText="Pull to refresh" refreshingSpinner="crescent"
+      refreshingText="Refreshing...">
     </ion-refresher-content>
   </ion-refresher>
-  <empty *ngIf="!topics"></empty>
+  <empty *ngIf="topics.length === 0"></empty>
   <ng-container *ngIf="topics">
     <topic [group_id]="topic.GroupID" type="ActiveTopicList" [topic]="topic" *ngFor="let topic of topics;"></topic>
   </ng-container>

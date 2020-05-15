@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Headers, Http, Response, URLSearchParams } from '@angular/http';
-import { Device} from '@ionic-native/device/ngx';
-import { Network} from '@ionic-native/network/ngx';
-import { UniqueDeviceID} from '@ionic-native/unique-device-id/ngx';
+import { Device } from '@ionic-native/device';
+import { Network } from '@ionic-native/network';
+import { UniqueDeviceID } from '@ionic-native/unique-device-id';
 import { Storage } from '@ionic/storage';
 import * as firebase from 'firebase';
 import { Events, Platform } from 'ionic-angular';

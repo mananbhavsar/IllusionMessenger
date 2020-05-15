@@ -1,6 +1,7 @@
 import { Component, ElementRef } from '@angular/core';
-import { Crop} from '@ionic-native/crop/ngx';
-import { StreamingMedia} from '@ionic-native/streaming-media/ngx';
+import { Crop } from '@ionic-native/crop';
+import { StreamingMedia } from '@ionic-native/streaming-media';
+import { VideoPlayer } from '@ionic-native/video-player';
 import Cropper from 'cropperjs';
 import { Events, IonicPage, NavController, NavParams, normalizeURL, Platform, ViewController } from 'ionic-angular';
 import { ImageViewerController } from 'ionic-img-viewer';
@@ -25,7 +26,8 @@ export class PreviewPage {
     private _elementRef: ElementRef,
     public crop: Crop,
     public events: Events,
-    public streamingMedia: StreamingMedia,
+    private streamingMedia: StreamingMedia,
+    public videoPlayer: VideoPlayer,
     private _imageViewerController: ImageViewerController,
     public viewCntrl: ViewController) {
     this.previewData = this.navParams.data;
@@ -35,7 +37,7 @@ export class PreviewPage {
   dismiss() {
     this.viewCntrl.dismiss(null);
   }
-
+// upload file
   Upload() {
     if (this.platform.is('core')) {
       if (!_.isEmpty(this.cropper)) {
@@ -51,7 +53,7 @@ export class PreviewPage {
     this.previewData['Text'] = this.message;
     this.viewCntrl.dismiss(this.previewData);
   }
-
+// crop image
   cropImg(element, img) {
     let changedURL: string;
     if (this.platform.is('core')) {
@@ -62,13 +64,12 @@ export class PreviewPage {
       });
     }
     if (this.platform.is('ios')) {
-      changedURL = img.replace('http://localhost:8080/', 'file://');
+      changedURL = img.replace('http://localhost:8080/', 'file://'); // ios
     } else {
-      changedURL = img;
+      changedURL = 'file://' + img; // android
     }
     if (this.platform.is('ios') || this.platform.is('android')) {
-      let url = 'file://' + changedURL;
-      this.crop.crop(url).then((croppedImgUrl) => {
+      this.crop.crop(changedURL).then((croppedImgUrl) => {
         this.croppedImgUrl = normalizeURL(croppedImgUrl);
         this.previewData.nativeURL = this.croppedImgUrl;
       }).catch((error) => {
@@ -76,13 +77,13 @@ export class PreviewPage {
       });
     }
   }
-
+// open image
   openImage() {
     this.element = this._elementRef.nativeElement.querySelector('#img');
     let image = this._imageViewerController.create(this.element);
     image.present();
   }
-
+// play audio
   playAudio() {
     if (this.isCordova) {
       let options = {
@@ -94,17 +95,23 @@ export class PreviewPage {
       this.streamingMedia.playAudio(this.previewData.nativeURL, options);
     }
   }
-
+  // play video
   playVideo() {
     if (this.isCordova) {
       let options = {
         successCallback: () => { },
         errorCallback: (e) => {
-          return false;
         },
         shouldAutoClose: true,
       };
-      this.streamingMedia.playVideo(this.previewData.nativeURL, options);
+      let url;
+      if (this.platform.is('ios')) {
+        url = 'http://localhost:8080' + this.previewData.nativeURL;
+      } else {
+        url = this.previewData.nativeURL;
+      }
+      this.streamingMedia.playVideo(url);
+      // this.streamingMedia.playVideo(url, options);
     }
   }
 

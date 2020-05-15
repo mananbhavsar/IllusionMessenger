@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { StatusBar} from '@ionic-native/status-bar/ngx';
+import { StatusBar } from '@ionic-native/status-bar';
 import { Events, NavController } from 'ionic-angular';
 import { Global } from "../../app/global";
 

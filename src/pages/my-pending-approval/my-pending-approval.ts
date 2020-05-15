@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Network} from '@ionic-native/network/ngx';
+import { Network } from '@ionic-native/network';
 import { Storage } from '@ionic/storage';
 import { IonicPage, ModalController, NavController, NavParams } from 'ionic-angular';
 import * as _ from 'underscore';
@@ -40,7 +40,7 @@ export class MyPendingApprovalPage {
     });
     this.getData();
   }
-
+  // get all pending aprroval for request
   getData() {
     return new Promise((resolve, reject) => {
       if (this.page === -1) {

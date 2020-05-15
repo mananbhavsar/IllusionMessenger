@@ -23,7 +23,7 @@ export class ForwardTopicPage {
     public events: Events) {
     this.topicID = this.navParams.data.TopicID;
   }
-
+  // get list of all topics and forward message to chat
   getGroupList() {
     return new Promise((resolve, reject) => {
       if (this.page === -1) {
@@ -58,7 +58,7 @@ export class ForwardTopicPage {
   dismiss(event) {
     this.viewCtrl.dismiss();
   }
-
+  // select group in which topic to send
   selectGroup(group) {
     if (!this.in_array(this.SelectedGroup, group.GroupID)) {
       this.SelectedGroup = [];

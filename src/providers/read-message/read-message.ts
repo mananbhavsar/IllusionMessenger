@@ -23,9 +23,10 @@ export class ReadMessageProvider {
   ) {
 
   }
-
+// to read message 
   read(selectedGroup: any, selectedTopic: any, readAll: boolean = false) {
     return new Promise((resolve, reject) => {
+      // check if message is from group or topic
       if (!_.isEmpty(selectedGroup)) {
         this.groupCode = selectedGroup;
       }
@@ -54,7 +55,7 @@ export class ReadMessageProvider {
     });
 
   }
-
+// get list of messages which are unread
   getMessageDetail(unreadData, basePath) {
     firebase.database().ref(basePath).orderByKey().limitToLast(unreadData.Count).once('value', (snapshot) => {
       let messages: any;
@@ -65,7 +66,7 @@ export class ReadMessageProvider {
       }
     });
   }
-
+ // set message is read 
   doReading(messageKeyRef, messages, unreadData) {
     //adding myself to read list
     if (messages.Read && this.connection.user.LoginUserID in messages.Read) {//already read by me

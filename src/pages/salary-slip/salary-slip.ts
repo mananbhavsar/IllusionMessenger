@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Network} from '@ionic-native/network/ngx';
+import { Network } from '@ionic-native/network';
 import { Storage } from '@ionic/storage';
 import { UUID } from 'angular2-uuid';
 import { Events, IonicPage, NavController, NavParams, Platform } from 'ionic-angular';
@@ -53,7 +53,7 @@ export class SalarySlipPage {
   getTitle() {
     return this.title;
   }
-
+  // download file to native folder
   download(file) {
     if (!_.isEmpty(file)) {
       if (this.platform.is('core')) {
@@ -71,7 +71,7 @@ export class SalarySlipPage {
       this.events.publish('toast:create', 'No file Found');
     }
   }
-
+  // get all salary slip 
   getData() {
     return new Promise((resolve, reject) => {
       if (this.page === -1) {

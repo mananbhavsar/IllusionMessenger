@@ -33,6 +33,18 @@
   </div> -->
 </ion-content>
 <ion-footer [keyboardAttach]="content" class="bar-stable footer-chat item-input-inset">
+    <div class="reply-to" *ngIf="replyTo">
+        <ion-row>
+          <ion-col *ngIf="replytoImg">
+            <img class="reply-img" [src]="replytoImg" alt="">
+          </ion-col>
+          <ion-col *ngIf="replytoText" [innerHTML]="replytoText | keepHtml" col-11>
+          </ion-col>
+          <ion-col col-1 class="close-icon">
+            <ion-icon (click)="closeReply($event)" name="close"></ion-icon>
+          </ion-col>
+        </ion-row>
+      </div>
   <ng-container *ngIf="hasInternet && messagesLoaded === false">
     <ion-spinner name="dots"></ion-spinner>
   </ng-container>
@@ -112,20 +124,6 @@
     </ng-container>
   </ng-template>
 </ion-footer>
-
-
-<div class="reply-to" *ngIf="replyTo">
-  <ion-row>
-    <ion-col *ngIf="replytoImg">
-      <img class="reply-img" [src]="replytoImg" alt="">
-    </ion-col>
-    <ion-col *ngIf="replytoText" [innerHTML]="replytoText | keepHtml" col-11>
-    </ion-col>
-    <ion-col col-1 class="close-icon">
-      <ion-icon (click)="closeReply($event)" name="close"></ion-icon>
-    </ion-col>
-  </ion-row>
-</div>
 
 <div class="file-uploader-progress" *ngIf="progressPercent > 0">
   <div class="progress-outer">

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, NgZone, Output } from '@angular/core';
-import { Network} from '@ionic-native/network/ngx';
+import { Network } from '@ionic-native/network';
 import { Storage } from '@ionic/storage';
 import * as firebase from 'firebase';
 import { Events, ModalController, NavController } from 'ionic-angular';

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { OneSignal} from '@ionic-native/onesignal/ngx';
+import { OneSignal } from '@ionic-native/onesignal';
 import { Platform } from 'ionic-angular';
 import { Global } from "../../app/global";
 import { ConnectionProvider } from "../connection/connection";

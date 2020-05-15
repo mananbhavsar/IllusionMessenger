@@ -1,7 +1,7 @@
 import { Component, ElementRef, Input } from '@angular/core';
-import { FileEntry } from '@ionic-native/file/ngx';
-import { Network} from '@ionic-native/network/ngx';
-import { StreamingMedia} from '@ionic-native/streaming-media/ngx';
+import { FileEntry } from '@ionic-native/file';
+import { Network } from '@ionic-native/network';
+import { StreamingMedia } from '@ionic-native/streaming-media';
 import * as firebase from 'firebase';
 import { Events, ModalController, NavController, normalizeURL, Platform } from 'ionic-angular';
 import { ImageViewerController } from 'ionic-img-viewer';

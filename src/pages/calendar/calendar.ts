@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Network} from '@ionic-native/network/ngx';
+import { Network } from '@ionic-native/network';
 import { Storage } from '@ionic/storage';
 import { Events, IonicPage, NavController } from 'ionic-angular';
 import moment from 'moment';
@@ -41,10 +41,10 @@ export class CalendarPage {
 
   ionViewWillEnter() {
     this.isInternetConnected = this.network.type !== 'none';
-    this.date = moment().toDate();
+    this.date = moment().toDate(); // current date to check 
     this.formattedDate = moment(this.date, 'YYYY/MM/DD');
-    this.todayDate = new Date().getDate();
-    this.todayMonth = new Date().getMonth() + 1;
+    this.todayDate = new Date().getDate(); // today date to display
+    this.todayMonth = new Date().getMonth() + 1; // next month 
     this.storage.get('offline:calendar').then((days: any) => {
       if (_.isEmpty(days)) {
         this.daysInThisMonth = [];
@@ -52,7 +52,7 @@ export class CalendarPage {
         this.daysInThisMonth = days;
       }
     });
-    this.getDays(new Date().getMonth() + 1, new Date().getFullYear());
+    this.getDays(new Date().getMonth() + 1, new Date().getFullYear()); // get days of next month
   }
 
   getDays(month, year) {
@@ -85,14 +85,14 @@ export class CalendarPage {
         }
         this.daysInLastMonth = [];
         this.daysInNextMonth = [];
-        let firstDayThisMonth = new Date(this.date.getFullYear(), this.date.getMonth(), 1).getDay();
-        let prevNumOfDays = new Date(this.date.getFullYear(), this.date.getMonth(), 0).getDate();
+        let firstDayThisMonth = new Date(this.date.getFullYear(), this.date.getMonth(), 1).getDay(); // first day of this month
+        let prevNumOfDays = new Date(this.date.getFullYear(), this.date.getMonth(), 0).getDate(); // if current month contain prev days also
         for (let i = prevNumOfDays - (firstDayThisMonth - 1); i <= prevNumOfDays; i++) {
-          this.daysInLastMonth.push(i);
+          this.daysInLastMonth.push(i); // days in previous month
         }
         let lastDayThisMonth = new Date(this.date.getFullYear(), this.date.getMonth() + 1, 0).getDay();
         for (let i = 0; i < (6 - lastDayThisMonth); i++) {
-          this.daysInNextMonth.push(i + 1);
+          this.daysInNextMonth.push(i + 1); // days in next month
         }
         resolve(true);
       }).catch((error) => {
@@ -122,14 +122,14 @@ export class CalendarPage {
       })
     });
   }
-
+  // to display current date
   getDate(date) {
     if (moment(date, 'MM-D-YYYY').isAfter(moment())) {
       return true;
     }
     return false;
   }
-
+  // on click previous month
   goToLastMonth() {
     if (this.network.type === 'none') {
       this.events.publish('toast:create', 'You seems to be offline');
@@ -141,7 +141,7 @@ export class CalendarPage {
       this.getDays(this.date.getMonth() + 1, this.date.getFullYear());
     }
   }
-
+  // on click next month
   goToNextMonth() {
     if (this.network.type === 'none') {
       this.events.publish('toast:create', 'You seems to be offline');
@@ -153,7 +153,7 @@ export class CalendarPage {
       this.getDays(this.date.getMonth() + 1, this.date.getFullYear());
     }
   }
-
+  // to show selected date
   SelectDate(day, index) {
     if (day.IsAbsent || moment(day.Date).isAfter(moment().toDate(), 'day')) {
       this.eventList = null;

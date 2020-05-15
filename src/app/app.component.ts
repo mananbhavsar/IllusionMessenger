@@ -1,4 +1,12 @@
 import { Component, enableProdMode, Renderer2, ViewChild } from '@angular/core';
+import { AndroidPermissions } from '@ionic-native/android-permissions';
+import { Badge } from '@ionic-native/badge';
+import { Globalization } from '@ionic-native/globalization';
+import { Keyboard } from '@ionic-native/keyboard';
+import { Network } from '@ionic-native/network';
+import { OneSignal } from '@ionic-native/onesignal';
+import { SplashScreen } from '@ionic-native/splash-screen';
+import { StatusBar } from '@ionic-native/status-bar';
 import { Storage } from '@ionic/storage';
 import * as firebase from 'firebase';
 import { AlertController, Events, LoadingController, MenuController, ModalController, Nav, Platform, ToastController } from 'ionic-angular';
@@ -19,14 +27,6 @@ import { TranslateServiceProvider } from '../providers/translate-service/transla
 import { UserProvider } from '../providers/user/user';
 import { GroupPage } from './../pages/group/group';
 import { Global } from './global';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { Network } from '@ionic-native/network/ngx';
-import { Keyboard } from '@ionic-native/keyboard/ngx';
-import { Badge } from '@ionic-native/badge/ngx';
-import { OneSignal } from '@ionic-native/onesignal/ngx';
-import { Globalization } from '@ionic-native/globalization/ngx';
-import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 
 export const firebaseConfig = {
     apiKey: "AIzaSyAFDZ9UPTMiDTjT4qAG0d9uVeOdhL-2PBw",
@@ -134,7 +134,7 @@ export class MyApp {
             this.listenToGobalEvents();
             this.listenToLoginEvents();
             this._keyboard.disableScroll(false);
-            this._keyboard.hideFormAccessoryBar(false);
+            this._keyboard.hideKeyboardAccessoryBar(true);
             setTimeout(() => {
                 this.initPreLoginPlugins();
             }, 500);
@@ -149,17 +149,7 @@ export class MyApp {
         firebase.initializeApp(firebaseConfig);
     }
 
-    scollKeyboard() {
-        let html = document.getElementsByTagName('html').item(0);
 
-        this._keyboard.onKeyboardHide().subscribe(() => {
-            this.renderer2.setStyle(html, 'height', '101vh')
-        });
-
-        this._keyboard.onKeyboardShow().subscribe(() => {
-            this.renderer2.setStyle(html, 'height', 'auto')
-        });
-    }
 
     enableMenu(loggedIn: boolean) {
         this.menu.enable(loggedIn, 'loggedInMenu');
@@ -432,6 +422,7 @@ export class MyApp {
 
         //On app Resume & Pause
         this.platform.resume.subscribe(() => {
+            this.initBadge();
             this.inBackgroud = false;
             this.events.publish('platform:onResumed');
         });
@@ -649,7 +640,9 @@ export class MyApp {
     }
 
     initBadge() {
+        this._oneSignal.clearOneSignalNotifications();
         this.user.getUser().then(user => {
+            if (!_.isEmpty(user)) {
             firebase.database().ref('Badge/' + user.id + '/Total').on('value', snapshot => {
                 let total: any = snapshot.val();
                 this.events.publish('badge:set', total);
@@ -662,6 +655,7 @@ export class MyApp {
                     this._badge.clear();
                 }
             });
+        }
         });
     }
 

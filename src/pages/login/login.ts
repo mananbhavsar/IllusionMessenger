@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Renderer2 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Keyboard } from '@ionic-native/keyboard';
 import { Events, IonicPage, ModalController, NavController } from 'ionic-angular';
 import { Global } from '../../app/global';
 import { UserProvider } from '../../providers/user/user';
@@ -23,13 +24,28 @@ export class LoginPage {
         public navCtrl: NavController,
         public user: UserProvider,
         public events: Events,
+        public renderer2 : Renderer2,
         public formBuilder: FormBuilder,
+        public keyboard : Keyboard,
         public modalCtrl: ModalController,
     ) {
         this.global = Global;
         this.loginForm = this.formBuilder.group({
             login_name: ['', Validators.required],
             password: ['', Validators.required],
+        });
+        this.scollKeyboard();
+    }
+
+    scollKeyboard() {
+        let html = document.getElementsByTagName('html').item(0);
+
+        this.keyboard.onKeyboardHide().subscribe(() => {
+            this.renderer2.setStyle(html, 'height', '101vh')
+        });
+
+        this.keyboard.onKeyboardShow().subscribe(() => {
+            this.renderer2.setStyle(html, 'height', 'auto')
         });
     }
 

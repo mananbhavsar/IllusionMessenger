@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { Network} from '@ionic-native/network/ngx';
+import { Network } from '@ionic-native/network';
 import * as firebase from 'firebase';
 import { ActionSheetController, Events, IonicPage, ModalController, NavController, NavParams, Slides } from 'ionic-angular';
 import * as moment from "moment";
@@ -286,6 +286,7 @@ export class GroupPage {
       if (data) {
         this.group = [];
         this.page = 0;
+        this.activeTopicList = [];
         setTimeout(() => {
           this.getGroupDetails();
           //if needs to go to ChatPage
@@ -342,6 +343,7 @@ export class GroupPage {
   doSorting() {
     this.group = [];
     this.page = 0;
+    this.activeTopicList = [];
     this.getGroupDetails();
   }
 
